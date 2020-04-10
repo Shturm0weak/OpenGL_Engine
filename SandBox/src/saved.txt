@@ -1,0 +1,308 @@
+Collision2
+GameObject
+1
+-25 5
+0
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 20 1
+0
+Collision1
+GameObject
+1
+25 4.907
+0
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 20 1
+0
+Collision
+GameObject
+1
+0 0
+0
+0 0 1
+1
+0 0
+0
+Land
+None
+1 0 0 1
+51 3 1
+0
+background
+GameObject
+1
+0 0
+-6.28319
+0 0 1
+0
+0 0
+0
+NONE
+None
+0.289216 0.289213 0.289213 1
+10000 10000 1
+0
+FarawayBack
+GameObject
+0
+0 10
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/background.jpg
+1 1 1 255
+50 50 1
+0
+Unnamed
+GameObject
+0
+0 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)
+GameObject
+0
+3 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)
+GameObject
+0
+6 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)(clone)
+GameObject
+0
+9 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)(clone)(clone)
+GameObject
+0
+12 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)
+GameObject
+0
+15 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)
+GameObject
+0
+-3 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)
+GameObject
+0
+-6 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)(clone)
+GameObject
+0
+-9 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)(clone)(clone)
+GameObject
+0
+-12 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)
+GameObject
+0
+-15 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)
+GameObject
+0
+-18 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)
+GameObject
+0
+-21 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)(clone)
+GameObject
+0
+-24 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)
+GameObject
+0
+21 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)(clone)
+GameObject
+0
+24 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
+Unnamed(clone)(clone)(clone)(clone)
+GameObject
+0
+18 0
+0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/dirt.jpg
+1 1 1 255
+3 3 1
+0
