@@ -1,0 +1,16 @@
+﻿  Application.cpp
+  Doom.cpp
+  pch.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_glfw.cpp
+  imgui_impl_opengl3.cpp
+  imgui_widgets.cpp
+     Creating library C:\Users\Alexandr\source\repos\DoomEngine\x64\Release\Doom.lib and object C:\Users\Alexandr\source\repos\DoomEngine\x64\Release\Doom.exp
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  All 133 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\Alexandr\source\repos\DoomEngine\x64\Release\vc120.pdb'; linking object as if no debug info
+  Doom.vcxproj -> C:\Users\Alexandr\source\repos\DoomEngine\x64\Release\Doom.dll

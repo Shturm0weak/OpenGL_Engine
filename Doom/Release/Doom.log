@@ -1,0 +1,72 @@
+﻿  Doom.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\doom.cpp(1): fatal error C1083: Cannot open precompiled header file: 'Release\Doom.pch': No such file or directory
+  Animator.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\components\animator.cpp(70): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Collision.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\components\collision.cpp(331): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Transform.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\components\transform.cpp(78): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Editor.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\core\editor.cpp(216): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  EventSystem.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\core\eventsystem.cpp(160): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  ThreadPool.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\core\threadpool.cpp(70): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  WindowsInput.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\core\windowsinput.cpp(21): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Button.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\gui\button.cpp(14): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  GuiItem.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\gui\guiitem.cpp(17): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  GameObject.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\objects2d\gameobject.cpp(206): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  pch.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\pch.cpp(3): fatal error C1083: Cannot open precompiled header file: 'Release\Doom.pch': No such file or directory
+  Batch.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\batch.cpp(494): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Character.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\character.cpp(170): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  IndexBuffer.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\indexbuffer.cpp(21): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  OrthographicCamera.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\orthographiccamera.cpp(84): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  ParticleSystem.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\particlesystem.cpp(102): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Renderer.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\renderer.cpp(218): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Renderer2D.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\renderer2d.cpp(30): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Shader.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\shader.cpp(138): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Compiling...
+  stb_image.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\stb_image.cpp(4): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Text.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\text.cpp(103): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Texture.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\texture.cpp(118): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  VertexArray.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\vertexarray.cpp(34): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  VertexBuffer.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\render\vertexbuffer.cpp(21): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui.cpp(1974): warning C4005: 'va_copy': macro redefinition
+  c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui.cpp(1972): note: see previous definition of 'va_copy'
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui.cpp(9919): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_demo.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_demo.cpp(104): warning C4005: 'IM_NEWLINE': macro redefinition
+  c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_demo.cpp(102): note: see previous definition of 'IM_NEWLINE'
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_demo.cpp(4820): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_draw.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_draw.cpp(126): error C2006: '#include': expected a filename, found 'identifier'
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_draw.cpp(149): error C2006: '#include': expected a filename, found 'identifier'
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_draw.cpp(3367): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_impl_glfw.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_impl_glfw.cpp(344): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_impl_opengl3.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_impl_opengl3.cpp(119): error C2006: '#include': expected a filename, found 'identifier'
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_impl_opengl3.cpp(127): warning C4005: 'IMGUI_IMPL_OPENGL_MAY_HAVE_VTX_OFFSET': macro redefinition
+  c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_impl_opengl3.cpp(125): note: see previous definition of 'IMGUI_IMPL_OPENGL_MAY_HAVE_VTX_OFFSET'
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_impl_opengl3.cpp(669): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_widgets.cpp
+c:\users\alexandr\source\repos\doomengine\doom\src\vendor\imgui\imgui_widgets.cpp(7615): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?

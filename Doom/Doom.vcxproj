@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3440847C-2077-850D-C963-6B10B579010F}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Doom</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\bin\Debug-windows-x86_64\Doom\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\Doom\</IntDir>
+    <TargetName>Doom</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\bin\Release-windows-x86_64\Doom\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\Doom\</IntDir>
+    <TargetName>Doom</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;_WIN64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Doom\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Debug-windows-x86_64\Doom\Doom.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Doom\Doom.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Doom\Doom.dll ..\bin\Debug-windows-x86_64\SandBox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Doom\Doom.dll ..\bin\Debug-windows-x86_64\SandBox &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;_WIN64;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Doom\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Release-windows-x86_64\Doom\Doom.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\bin\Release-windows-x86_64\Doom\Doom.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Doom\Doom.dll ..\bin\Release-windows-x86_64\SandBox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Doom\Doom.dll ..\bin\Release-windows-x86_64\SandBox &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Doom\Application.h" />
+    <ClInclude Include="src\Doom\Components\Animator.h" />
+    <ClInclude Include="src\Doom\Components\Collision.h" />
+    <ClInclude Include="src\Doom\Components\Transform.h" />
+    <ClInclude Include="src\Doom\Core.h" />
+    <ClInclude Include="src\Doom\Core\AllStatics.h" />
+    <ClInclude Include="src\Doom\Core\ColorsRGBA.h" />
+    <ClInclude Include="src\Doom\Core\Core.h" />
+    <ClInclude Include="src\Doom\Core\DeltaTime.h" />
+    <ClInclude Include="src\Doom\Core\Editor.h" />
+    <ClInclude Include="src\Doom\Core\Event.h" />
+    <ClInclude Include="src\Doom\Core\EventSystem.h" />
+    <ClInclude Include="src\Doom\Core\Input.h" />
+    <ClInclude Include="src\Doom\Core\KeyCode.h" />
+    <ClInclude Include="src\Doom\Core\Listener.h" />
+    <ClInclude Include="src\Doom\Core\ThreadPool.h" />
+    <ClInclude Include="src\Doom\Core\Timer.h" />
+    <ClInclude Include="src\Doom\Core\Window.h" />
+    <ClInclude Include="src\Doom\Core\WindowsInput.h" />
+    <ClInclude Include="src\Doom\ECS\Component.h" />
+    <ClInclude Include="src\Doom\ECS\ComponentManager.h" />
+    <ClInclude Include="src\Doom\ECS\IComponent.h" />
+    <ClInclude Include="src\Doom\EntryPoint.h" />
+    <ClInclude Include="src\Doom\Gui\Button.h" />
+    <ClInclude Include="src\Doom\Gui\GuiItem.h" />
+    <ClInclude Include="src\Doom\Objects2D\GameObject.h" />
+    <ClInclude Include="src\Doom\pch.h" />
+    <ClInclude Include="src\Doom\Render\Batch.h" />
+    <ClInclude Include="src\Doom\Render\Character.h" />
+    <ClInclude Include="src\Doom\Render\IndexBuffer.h" />
+    <ClInclude Include="src\Doom\Render\Line.h" />
+    <ClInclude Include="src\Doom\Render\OrthographicCamera.h" />
+    <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
+    <ClInclude Include="src\Doom\Render\Renderer.h" />
+    <ClInclude Include="src\Doom\Render\Renderer2D.h" />
+    <ClInclude Include="src\Doom\Render\RenderText.h" />
+    <ClInclude Include="src\Doom\Render\Shader.h" />
+    <ClInclude Include="src\Doom\Render\stb_image.h" />
+    <ClInclude Include="src\Doom\Render\Text.h" />
+    <ClInclude Include="src\Doom\Render\Texture.h" />
+    <ClInclude Include="src\Doom\Render\VertexArray.h" />
+    <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
+    <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Doom\Components\Animator.cpp" />
+    <ClCompile Include="src\Doom\Components\Collision.cpp" />
+    <ClCompile Include="src\Doom\Components\Transform.cpp" />
+    <ClCompile Include="src\Doom\Core\Editor.cpp" />
+    <ClCompile Include="src\Doom\Core\EventSystem.cpp" />
+    <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
+    <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
+    <ClCompile Include="src\Doom\Doom.cpp" />
+    <ClCompile Include="src\Doom\EntryPoint.cpp" />
+    <ClCompile Include="src\Doom\Gui\Button.cpp" />
+    <ClCompile Include="src\Doom\Gui\GuiItem.cpp" />
+    <ClCompile Include="src\Doom\Objects2D\GameObject.cpp" />
+    <ClCompile Include="src\Doom\pch.cpp" />
+    <ClCompile Include="src\Doom\Render\Batch.cpp" />
+    <ClCompile Include="src\Doom\Render\Character.cpp" />
+    <ClCompile Include="src\Doom\Render\IndexBuffer.cpp" />
+    <ClCompile Include="src\Doom\Render\Line.cpp" />
+    <ClCompile Include="src\Doom\Render\OrthographicCamera.cpp" />
+    <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
+    <ClCompile Include="src\Doom\Render\Renderer.cpp" />
+    <ClCompile Include="src\Doom\Render\Renderer2D.cpp" />
+    <ClCompile Include="src\Doom\Render\Shader.cpp" />
+    <ClCompile Include="src\Doom\Render\stb_image.cpp" />
+    <ClCompile Include="src\Doom\Render\Text.cpp" />
+    <ClCompile Include="src\Doom\Render\Texture.cpp" />
+    <ClCompile Include="src\Doom\Render\VertexArray.cpp" />
+    <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vendor\ImGui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Doom\Shaders\Line.shader" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

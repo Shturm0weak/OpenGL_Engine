@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Doom\Application.h" />
+    <ClInclude Include="src\Doom\Core.h" />
+    <ClInclude Include="src\Doom\Core\Window.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\pch.h" />
+    <ClInclude Include="src\Doom\Core\ColorsRGBA.h" />
+    <ClInclude Include="src\Doom\Core\Core.h" />
+    <ClInclude Include="src\Doom\Core\DeltaTime.h" />
+    <ClInclude Include="src\Doom\Core\Editor.h" />
+    <ClInclude Include="src\Doom\Core\Event.h" />
+    <ClInclude Include="src\Doom\Core\EventSystem.h" />
+    <ClInclude Include="src\Doom\Core\Input.h" />
+    <ClInclude Include="src\Doom\Core\KeyCode.h" />
+    <ClInclude Include="src\Doom\Core\Listener.h" />
+    <ClInclude Include="src\Doom\Core\ThreadPool.h" />
+    <ClInclude Include="src\Doom\Core\Timer.h" />
+    <ClInclude Include="src\Doom\Core\WindowsInput.h" />
+    <ClInclude Include="src\Doom\Components\Animator.h" />
+    <ClInclude Include="src\Doom\Components\Collision.h" />
+    <ClInclude Include="src\Doom\Components\Transform.h" />
+    <ClInclude Include="src\Doom\ECS\Component.h" />
+    <ClInclude Include="src\Doom\ECS\ComponentManager.h" />
+    <ClInclude Include="src\Doom\ECS\IComponent.h" />
+    <ClInclude Include="src\Doom\Objects2D\GameObject.h" />
+    <ClInclude Include="src\Doom\Render\Batch.h" />
+    <ClInclude Include="src\Doom\Render\Character.h" />
+    <ClInclude Include="src\Doom\Render\IndexBuffer.h" />
+    <ClInclude Include="src\Doom\Render\OrthographicCamera.h" />
+    <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
+    <ClInclude Include="src\Doom\Render\Renderer.h" />
+    <ClInclude Include="src\Doom\Render\Renderer2D.h" />
+    <ClInclude Include="src\Doom\Render\RenderText.h" />
+    <ClInclude Include="src\Doom\Render\Shader.h" />
+    <ClInclude Include="src\Doom\Render\stb_image.h" />
+    <ClInclude Include="src\Doom\Render\Text.h" />
+    <ClInclude Include="src\Doom\Render\Texture.h" />
+    <ClInclude Include="src\Doom\Render\VertexArray.h" />
+    <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
+    <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
+    <ClInclude Include="src\Doom\Core\AllStatics.h" />
+    <ClInclude Include="src\Doom\EntryPoint.h" />
+    <ClInclude Include="src\Doom\Gui\Button.h" />
+    <ClInclude Include="src\Doom\Gui\GuiItem.h" />
+    <ClInclude Include="src\Doom\Render\Line.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Doom\Doom.cpp" />
+    <ClCompile Include="src\Doom\pch.cpp" />
+    <ClCompile Include="src\Doom\Core\Editor.cpp" />
+    <ClCompile Include="src\Doom\Core\EventSystem.cpp" />
+    <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
+    <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
+    <ClCompile Include="src\Doom\Components\Animator.cpp" />
+    <ClCompile Include="src\Doom\Components\Collision.cpp" />
+    <ClCompile Include="src\Doom\Components\Transform.cpp" />
+    <ClCompile Include="src\Doom\Objects2D\GameObject.cpp" />
+    <ClCompile Include="src\Doom\Render\Batch.cpp" />
+    <ClCompile Include="src\Doom\Render\Character.cpp" />
+    <ClCompile Include="src\Doom\Render\IndexBuffer.cpp" />
+    <ClCompile Include="src\Doom\Render\OrthographicCamera.cpp" />
+    <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
+    <ClCompile Include="src\Doom\Render\Renderer.cpp" />
+    <ClCompile Include="src\Doom\Render\Renderer2D.cpp" />
+    <ClCompile Include="src\Doom\Render\Shader.cpp" />
+    <ClCompile Include="src\Doom\Render\stb_image.cpp" />
+    <ClCompile Include="src\Doom\Render\Text.cpp" />
+    <ClCompile Include="src\Doom\Render\Texture.cpp" />
+    <ClCompile Include="src\Doom\Render\VertexArray.cpp" />
+    <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
+    <ClCompile Include="src\Doom\EntryPoint.cpp" />
+    <ClCompile Include="src\Doom\Gui\Button.cpp" />
+    <ClCompile Include="src\Doom\Gui\GuiItem.cpp" />
+    <ClCompile Include="src\Doom\Render\Line.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Doom\Shaders\Line.shader" />
+  </ItemGroup>
+</Project>
