@@ -43,6 +43,8 @@ namespace Doom {
 		friend class ComponentManager;
 		friend class Transform;
 		friend class Batch;
+		friend class Ray;
+
 	protected:
 		Position position;
 		virtual ~Renderer2DLayer() {}

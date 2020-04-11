@@ -51,6 +51,7 @@
     <ClInclude Include="src\Doom\Gui\Button.h" />
     <ClInclude Include="src\Doom\Gui\GuiItem.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
+    <ClInclude Include="src\Doom\Core\Ray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -80,6 +81,7 @@
     <ClCompile Include="src\Doom\Gui\Button.cpp" />
     <ClCompile Include="src\Doom\Gui\GuiItem.cpp" />
     <ClCompile Include="src\Doom\Render\Line.cpp" />
+    <ClCompile Include="src\Doom\Core\Ray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

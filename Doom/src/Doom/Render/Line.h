@@ -7,6 +7,7 @@ public:
 	bool UsePosMat = true;
 	float width = 1.0f;
 	bool Static = false;
+	bool Enable = true;
 	float angle;
 	glm::vec2 start;
 	glm::vec2 end;

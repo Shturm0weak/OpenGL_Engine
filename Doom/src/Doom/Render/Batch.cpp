@@ -371,7 +371,6 @@ void Batch::flushText(Shader* shader)
 		glBindTextureUnit(i, 0);
 	}
 }
-
 void Batch::initText()
 {
 	glGenVertexArrays(1, &vao);

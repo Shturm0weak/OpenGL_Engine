@@ -183,8 +183,10 @@ void Renderer::Render() {
 	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
 	for (unsigned int i = 0; i < Line::lines.size(); i++)
 	{
-		glLineWidth(Line::lines[i]->width);
-		Line::lines[i]->OnRunning();
+		if (Line::lines[i]->Enable) {
+			glLineWidth(Line::lines[i]->width);
+			Line::lines[i]->OnRunning();
+		}
 	}
 	glLineWidth(1.0f);
 }

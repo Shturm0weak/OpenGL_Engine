@@ -11,6 +11,7 @@
 #include "Bomb.h"
 #include "Render/Character.h"
 #include "Render/Line.h"
+#include "Core/Ray.h"
 
 using namespace Doom;
 
@@ -26,10 +27,13 @@ class Game : public Doom::Application{
 	HP* hp = nullptr;
 	Font* font = nullptr;
 	Texture* texturecoin = nullptr;
-	//GameObject* cursor = nullptr;
+	GameObject* cursor = nullptr;
 	Bomb* bomb = nullptr;
 	double time = 0;
 	Line* line = nullptr;
+	Ray* ray = nullptr;
+	double fireTimer = 0;
+	double timerFadeOut = 0;
 public:
 	virtual void OnStart() override{
 	
@@ -48,6 +52,7 @@ public:
 		font->LoadFont("src/font.txt", "src/arial.png");
 		font->LoadCharacters();
 		go->HpBar = hp;
+		ray = new Ray(glm::vec2(0, 0), glm::vec2(3,3) , 10);
 		for (unsigned int i = 0; i < 5; i++)
 		{
 			coins[i].SetTexture(texturecoin);
@@ -62,8 +67,8 @@ public:
 	}
 
 	virtual void OnUpdate() override {
-		line->SetEndPoint(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
-		line->SetStartPoint(go->GetPositions().x,go->GetPositions().y);
+		//line->SetEndPoint(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+		//line->SetStartPoint(go->GetPositions().x,go->GetPositions().y);
 		EventSystem::Instance()->SendEvent("OnUpdate", nullptr);
 		EventSystem::Instance()->StopProcessEvents(pause);
 		Window::GetCamera().CameraMovement();
@@ -106,6 +111,31 @@ public:
 		}
 		else if (!pause) {
 			{
+				if (fireTimer >= 3.0 && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
+					Hit hit;
+					if (ray->Raycast(hit, 30.f)) {
+						if (hit.Object->GetTag() == "Coin") {
+							Coin* coin = (Coin*)&hit.Object->GetOwnerOfComponent();
+							coin->OnCollision(go->col);
+						}
+					}
+					line->Enable = true;
+					line->SetStartPoint(ray->start.x, ray->start.y);
+					line->SetEndPoint(ray->direction.x + ray->end.x, ray->end.y + ray->direction.y);
+					fireTimer = 0;
+				}
+				if (line->Enable)
+					timerFadeOut += DeltaTime::deltatime;
+				if (timerFadeOut > 0.5 && line->Enable) {
+					line->Enable = false;
+					timerFadeOut = 0;
+				}
+				fireTimer += DeltaTime::deltatime;
+				if (fireTimer > 3.0)
+					fireTimer = 3.0;
+				ray->SetStart(glm::vec2(go->GetPositions().x, go->GetPositions().y));
+				ray->SetDirection(glm::vec2(Window::GetMousePositionToWorldSpace().x - go->GetPositions().x, Window::GetMousePositionToWorldSpace().y - go->GetPositions().y));
+				
 				fps = 1000.f / (DeltaTime::deltatime * 1000.f);
 				if (fps > max)
 					max = fps;
@@ -125,6 +155,7 @@ public:
 					Gui::GetInstance()->Text(font, "Collisions: %d", true, 30, 31, 22, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
 					Gui::GetInstance()->Text(font, "VRAM used: %f MB", true, 30, 22, 22, COLORS::Red, 3, Texture::VRAMused);
 					Gui::GetInstance()->Text(font, "Time since start: %f", true, 30, 19, 22, COLORS::Red, 3, time);
+					Gui::GetInstance()->Text(font, "Fire Reload: %f", true, -65, -30, 22, COLORS::White, 3, fireTimer);
 					timer = 0;
 					Batch::GetInstance()->End();
 				}

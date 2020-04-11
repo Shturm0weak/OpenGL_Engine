@@ -128,6 +128,7 @@ namespace Doom {
 			}
 			else if (GetComponent<Collision>() == nullptr) {
 				Collision* object = new Collision();
+				object->SetOwner(this->owner);
 				object->owner = owner;
 				object->m_Id = currentLength;
 				currentLength++;

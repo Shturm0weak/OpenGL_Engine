@@ -112,6 +112,7 @@
     <ClInclude Include="src\Doom\Core\Input.h" />
     <ClInclude Include="src\Doom\Core\KeyCode.h" />
     <ClInclude Include="src\Doom\Core\Listener.h" />
+    <ClInclude Include="src\Doom\Core\Ray.h" />
     <ClInclude Include="src\Doom\Core\ThreadPool.h" />
     <ClInclude Include="src\Doom\Core\Timer.h" />
     <ClInclude Include="src\Doom\Core\Window.h" />
@@ -147,6 +148,7 @@
     <ClCompile Include="src\Doom\Components\Transform.cpp" />
     <ClCompile Include="src\Doom\Core\Editor.cpp" />
     <ClCompile Include="src\Doom\Core\EventSystem.cpp" />
+    <ClCompile Include="src\Doom\Core\Ray.cpp" />
     <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
     <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Doom.cpp" />

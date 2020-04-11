@@ -63,6 +63,7 @@ namespace Doom {
 		friend class Editor;
 		friend class Renderer;
 		friend class Batch;
+		friend class Ray;
 
 		Displacement displacement;
 

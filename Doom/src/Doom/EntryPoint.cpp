@@ -13,7 +13,6 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	this->app = app;
 	EventSystem::Instance()->SendEvent("OnStart", nullptr);
 }
-
 void EntryPoint::Run()
 {
 	/*Texture* texture1 = new Texture("src/Images/coin.png");

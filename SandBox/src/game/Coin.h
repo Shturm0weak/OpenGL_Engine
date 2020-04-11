@@ -17,6 +17,7 @@ public:
 		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
 		col = GetComponentManager()->AddComponent<Collision>();
 		tr = GetComponentManager()->GetComponent<Transform>();
+		col->SetOwner(this);
 		*Renderer2DLayer::type = "GameObject";
 		tr->Scale(2, 2);
 		col->IsTrigger = true;
