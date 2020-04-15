@@ -30,6 +30,8 @@ namespace Doom {
 		Editor& operator=(const Editor& rhs) { return *this; }
 		Editor() {}
 	public:
+		bool isItemActive = false;
+		glm::vec4 ColorPickUp(float* c);
 		static Editor* Instance();
 		void EditorUpdate();
 		static void CheckTexturesFolder(const std::string path);

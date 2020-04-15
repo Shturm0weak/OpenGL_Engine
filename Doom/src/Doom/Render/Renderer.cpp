@@ -180,15 +180,33 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 }
 
 void Renderer::Render() {
+	OrthographicCamera* camera = &Window::GetCamera();
+	SubmitGameObjects(*camera);
 	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
-	for (unsigned int i = 0; i < Line::lines.size(); i++)
+	
+	//Simple render. one line in one draw call.
+	/*for (unsigned int i = 0; i < Line::lines.size(); i++)
 	{
 		if (Line::lines[i]->Enable) {
 			glLineWidth(Line::lines[i]->width);
 			Line::lines[i]->OnRunning();
 		}
 	}
-	glLineWidth(1.0f);
+	glLineWidth(1.0f);*/
+
+	Batch::GetInstance()->Lindexcount = 0;
+	Batch::GetInstance()->BeginLines();
+	unsigned int size = Line::lines.size();
+	for (unsigned int i = 0; i < size; i++)
+	{
+		if (Line::lines[i]->Enable) {
+			Batch::GetInstance()->Submit(*Line::lines[i]);
+		}
+	}
+	Batch::GetInstance()->EndLines();
+	Batch::GetInstance()->flushLines(Batch::GetInstance()->LineShader);
+	RenderCollision(*camera);
+	RenderText();
 }
 
 void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
@@ -222,7 +240,6 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 
 			}
 			batch->EndGameObjects();
-			Render();
 		}
 		
 	}

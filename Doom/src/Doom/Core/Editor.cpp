@@ -461,9 +461,31 @@ void Editor::EditorUpdate()
 		}
 	}
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS) , Draw calls %d", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate, Renderer::DrawCalls);
+	if (ImGui::IsAnyItemActive())
+		isItemActive = true;
+	else
+		isItemActive = false;
 	ImGui::End();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+glm::vec4 Editor::ColorPickUp(float* c) {
+	bool tool_active = true;
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	ImGui::Begin("Pick Color", &tool_active, ImGuiWindowFlags_MenuBar);
+	ImGui::ColorEdit4("Color", c);
+	if (ImGui::IsAnyItemActive())
+		isItemActive = true;
+	else
+		isItemActive = false;
+	glm::vec4 color = glm::vec4(c[0],c[1],c[2],c[3]);
+	ImGui::End();
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	return color;
 }
 
 void Editor::CheckTexturesFolder(const std::string path)

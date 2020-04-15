@@ -59,3 +59,6 @@ DOOM_API bool Renderer::isReadyToRenderFirstThread = false;
 DOOM_API bool Renderer::isReadyToRenderSecondThread = false;
 DOOM_API bool Renderer::isReadyToRenderThirdThread = false;
 DOOM_API std::vector<Line*> Line::lines;
+DOOM_API float Line::width = 1.0f;
+
+DOOM_API ImGuiContext* Window::imGuiContext = nullptr;

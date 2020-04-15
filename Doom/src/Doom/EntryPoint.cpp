@@ -44,6 +44,8 @@ void EntryPoint::Run()
 		Renderer::DrawCalls = 0;
 		Renderer::CalculateMVPforAllObjects();
 		Renderer::Clear();
+		
+
 		DeltaTime::calculateDeltaTime();
 		Window::GetCamera().WindowResize();
 
@@ -57,16 +59,12 @@ void EntryPoint::Run()
 			editortimer = 0;
 		}
 		editortimer += DeltaTime::deltatime;
-	
 
+		Renderer::Render();
 
 		app->OnUpdate();
-		Renderer::SubmitGameObjects(Window::GetCamera());
-		Renderer::RenderCollision(Window::GetCamera());
-		Renderer::RenderText();
 		if (isEditorEnable)
 			Editor::Instance()->EditorUpdate();
-
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}

@@ -5,9 +5,10 @@ using namespace Doom;
 
 Batch::Batch()
 {
-	std::cout  << "Initialized Batch rendering"  << std::endl;
+	std::cout << "Initialized Batch rendering" << std::endl;
 	initText();
 	initGameObjects();
+	initLines();
 }
 
 void Batch::Init() {
@@ -17,7 +18,7 @@ void Batch::Init() {
 Batch::~Batch()
 {
 	delete ibo;
-	glDeleteBuffers(1,&vbo);
+	glDeleteBuffers(1, &vbo);
 }
 
 void Batch::Submit(Character& c)
@@ -49,15 +50,15 @@ void Batch::Submit(Character& c)
 		GtextureIndex = 0;
 	}
 
-	buffer->vertex = glm::vec2((c.mesh2D[0] * c._scale.x  + c.position.x) * 0.019230769, ((c.mesh2D[1] - c.yoffset * 0.0079365079) * c._scale.y + c.position.y) * 0.019230769);
-	buffer->textcoords = glm::vec2(c.mesh2D[2],c.mesh2D[3]);	
+	buffer->vertex = glm::vec2((c.mesh2D[0] * c._scale.x + c.position.x) * 0.019230769, ((c.mesh2D[1] - c.yoffset * 0.0079365079) * c._scale.y + c.position.y) * 0.019230769);
+	buffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
 	buffer->m_static = c.isRelatedToCam;
 	buffer->m_color = c.color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[4] * c._scale.x + c.position.x) * 0.019230769, ((c.mesh2D[5] - c.yoffset * 0.0079365079) * c._scale.y + c.position.y ) * 0.019230769);
+	buffer->vertex = glm::vec2((c.mesh2D[4] * c._scale.x + c.position.x) * 0.019230769, ((c.mesh2D[5] - c.yoffset * 0.0079365079) * c._scale.y + c.position.y) * 0.019230769);
 	buffer->textcoords = glm::vec2(c.mesh2D[6], c.mesh2D[7]);
 	buffer->m_static = c.isRelatedToCam;
 	buffer->m_color = c.color;
@@ -65,7 +66,7 @@ void Batch::Submit(Character& c)
 	buffer->texIndex = textureIndex;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[8] * c._scale.x + c.position.x) * 0.019230769, ((c.mesh2D[9] - c.yoffset * 0.0079365079)* c._scale.y  + c.position.y) * 0.019230769);
+	buffer->vertex = glm::vec2((c.mesh2D[8] * c._scale.x + c.position.x) * 0.019230769, ((c.mesh2D[9] - c.yoffset * 0.0079365079)* c._scale.y + c.position.y) * 0.019230769);
 	buffer->textcoords = glm::vec2(c.mesh2D[10], c.mesh2D[11]);
 	buffer->m_static = c.isRelatedToCam;
 	buffer->m_color = c.color;
@@ -73,7 +74,7 @@ void Batch::Submit(Character& c)
 	buffer->texIndex = textureIndex;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[12] * c._scale.x  + c.position.x) * 0.019230769, ((c.mesh2D[13] - c.yoffset * 0.0079365079) * c._scale.y  + c.position.y) * 0.019230769);
+	buffer->vertex = glm::vec2((c.mesh2D[12] * c._scale.x + c.position.x) * 0.019230769, ((c.mesh2D[13] - c.yoffset * 0.0079365079) * c._scale.y + c.position.y) * 0.019230769);
 	buffer->textcoords = glm::vec2(c.mesh2D[14], c.mesh2D[15]);
 	buffer->m_static = c.isRelatedToCam;
 	buffer->m_color = c.color;
@@ -85,7 +86,7 @@ void Batch::Submit(Character& c)
 }
 
 void Batch::Submit(GuiItem& c) {
-	buffer->vertex = glm::vec2((c.mesh2D[0]) , c.mesh2D[1]);
+	buffer->vertex = glm::vec2((c.mesh2D[0]), c.mesh2D[1]);
 	buffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
 	buffer->m_static = true;
 	buffer->m_color = c.color;
@@ -93,7 +94,7 @@ void Batch::Submit(GuiItem& c) {
 	buffer->texIndex = 0;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[4]) , (c.mesh2D[5]));
+	buffer->vertex = glm::vec2((c.mesh2D[4]), (c.mesh2D[5]));
 	buffer->textcoords = glm::vec2(c.mesh2D[6], c.mesh2D[7]);
 	buffer->m_static = true;
 	buffer->m_color = c.color;
@@ -101,7 +102,7 @@ void Batch::Submit(GuiItem& c) {
 	buffer->texIndex = 0;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[8]) , (c.mesh2D[9]));
+	buffer->vertex = glm::vec2((c.mesh2D[8]), (c.mesh2D[9]));
 	buffer->textcoords = glm::vec2(c.mesh2D[10], c.mesh2D[11]);
 	buffer->m_static = true;
 	buffer->m_color = c.color;
@@ -109,7 +110,7 @@ void Batch::Submit(GuiItem& c) {
 	buffer->texIndex = 0;
 	buffer++;
 
-	buffer->vertex =glm::vec2((c.mesh2D[12]) ,((c.mesh2D[13])));
+	buffer->vertex = glm::vec2((c.mesh2D[12]), ((c.mesh2D[13])));
 	buffer->textcoords = glm::vec2(c.mesh2D[14], c.mesh2D[15]);
 	buffer->m_static = true;
 	buffer->m_color = c.color;
@@ -120,14 +121,47 @@ void Batch::Submit(GuiItem& c) {
 	indexcount += 6;
 }
 
+void Doom::Batch::Submit(Line & line)
+{
+	Lbuffer->m_vertex = glm::vec2(line.mesh2D[0], line.mesh2D[1]);
+	Lbuffer->m_color = line.color;
+	Lbuffer->MVPMat0 = line.MVP[0];
+	Lbuffer->MVPMat1 = line.MVP[1];
+	Lbuffer->MVPMat2 = line.MVP[2];
+	Lbuffer->MVPMat3 = line.MVP[3];
+	Lbuffer->rotationMat0 = line.view[0];
+	Lbuffer->rotationMat1 = line.view[1];
+	Lbuffer->rotationMat2 = line.view[2];
+	Lbuffer->rotationMat3 = line.view[3];
+	Lbuffer->m_color = line.color;
+
+	Lbuffer++;
+
+	Lbuffer->m_vertex = glm::vec2(line.mesh2D[2], line.mesh2D[3]);
+	Lbuffer->m_color = line.color;
+	Lbuffer->MVPMat0 = line.MVP[0];
+	Lbuffer->MVPMat1 = line.MVP[1];
+	Lbuffer->MVPMat2 = line.MVP[2];
+	Lbuffer->MVPMat3 = line.MVP[3];
+	Lbuffer->rotationMat0 = line.view[0];
+	Lbuffer->rotationMat1 = line.view[1];
+	Lbuffer->rotationMat2 = line.view[2];
+	Lbuffer->rotationMat3 = line.view[3];
+	Lbuffer->m_color = line.color;
+
+	Lbuffer++;
+
+	Lindexcount += 2;
+}
+
 void Batch::SubmitG(GameObject & c)
 {
-		
-	/*if (GtextureSlotsIndex > maxTextureSlots - 1 || Gindexcount >= RENDERER_INDICES_SIZE) {
+
+	if (GtextureSlotsIndex > maxTextureSlots - 1 || Gindexcount >= RENDERER_INDICES_SIZE) {
 		Batch::GetInstance()->EndGameObjects();
 		Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
 		Batch::GetInstance()->BeginGameObjects();
-	}*/
+	}
 
 	GtextureIndex = 0.0f;
 
@@ -273,7 +307,7 @@ void Batch::flushGameObjects(Shader * shader)
 	for (unsigned int i = 2; i < GtextureSlotsIndex; i++)
 	{
 		glBindTextureUnit(i, GtextureSlots[i]);
-		
+
 	}
 	for (unsigned int i = 0; i < maxTextureSlots; i++)
 	{
@@ -339,6 +373,18 @@ void Batch::EndGameObjects()
 	isBegan = false;
 }
 
+void Doom::Batch::BeginLines()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, Lvbo);
+	Lbuffer = (VertexLine*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+}
+
+void Doom::Batch::EndLines()
+{
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void Batch::flushText(Shader* shader)
 {
 	glBindVertexArray(vao);
@@ -357,8 +403,8 @@ void Batch::flushText(Shader* shader)
 	shader->SetUniform1iv("u_Texture", samplers);
 	shader->UploadUnifromMat4("u_Projection", ViewProjecTionRelatedToCamera);
 	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-	
-	glDrawElements(GL_TRIANGLES,indexcount,GL_UNSIGNED_INT,NULL);
+
+	glDrawElements(GL_TRIANGLES, indexcount, GL_UNSIGNED_INT, NULL);
 	Renderer::DrawCalls++;
 	shader->UnBind();
 	ibo->UnBind();
@@ -371,6 +417,20 @@ void Batch::flushText(Shader* shader)
 		glBindTextureUnit(i, 0);
 	}
 }
+void Doom::Batch::flushLines(Shader * shader)
+{
+	glBindVertexArray(Lvao);
+	Libo->Bind();
+	shader->Bind();
+	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	glLineWidth(Line::width);
+	glDrawElements(GL_LINES, Lindexcount, GL_UNSIGNED_INT, nullptr);
+	glLineWidth(1.0f);
+	Renderer::DrawCalls++;
+	shader->UnBind();
+	Libo->UnBind();
+	glBindVertexArray(0);
+}
 void Batch::initText()
 {
 	glGenVertexArrays(1, &vao);
@@ -378,14 +438,14 @@ void Batch::initText()
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE,NULL,GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
 
 	glEnableVertexArrayAttrib(vao, 0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, vertex));
 
 	glEnableVertexArrayAttrib(vao, 1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, textcoords));
-	
+
 	glEnableVertexArrayAttrib(vao, 2);
 	glVertexAttribPointer(2, 1, GL_INT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, m_static));
 
@@ -398,12 +458,12 @@ void Batch::initText()
 	glEnableVertexArrayAttrib(vao, 5);
 	glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, texIndex));
 
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	unsigned int indices[RENDERER_INDICES_SIZE];
 
 	unsigned int offset = 0;
-	for (unsigned int i = 0; i < RENDERER_INDICES_SIZE; i+=6)
+	for (unsigned int i = 0; i < RENDERER_INDICES_SIZE; i += 6)
 	{
 		indices[i + 0] = offset + 0;
 		indices[i + 1] = offset + 1;
@@ -490,4 +550,63 @@ void Batch::initGameObjects()
 	{
 		GtextureSlots[i] = 0;
 	}
+}
+
+void Doom::Batch::initLines()
+{
+	glGenVertexArrays(1, &Lvao);
+	glBindVertexArray(Lvao);
+
+	glGenBuffers(1, &Lvbo);
+	glBindBuffer(GL_ARRAY_BUFFER, Lvbo);
+	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
+
+	glEnableVertexArrayAttrib(Lvao, 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_vertex));
+
+	glEnableVertexArrayAttrib(Lvao, 1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_color));
+
+	glEnableVertexArrayAttrib(Lvao, 2);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat0));
+
+	glEnableVertexArrayAttrib(Lvao, 3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat1));
+
+	glEnableVertexArrayAttrib(Lvao, 4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat2));
+
+	glEnableVertexArrayAttrib(Lvao, 5);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat3));
+
+	glEnableVertexArrayAttrib(Lvao, 6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat0));
+
+	glEnableVertexArrayAttrib(Lvao, 7);
+	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat1));
+
+	glEnableVertexArrayAttrib(Lvao, 8);
+	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat2));
+
+	glEnableVertexArrayAttrib(Lvao, 9);
+	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat3));
+
+	glEnableVertexArrayAttrib(Lvao, 10);
+	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_color));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	unsigned int indices[RENDERER_INDICES_SIZE];
+
+	unsigned int offset = 0;
+	for (unsigned int i = 0; i < RENDERER_INDICES_SIZE; i += 2)
+	{
+		indices[i + 0] = offset + 0;
+		indices[i + 1] = offset + 1;
+
+		offset += 2;
+	}
+
+	Libo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
+	glBindVertexArray(0);
 }

@@ -31,6 +31,8 @@ namespace Doom {
 
 	public:
 
+		static ImGuiContext* imGuiContext;
+
 		static OrthographicCamera& GetCamera() {
 			return m_camera;
 		}
@@ -70,8 +72,7 @@ namespace Doom {
 				props[1] = height;
 				EventSystem::Instance()->SendEvent("OnWindowResize", nullptr, props);
 			});
-
-			ImGui::CreateContext();
+			imGuiContext = ImGui::CreateContext();
 			ImGuiIO& io = ImGui::GetIO();
 			(void)io;
 			ImGui_ImplGlfw_InitForOpenGL(Window::GetWindow(), true);

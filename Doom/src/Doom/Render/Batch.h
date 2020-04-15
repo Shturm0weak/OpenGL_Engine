@@ -2,6 +2,7 @@
 #include "../pch.h"
 #include "Renderer.h"
 #include "Character.h"
+#include "Line.h"
 #include "../Gui/GuiItem.h"
 #include <array>
 #include <mutex>
@@ -28,6 +29,19 @@ namespace Doom {
 		glm::vec4 rotationMat3;
 	};
 
+	struct DOOM_API VertexLine {
+		glm::vec2 m_vertex;
+		glm::vec4 m_color;
+		glm::vec4 rotationMat0;
+		glm::vec4 rotationMat1;
+		glm::vec4 rotationMat2;
+		glm::vec4 rotationMat3;
+		glm::vec4 MVPMat0;
+		glm::vec4 MVPMat1;
+		glm::vec4 MVPMat2;
+		glm::vec4 MVPMat3;
+	};
+
 	class DOOM_API Batch {
 		bool isBegan = false;
 		std::mutex mtx;
@@ -35,13 +49,14 @@ namespace Doom {
 		Texture* whitetexture = new Texture();
 		void initText();
 		void initGameObjects();
+		void initLines();
 
 		const unsigned int maxTextureSlots = 32;
 		std::array<uint32_t, 32> textureSlots;
 		unsigned int textureSlotsIndex = 1;
 		float textureIndex = 0;
 
-
+		//for text
 		Vertex* buffer;
 		GLuint vao;
 		GLuint vbo;
@@ -52,11 +67,17 @@ namespace Doom {
 		unsigned int GtextureSlotsIndex = 2;
 		float GtextureIndex = 0;
 
-
+		//for object
 		Vertex* Gbuffer;
 		GLuint Gvao;
 		GLuint Gvbo;
 		IndexBuffer* Gibo;
+
+		//for line
+		VertexLine* Lbuffer;
+		GLuint Lvao;
+		GLuint Lvbo;
+		IndexBuffer* Libo;
 
 		static Batch* instance;
 
@@ -69,25 +90,32 @@ namespace Doom {
 
 		GLsizei Gindexcount = 0;
 
+		GLsizei Lindexcount = 0;
+
 		inline static Batch* GetInstance() { return instance; }
 		Shader* TextShader = new Shader("src/Shaders/Text.shader");
 		Shader* BasicShader = new Shader("src/Shaders/Basic.shader");
 		Shader* CollisionShader = new Shader("src/Shaders/newshader.shader");
+		Shader* LineShader = new Shader("src/Shaders/Line.shader");
 		Batch();
 		~Batch();
 		void Submit(Character& character);
 		void Submit(GuiItem& gameobeject);
-		void SubmitG(GameObject& gameobeject);
+		void SubmitG(GameObject& gameobject);
+		void Submit(Line& line);
 		void Submit(Collision& collision);
 		void flushGameObjects(Shader* shader);
 		void flushCollision(Shader* shader);
 		void flushText(Shader* shader);
+		void flushLines(Shader* shader);
 		bool isValidBuffer() { return (Gbuffer != nullptr && isBegan && Gbuffer != (void*)0x00000000); }
 
 		void Begin();
 		void End();
 		void BeginGameObjects();
 		void EndGameObjects();
+		void BeginLines();
+		void EndLines();
 	};
 
 }

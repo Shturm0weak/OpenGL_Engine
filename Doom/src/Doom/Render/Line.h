@@ -5,7 +5,7 @@ using namespace Doom;
 class DOOM_API Line {
 public:
 	bool UsePosMat = true;
-	float width = 1.0f;
+	static float width;
 	bool Static = false;
 	bool Enable = true;
 	float angle;
@@ -22,7 +22,7 @@ public:
 	};
 
 	static std::vector<Line*> lines;
-	Shader* shader = new Shader("src/Shaders/Line.shader");
+	Shader* shader = new Shader("src/Shaders/LineSimple.shader");
 
 	glm::vec4 color = COLORS::Red;
 	GLuint vao;
