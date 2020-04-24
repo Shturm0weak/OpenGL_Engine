@@ -9,7 +9,7 @@
 
 namespace Doom {
 
-#define RENDERER_MAX_SPRITES   10000
+#define RENDERER_MAX_SPRITES   25000
 #define RENDERER_VERTEX_SIZE   sizeof(Vertex)
 #define RENDERER_SPRITE_SIZE   RENDERER_VERTEX_SIZE * 4
 #define RENDERER_BUFFER_SIZE   RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES
@@ -27,6 +27,10 @@ namespace Doom {
 		glm::vec4 rotationMat1;
 		glm::vec4 rotationMat2;
 		glm::vec4 rotationMat3;
+		glm::vec4 posMat0;
+		glm::vec4 posMat1;
+		glm::vec4 posMat2;
+		glm::vec4 posMat3;
 	};
 
 	struct DOOM_API VertexLine {
@@ -101,7 +105,7 @@ namespace Doom {
 		~Batch();
 		void Submit(Character& character);
 		void Submit(GuiItem& gameobeject);
-		void SubmitG(GameObject& gameobject);
+		void Submit(GameObject& gameobject);
 		void Submit(Line& line);
 		void Submit(Collision& collision);
 		void flushGameObjects(Shader* shader);

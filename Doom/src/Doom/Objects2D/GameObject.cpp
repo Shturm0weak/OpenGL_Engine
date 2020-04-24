@@ -88,15 +88,11 @@ void GameObject::SetTexture(const std::string& path) {
 	texture = nullptr;
 	*pathToTexture = path;
 	texture = new Texture(path);
-	if(ShaderType::SHADER_TEXTURE != shadertype)
-		SetShader(GameObject::SHADER_TEXTURE);
 }
 
 void GameObject::SetTexture(Texture* texture) {
 	this->texture = nullptr;
 	this->texture = texture;
-	if (ShaderType::SHADER_TEXTURE != shadertype)
-		SetShader(GameObject::SHADER_TEXTURE);
 }
 
 void GameObject::InitShader() {

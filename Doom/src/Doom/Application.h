@@ -15,6 +15,7 @@ namespace Doom {
 		virtual void OnStart(){}
 		virtual void OnUpdate(){}
 		virtual void OnClose(){}
+		virtual void OnImGuiRender() {}
 	};
 
 }

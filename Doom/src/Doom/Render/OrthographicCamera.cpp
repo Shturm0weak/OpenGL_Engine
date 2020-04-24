@@ -12,6 +12,7 @@ OrthographicCamera::OrthographicCamera(float left,float right,float top,float bo
 	aspectration[1] = right;
 	aspectration[2] = top;
 	aspectration[3] = bottom;
+	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
 void OrthographicCamera::RecalculateViewMatrix() {

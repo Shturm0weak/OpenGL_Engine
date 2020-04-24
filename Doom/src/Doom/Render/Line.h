@@ -22,7 +22,7 @@ public:
 	};
 
 	static std::vector<Line*> lines;
-	Shader* shader = new Shader("src/Shaders/LineSimple.shader");
+	Shader* shader = nullptr;
 
 	glm::vec4 color = COLORS::Red;
 	GLuint vao;

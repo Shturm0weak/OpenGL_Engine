@@ -1,14 +1,13 @@
 #include "EntryPoint.h"
 #include "Core/Timer.h"
 #include "Render/Line.h"
-
 using namespace Doom;
 
 EntryPoint::EntryPoint(Doom::Application* app) {
+	Window::Init("Doom Engine", 800, 600, false);
 	MainThread::Init();
-	Window::Init(800, 600);
 	ThreadPool::Init();
-	Editor::Instance()->CheckTexturesFolder("C:/Users/Alexandr/source/repos/DoomEngine/SandBox/src/Images");
+	Editor::Instance()->CheckTexturesFolder("src/Images");
 	Batch::Init();
 	this->app = app;
 	EventSystem::Instance()->SendEvent("OnStart", nullptr);
@@ -17,14 +16,14 @@ void EntryPoint::Run()
 {
 	/*Texture* texture1 = new Texture("src/Images/coin.png");
 	Texture* texture2 = new Texture("src/Images/bomb.png");
-	GameObject** gameobj = new GameObject*[10];
+	GameObject** gameobj = new GameObject*[200];
 	float x = -10;
 	float offset = 2;
 	float y = -20;
-	for (unsigned int i = 0; i < 10; i++)
+	for (unsigned int i = 0; i < 200; i++)
 	{
-		gameobj[i] = new GameObject[10];
-		for (unsigned int j = 0; j < 10; j++)
+		gameobj[i] = new GameObject[200];
+		for (unsigned int j = 0; j < 200; j++)
 		{
 			gameobj[i][j].GetComponentManager()->GetComponent<Transform>()->Translate(offset + x,y);
 			if(i % 2 == 0 && j % 2 == 0)
@@ -41,11 +40,14 @@ void EntryPoint::Run()
 	double editortimer = 1;
 	app->OnStart();
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
-		Renderer::DrawCalls = 0;
-		Renderer::CalculateMVPforAllObjects();
-		Renderer::Clear();
 		
+		Renderer::DrawCalls = 0;
+		//Renderer::CalculateMVPforAllObjects();
+		Renderer::Clear();
 
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 		DeltaTime::calculateDeltaTime();
 		Window::GetCamera().WindowResize();
 
@@ -65,6 +67,18 @@ void EntryPoint::Run()
 		app->OnUpdate();
 		if (isEditorEnable)
 			Editor::Instance()->EditorUpdate();
+
+		app->OnImGuiRender();
+
+		if (ImGui::IsAnyItemActive())
+			Editor::Instance()->isItemActive = true;
+		else
+			Editor::Instance()->isItemActive = false;
+
+		ImGui::EndFrame();
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}

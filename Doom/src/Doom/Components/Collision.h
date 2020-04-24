@@ -86,7 +86,7 @@ namespace Doom {
 		bool isCollided = false;
 		bool IsTrigger = false;
 
-		Collision(double x = 0, double y = 0);
+		Collision(GameObject* owner = nullptr,double x = 0, double y = 0);
 
 		void SetTag(std::string tag) { this->tag = tag; }
 		void Scale(float x, float y);

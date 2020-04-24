@@ -154,7 +154,7 @@ void Doom::Batch::Submit(Line & line)
 	Lindexcount += 2;
 }
 
-void Batch::SubmitG(GameObject & c)
+void Batch::Submit(GameObject & c)
 {
 
 	if (GtextureSlotsIndex > maxTextureSlots - 1 || Gindexcount >= RENDERER_INDICES_SIZE) {
@@ -162,7 +162,6 @@ void Batch::SubmitG(GameObject & c)
 		Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
 		Batch::GetInstance()->BeginGameObjects();
 	}
-
 	GtextureIndex = 0.0f;
 
 	if (c.texture != nullptr) {
@@ -180,50 +179,68 @@ void Batch::SubmitG(GameObject & c)
 			GtextureSlotsIndex++;
 		}
 	}
-	Gbuffer->vertex = c.submitedVectors[0];
+
+	Gbuffer->vertex = glm::vec2(c.mesh2D[0] * c.scaleValues[0], c.mesh2D[1] * c.scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
 	Gbuffer->m_static = c.Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.MVP[0];
-	Gbuffer->rotationMat1 = c.MVP[1];
-	Gbuffer->rotationMat2 = c.MVP[2];
-	Gbuffer->rotationMat3 = c.MVP[3];
+	Gbuffer->rotationMat0 = c.view[0];
+	Gbuffer->rotationMat1 = c.view[1];
+	Gbuffer->rotationMat2 = c.view[2];
+	Gbuffer->rotationMat3 = c.view[3];
+	Gbuffer->posMat0 = c.pos[0];
+	Gbuffer->posMat1 = c.pos[1];
+	Gbuffer->posMat2 = c.pos[2];
+	Gbuffer->posMat3 = c.pos[3];
 	Gbuffer->m_particle = c.isParticle;
 	Gbuffer++;
-	Gbuffer->vertex = c.submitedVectors[1];
+
+	Gbuffer->vertex = glm::vec2(c.mesh2D[4] * c.scaleValues[0], c.mesh2D[5] * c.scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[6], c.mesh2D[7]);
 	Gbuffer->m_static = c.Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.MVP[0];
-	Gbuffer->rotationMat1 = c.MVP[1];
-	Gbuffer->rotationMat2 = c.MVP[2];
-	Gbuffer->rotationMat3 = c.MVP[3];
+	Gbuffer->rotationMat0 = c.view[0];
+	Gbuffer->rotationMat1 = c.view[1];
+	Gbuffer->rotationMat2 = c.view[2];
+	Gbuffer->rotationMat3 = c.view[3];
+	Gbuffer->posMat0 = c.pos[0];
+	Gbuffer->posMat1 = c.pos[1];
+	Gbuffer->posMat2 = c.pos[2];
+	Gbuffer->posMat3 = c.pos[3];
 	Gbuffer->m_particle = c.isParticle;
 	Gbuffer++;
 
-	Gbuffer->vertex = c.submitedVectors[2];
+	Gbuffer->vertex = glm::vec2(c.mesh2D[8] * c.scaleValues[0], c.mesh2D[9] * c.scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[10], c.mesh2D[11]);
 	Gbuffer->m_static = c.Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.MVP[0];
-	Gbuffer->rotationMat1 = c.MVP[1];
-	Gbuffer->rotationMat2 = c.MVP[2];
-	Gbuffer->rotationMat3 = c.MVP[3];
+	Gbuffer->rotationMat0 = c.view[0];
+	Gbuffer->rotationMat1 = c.view[1];
+	Gbuffer->rotationMat2 = c.view[2];
+	Gbuffer->rotationMat3 = c.view[3];
+	Gbuffer->posMat0 = c.pos[0];
+	Gbuffer->posMat1 = c.pos[1];
+	Gbuffer->posMat2 = c.pos[2];
+	Gbuffer->posMat3 = c.pos[3];
 	Gbuffer->m_particle = c.isParticle;
 	Gbuffer++;
 
-	Gbuffer->vertex = c.submitedVectors[3];
+	Gbuffer->vertex = glm::vec2(c.mesh2D[12] * c.scaleValues[0], c.mesh2D[13] * c.scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[14], c.mesh2D[15]);
 	Gbuffer->m_static = c.Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.MVP[0];
-	Gbuffer->rotationMat1 = c.MVP[1];
-	Gbuffer->rotationMat2 = c.MVP[2];
-	Gbuffer->rotationMat3 = c.MVP[3];
+	Gbuffer->rotationMat0 = c.view[0];
+	Gbuffer->rotationMat1 = c.view[1];
+	Gbuffer->rotationMat2 = c.view[2];
+	Gbuffer->rotationMat3 = c.view[3];
+	Gbuffer->posMat0 = c.pos[0];
+	Gbuffer->posMat1 = c.pos[1];
+	Gbuffer->posMat2 = c.pos[2];
+	Gbuffer->posMat3 = c.pos[3];
 	Gbuffer->m_particle = c.isParticle;
 	Gbuffer++;
 
@@ -524,6 +541,18 @@ void Batch::initGameObjects()
 
 	glEnableVertexArrayAttrib(Gvao, 9);
 	glVertexAttribPointer(9, 1, GL_INT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, m_particle));
+
+	glEnableVertexArrayAttrib(Gvao, 10);
+	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat0));
+
+	glEnableVertexArrayAttrib(Gvao, 11);
+	glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat1));
+
+	glEnableVertexArrayAttrib(Gvao, 12);
+	glVertexAttribPointer(12, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat2));
+
+	glEnableVertexArrayAttrib(Gvao, 13);
+	glVertexAttribPointer(13, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat3));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

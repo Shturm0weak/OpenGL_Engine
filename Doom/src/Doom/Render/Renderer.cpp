@@ -181,8 +181,9 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 
 void Renderer::Render() {
 	OrthographicCamera* camera = &Window::GetCamera();
-	SubmitGameObjects(*camera);
-	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
+	
+	SubmitGameObjects(*camera); 
+	
 	
 	//Simple render. one line in one draw call.
 	/*for (unsigned int i = 0; i < Line::lines.size(); i++)
@@ -193,7 +194,7 @@ void Renderer::Render() {
 		}
 	}
 	glLineWidth(1.0f);*/
-
+	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
 	Batch::GetInstance()->Lindexcount = 0;
 	Batch::GetInstance()->BeginLines();
 	unsigned int size = Line::lines.size();
@@ -211,33 +212,31 @@ void Renderer::Render() {
 
 void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 {
-	std::unique_lock<std::mutex> lock(Renderer::mtx);
+	//std::unique_lock<std::mutex> lock(Renderer::mtx);
 	{
-		condVar.wait(lock, [] { return(isReadyToRenderFirstThread && isReadyToRenderSecondThread && isReadyToRenderThirdThread); });
-		isReadyToRenderFirstThread = false;
-		isReadyToRenderSecondThread = false;
-		isReadyToRenderThirdThread = false;
-		unsigned int size = Renderer2DLayer::objects2d.size();
+		//condVar.wait(lock, [] { return(isReadyToRenderFirstThread && isReadyToRenderSecondThread && isReadyToRenderThirdThread); });
+		//isReadyToRenderFirstThread = false;
+		//isReadyToRenderSecondThread = false;
+		//isReadyToRenderThirdThread = false;
+		size_t size = Renderer2DLayer::objects2d.size();
 		if (size > 0)
 		{
 			Batch* batch = Batch::GetInstance();
 			batch->Gindexcount = 0;
 			batch->BeginGameObjects();
-			isReadyToRenderFirstThread = false;
-			for (unsigned int i = 0; i < size; ++i) {
+			/*for (size_t i = 0; i < size; i++) {
 				GameObject* go = (GameObject*)&Renderer2DLayer::objects2d[i].get();
 				if (go->Enable == true)
 				{
-					if (batch->Gindexcount >= RENDERER_INDICES_SIZE) {
-						Batch::GetInstance()->EndGameObjects();
-						Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
-						Batch::GetInstance()->BeginGameObjects();
-					}
-					//auto f = std::bind(&Batch::SubmitG,batch,*go);
-					batch->SubmitG(*go);
-					//ThreadPool::Instance()->enqueue(f);
+					batch->Submit(*go);
 				}
-
+			}*/
+			for (auto object : Renderer2DLayer::objects2d) {
+				GameObject* go = (GameObject*)&object.get();
+				if (go->Enable == true)
+				{
+					batch->Submit(*go);
+				}
 			}
 			batch->EndGameObjects();
 		}
@@ -258,7 +257,7 @@ void Doom::Renderer::CalculateMVPforAllObjects()
 			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
 			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
 			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
-			go->MVP = go->pos * go->view;
+			//go->MVP = go->pos * go->view;
 		}
 		isReadyToRenderFirstThread = true;
 		Renderer::condVar.notify_one();
@@ -270,7 +269,7 @@ void Doom::Renderer::CalculateMVPforAllObjects()
 		{
 			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
 			float * scaleVal = go->GetScale();
-			go->MVP = go->pos * go->view;
+			//go->MVP = go->pos * go->view;
 			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
 			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
 			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
@@ -287,7 +286,7 @@ void Doom::Renderer::CalculateMVPforAllObjects()
 		{
 			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
 			float * scaleVal = go->GetScale();
-			go->MVP = go->pos * go->view;
+			//go->MVP = go->pos * go->view;
 			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
 			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
 			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
@@ -311,8 +310,6 @@ void Doom::Renderer::RenderCollision(OrthographicCamera& camera){
 			Renderer2DLayer* col = &Renderer2DLayer::collision2d[i].get();
 			if (col != nullptr && col->Enable == true) {
 				if (col->IsCollisionEnabled()) {
-					//col->OnRunning(camera);
-					//DrawCalls++;
 					Collision* go = static_cast<Collision*>(col);
 					Batch::GetInstance()->Submit(*go);
 				}

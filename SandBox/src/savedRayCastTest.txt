@@ -1,0 +1,154 @@
+Unnamed
+GameObject
+1
+25 0
+0
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 50 1
+0
+Unnamed(clone)
+GameObject
+1
+-25 0
+0
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 50 1
+0
+Unnamed(clone)(clone)
+GameObject
+1
+0 25
+1.5708
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 50 1
+0
+Unnamed(clone)(clone)(clone)
+GameObject
+1
+0 -25
+1.5708
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 50 1
+0
+Unnamed
+GameObject
+1
+0 0
+0.488692
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1.727 10 1
+0
+Unnamed(clone)
+GameObject
+1
+-10 11.106
+-0.837758
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1.727 25 1
+0
+Unnamed(clone)(clone)
+GameObject
+1
+14.712 11.106
+-0.226893
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1.727 7.273 1
+0
+Unnamed(clone)(clone)(clone)
+GameObject
+1
+1.348 -10
+-0.226893
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1.727 7.273 1
+0
+Unnamed(clone)(clone)(clone)(clone)
+GameObject
+1
+-10.455 -14.545
+-2.44346
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+5.455 12.273 1
+0
+Unnamed(clone)(clone)(clone)(clone)(clone)
+GameObject
+1
+15.455 -14.545
+-2.44346
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+11.818 3.03 1
+0
+Unnamed(clone)(clone)(clone)(clone)(clone)(clone)
+GameObject
+1
+15.455 -1.667
+-1.6057
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+11.818 4.545 1
+0

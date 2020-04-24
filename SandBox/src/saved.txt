@@ -306,3 +306,17 @@ src/Images/dirt.jpg
 1 1 1 255
 3 3 1
 0
+player
+Player
+0
+-7.44289 3.49032
+0
+0 0 1
+1
+0 0
+0
+Player
+none
+1 1 1 255
+3 4 1
+0

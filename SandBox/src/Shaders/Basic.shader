@@ -11,6 +11,10 @@ layout(location = 6) in vec4 rotationMat1;
 layout(location = 7) in vec4 rotationMat2;
 layout(location = 8) in vec4 rotationMat3;
 layout(location = 9) in int m_isParticle;
+layout(location = 10) in vec4 positionMat0;
+layout(location = 11) in vec4 positionMat1;
+layout(location = 12) in vec4 positionMat2;
+layout(location = 13) in vec4 positionMat3;
 
 out int particle;
 out vec4 positionsfrag;
@@ -25,12 +29,19 @@ mat4 rot = mat4(
 	rotationMat2,
 	rotationMat3);
 
+mat4 pos = mat4(
+	positionMat0,
+	positionMat1,
+	positionMat2,
+	positionMat3
+);
+
 void main() {
 	if (m_static == 0) {
-		gl_Position = u_ViewProjection * rot * positions;
+		gl_Position = u_ViewProjection * pos * rot * positions;
 	}
 	else if (m_static > 1) {
-		gl_Position = u_Projection * rot * positions;
+		gl_Position = u_Projection * pos * rot * positions;
 	}
 
 	v_textcoords = texcoords;

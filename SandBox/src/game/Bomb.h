@@ -1,5 +1,6 @@
 #pragma once
 #include "Render/ParticleSystem.h"
+#include "Core/Sound.h"
 
 using namespace Doom;
 
@@ -43,6 +44,7 @@ public:
 	void OnCollision(void* _col) {
 		Collision* col = static_cast<Collision*>(_col);
 		if (col->GetTag() == "Player") {
+			Sound::Play(L"src/Sounds/Grenade.wav",12000);
 			Enable = false;
 			this->col->Enable = false;
 			Player* player = dynamic_cast<Player*>(&col->GetOwnerOfComponent());
@@ -56,6 +58,7 @@ public:
 			Randomize();
 		}
 		else if (col->GetTag() == "Land") {
+			Sound::Play(L"src/Sounds/Grenade.wav",12000);
 			Enable = false;
 			this->col->Enable = false;
 			particle->SetPosition(position.x, position.y);

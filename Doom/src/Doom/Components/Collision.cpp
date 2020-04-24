@@ -3,8 +3,9 @@
 
 using namespace Doom;
 
-Collision::Collision(double x, double y) {
+Collision::Collision(GameObject* owner,double x, double y){
 	SetType("Collision");
+	this->owner = owner;
 	id = Renderer2DLayer::col_id;
 	Renderer2DLayer::col_id++;
 	Renderer2DLayer::PushCol(*this);

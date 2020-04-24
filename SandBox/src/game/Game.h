@@ -27,7 +27,6 @@ class Game : public Doom::Application{
 	HP* hp = nullptr;
 	Font* font = nullptr;
 	Texture* texturecoin = nullptr;
-	GameObject* cursor = nullptr;
 	Bomb* bomb = nullptr;
 	double time = 0;
 	Line* line = nullptr;
@@ -53,6 +52,7 @@ public:
 		font->LoadCharacters();
 		go->HpBar = hp;
 		ray = new Ray(glm::vec2(0, 0), glm::vec2(3,3) , 10);
+		ray->ignoreMask.push_back("Player");
 		for (unsigned int i = 0; i < 5; i++)
 		{
 			coins[i].SetTexture(texturecoin);
@@ -62,8 +62,6 @@ public:
 		Window::GetCamera().Zoom(1.5);
 		line = new Line(glm::vec2(-5, -5), glm::vec2(-5, 5));
 		line->width = 5.f;
-		//cursor = new GameObject();
-		
 	}
 
 	virtual void OnUpdate() override {
@@ -111,18 +109,32 @@ public:
 		}
 		else if (!pause) {
 			{
-				if (fireTimer >= 3.0 && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
+				if (fireTimer > 2.99 && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
 					Hit hit;
-					if (ray->Raycast(hit, 30.f)) {
+					glm::vec2 direction = glm::vec2(Window::GetMousePositionToWorldSpace().x - go->GetPositions().x, Window::GetMousePositionToWorldSpace().y - go->GetPositions().y);
+					Ray::Normilize(direction);
+					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPositions().x, go->GetPositions().y), direction, ray->ignoreMask)) {
 						if (hit.Object->GetTag() == "Coin") {
 							Coin* coin = (Coin*)&hit.Object->GetOwnerOfComponent();
 							coin->OnCollision(go->col);
 						}
+						else if (hit.Object->GetTag() == "Bomb") {
+							Bomb* bomb = (Bomb*)&hit.Object->GetOwnerOfComponent();
+							go->col->SetTag("Land");
+							bomb->OnCollision(go->col);
+							go->col->SetTag("Player");
+						}
+						line->Enable = true;
+						line->SetStartPoint(ray->start.x, ray->start.y);
+						line->SetEndPoint(hit.point.x,hit.point.y);
+						fireTimer = 0;
 					}
-					line->Enable = true;
-					line->SetStartPoint(ray->start.x, ray->start.y);
-					line->SetEndPoint(ray->direction.x + ray->end.x, ray->end.y + ray->direction.y);
-					fireTimer = 0;
+					else {
+						line->Enable = true;
+						line->SetStartPoint(ray->start.x, ray->start.y);
+						line->SetEndPoint(ray->end.x, ray->end.y);
+						fireTimer = 0;
+					}
 				}
 				if (line->Enable)
 					timerFadeOut += DeltaTime::deltatime;
@@ -133,9 +145,6 @@ public:
 				fireTimer += DeltaTime::deltatime;
 				if (fireTimer > 3.0)
 					fireTimer = 3.0;
-				ray->SetStart(glm::vec2(go->GetPositions().x, go->GetPositions().y));
-				ray->SetDirection(glm::vec2(Window::GetMousePositionToWorldSpace().x - go->GetPositions().x, Window::GetMousePositionToWorldSpace().y - go->GetPositions().y));
-				
 				fps = 1000.f / (DeltaTime::deltatime * 1000.f);
 				if (fps > max)
 					max = fps;
@@ -146,7 +155,7 @@ public:
 					Batch::GetInstance()->indexcount = 0;
 					Batch::GetInstance()->Begin();
 					Gui::GetInstance()->Text(font, "FPS : %f", true, 30, 28, 22, COLORS::Red, 0, fps);
-					Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, 30, 34, 22, COLORS::Red, 2, Window::GetMousePositionToScreenSpace().x, Window::GetMousePositionToScreenSpace().y);
+					Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, 30, 34, 22, COLORS::Red, 2, Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
 					Gui::GetInstance()->Text(font, "Camera X : %f   Y : %f", true, 30, 37, 22, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
 					Gui::GetInstance()->Text(font, "Player X : %f   Y : %f", true, 30, 40, 22, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
 					Gui::GetInstance()->Text(font, "Textures: %d", true, 30, 25, 22, COLORS::Red, 0, Texture::bindedAmount);
@@ -165,7 +174,7 @@ public:
 			if (timer > 0.05) {
 				Batch::GetInstance()->indexcount = 0;
 				Batch::GetInstance()->Begin();
-				Button button1(font, "Exit", -5, -5, 2, 1, 22, 2);
+				Button button1(font, "Pause", -5, -5, 2, 1, 22, 2);
 				if (button1.IsPressed()) {
 					if (Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
 						glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);

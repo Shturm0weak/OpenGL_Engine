@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include <random>
+#include "Core/Sound.h"
 
 using namespace Doom;
 
@@ -31,12 +32,12 @@ public:
 		if (playanim) {
 
 			if (!secondphase) {
-				tr->Scale(scaleValues[0] * 1.04f, scaleValues[1] * 1.04f);
+				tr->Scale(scaleValues[0] *  (1 + (5.2f * DeltaTime::deltatime)), scaleValues[1] * (1 + (5.2f * DeltaTime::deltatime)));
 				if (scaleValues[0] > prevscale[0] * 1.5f)
 					secondphase = true;
 			}
 			else if (secondphase) {
-				tr->Scale(scaleValues[0] * 0.95f, scaleValues[1] * 0.95f);
+				tr->Scale(scaleValues[0] * (1 - (5.f * DeltaTime::deltatime)), scaleValues[1] * (1 - (5.f * DeltaTime::deltatime)));
 			}
 
 			if (scaleValues[0] < prevscale[0] * 0.5f) {
@@ -62,7 +63,7 @@ public:
 	virtual void OnCollision(void* _col)override {
 		Collision* col = static_cast<Collision*>(_col);
 		if (col->GetTag() == "Player") {
-			//Enable = false;
+			Sound::Play(L"src/Sounds/Coin.wav",12000);
 			this->col->Enable = false;
 			Player* player = dynamic_cast<Player*>(&col->GetOwnerOfComponent());
 			player->scores++;

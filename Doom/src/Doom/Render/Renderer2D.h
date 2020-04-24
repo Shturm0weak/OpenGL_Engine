@@ -66,7 +66,7 @@ namespace Doom {
 		inline virtual float* GetVertexPositions() { return nullptr; }
 		inline virtual float* GetColor() { return nullptr; }
 		inline virtual float* GetScale() { return nullptr; }
-		const char** Renderer2DLayer::GetItemsNames();
+		const char** GetItemsNames();
 		inline virtual float GetAngle() { return 0; }
 		inline virtual Position GetPositions() { return position; }
 		inline virtual int GetRenderType() { return rendertype; }

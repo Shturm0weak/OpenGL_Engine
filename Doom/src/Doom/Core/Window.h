@@ -42,13 +42,13 @@ namespace Doom {
 			return props;
 		}
 
-		static int Init(int width, int height) {
+		static int Init(const char* Label,int width, int height,bool vsync) {
 			if (!glfwInit())
 				return -1;
 			GetProps()[0] = width;
 			GetProps()[1] = height;
 
-			m_window = glfwCreateWindow(width, height, "DoomEngine", NULL, NULL);
+			m_window = glfwCreateWindow(width, height, Label, NULL, NULL);
 			if (!GetWindow())
 			{
 				glfwTerminate();
@@ -63,8 +63,7 @@ namespace Doom {
 			}
 			std::cout << "Initialized window" << std::endl;
 
-			glfwMakeContextCurrent(Window::GetWindow());
-			glfwSwapInterval(0); // Enable vsync
+			glfwSwapInterval(vsync); // Enable vsync
 
 			glfwSetWindowSizeCallback(Window::GetWindow(), [](GLFWwindow* window, int width, int height) {
 				int* props = Window::GetProps();
@@ -79,6 +78,7 @@ namespace Doom {
 			ImGui_ImplOpenGL3_Init("#version 330");
 
 			ImGui::StyleColorsDark();
+
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			//glEnable(GL_DEPTH_TEST);
