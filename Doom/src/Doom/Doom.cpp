@@ -54,6 +54,9 @@ DOOM_API vec4 COLORS::Green(0, 1, 0, 1);
 DOOM_API vec4 COLORS::Brown(0.5, 0.3, 0.1, 1);
 DOOM_API vec4 COLORS::White(1, 1, 1, 1);
 DOOM_API vec4 COLORS::Orange(1, 0.31, 0, 1);
+DOOM_API vec4 COLORS::Gray(0.86, 0.86, 0.86, 1);
+DOOM_API vec4 COLORS::Silver(0.75, 0.75, 0.75, 1);
+
 
 DOOM_API bool Renderer::isReadyToRenderFirstThread = false;
 DOOM_API bool Renderer::isReadyToRenderSecondThread = false;

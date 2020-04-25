@@ -15,6 +15,8 @@ namespace Doom {
 		static vec4 Brown;
 		static vec4 White;
 		static vec4 Orange;
+		static vec4 Gray;
+		static vec4 Silver;
 	};
 
 }

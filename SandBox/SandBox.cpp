@@ -4,9 +4,10 @@
 #include "src/game/Game.h"
 #include "src/game/DrawLines.h"
 #include "src/game/RayCastTest.h"
+#include "src/game/TicTacToe.h"
 
 int main() {
-	RayCastTest* app = new RayCastTest();
+	TicTacToe* app = new TicTacToe();
 	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);
 	entrypoint->Run();
 	return 0;

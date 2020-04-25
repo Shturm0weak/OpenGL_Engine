@@ -54,9 +54,7 @@ namespace Doom {
 		virtual Renderer2DLayer* GetCollisionReference() override { return this; }
 		void RealVerPos();
 		float* GetVertexPositions();
-		virtual Position GetPositions() override {
-			return position;
-		};
+		
 
 		friend class GameObject;
 		friend class Transform;
@@ -68,7 +66,7 @@ namespace Doom {
 		Displacement displacement;
 
 		float offsetX = 0, offsetY = 0;
-		float* ScaledVerPos = new float[16];
+
 		std::vector<glm::vec2> p;
 		std::string tag = "General";
 
@@ -77,6 +75,12 @@ namespace Doom {
 		bool Collided_side_top = false;
 		bool Collided_side_bottom = false;
 	public:
+		virtual Position GetPositions() override {
+			return position;
+		};
+
+		float* ScaledVerPos = new float[16];
+
 		Collision* collidedObject = nullptr;
 		std::string GetTag() { return tag; }
 		virtual void SetId(int id)override { this->id = id; }
