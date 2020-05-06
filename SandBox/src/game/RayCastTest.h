@@ -20,13 +20,13 @@ public:
 		cursor->SetTexture("src/Images/WhiteCircle.png");
 		cursor->SetColor(COLORS::Red);
 		float angle = 0;
-		for (unsigned int i = 0; i < 1000; i++)
+		for (unsigned int i = 0; i < 2000; i++)
 		{
 			rays.push_back(new Ray(glm::vec2(0, 0), glm::vec2(0, 1), 100));
 			lines.push_back(new Line(glm::vec2(0, 0), glm::vec2(1, 1)));
 			rays[i]->Rotate(angle);
 			lines[i]->SetEndPoint(rays[i]->end.x, rays[i]->end.y);
-			angle += 0.36f;
+			angle += 0.18f;
 			lines[i]->color = COLORS::Yellow;
 			lines[i]->width = 1.f;
 		}
@@ -36,7 +36,7 @@ public:
 		cursor->GetComponentManager()->GetComponent<Transform>()->Translate(pos.x, pos.y);
 		pos = glm::vec2(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
 		coin->Enable = false;
-		for (unsigned int i = 0; i < 1000; i++)
+		for (unsigned int i = 0; i < 2000; i++)
 		{
 			lines[i]->SetStartPoint(pos.x,pos.y);
 			Hit hit;

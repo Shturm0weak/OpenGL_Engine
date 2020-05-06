@@ -50,6 +50,7 @@ public:
 	GameObject* background = nullptr;
 
 	double timer = 1.0;
+	double debugTextTimer = 1;
 
 	int selected = -1;
 	unsigned int turn = 0;
@@ -79,6 +80,7 @@ public:
 		background->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
 		background->SetColor(COLORS::Silver);
 		background->Setlayer(0);
+		background->AlwaysDraw = true;
 
 		for (unsigned int i = 0; i < 9; i++)
 		{
@@ -99,7 +101,7 @@ public:
 	virtual void OnUpdate()override {
 		mousePos = glm::vec2(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
 
-		if (timer > 0.2f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1) && !end && turn == 0) {
+		if (timer > 0.2f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1) && !end && turn == 1 && !end) {
 			timer = 0.0;
 			Plate* plate = isCollided(plates, &selected);
 			if (plate != nullptr) {
@@ -120,7 +122,7 @@ public:
 				}
 			}
 		}
-		else if(timer > 0.4f && turn == 1){
+		else if(timer > 0.4f && turn == 0 && !end){
 			timer = 0.0;
 			Plate* plate = nullptr;
 			plate = ai->DecideWhereToPlace(plates);
@@ -145,8 +147,10 @@ public:
 
 
 		timer += DeltaTime::deltatime;
+		debugTextTimer += DeltaTime::deltatime;
 
-		{
+		if(debugTextTimer > 0.1f){
+			debugTextTimer = 0;
 			Batch::GetInstance()->indexcount = 0;
 			Batch::GetInstance()->Begin();
 			Gui::GetInstance()->Text(font, "selected : %d", true, 30, 28, 22, COLORS::Red, 0, selected);
@@ -154,6 +158,7 @@ public:
 				Gui::GetInstance()->Text(font, "IsEmpty : %d", true, 30, 22, 22, COLORS::Red, 0, plates[selected].isEmpty);
 			Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, 30, 31, 22, COLORS::Red, 2, mousePos.x, mousePos.y);
 			Gui::GetInstance()->Text(font, "Not empty : %d", true, 30, 25, 22, COLORS::Red, 0, amountOfNonEmpty);
+			Gui::GetInstance()->Text(font, "FPS : %f", true, 30, 19, 22, COLORS::Red, 0, Window::GetFPS());
 			Batch::GetInstance()->End();
 		}
 
@@ -188,6 +193,8 @@ public:
 		delete circleTexture;
 		delete[] plates;
 		delete font;
+		delete ai;
+		delete background;
 	}
 
 	Plate* isCollided(Plate* plates,int* selected) {

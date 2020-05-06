@@ -21,7 +21,7 @@ class DrawLines : public Application {
 		if (isEditorEnable)
 			veccolor = Editor::Instance()->ColorPickUp(color);
 
-		if (timer > 0.19f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
+		if (timer > 0.001f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
 
 			if (isEditorEnable)
 				veccolor = Editor::Instance()->ColorPickUp(color);

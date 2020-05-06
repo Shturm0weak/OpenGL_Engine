@@ -61,6 +61,7 @@ void Doom::Renderer::Save(const std::string filename) {
 	if (out_file.is_open()) {
 		for (unsigned int i = 0; i < Renderer2DLayer::objects2d.size(); i++)
 		{
+			GameObject* go = (GameObject*)&Renderer2DLayer::objects2d[i].get();
 			if (Renderer2DLayer::objects2d[i].get().type->c_str() == "GameObject")
 				continue;
 			float* color = Renderer2DLayer::objects2d[i].get().GetColor();
@@ -84,23 +85,30 @@ void Doom::Renderer::Save(const std::string filename) {
 				out_file << 0 << "\n";
 				out_file << "NONE" << "\n";
 			}
-			if (Renderer2DLayer::objects2d[i].get().GetShaderType() == 0){
-				out_file << *Renderer2DLayer::objects2d[i].get().GetPathToTexture() << "\n";
-				out_file << color[0] << " " << color[1] << " " << color[2] << " " << 255 << "\n";
-			}
-			else if (Renderer2DLayer::objects2d[i].get().GetShaderType() == 1) {
-				out_file << "None" << "\n";
-				out_file << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << "\n";
-			}
+			out_file << *Renderer2DLayer::objects2d[i].get().GetPathToTexture() << "\n";
+			out_file << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << "\n";
 			out_file << scale[0] << " " << scale[1] << " " << scale[2] << "\n";
-			out_file << Renderer2DLayer::objects2d[i].get().GetRenderType();
+			out_file << Renderer2DLayer::objects2d[i].get().GetRenderType() << "\n";
+			out_file << go->mesh2D[2] << " " << go->mesh2D[3] << " " << go->mesh2D[6]<< " " << go->mesh2D[7] << " "
+				<< go->mesh2D[10] << " " << go->mesh2D[11] << " " << go->mesh2D[14] << " " << go->mesh2D[15] << "\n";
+			if (go->textureAtlas == nullptr) {
+				out_file << 0 << "\n";
+				out_file << 0 << " " << 0;
+			}
+			else {
+				out_file << 1 << "\n";
+				out_file << go->textureAtlas->spriteWidth << " " << go->textureAtlas->spriteHeight;
+			}
 			if (i + 1 != Renderer2DLayer::objects2d.size())
 				out_file << "\n";
 			delete color;
+
 		}
 	}
 	else {
 		std::cout << "Error: filename doesn't exist";
+		out_file.close();
+		return;
 	}
 
 	out_file.close();
@@ -121,9 +129,12 @@ void Doom::Renderer::Load(const std::string filename)
 	float scale[3];
 	float color[4];
 	float offset[2];
+	float UVs[8];
 	int rendertype = 0;
 	int shadertype = 1;
 	int axes[3] = { 0,0,1 };
+	bool isSprite = false;
+	float spriteSize[2];
 	std::ifstream in_file;
 	in_file.open(filename);
 	if (in_file.is_open()) {
@@ -154,8 +165,11 @@ void Doom::Renderer::Load(const std::string filename)
 				in_file >> scale[0] >> scale[1] >> scale[2];
 				//std::cout << scale[0] << "	" << scale[1] << "	" << scale[2] << std::endl;
 				in_file >> rendertype;
+				in_file >> UVs[0] >> UVs[1] >> UVs[2] >> UVs[3] >> UVs[4] >> UVs[5] >> UVs[6] >> UVs[7];
+				in_file >> isSprite;
+				in_file >> spriteSize[0] >> spriteSize[1];
 				if (type == "GameObject") {		
-					LoadObj<GameObject>(name, pathtotext, angle, color, scale, pos, shadertype,hascollision,offset,rendertype,axes,istrigger,tag);
+					LoadObj<GameObject>(name, pathtotext, angle, color, scale, pos, shadertype, hascollision, offset, rendertype, axes, istrigger, tag, UVs,isSprite,spriteSize);
 				}
 		}
 	}
@@ -233,7 +247,7 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 			}*/
 			for (auto object : Renderer2DLayer::objects2d) {
 				GameObject* go = (GameObject*)&object.get();
-				if (go->Enable == true)
+				if (go->Enable == true && (go->AlwaysDraw || sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 30 * Window::GetCamera().GetZoomLevel()))
 				{
 					batch->Submit(*go);
 				}

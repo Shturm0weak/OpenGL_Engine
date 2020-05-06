@@ -121,6 +121,11 @@ void Editor::EditorUpdate()
 						counterImagesButtons++;
 					}
 					ImGui::NewLine();
+					if (ImGui::Button("Nod texture")) {
+						if (child != nullptr)
+							child->SetTexture(nullptr);
+					}
+					ImGui::NewLine();
 					if (ImGui::Button("Refresh textures")) {
 						for (unsigned int i = 0; i < texture.size(); i++)
 						{
@@ -188,6 +193,7 @@ void Editor::EditorUpdate()
 					go->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
 				delete[] color;
 				int counterImagesButtons = 0;
+				ImGui::Text("Textures");
 				for (unsigned int i = 0; i < texture.size(); i++)
 				{
 					void* my_tex_id = reinterpret_cast<void*>(texture[i]->m_RendererID);
@@ -198,13 +204,46 @@ void Editor::EditorUpdate()
 					}
 					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
 						if (go != nullptr) {
-							go->SetTexture(texturesPath[i]);
+							go->SetTexture(texture[i]);
 						}
 					}
 					ImGui::SameLine();
 					counterImagesButtons++;
 				}
+
 				ImGui::NewLine();
+				ImGui::Text("Texture Atlases");
+				int counterAtlasesButtons = 0;
+				for (unsigned int i = 0; i < TextureAtlas::textureAtlases.size(); i++)
+				{
+					void* my_tex_id = reinterpret_cast<void*>(TextureAtlas::textureAtlases[i]->GetTexture()->m_RendererID);
+					int frame_padding = -1;
+					if (counterAtlasesButtons > 9) {
+						ImGui::NewLine();
+						counterAtlasesButtons = 0;
+					}
+					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
+						if (go != nullptr) {
+							go->textureAtlas = TextureAtlas::textureAtlases[i];
+							go->SetTexture(go->textureAtlas->GetTexture());
+						}
+					}
+					ImGui::SameLine();
+					counterAtlasesButtons++;
+				}
+
+				ImGui::NewLine();
+				ImGui::InputFloat2("UVs Offset",uvsOffset);
+				
+				if (ImGui::Button("Use these UVs")) {
+					if (go != nullptr && go->textureAtlas != nullptr)
+						go->SetUVs(go->textureAtlas->GetSpriteUVs(uvsOffset[0],uvsOffset[1]));
+				}
+				
+				if (ImGui::Button("No texture")) {
+					if (go != nullptr)
+						go->SetTexture(nullptr);
+				}
 				if (ImGui::Button("Refresh textures")) {
 					for (unsigned int i = 0; i < texture.size(); i++)
 					{

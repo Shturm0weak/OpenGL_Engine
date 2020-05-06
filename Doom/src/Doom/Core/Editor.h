@@ -27,6 +27,7 @@ namespace Doom {
 		float colOffset[2] = { 0,0 };
 		static std::vector<Texture*> texture;
 		static std::vector<std::string> texturesPath;
+		float uvsOffset[2];
 		Editor& operator=(const Editor& rhs) { return *this; }
 		Editor() {}
 	public:

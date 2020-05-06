@@ -88,7 +88,7 @@ namespace Doom {
 			return 0;
 		}
 		inline static GLFWwindow* GetWindow() { return m_window; }
-		inline static Position GetMousePositionToWorldSpace() {
+		static Position GetMousePositionToWorldSpace() {
 			static Position mousePos;
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -96,13 +96,19 @@ namespace Doom {
 			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetProps()[1]) + 0.5) * 18. * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().y;
 			return mousePos;
 		}
-		inline static Position GetMousePositionToScreenSpace() {
+		static Position GetMousePositionToScreenSpace() {
 			static Position mousePos;
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			mousePos.x = (ImGui::GetMousePosOnOpeningCurrentPopup().x / GetProps()[0] - 0.5) * 32. * Window::GetCamera().GetZoomLevel();
 			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetProps()[1]) + 0.5) * 18. * Window::GetCamera().GetZoomLevel();
 			return mousePos;
+		}
+
+		static float GetFPS() {
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			return ImGui::GetIO().Framerate;
 		}
 	};
 

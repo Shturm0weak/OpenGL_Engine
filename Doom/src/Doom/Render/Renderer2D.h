@@ -17,7 +17,7 @@ namespace Doom {
 			float y = 0;
 		};
 	public:
-
+		void SetObjectType(std::string _type) { *type = _type; }
 		std::vector<void*> GetChilds() { return Childs; }
 		void AddChild(void* child) { Childs.push_back(child); }
 		void RemoveChild(void* child) {

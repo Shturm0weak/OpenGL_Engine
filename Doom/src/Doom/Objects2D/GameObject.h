@@ -5,6 +5,7 @@
 #include "../Core/Listener.h"
 #include "../Core/Event.h"
 #include "../Core/Window.h"
+#include "../Render/TextureAtlas.h"
 
 namespace Doom {
 
@@ -12,6 +13,8 @@ namespace Doom {
 	{
 	public:
 		enum ShaderType { SHADER_TEXTURE, SHADER_COLOR, SHADER_BLOOM };
+
+		bool AlwaysDraw = false;
 	private:
 		ShaderType shadertype = SHADER_COLOR;
 		ComponentManager* component_manager;
@@ -27,7 +30,7 @@ namespace Doom {
 		virtual float* GetScale() override;
 		virtual void SetId(int id) override { this->id = id; }
 
-		std::string* pathToTexture = new std::string("none");
+		std::string* pathToTexture = new std::string("None");
 
 		unsigned int indeces2D[6] = { 0,1,2,3,2,0 };
 		float mesh2D[16] = {
@@ -36,7 +39,7 @@ namespace Doom {
 		 0.5f,  0.5f, 1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
-
+	private:
 		unsigned int indeces3D[36] = {// front
 			0, 1, 2,
 			2, 3, 0,
@@ -95,6 +98,17 @@ namespace Doom {
 		friend class Doom::Renderer;
 
 	public:
+		TextureAtlas* textureAtlas = nullptr;
+
+		void ReverseUVs();
+
+		//Only in int size from 0 to 1 !!!
+		void ReversedUvs();
+		void OriginalUvs();
+		
+		void SetUVs(float* uvs);
+		float* GetUVs();
+
 		float scaleValues[3] = { 1,1,1 };
 		bool isParticle = false;
 		bool Static = false;
@@ -112,7 +126,7 @@ namespace Doom {
 		void SetShader(int _enum);
 		void SetRenderType(RenderType type);
 		inline double GetWidth() { return scaleValues[0] * mesh2D[4] * 2; }
-		inline double GetHeight() { return scaleValues[1] * mesh2D[9] * 2;; }
+		inline double GetHeight() { return scaleValues[1] * mesh2D[9] * 2; }
 		virtual Position GetPositions() override;
 		virtual int GetShaderType() override;
 		virtual int GetId()override { return id; }

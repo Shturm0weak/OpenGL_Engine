@@ -44,8 +44,8 @@ void Collision::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,
 {
 	this->scale = scale;
 	this->view = view;
-	if (scaleXview != view * scale) {
-		this->scaleXview = view * scale;
+	if (scaleXview != view * this->scale) {
+		this->scaleXview = view * this->scale;
 		RealVerPos();
 	}	
 	this->pos = pos;
@@ -61,7 +61,7 @@ void Collision::OnRunning(OrthographicCamera& camera)
 {
 		this->shader->Bind();
 		//this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
-		this->scaleXview = scale * view;
+		//this->scaleXview = scale * view;
 		this->MVP = camera.GetProjectionMatrix() * pos * scaleXview;
 		//camera.RecalculateViewMatrix();
 		this->shader->UploadUnifromMat4("u_ViewProjection", camera.GetViewProjectionMatrix());

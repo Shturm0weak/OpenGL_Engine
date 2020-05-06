@@ -47,12 +47,9 @@ void GameObject::operator=(GameObject go) {
 	tr->Translate(go.GetPositions().x, go.GetPositions().y);
 	tr->Scale(go.scaleValues[0], go.scaleValues[1]);
 	this->SetRenderType((RenderType)go.GetRenderType());
-	if (go.shadertype == 1)
-		this->SetColor(glm::vec4(go.color[0], go.color[1], go.color[2], go.color[3]));
-	else if (go.shadertype == 0) {
-		this->SetColor(glm::vec4(go.color[0], go.color[1], go.color[2], go.color[3]));
-		this->SetTexture(go.GetPathToTexture()->c_str());
-	}
+	this->SetColor(glm::vec4(go.color[0], go.color[1], go.color[2], go.color[3]));
+	this->SetTexture(go.texture);
+	this->SetUVs(go.GetUVs());
 	if (go.GetCollisionReference() != nullptr) {
 		Collision* col = this->GetComponentManager()->AddComponent<Collision>();
 		Collision* gocol = (Collision*)go.GetCollisionReference();
@@ -84,7 +81,6 @@ void GameObject::OnRunning(OrthographicCamera& camera) {
 
 
 void GameObject::SetTexture(const std::string& path) {
-	delete(texture);
 	texture = nullptr;
 	*pathToTexture = path;
 	texture = new Texture(path);
@@ -199,5 +195,75 @@ int GameObject::GetRenderType() { return rendertype; }
 int GameObject::GetShaderType() { return shadertype; }
 
 float* GameObject::GetScale() {	return scaleValues;}
+
+void Doom::GameObject::ReverseUVs()
+{
+	float v1 = mesh2D[2];
+	float v2 = mesh2D[3];
+	float v3 = mesh2D[6];
+	float v4 = mesh2D[7];
+	float v5 = mesh2D[10];
+	float v6 = mesh2D[11];
+	float v7 = mesh2D[14];
+	float v8 = mesh2D[15];
+	mesh2D[2] = v3;
+	mesh2D[3] = v4;
+	mesh2D[6] = v1;
+	mesh2D[7] = v2;
+	mesh2D[10] = v7;
+	mesh2D[11] = v8;
+	mesh2D[14] = v5;
+	mesh2D[15] = v6;
+}
+
+void Doom::GameObject::ReversedUvs()
+{
+	mesh2D[2] = 1.f;
+	mesh2D[3] = 0.f;
+	mesh2D[6] = 0.f;
+	mesh2D[7] = 0.f;
+	mesh2D[10] = 0.f;
+	mesh2D[11] = 1.f;
+	mesh2D[14] = 1.f;
+	mesh2D[15] = 1.f;
+}
+
+void Doom::GameObject::OriginalUvs()
+{
+	mesh2D[2] = 0.f;
+	mesh2D[3] = 0.f;
+	mesh2D[6] = 1.f;
+	mesh2D[7] = 0.f;
+	mesh2D[10] = 1.f;
+	mesh2D[11] = 1.f;
+	mesh2D[14] = 0.f;
+	mesh2D[15] = 1.f;
+}
+
+void Doom::GameObject::SetUVs(float* uvs)
+{
+	mesh2D[2] = uvs[0];
+	mesh2D[3] = uvs[1];
+	mesh2D[6] = uvs[2];
+	mesh2D[7] = uvs[3];
+	mesh2D[10] = uvs[4];
+	mesh2D[11] = uvs[5];
+	mesh2D[14] = uvs[6];
+	mesh2D[15] = uvs[7];
+}
+
+float * Doom::GameObject::GetUVs()
+{
+	float uvs[8];
+	uvs[0] = mesh2D[2];
+	uvs[1] = mesh2D[3];
+	uvs[2] = mesh2D[6];
+	uvs[3] = mesh2D[7];
+	uvs[4] = mesh2D[10];
+	uvs[5] = mesh2D[11];
+	uvs[6] = mesh2D[14];
+	uvs[7] = mesh2D[15];
+	return uvs;
+}
 
 float GameObject::GetAngle() { return component_manager->GetComponent<Transform>()->angle; }

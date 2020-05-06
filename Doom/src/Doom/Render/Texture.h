@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <vector>
 
 namespace Doom {
 
@@ -18,6 +19,7 @@ namespace Doom {
 		~Texture();
 		void GenTexture();
 		static int bindedAmount;
+		static Texture* WhiteTexture;
 		static std::vector<Texture*> texturesArray;
 		static double VRAMused;
 		void Bind(unsigned int slot = 0) const;
@@ -25,6 +27,7 @@ namespace Doom {
 
 		inline int GetWidth() const { return m_width; }
 		inline int GetHeight() const { return m_height; }
+		inline std::string GetFilePath() { return m_FilePath; }
 
 		friend class Editor;
 	};

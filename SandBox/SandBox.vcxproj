@@ -110,9 +110,13 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SandBox.cpp" />
+    <ClCompile Include="src\2Dshootergame\PlayerCharacter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="src\2Dshootergame\PlayerCharacter.h" />
+    <ClInclude Include="src\2Dshootergame\ShooterGame.h" />
+    <ClInclude Include="src\GameRPG\GameRPG.h" />
     <ClInclude Include="src\game\DrawLines.h" />
     <ClInclude Include="src\game\Game.h" />
     <ClInclude Include="src\game\Bomb.h" />
@@ -120,6 +124,7 @@
     <ClInclude Include="src\game\HP.h" />
     <ClInclude Include="src\game\Player.h" />
     <ClInclude Include="src\game\RayCastTest.h" />
+    <ClInclude Include="src\game\StressTest.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +140,34 @@
   <ItemGroup>
     <Text Include="src\font.txt" />
     <Text Include="src\saved.txt" />
+    <Text Include="src\savedRayCastTest.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\arial.png" />
+    <Image Include="src\GameRPG\Textures\RPGpack_sheet_2X.png" />
+    <Image Include="src\Images\arial.png" />
+    <Image Include="src\Images\background.jpg" />
+    <Image Include="src\Images\bird.png" />
+    <Image Include="src\Images\bomb.png" />
+    <Image Include="src\Images\car.png" />
+    <Image Include="src\Images\Circle.png" />
+    <Image Include="src\Images\coin.png" />
+    <Image Include="src\Images\CrossLines.png" />
+    <Image Include="src\Images\dirt.jpg" />
+    <Image Include="src\Images\download.png" />
+    <Image Include="src\Images\Heart.png" />
+    <Image Include="src\Images\MuzzleFlash.png" />
+    <Image Include="src\Images\one.png" />
+    <Image Include="src\Images\reddot.png" />
+    <Image Include="src\Images\tube.png" />
+    <Image Include="src\Images\watermellon.png" />
+    <Image Include="src\Images\WhiteCircle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="src\Sounds\Coin.wav" />
+    <Media Include="src\Sounds\Grenade.wav" />
+    <Media Include="src\Sounds\GunFire.wav" />
+    <Media Include="src\Sounds\Place.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

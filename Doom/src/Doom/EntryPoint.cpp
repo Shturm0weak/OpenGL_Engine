@@ -7,35 +7,12 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Window::Init("Doom Engine", 800, 600, false);
 	MainThread::Init();
 	ThreadPool::Init();
-	Editor::Instance()->CheckTexturesFolder("src/Images");
 	Batch::Init();
 	this->app = app;
 	EventSystem::Instance()->SendEvent("OnStart", nullptr);
 }
 void EntryPoint::Run()
 {
-	/*Texture* texture1 = new Texture("src/Images/coin.png");
-	Texture* texture2 = new Texture("src/Images/bomb.png");
-	GameObject** gameobj = new GameObject*[200];
-	float x = -10;
-	float offset = 2;
-	float y = -20;
-	for (unsigned int i = 0; i < 200; i++)
-	{
-		gameobj[i] = new GameObject[200];
-		for (unsigned int j = 0; j < 200; j++)
-		{
-			gameobj[i][j].GetComponentManager()->GetComponent<Transform>()->Translate(offset + x,y);
-			if(i % 2 == 0 && j % 2 == 0)
-				gameobj[i][j].SetTexture(texture1);
-			else
-				gameobj[i][j].SetTexture(texture2);
-			x += offset;
-		}
-		x = -10;
-		y += 2;
-	}
-	Window::GetCamera().Zoom(5);*/
 	bool isEditorEnable = false;
 	double editortimer = 1;
 	app->OnStart();
@@ -48,6 +25,7 @@ void EntryPoint::Run()
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
 		DeltaTime::calculateDeltaTime();
 		Window::GetCamera().WindowResize();
 
@@ -82,11 +60,11 @@ void EntryPoint::Run()
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}
-	//delete[] gameobj;
+	app->OnClose();
 }
 
 EntryPoint::~EntryPoint() {
-	app->OnClose();
+	
 	delete app;
 	EventSystem::Instance()->Shutdown();
 	ThreadPool::Instance()->shutdown();

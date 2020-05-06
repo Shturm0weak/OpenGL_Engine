@@ -28,6 +28,7 @@ DOOM_API int Renderer2DLayer::col_id = 0;
 DOOM_API std::vector<std::string> Editor::texturesPath;
 DOOM_API std::vector<Texture*> Editor::texture;
 DOOM_API int Texture::bindedAmount = 0;
+DOOM_API Texture* Texture::WhiteTexture = new Texture();
 DOOM_API double Texture::VRAMused = 0;
 DOOM_API std::vector<Texture*> Texture::texturesArray;
 DOOM_API std::map<unsigned int, unsigned int> Texture::Texturesused;
@@ -65,3 +66,5 @@ DOOM_API std::vector<Line*> Line::lines;
 DOOM_API float Line::width = 1.0f;
 
 DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
+
+DOOM_API std::vector<TextureAtlas*> TextureAtlas::textureAtlases;

@@ -15,6 +15,7 @@ Texture::Texture(const std::string& path, int flip)
 			m_BPP = texturesArray[i]->m_BPP;
 			m_height = texturesArray[i]->m_height;
 			m_width = texturesArray[i]->m_width;
+			m_FilePath = texturesArray[i]->m_FilePath;
 			auto it = Texturesused.find(m_RendererID);
 			if (it != Texturesused.end())
 				(*it).second++;
@@ -50,6 +51,7 @@ Texture::Texture(const std::string& path, int flip)
 
 Texture::Texture()
 {
+	m_FilePath = "None";
 	glGenTextures(1, &m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
