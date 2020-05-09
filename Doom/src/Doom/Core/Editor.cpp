@@ -186,11 +186,17 @@ void Editor::EditorUpdate()
 				ImGui::SliderFloat("Scale X", &(go->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
 				ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
 				ImGui::InputFloat2("Scale", &(go->scaleValues[0], go->scaleValues[0]));
+				tr->Scale(go->scaleValues[0], go->scaleValues[1]);
+				
+				ImGui::SliderAngle("Rotate", &tr->angle);
+				ImGui::InputInt3("Rotate axes",axes);
+				tr->RotateOnce(tr->angle, glm::vec3(axes[0], axes[1], axes[2]));
+			}
+			if (ImGui::CollapsingHeader("Render")) {
+				//if (go->GetComponentManager()->GetComponent<Animator>() == nullptr || go->GetComponentManager()->GetComponent<Animator>()->isPlayingAnim == false)
 				color = go->GetColor();
 				ImGui::ColorEdit4("Color", color);
-				tr->Scale(go->scaleValues[0], go->scaleValues[1]);
-				if(go->GetComponentManager()->GetComponent<Animator>() == nullptr || go->GetComponentManager()->GetComponent<Animator>()->isPlayingAnim == false)
-					go->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
+				go->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
 				delete[] color;
 				int counterImagesButtons = 0;
 				ImGui::Text("Textures");
@@ -202,16 +208,20 @@ void Editor::EditorUpdate()
 						ImGui::NewLine();
 						counterImagesButtons = 0;
 					}
+
 					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
 						if (go != nullptr) {
+
 							go->SetTexture(texture[i]);
 						}
+
 					}
+
 					ImGui::SameLine();
 					counterImagesButtons++;
 				}
 
-				ImGui::NewLine();
+				/*ImGui::NewLine();
 				ImGui::Text("Texture Atlases");
 				int counterAtlasesButtons = 0;
 				for (unsigned int i = 0; i < TextureAtlas::textureAtlases.size(); i++)
@@ -231,15 +241,15 @@ void Editor::EditorUpdate()
 					ImGui::SameLine();
 					counterAtlasesButtons++;
 				}
-
+				*/
 				ImGui::NewLine();
-				ImGui::InputFloat2("UVs Offset",uvsOffset);
-				
+				ImGui::InputFloat2("UVs Offset", uvsOffset);
+
 				if (ImGui::Button("Use these UVs")) {
 					if (go != nullptr && go->textureAtlas != nullptr)
-						go->SetUVs(go->textureAtlas->GetSpriteUVs(uvsOffset[0],uvsOffset[1]));
+						go->SetUVs(go->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
 				}
-				
+
 				if (ImGui::Button("No texture")) {
 					if (go != nullptr)
 						go->SetTexture(nullptr);
@@ -253,9 +263,47 @@ void Editor::EditorUpdate()
 					texture.clear();
 					CheckTexturesFolder("src/Images");
 				}
-				ImGui::SliderAngle("Rotate", &tr->angle);
-				ImGui::InputInt3("Rotate axes",axes);
-				tr->RotateOnce(tr->angle, glm::vec3(axes[0], axes[1], axes[2]));
+				if (TextureAtlas::textureAtlases.size() > 0) {
+					ImGui::ListBox("Texture atlases", &selectedAtlas, TextureAtlas::GetTextureAtlases(), TextureAtlas::textureAtlases.size());
+				}
+				if (selectedAtlas != -1) {
+					ImGui::Begin("Texture Atlas", &tool_active, ImGuiWindowFlags_MenuBar);
+
+					Texture* textureOfAtlas = TextureAtlas::textureAtlases[selectedAtlas]->GetTexture();
+					int frame_padding = -1;
+					unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteWidth());
+					unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteHeight());
+					for (unsigned int i = 0; i < amountOfSpritesY; i++)
+					{
+						for (unsigned int j = 0; j < amountOfSpritesX; j++)
+						{
+							float* uvs = TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteUVs(j, amountOfSpritesY - i);
+							ImGui::PushID((i * amountOfSpritesX) + j);
+							if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
+							{
+								//std::cout << "Sprite: " << j << "	" << amountOfSpritesY - i << "\n";
+								if (go != nullptr) {
+									go->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
+									go->SetTexture(textureOfAtlas);
+									go->SetUVs(uvs);
+								}
+							}
+							ImGui::PopID();
+							ImGui::SameLine();
+						}
+						ImGui::NewLine();
+					}
+					ImGui::NewLine();
+					ImGui::InputFloat2("Sprite size", spriteSize);
+					if (ImGui::Button("Apply")) {
+						TextureAtlas::textureAtlases[selectedAtlas]->SetSpriteSize(spriteSize[0], spriteSize[1]);
+					}
+					ImGui::NewLine();
+					if (ImGui::Button("Close")) {
+						selectedAtlas = -1;
+					}
+					ImGui::End();
+				}
 			}
 			if (col != nullptr) {
 				if (ImGui::CollapsingHeader("Collision")) {
@@ -310,6 +358,9 @@ void Editor::EditorUpdate()
 					ImGui::Checkbox("Play animation", &anim->isPlayingAnim);
 				}
 			}
+
+			
+
 			ImGui::Checkbox("Visible collisions", &Doom::Collision::IsVisible);
 			ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 1000.f);
 			Window::GetCamera().Zoom(abs(Window::GetCamera().GetZoomLevel()));

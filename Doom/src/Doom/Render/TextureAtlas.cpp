@@ -29,3 +29,14 @@ float * Doom::TextureAtlas::GetSpriteUVs(float x, float y)
 	UVs[7] = ((y + 1) * spriteHeight) / m_texture->GetHeight();
 	return UVs;
 }
+
+const char** Doom::TextureAtlas::GetTextureAtlases() {
+	if (items != nullptr)
+		delete[] items;
+	items = new const char*[textureAtlases.size()];
+	for (unsigned int i = 0; i < textureAtlases.size(); i++)
+	{
+		items[i] = textureAtlases[i]->m_texture->GetFilePath().c_str();
+	}
+	return items;
+}

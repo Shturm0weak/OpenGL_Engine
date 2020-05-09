@@ -10,9 +10,11 @@ namespace Doom {
 
 	class DOOM_API Editor {
 	private:
+		float spriteSize[2] = {128,128};
 		float campos[2] = { 0,0 };
 		bool IsActiveEditor = false;
 		bool tool_active = true;
+		int selectedAtlas = -1;
 		int selectedanimation = 0;
 		int selectedchild = -1;
 		int selected = 0;

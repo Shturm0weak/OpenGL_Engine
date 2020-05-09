@@ -68,3 +68,4 @@ DOOM_API float Line::width = 1.0f;
 DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
 
 DOOM_API std::vector<TextureAtlas*> TextureAtlas::textureAtlases;
+DOOM_API const char** TextureAtlas::items;

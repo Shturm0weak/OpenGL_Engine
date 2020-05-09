@@ -8,7 +8,7 @@ namespace Doom {
 		Texture* m_texture = nullptr;
 		
 		float UVs[8];
-
+		static const char** items;
 	public:
 		float spriteWidth; float spriteHeight;
 		static std::vector<TextureAtlas*> textureAtlases;
@@ -20,6 +20,14 @@ namespace Doom {
 		float* GetSpriteUVs(float x, float y);
 
 		inline Texture* GetTexture() { return m_texture; }
+
+		inline unsigned int GetSpriteHeight() { return spriteHeight; }
+
+		inline unsigned int GetSpriteWidth() { return spriteWidth; }
+
+		static const char** GetTextureAtlases();
+
+		void SetSpriteSize(float spriteWidth, float spriteHeight) { this->spriteHeight = spriteHeight; this->spriteWidth = spriteWidth; }
 
 		friend class Renderer;
 	};
