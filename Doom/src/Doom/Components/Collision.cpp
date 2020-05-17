@@ -19,10 +19,23 @@ Collision::Collision(GameObject* owner,double x, double y){
 	}
 	this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
 	RealVerPos();
-	p.push_back(glm::vec2(ScaledVerPos[0] + position.x, ScaledVerPos[1] + position.y));
-	p.push_back(glm::vec2(ScaledVerPos[4] + position.x, ScaledVerPos[5] + position.y));
-	p.push_back(glm::vec2(ScaledVerPos[8] + position.x, ScaledVerPos[9] + position.y));
-	p.push_back(glm::vec2(ScaledVerPos[12] + position.x, ScaledVerPos[13] + position.y));
+	float theta = (-owner->GetAngle() * (2 * 3.14159f) / 360.0f);
+	/*glm::vec2 p1 = glm::vec2(cos(theta) * (ScaledVerPos[0] + position.x)- sin(theta) * (ScaledVerPos[1] + position.y),
+		sin(theta) * (ScaledVerPos[0] + position.x) + cos(theta) * (ScaledVerPos[1] + position.y));
+	glm::vec2 p2 = glm::vec2(cos(theta) * (ScaledVerPos[4] + position.x) - sin(theta) * (ScaledVerPos[5] + position.y),
+		sin(theta) * (ScaledVerPos[4] + position.x) + cos(theta) * (ScaledVerPos[5] + position.y));
+	glm::vec2 p3 = glm::vec2(cos(theta) * (ScaledVerPos[8] + position.x) - sin(theta) * (ScaledVerPos[9] + position.y),
+		sin(theta) * (ScaledVerPos[8] + position.x) + cos(theta) * (ScaledVerPos[9] + position.y));
+	glm::vec2 p4 = glm::vec2(cos(theta) * (ScaledVerPos[12] + position.x) - sin(theta) * (ScaledVerPos[13] + position.y),
+		sin(theta) * (ScaledVerPos[12] + position.x) + cos(theta) * (ScaledVerPos[13] + position.y));*/
+	glm::vec2 p1 = glm::vec2(ScaledVerPos[0] + position.x, ScaledVerPos[1] + position.y);
+	glm::vec2 p2 = glm::vec2(ScaledVerPos[4] + position.x, ScaledVerPos[5] + position.y);
+	glm::vec2 p3 = glm::vec2(ScaledVerPos[8] + position.x, ScaledVerPos[9] + position.y);
+	glm::vec2 p4 = glm::vec2(ScaledVerPos[12] + position.x, ScaledVerPos[13] + position.y);
+	p.push_back(p1);
+	p.push_back(p2);
+	p.push_back(p3);
+	p.push_back(p4);
 	glGenVertexArrays(1, &this->vao);
 	glBindVertexArray(this->vao);
 	this->layout->Push<float>(2);
@@ -206,50 +219,34 @@ bool Collision::IsCollidedSAT() {
 					if (col == nullptr) {
 						return false;
 					}
-
-					for (unsigned int a = 0; a < p.size(); a++)
+					for (int p = 0; p < this->p.size(); p++)
 					{
-						int b = (a + 1) % p.size();
-						glm::vec2 axisProj = { -(p[b].x - p[a].x), p[b].y - p[a].y };
-						float d = sqrtf(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
-						axisProj = { axisProj.y / d, axisProj.x / d };
+						glm::vec2 line_r1s = glm::vec2(position.x,position.y);
+						glm::vec2 line_r1e = this->p[p];
 
-						float min_r1 = INFINITY, max_r1 = -INFINITY;
-
-						for (unsigned int p = 0; p < this->p.size(); p++)
+						// ...against edges of the other
+						for (int q = 0; q < col->p.size(); q++)
 						{
-							float q = (this->p[p].x * axisProj.x + this->p[p].y * axisProj.y);
-							min_r1 = std::fmin(min_r1, q);
-							max_r1 = std::fmax(max_r1, q);
-						}
+							glm::vec2 line_r2s = col->p[q];
+							glm::vec2 line_r2e = col->p[(q + 1) % col->p.size()];
 
-						float min_r2 = INFINITY, max_r2 = -INFINITY;
-						for (unsigned int p = 0; p < col->p.size(); p++)
-						{
-							float q = (col->p[p].x * axisProj.x + col->p[p].y * axisProj.y);
-							min_r2 = std::fmin(min_r2, q);
-							max_r2 = std::fmax(max_r2, q);
-						}
+							// Standard "off the shelf" line segment intersection
+							float h = (line_r2e.x - line_r2s.x) * (line_r1s.y - line_r1e.y) - (line_r1s.x - line_r1e.x) * (line_r2e.y - line_r2s.y);
+							float t1 = ((line_r2s.y - line_r2e.y) * (line_r1s.x - line_r2s.x) + (line_r2e.x - line_r2s.x) * (line_r1s.y - line_r2s.y)) / h;
+							float t2 = ((line_r1s.y - line_r1e.y) * (line_r1s.x - line_r2s.x) + (line_r1e.x - line_r1s.x) * (line_r1s.y - line_r2s.y)) / h;
 
-						if (!(max_r2 >= min_r1 && max_r1 >= min_r2)) {
-							check++;	
-							collidedObject = nullptr;
+							if (t1 >= 0.0f && t1 < 1.0f && t2 >= 0.0f && t2 < 1.0f)
+							{
+								return true;
+							}
 						}
-
 					}
-					if (check > 0) {
-						check = 0;
-						continue;
-					}
-					collidedObject = col;
-					return true;
-					
+				}
+				
 				}
 			}
-			
+		return false;
 		}
-
-	}
 }
 
 void Collision::IsCollidedDIAGS()

@@ -8,14 +8,14 @@ class StressTest : public Application {
 	void OnStart() {
 		texture1 = new Texture("src/Images/coin.png");
 		texture2 = new Texture("src/Images/bomb.png");
-		gameobj = new GameObject*[200];
+		gameobj = new GameObject*[316];
 		float x = -10;
 		float offset = 2;
 		float y = -20;
-		for (unsigned int i = 0; i < 200; i++)
+		for (unsigned int i = 0; i < 316; i++)
 		{
-			gameobj[i] = new GameObject[200];
-			for (unsigned int j = 0; j < 200; j++)
+			gameobj[i] = new GameObject[316];
+			for (unsigned int j = 0; j < 316; j++)
 			{
 				gameobj[i][j].GetComponentManager()->GetComponent<Transform>()->Translate(offset + x, y);
 				if (i % 2 == 0 && j % 2 == 0)

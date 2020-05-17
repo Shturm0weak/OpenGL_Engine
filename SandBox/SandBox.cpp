@@ -9,6 +9,7 @@
 #include "src/game/StressTest.h"
 #include "src/GameRPG/GameRPG.h"
 
+
 int main() {
 	GamePRG* app = new GamePRG();
 	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);

@@ -96,6 +96,7 @@ namespace Doom {
 		friend class Doom::Batch;
 		friend class Doom::Renderer2DLayer;
 		friend class Doom::Renderer;
+		friend class Doom::Ray;
 
 	public:
 		TextureAtlas* textureAtlas = nullptr;

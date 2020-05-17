@@ -89,6 +89,7 @@ void GameObject::SetTexture(const std::string& path) {
 void GameObject::SetTexture(Texture* texture) {
 	this->texture = nullptr;
 	this->texture = texture;
+	*pathToTexture = texture->GetFilePath();
 }
 
 void GameObject::InitShader() {

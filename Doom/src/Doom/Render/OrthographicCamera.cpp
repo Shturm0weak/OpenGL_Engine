@@ -13,6 +13,13 @@ OrthographicCamera::OrthographicCamera(float left,float right,float top,float bo
 	aspectration[2] = top;
 	aspectration[3] = bottom;
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	/*float angle = 0;
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		rayArr.push_back(new Ray(glm::vec2(0, 0), glm::vec2(0, 1), 1000));
+		rayArr[i]->Rotate(angle);
+		angle += 60;
+	}*/
 }
 
 void OrthographicCamera::RecalculateViewMatrix() {
@@ -82,5 +89,21 @@ void OrthographicCamera::CameraMovement() {
 	Increase();
 	SetOnStart();
 }
+
+//void * OrthographicCamera::SelectObject()
+//{
+	/*Hit hit[6];
+	glm::vec2 pos = glm::vec2(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		rayArr[i]->RayCastObjects(hit[i], pos,rayArr[i]->direction);
+	}
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		if (hit[0].Object != hit[i].Object)
+			return nullptr;
+	}
+	return hit[0].Object;*/
+//}
 
 

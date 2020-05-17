@@ -54,6 +54,7 @@
     <ClInclude Include="src\Doom\Core\Ray.h" />
     <ClInclude Include="src\Doom\Core\Sound.h" />
     <ClInclude Include="src\Doom\Render\TextureAtlas.h" />
+    <ClInclude Include="src\Doom\Render\TileMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="src\Doom\Core\Ray.cpp" />
     <ClCompile Include="src\Doom\Core\Sound.cpp" />
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
+    <ClCompile Include="src\Doom\Render\TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

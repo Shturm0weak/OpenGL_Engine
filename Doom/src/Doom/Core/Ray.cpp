@@ -3,6 +3,65 @@
 
 using namespace Doom;
 
+//bool Doom::Ray::RayCastObjects(Hit & hit, glm::vec2 start, glm::vec2 direction)
+//{
+//	this->start = start;
+//	this->direction = direction;
+//	end = (this->direction * length) + start;
+//	std::vector<glm::vec2> corners;
+//	std::multimap<GameObject*, glm::vec2*> points;
+//	unsigned int size = Renderer2DLayer::objects2d.size();
+//
+//	bool ignoreFlag = false;
+//
+//	for (unsigned int i = 0; i < size; i++)
+//	{
+//		GameObject* go = (GameObject*)&Renderer2DLayer::objects2d[i].get();
+//
+//		if (go->Enable != false) {
+//			corners.clear();
+//			corners.push_back(glm::vec2(go->mesh2D[0] + go->position.x, go->mesh2D[1] + go->position.y));
+//			corners.push_back(glm::vec2(go->mesh2D[4] + go->position.x, go->mesh2D[5] + go->position.y));
+//			corners.push_back(glm::vec2(go->mesh2D[8] + go->position.x, go->mesh2D[9] + go->position.y));
+//			corners.push_back(glm::vec2(go->mesh2D[12] + go->position.x,go->mesh2D[13] + go->position.y));
+//
+//			glm::vec2* result = nullptr;
+//			result = LineIntersect(corners[3] + glm::vec2(go->position.x, go->position.y), corners[0] + glm::vec2(go->position.x, go->position.y), start, end);
+//			if (result != nullptr)
+//				points.insert(std::make_pair(go, result));
+//			result = LineIntersect(corners[0] + glm::vec2(go->position.x, go->position.y), corners[1] + glm::vec2(go->position.x, go->position.y), start, end);
+//			if (result != nullptr)
+//				points.insert(std::make_pair(go, result));
+//			result = LineIntersect(corners[1] + glm::vec2(go->position.x, go->position.y), corners[2] + glm::vec2(go->position.x, go->position.y), start, end);
+//			if (result != nullptr)
+//				points.insert(std::make_pair(go, result));
+//			result = LineIntersect(corners[2] + glm::vec2(go->position.x, go->position.y), corners[3] + glm::vec2(go->position.x, go->position.y), start, end);
+//			if (result != nullptr)
+//				points.insert(std::make_pair(go, result));
+//		}
+//	}
+//	int _size = points.size();
+//	if (_size > 0) {
+//		float distance = 0;
+//		float min = 10000000;
+//		for (auto itr = points.begin(); itr != points.end(); itr++)
+//		{
+//			distance = Distance(*itr->second, start);
+//
+//			if (distance <= min) {
+//				min = distance;
+//				hit.point = *itr->second;
+//				//hit.GameObject = itr->first;
+//			}
+//			delete itr->second;
+//		}
+//		points.clear();
+//		return true;
+//	}
+//	else
+//		return false;
+//}
+
 Ray::Ray(glm::vec2 start, glm::vec2 direction, float length)
 	: start(start),length(length)
 {

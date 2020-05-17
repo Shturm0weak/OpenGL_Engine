@@ -150,6 +150,7 @@
     <ClInclude Include="src\Doom\Render\Text.h" />
     <ClInclude Include="src\Doom\Render\Texture.h" />
     <ClInclude Include="src\Doom\Render\TextureAtlas.h" />
+    <ClInclude Include="src\Doom\Render\TileMap.h" />
     <ClInclude Include="src\Doom\Render\VertexArray.h" />
     <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
     <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="src\Doom\Render\Text.cpp" />
     <ClCompile Include="src\Doom\Render\Texture.cpp" />
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
+    <ClCompile Include="src\Doom\Render\TileMap.cpp" />
     <ClCompile Include="src\Doom\Render\VertexArray.cpp" />
     <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
   </ItemGroup>
