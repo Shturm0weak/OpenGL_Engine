@@ -8,6 +8,15 @@ public:
 	Transform* tr = nullptr;
 	Animator* anim = nullptr;
 
+	std::mutex mtx;
+	int count = 0;
+	Ray* checkGround = nullptr;
+	Line* test1 = nullptr;
+	Line* test2 = nullptr;
+	Line* test3 = nullptr;
+
+	float x = 0;
+
 	float speed = 5.f;
 	float Hp = 100.f;
 	float jump = 0.f;

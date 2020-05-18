@@ -21,15 +21,7 @@ class DrawLines : public Application {
 		if (isEditorEnable)
 			veccolor = Editor::Instance()->ColorPickUp(color);
 
-		if (timer > 0.001f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
-
-			if (isEditorEnable)
-				veccolor = Editor::Instance()->ColorPickUp(color);
-
-			if (Editor::Instance()->isItemActive) {
-				return;
-			}
-
+		if (timer > 0.19f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			glm::vec2 pos;
 			if (Input::IsKeyPressed(Keycode::KEY_LEFT_CONTROL) && dotsCircles.size() == 2) {
 				pos = glm::vec2(dotsCircles[1]->GetPositions().x, dotsCircles[1]->GetPositions().y);

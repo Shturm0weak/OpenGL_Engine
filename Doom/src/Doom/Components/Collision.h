@@ -48,6 +48,8 @@ namespace Doom {
 		IndexBuffer* ib = new IndexBuffer(indeces, 6);
 		Shader* shader = nullptr;
 
+		bool ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2);
+		bool ShapeOverlap_SAT(Collision &r1, Collision &r2);
 		virtual void OnRunning(OrthographicCamera& camera) override;
 		virtual bool IsCollisionEnabled() override { return Enable; }
 		void UpdateCollision(double x, double y, glm::mat4 pos, glm::mat4 view, glm::mat4 scale);
@@ -97,7 +99,7 @@ namespace Doom {
 		void Translate(float x, float y);
 		bool Static = false;
 		void SetOffset(float x, float y);
-		bool IsCollidedSAT();
+		void IsCollidedSAT();
 		void IsCollidedDIAGS();
 	};
 

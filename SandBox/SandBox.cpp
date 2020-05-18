@@ -11,7 +11,7 @@
 
 
 int main() {
-	GamePRG* app = new GamePRG();
+	ShooterGame* app = new ShooterGame();
 	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);
 	Editor::Instance()->CheckTexturesFolder("src/GameRPG/Textures");
 	entrypoint->Run();

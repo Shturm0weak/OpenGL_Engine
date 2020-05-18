@@ -27,7 +27,11 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	muzzleFlashObj->SetObjectType("MuzzleFlash");
 	rayfire = new Ray(glm::vec2(position.x,position.y),glm::vec2(1,0),15);
 	line = new Line(glm::vec2(0,0), glm::vec2(0, 0),15);
+	test1 = new Line(glm::vec2(0, 0), glm::vec2(0, 0), 15);
+	test2 = new Line(glm::vec2(0, 0), glm::vec2(0, 0), 15);
+	test3 = new Line(glm::vec2(0, 0), glm::vec2(0, 0), 15);
 	line->width = 2.f;
+	checkGround = new Ray(glm::vec2(position.x, position.y), glm::vec2(0, -1), 100);
 }
 
 PlayerCharacter::~PlayerCharacter()
@@ -36,6 +40,7 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::OnStart()
 {
+	checkGround->ignoreMask.push_back("Player");
 }
 
 void PlayerCharacter::OnUpdate()
@@ -43,19 +48,66 @@ void PlayerCharacter::OnUpdate()
 	fireRateTimer += DeltaTime::deltatime;
 	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Translate(position.x + flashOffset.x, position.y + flashOffset.y);
 	PlayerMovement();
-	col->IsCollidedDIAGS();
-	if (col->isCollided) {
-		EventSystem::Instance()->SendEvent("OnCollision", this, col->collidedObject);
-	}
-	tr->Move(0, -5, 0);
-	col->IsCollidedDIAGS();
+	//ThreadPool::Instance()->enqueue([=] {
+	//	mtx.lock();
+		tr->Move(0, -9.8, 0);
+		col->IsCollidedSAT();
+	//	mtx.unlock();
+	//});
+		Hit hit;
+		count = 0;
+		glm::vec2 resultV;
+		if (checkGround->Raycast(hit, 150, glm::vec2(this->WorldVertexPositions[0] + position.x,position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+			if (hit.Object->GetTag() == "Land") {
+ 				x = ((abs(this->WorldVertexPositions[1] + position.y)) - abs(hit.point.y));
+				test1->SetStartPoint(checkGround->start.x, checkGround->start.y);
+				test1->SetEndPoint(hit.point.x, hit.point.y);
+				if (x < 0.05 && x > -0.15) {
+					isLanded = true;
+					count++;
+					
+				}
+				
+			}
+		}
+
+		
+		if (checkGround->Raycast(hit, 150, glm::vec2(this->WorldVertexPositions[2] + position.x, position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+			if (hit.Object->GetTag() == "Land") {
+
+				x = ((abs(this->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
+				test2->SetStartPoint(checkGround->start.x, checkGround->start.y);
+				test2->SetEndPoint(hit.point.x, hit.point.y);
+				if (x < 0.05 && x > -0.15) {
+					isLanded = true;
+					count++;
+					
+				}
+				
+			}
+		}
+
+		if (checkGround->Raycast(hit, 150, glm::vec2(position.x, position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+			if (hit.Object->GetTag() == "Land") {
+				x = ((abs(this->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
+				test3->SetStartPoint(checkGround->start.x, checkGround->start.y);
+				test3->SetEndPoint(hit.point.x, hit.point.y);
+				if (x < 0.05 && x > -0.15) {
+					isLanded = true;
+					count++;
+					
+				}
+			
+			}
+		}
+
+		if(count <= 0)
+			isLanded = false;
+
 }
 
 void PlayerCharacter::OnCollision(void* _col) {
-	Collision* tempcol = static_cast<Collision*>(_col);
-	if (tempcol->GetTag() == "Land") {
-		isLanded = true;
-	}
+
 }
 
 void PlayerCharacter::PlayerMovement()
@@ -98,13 +150,13 @@ void PlayerCharacter::PlayerMovement()
 		turnSide = 1;
 	}
 	if (Input::IsKeyPressed(Keycode::SPACE) && isLanded) {
+		jump = 30;
 		isLanded = false;
-		jump = 20;
 	}
 	if (!isLanded) {
 		animIndex = 2;
 		if(jump > 0){
-			jump -= 20 * DeltaTime::deltatime;
+			jump -= 30 * DeltaTime::deltatime;
 		}
 	}
 	auto iter = anim->animations.find(anim->GetAnimations()[animIndex]);

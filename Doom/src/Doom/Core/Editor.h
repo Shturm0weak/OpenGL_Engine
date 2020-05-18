@@ -33,6 +33,7 @@ namespace Doom {
 		Editor& operator=(const Editor& rhs) { return *this; }
 		Editor() {}
 	public:
+		GameObject* selectedGO = nullptr;
 		bool isItemActive = false;
 		glm::vec4 ColorPickUp(float* c);
 		static Editor* Instance();

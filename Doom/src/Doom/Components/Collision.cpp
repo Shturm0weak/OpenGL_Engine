@@ -60,7 +60,7 @@ void Collision::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,
 	if (scaleXview != view * this->scale) {
 		this->scaleXview = view * this->scale;
 		RealVerPos();
-	}	
+	}
 	this->pos = pos;
 	this->position.x = x + offsetX;
 	this->position.y = y + offsetY;	
@@ -204,11 +204,10 @@ void Collision::SetOffset(float x, float y) {
 	}
 }*/
 
-bool Collision::IsCollidedSAT() {
+void Collision::IsCollidedSAT() {
 	isCollided = false;
-	int check = 0;
 	if (this == nullptr) {
-		return false;
+		return;
 	}
 	if (Enable == true) {
 		for (unsigned int i = 0; i < collision2d.size(); i++)
@@ -217,36 +216,29 @@ bool Collision::IsCollidedSAT() {
 				col = dynamic_cast<Collision*>(collision2d[i].get().GetCollisionReference());
 				if (this != col) {
 					if (col == nullptr) {
-						return false;
+						return;
 					}
-					for (int p = 0; p < this->p.size(); p++)
-					{
-						glm::vec2 line_r1s = glm::vec2(position.x,position.y);
-						glm::vec2 line_r1e = this->p[p];
-
-						// ...against edges of the other
-						for (int q = 0; q < col->p.size(); q++)
-						{
-							glm::vec2 line_r2s = col->p[q];
-							glm::vec2 line_r2e = col->p[(q + 1) % col->p.size()];
-
-							// Standard "off the shelf" line segment intersection
-							float h = (line_r2e.x - line_r2s.x) * (line_r1s.y - line_r1e.y) - (line_r1s.x - line_r1e.x) * (line_r2e.y - line_r2s.y);
-							float t1 = ((line_r2s.y - line_r2e.y) * (line_r1s.x - line_r2s.x) + (line_r2e.x - line_r2s.x) * (line_r1s.y - line_r2s.y)) / h;
-							float t2 = ((line_r1s.y - line_r1e.y) * (line_r1s.x - line_r2s.x) + (line_r1e.x - line_r1s.x) * (line_r1s.y - line_r2s.y)) / h;
-
-							if (t1 >= 0.0f && t1 < 1.0f && t2 >= 0.0f && t2 < 1.0f)
-							{
-								return true;
-							}
+					if (col->IsTrigger) {
+						if (ShapeOverlap_SAT(*this, *col)) {
+							isCollided = true;
+							collidedObject = col;
+							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::Instance(),"OnCollision", (Listener*)(owner), (void*)this->collidedObject);
+							std::function<void()>* f1 = new std::function<void()>(f2);
+							EventSystem::Instance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+							//EventSystem::Instance()->SendEvent("OnCollision", (Listener*)(owner), (void*)this->collidedObject);
+						}
+						else {
+							isCollided = false;
+							collidedObject = nullptr;
 						}
 					}
-				}
-				
+					else
+						ShapeOverlap_SAT_STATIC(*this, *col);
 				}
 			}
-		return false;
+
 		}
+	}
 }
 
 void Collision::IsCollidedDIAGS()
@@ -308,4 +300,135 @@ void Collision::IsCollidedDIAGS()
 		}
 		return;
 	}
+}
+
+bool Collision::ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2)
+{
+	Collision *poly1 = &r1;
+	Collision *poly2 = &r2;
+
+	float overlap = INFINITY;
+
+	for (int shape = 0; shape < 2; shape++)
+	{
+		if (shape == 1)
+		{
+			poly1 = &r2;
+			poly2 = &r1;
+		}
+
+		for (int a = 0; a < poly1->p.size(); a++)
+		{
+			int b = (a + 1) % poly1->p.size();
+			glm::vec2 axisProj = glm::vec2( -(poly1->p[b].y - poly1->p[a].y), poly1->p[b].x - poly1->p[a].x );
+
+			// Optional normalisation of projection axis enhances stability slightly
+			float d = sqrtf(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
+			axisProj = { axisProj.x / d, axisProj.y / d };
+
+			// Work out min and max 1D points for r1
+			float min_r1 = INFINITY, max_r1 = -INFINITY;
+			for (int p = 0; p < poly1->p.size(); p++)
+			{
+				float q = (poly1->p[p].x * axisProj.x + poly1->p[p].y * axisProj.y);
+				min_r1 = std::fmin(min_r1, q);
+				max_r1 = std::fmax(max_r1, q);
+			}
+
+			// Work out min and max 1D points for r2
+			float min_r2 = INFINITY, max_r2 = -INFINITY;
+			for (int p = 0; p < poly2->p.size(); p++)
+			{
+				float q = (poly2->p[p].x * axisProj.x + poly2->p[p].y * axisProj.y);
+				min_r2 = std::fmin(min_r2, q);
+				max_r2 = std::fmax(max_r2, q);
+			}
+
+			// Calculate actual overlap along projected axis, and store the minimum
+			overlap = std::fmin(std::fmin(max_r1, max_r2) - std::fmax(min_r1, min_r2), overlap);
+
+			if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
+				return false;
+		}
+	}
+
+	// If we got here, the objects have collided, we will displace r1
+	// by overlap along the vector between the two object centers
+	Transform* trans1 = r1.owner->component_manager->GetComponent<Transform>();
+	Transform* trans2 = r2.owner->component_manager->GetComponent<Transform>();
+	glm::vec2 d = glm::vec2(trans2->position.x - trans1->position.x, trans2->position.y - trans1->position.y);
+	double s = sqrtf(d.x*d.x + d.y*d.y);
+
+	//If displacement.x is set then even with 0 angle 	
+	//of an collided object will move our player along the x axis
+	//only if the both objects have not the same x
+	//so it needs to be overthought either do we need continues collision detection or not
+	glm::vec2 posToTranslate = glm::vec2(0,0);
+	//if(abs((r2.positions[9] * r2.owner->scaleValues[1]) + r2.owner->GetPositions().y) - abs((r1.positions[9] * r1.owner->scaleValues[1]) + r1.owner->GetPositions().y) > 0)
+	
+	posToTranslate.x = trans1->position.x;
+	if ((r2.positions[9] * r2.owner->scaleValues[1]) + r2.owner->GetPositions().y - 0.15 > (r1.positions[1] * r1.owner->scaleValues[1]) + r1.owner->GetPositions().y)
+		posToTranslate.x = trans1->position.x - (overlap * d.x / s);
+		
+	//if(abs((r2.positions[9] * r2.owner->scaleValues[1]) + r2.owner->GetPositions().y) - abs((r1.positions[9] * r1.owner->scaleValues[1]) + r1.owner->GetPositions().y) < 0)
+	//else
+	//	posToTranslate.y = trans1->position.y;
+	posToTranslate.y = trans1->position.y - (overlap * d.y / s);
+	trans1->Translate(posToTranslate.x, posToTranslate.y);
+	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::Instance(), "OnCollision", (Listener*)(owner), &r2);
+	std::function<void()>* f1 = new std::function<void()>(f2);
+	EventSystem::Instance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+	return false;
+}
+
+bool Collision::ShapeOverlap_SAT(Collision &r1, Collision &r2)
+{
+	Collision *poly1 = &r1;
+	Collision *poly2 = &r2;
+	
+	float overlap = INFINITY;
+
+	for (int shape = 0; shape < 2; shape++)
+	{
+		if (shape == 1)
+		{
+			poly1 = &r2;
+			poly2 = &r1;
+		}
+
+		for (int a = 0; a < poly1->p.size(); a++)
+		{
+			int b = (a + 1) % poly1->p.size();
+			glm::vec2 axisProj = glm::vec2(-(poly1->p[b].y - poly1->p[a].y), poly1->p[b].x - poly1->p[a].x);
+
+			// Optional normalisation of projection axis enhances stability slightly
+			//float d = sqrtf(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
+			//axisProj = { axisProj.x / d, axisProj.y / d };
+
+			// Work out min and max 1D points for r1
+			float min_r1 = INFINITY, max_r1 = -INFINITY;
+			for (int p = 0; p < poly1->p.size(); p++)
+			{
+				float q = (poly1->p[p].x * axisProj.x + poly1->p[p].y * axisProj.y);
+				min_r1 = std::fmin(min_r1, q);
+				max_r1 = std::fmax(max_r1, q);
+			}
+
+			// Work out min and max 1D points for r2
+			float min_r2 = INFINITY, max_r2 = -INFINITY;
+			for (int p = 0; p < poly2->p.size(); p++)
+			{
+				float q = (poly2->p[p].x * axisProj.x + poly2->p[p].y * axisProj.y);
+				min_r2 = std::fmin(min_r2, q);
+				max_r2 = std::fmax(max_r2, q);
+			}
+
+			// Calculate actual overlap along projected axis, and store the minimum
+			overlap = std::fmin(std::fmin(max_r1, max_r2) - std::fmax(min_r1, min_r2), overlap);
+
+			if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
+				return false;
+		}
+	}
+	return true;
 }

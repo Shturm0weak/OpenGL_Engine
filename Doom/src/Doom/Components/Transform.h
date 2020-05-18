@@ -14,8 +14,9 @@ namespace Doom {
 			float z = 0;
 		};
 		void init();
-
+		void RealVertexPositions();
 		friend class ComponentManager;
+		float WorldVerPos[16];
 
 	public:
 		Transform();

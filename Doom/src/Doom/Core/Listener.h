@@ -29,8 +29,10 @@ namespace Doom {
 				OnUpdate();
 			else if (s == "OnStart")
 				OnStart();
-			else if (s == "OnCollision")
+			else if (s == "OnCollision") {
+				int i = 1;
 				e->Sender()->OnCollision(e->Parameter());
+			}
 			else if (s == "OnMove")
 				e->Sender()->OnMove();
 			else if (s == "OnRotate")

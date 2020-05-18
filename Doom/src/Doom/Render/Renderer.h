@@ -26,6 +26,7 @@ namespace Doom {
 		static void Clear();
 		static void Save(const std::string filename);
 		static void Load(const std::string filename);
+		static GameObject* SelectObject();
 		static std::vector<unsigned int> CalculateObjectsVectors();
 		static std::vector<unsigned int> GetObjectsWithNoOwnerReference() { return ObjectsWithNoOwner; }
 		static std::vector<unsigned int> GetObjectsWithOwnerReference() { return ObjectsWithOwner; }
@@ -50,6 +51,7 @@ namespace Doom {
 			return go;
 		}
 	private:
+		static bool ObjectCollided(std::vector<glm::vec2>& p,int i);
 		static std::vector<unsigned int> ObjectsWithNoOwner;
 		static std::vector<unsigned int> ObjectsWithOwner;
 		static std::mutex mtx;

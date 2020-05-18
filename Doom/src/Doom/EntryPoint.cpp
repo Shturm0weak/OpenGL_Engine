@@ -40,8 +40,6 @@ void EntryPoint::Run()
 		}
 		editortimer += DeltaTime::deltatime;
 
-		Renderer::Render();
-
 		app->OnUpdate();
 		if (isEditorEnable)
 			Editor::Instance()->EditorUpdate();
@@ -52,6 +50,8 @@ void EntryPoint::Run()
 			Editor::Instance()->isItemActive = true;
 		else
 			Editor::Instance()->isItemActive = false;
+
+		Renderer::Render();
 
 		ImGui::EndFrame();
 		ImGui::Render();

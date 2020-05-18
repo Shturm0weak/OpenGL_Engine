@@ -25,7 +25,7 @@ bool EventSystem::AlreadyRegistered(const char* eventId, Listener* client) {
 }
 
 void EventSystem::DispatchEvent(Event* _event) {
-	range = database.equal_range(_event->EventId());
+	range = database.equal_range(_event->eventId);
 	for (iter = range.first;iter != range.second; iter++) {
 		(*iter).second->HandleEvent(_event);
 		if ((std::string)_event->EventId() != "OnUpdate") {
@@ -82,6 +82,15 @@ void EventSystem::SendEvent(const char* eventId, Listener* sender, void* data)
 	if (s != "OnWindowResize" && s != "OnMainThreadProcess" && process_events == false)
 		return;
 	mtx1.lock();
+	for (auto i = database.begin(); i != database.end(); i++)
+	{
+		if (!strcmp(i->first, eventId)) {
+			std::unique_ptr<Event> newEvent(new Event(i->first, sender, data));
+			currentEvents.push(*newEvent);
+			mtx1.unlock();
+			return;
+		}
+	}
 	std::unique_ptr<Event> newEvent(new Event(eventId, sender, data));
 	currentEvents.push(*newEvent);
 	mtx1.unlock();

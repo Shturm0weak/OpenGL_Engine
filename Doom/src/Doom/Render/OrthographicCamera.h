@@ -5,6 +5,8 @@
 #include "../Core/KeyCode.h"
 
 
+
+
 namespace Doom {
 
 	class DOOM_API OrthographicCamera : public Listener {
@@ -45,8 +47,6 @@ namespace Doom {
 
 		void CameraMovement();
 
-		//void* SelectObject();
-
 		void RecalculateViewMatrix();
 		void Zoom(float zoomlevel);
 
@@ -54,7 +54,6 @@ namespace Doom {
 
 		friend class Editor;
 	private:
-		//std::vector<Ray*> rayArr;
 		std::string Name = "Particle System";
 		bool IsWindowResized = false;
 		int* props = nullptr;

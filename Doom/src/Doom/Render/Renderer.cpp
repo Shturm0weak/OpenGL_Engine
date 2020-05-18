@@ -177,6 +177,29 @@ void Doom::Renderer::Load(const std::string filename)
 	std::cout << "Save has been loaded" << std::endl;
 }
 
+GameObject* Doom::Renderer::SelectObject()
+{
+	std::vector < glm::vec2> p;
+	for (unsigned int i = 0; i < GetAmountOfObjects(); i++)
+	{
+		GameObject* go = static_cast<GameObject*>(&Renderer2DLayer::objects2d[i].get());
+		p.clear();
+		p.push_back(glm::vec2(go->WorldVertexPositions[0] + go->GetPositions().x, go->WorldVertexPositions[1] + go->GetPositions().y));
+		p.push_back(glm::vec2(go->WorldVertexPositions[2] + go->GetPositions().x, go->WorldVertexPositions[3] + go->GetPositions().y));
+		p.push_back(glm::vec2(go->WorldVertexPositions[4] + go->GetPositions().x, go->WorldVertexPositions[5] + go->GetPositions().y));
+		p.push_back(glm::vec2(go->WorldVertexPositions[6] + go->GetPositions().x, go->WorldVertexPositions[7] + go->GetPositions().y));
+		if (ObjectCollided(p,i)) {
+			if (Editor::Instance()->selectedGO != go) {
+				Editor::Instance()->selectedGO = go;
+				return go;
+			}
+		}
+	}
+	Editor::Instance()->selectedGO = nullptr;
+	return nullptr;
+
+}
+
 std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 {
 	ObjectsWithNoOwner.clear();
@@ -191,6 +214,41 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 		}
 	}
 	return ObjectsWithNoOwner;
+}
+
+bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
+{
+	glm::vec2 MousePos = glm::vec2(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+
+	for (unsigned int a = 0; a < p.size(); a++)
+	{
+		{
+			int b = (a + 1) % p.size();
+			glm::vec2 axisProj = glm::vec2(-(p[b].y - p[a].y), p[b].x - p[a].x);
+
+			float d = sqrtf(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
+			axisProj = { axisProj.x / d, axisProj.y / d };
+
+			float min_r1 = INFINITY, max_r1 = -INFINITY;
+			for (int f = 0; f < p.size(); f++)
+			{
+				float q = (p[f].x * axisProj.x + p[f].y * axisProj.y);
+				min_r1 = std::fmin(min_r1, q);
+				max_r1 = std::fmax(max_r1, q);
+			}
+
+			float min_r2 = INFINITY, max_r2 = -INFINITY;
+
+			float q = (MousePos.x * axisProj.x + MousePos.y * axisProj.y);
+			min_r2 = std::fmin(min_r2, q);
+			max_r2 = std::fmax(max_r2, q);
+
+
+			if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
+				return false;
+		}
+	}
+	return true;
 }
 
 void Renderer::Render() {
@@ -210,6 +268,7 @@ void Renderer::Render() {
 	glLineWidth(1.0f);*/
 	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
 	Batch::GetInstance()->Lindexcount = 0;
+	RenderCollision(*camera);
 	Batch::GetInstance()->BeginLines();
 	unsigned int size = Line::lines.size();
 	for (unsigned int i = 0; i < size; i++)
@@ -220,7 +279,6 @@ void Renderer::Render() {
 	}
 	Batch::GetInstance()->EndLines();
 	Batch::GetInstance()->flushLines(Batch::GetInstance()->LineShader);
-	RenderCollision(*camera);
 	RenderText();
 }
 

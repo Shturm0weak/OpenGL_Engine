@@ -39,6 +39,8 @@ namespace Doom {
 		 0.5f,  0.5f, 1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
+
+		
 	private:
 		unsigned int indeces3D[36] = {// front
 			0, 1, 2,
@@ -98,7 +100,12 @@ namespace Doom {
 		friend class Doom::Renderer;
 		friend class Doom::Ray;
 
-	public:
+	public:float WorldVertexPositions[8] = {
+		-0.5f, -0.5f,
+		 0.5f, -0.5f,
+		 0.5f,  0.5f,
+		-0.5f,  0.5f
+	};
 		TextureAtlas* textureAtlas = nullptr;
 
 		void ReverseUVs();

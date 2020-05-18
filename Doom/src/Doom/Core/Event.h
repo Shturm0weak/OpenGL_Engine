@@ -10,11 +10,11 @@ namespace Doom {
 	class DOOM_API Event {
 	private:
 
-		const char* eventId;
+		
 		void* parameter;
 
 	public:
-
+		const char* eventId;
 		Listener* sender;
 
 		Event(const char* eventId, Listener* sender, void* parameter = 0) {
