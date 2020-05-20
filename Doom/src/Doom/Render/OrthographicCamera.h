@@ -3,14 +3,14 @@
 #include "../vendor/glm/glm.hpp"
 #include "../Core/Input.h"
 #include "../Core/KeyCode.h"
-
-
-
+#include "FrameBuffer.h"
 
 namespace Doom {
 
 	class DOOM_API OrthographicCamera : public Listener {
 	public:
+		FrameBuffer* frameBuffer = nullptr;
+
 		OrthographicCamera(float left, float right, float top, float bottom);
 
 		const glm::vec3 GetPosition() const { return glm::vec3(m_Position.x, m_Position.y, m_Position.z); }
@@ -41,6 +41,8 @@ namespace Doom {
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
 
+		void ChangeAspectRation(float l, float r, float t, float b);
+
 		void Increase();
 
 		void SetOnStart();
@@ -50,7 +52,7 @@ namespace Doom {
 		void RecalculateViewMatrix();
 		void Zoom(float zoomlevel);
 
-		float GetZoomLevel() { return zoomlevel; }
+		double GetZoomLevel() { return zoomlevel; }
 
 		friend class Editor;
 	private:
@@ -58,7 +60,7 @@ namespace Doom {
 		bool IsWindowResized = false;
 		int* props = nullptr;
 		virtual void OnWindowResize(void* props)override;
-		float zoomlevel = 1.0f;
+		float zoomlevel = 2.0f;
 		glm::vec3 m_Position;
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewMatrix;

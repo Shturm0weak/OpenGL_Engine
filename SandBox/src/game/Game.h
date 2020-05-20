@@ -111,7 +111,7 @@ public:
 			{
 				if (fireTimer > 2.99 && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
 					Hit hit;
-					glm::vec2 direction = glm::vec2(Window::GetMousePositionToWorldSpace().x - go->GetPositions().x, Window::GetMousePositionToWorldSpace().y - go->GetPositions().y);
+					glm::vec2 direction = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x - go->GetPositions().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y - go->GetPositions().y);
 					Ray::Normilize(direction);
 					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPositions().x, go->GetPositions().y), direction, ray->ignoreMask)) {
 						if (hit.Object->GetTag() == "Coin") {
@@ -155,7 +155,7 @@ public:
 					Batch::GetInstance()->indexcount = 0;
 					Batch::GetInstance()->Begin();
 					Gui::GetInstance()->Text(font, "FPS : %f", true, 30, 28, 22, COLORS::Red, 0, fps);
-					Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, 30, 34, 22, COLORS::Red, 2, Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+					Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, 30, 34, 22, COLORS::Red, 2, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 					Gui::GetInstance()->Text(font, "Camera X : %f   Y : %f", true, 30, 37, 22, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
 					Gui::GetInstance()->Text(font, "Player X : %f   Y : %f", true, 30, 40, 22, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
 					Gui::GetInstance()->Text(font, "Textures: %d", true, 30, 25, 22, COLORS::Red, 0, Texture::bindedAmount);

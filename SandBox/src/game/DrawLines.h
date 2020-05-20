@@ -30,7 +30,7 @@ class DrawLines : public Application {
 				GameObject* dot = new GameObject("Dot", pos.x, pos.y);
 				GenerateDot(*dot);
 			}
-			pos = glm::vec2(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+			pos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 			dots.push_back(pos);
 			GameObject* dot = new GameObject("Dot", pos.x, pos.y);
 			GenerateDot(*dot);

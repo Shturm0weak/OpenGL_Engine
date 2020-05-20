@@ -22,12 +22,12 @@ public:
 	virtual void OnUpdate() override {
 		//ThreadPool::Instance()->enqueue([=] {
 		//	mtx.lock();
-			tr->Move(0, -9.8, 0);
+			//tr->Move(0, -9.8, 0);
 			col->IsCollidedSAT();
 		//	mtx.unlock();
 		//});
 		SetColor(COLORS::White);		
-		//tr->Translate(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+		tr->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 	}
 
 	virtual void OnCollision(void* _col) override {
@@ -47,7 +47,7 @@ public:
 	Font* font = nullptr;
 	virtual void OnStart() override {
 		obstacle = new GameObject("obstacle", 0, -10);
-		obstacle->GetComponentManager()->AddComponent<Collision>()->IsTrigger = false;
+		obstacle->GetComponentManager()->AddComponent<Collision>()->IsTrigger = true;
 		pl = new PlayerRPG("Player",0,0);
 		textureAtlas = new TextureAtlas(128,128,"src/GameRPG/Textures/RPGpack_sheet_2X.png");
 		std::unordered_map<char, glm::vec2> textures;
@@ -83,8 +83,8 @@ public:
 
 		Batch::GetInstance()->indexcount = 0;
 		Batch::GetInstance()->Begin();
-		Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, 30, 36, 22, COLORS::White, 2, Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
-		Gui::GetInstance()->Text(font, "ID : %d", true, 30, 33, 22, COLORS::White, 0, id);
+		Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, -70, 36, 22, COLORS::Green, 6, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+		Gui::GetInstance()->Text(font, "ID : %d", true, -70, 33, 22, COLORS::Green, 0, id);
 		if (Editor::Instance()->selectedGO != nullptr) {
 			go = Editor::Instance()->selectedGO;
 			id = go->GetId();

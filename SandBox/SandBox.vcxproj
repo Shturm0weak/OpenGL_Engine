@@ -125,6 +125,7 @@
     <ClInclude Include="src\game\Player.h" />
     <ClInclude Include="src\game\RayCastTest.h" />
     <ClInclude Include="src\game\StressTest.h" />
+    <ClInclude Include="src\game\TestImGui.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
   </ItemGroup>
   <ItemGroup>

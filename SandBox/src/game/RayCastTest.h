@@ -34,7 +34,7 @@ public:
 
 	virtual void OnUpdate() override {
 		cursor->GetComponentManager()->GetComponent<Transform>()->Translate(pos.x, pos.y);
-		pos = glm::vec2(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+		pos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 		coin->Enable = false;
 		for (unsigned int i = 0; i < 2000; i++)
 		{

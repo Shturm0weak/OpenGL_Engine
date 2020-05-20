@@ -2,6 +2,7 @@
 #include "OrthographicCamera.h"
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../Core/Editor.h"
+#include "ViewPort.h"
 
 using namespace Doom;
 
@@ -14,6 +15,7 @@ OrthographicCamera::OrthographicCamera(float left,float right,float top,float bo
 	aspectration[2] = top;
 	aspectration[3] = bottom;
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	
 }
 
 void OrthographicCamera::RecalculateViewMatrix() {
@@ -31,6 +33,9 @@ void OrthographicCamera::WindowResize() {
 		if (props[0] == 0 || props[1] == 0)
 			return;
 		glViewport(0, 0, props[0], props[1]);
+		//glBindTexture(GL_TEXTURE_2D, frameBuffer->texture);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, props[0], props[1], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		//glBindTexture(GL_TEXTURE_2D, 0);
 		IsWindowResized = false;
 	}
 }
@@ -46,6 +51,16 @@ void OrthographicCamera::OnWindowResize(void * _props)
 {
 	props = static_cast<int*>(_props);
 	IsWindowResized = true;
+}
+
+void Doom::OrthographicCamera::ChangeAspectRation(float left, float right, float top, float bottom)
+{
+	aspectration[0] = left;
+	aspectration[1] = right;
+	aspectration[2] = top;
+	aspectration[3] = bottom;
+	m_ProjectionMatrix = glm::ortho(aspectration[0] * zoomlevel, aspectration[1] * zoomlevel, aspectration[3] * zoomlevel, aspectration[2] * zoomlevel, -1.0f, 1.0f);
+	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
 void OrthographicCamera::Increase() {
@@ -82,7 +97,7 @@ void OrthographicCamera::CameraMovement() {
 	}
 	if (Input::IsKeyPressed(Keycode::KEY_G)) {
 		if (Editor::Instance()->selectedGO != nullptr) {
-			Editor::Instance()->selectedGO->GetComponentManager()->GetComponent<Transform>()->Translate(Window::GetMousePositionToWorldSpace().x,Window::GetMousePositionToWorldSpace().y);
+			Editor::Instance()->selectedGO->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 		}
 	}
 	Increase();

@@ -49,11 +49,9 @@ void PlayerCharacter::OnUpdate()
 	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Translate(position.x + flashOffset.x, position.y + flashOffset.y);
 	PlayerMovement();
 	//ThreadPool::Instance()->enqueue([=] {
-	//	mtx.lock();
+		//mtx.lock();
 		tr->Move(0, -9.8, 0);
 		col->IsCollidedSAT();
-	//	mtx.unlock();
-	//});
 		Hit hit;
 		count = 0;
 		glm::vec2 resultV;
@@ -103,7 +101,8 @@ void PlayerCharacter::OnUpdate()
 
 		if(count <= 0)
 			isLanded = false;
-
+		//mtx.unlock();
+	//});
 }
 
 void PlayerCharacter::OnCollision(void* _col) {

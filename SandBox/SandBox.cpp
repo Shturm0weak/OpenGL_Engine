@@ -8,10 +8,11 @@
 #include "src/2Dshootergame/ShooterGame.h"
 #include "src/game/StressTest.h"
 #include "src/GameRPG/GameRPG.h"
+#include "src/game/TestImGui.h"
 
 
 int main() {
-	ShooterGame* app = new ShooterGame();
+	RayCastTest* app = new RayCastTest();
 	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);
 	Editor::Instance()->CheckTexturesFolder("src/GameRPG/Textures");
 	entrypoint->Run();

@@ -86,8 +86,9 @@ namespace Doom {
 		static Batch* instance;
 
 		Shader* shader = nullptr;
-		glm::mat4 ViewProjecTionRelatedToCamera = glm::ortho(-16.f, 16.f, -9.f, 9.f, 1.f, -1.f);
 	public:
+		glm::mat4 ViewProjecTionRelatedToCamera = glm::ortho(-16.f, 16.f, -9.f, 9.f, 1.f, -1.f);
+
 		static void Init();
 
 		GLsizei indexcount = 0;

@@ -39,6 +39,8 @@ DOOM_API ThreadPool* ThreadPool::thread_pool = nullptr;
 DOOM_API bool ThreadPool::initialized;
 
 DOOM_API GLFWwindow* Window::m_window = nullptr;
+DOOM_API ImGuiIO* Window::io = nullptr;
+DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
 DOOM_API OrthographicCamera Window::m_camera(-16.f, 16.f, 9.f, -9.f);
 
 DOOM_API float DeltaTime::time;
@@ -64,8 +66,6 @@ DOOM_API bool Renderer::isReadyToRenderSecondThread = false;
 DOOM_API bool Renderer::isReadyToRenderThirdThread = false;
 DOOM_API std::vector<Line*> Line::lines;
 DOOM_API float Line::width = 1.0f;
-
-DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
 
 DOOM_API std::vector<TextureAtlas*> TextureAtlas::textureAtlases;
 DOOM_API const char** TextureAtlas::items;

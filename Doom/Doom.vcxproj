@@ -107,6 +107,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="src\Doom\Application.h" />
     <ClInclude Include="src\Doom\Components\Animator.h" />
     <ClInclude Include="src\Doom\Components\Collision.h" />
@@ -138,6 +142,7 @@
     <ClInclude Include="src\Doom\pch.h" />
     <ClInclude Include="src\Doom\Render\Batch.h" />
     <ClInclude Include="src\Doom\Render\Character.h" />
+    <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
     <ClInclude Include="src\Doom\Render\IndexBuffer.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
     <ClInclude Include="src\Doom\Render\OrthographicCamera.h" />
@@ -154,8 +159,13 @@
     <ClInclude Include="src\Doom\Render\VertexArray.h" />
     <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
     <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
+    <ClInclude Include="src\Doom\Render\ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Doom\ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="src\Doom\Components\Animator.cpp" />
     <ClCompile Include="src\Doom\Components\Collision.cpp" />
     <ClCompile Include="src\Doom\Components\Transform.cpp" />
@@ -173,6 +183,7 @@
     <ClCompile Include="src\Doom\pch.cpp" />
     <ClCompile Include="src\Doom\Render\Batch.cpp" />
     <ClCompile Include="src\Doom\Render\Character.cpp" />
+    <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
     <ClCompile Include="src\Doom\Render\IndexBuffer.cpp" />
     <ClCompile Include="src\Doom\Render\Line.cpp" />
     <ClCompile Include="src\Doom\Render\OrthographicCamera.cpp" />

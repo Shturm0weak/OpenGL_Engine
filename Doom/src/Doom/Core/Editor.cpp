@@ -8,18 +8,46 @@ using namespace Doom;
 
 void Editor::EditorUpdate()
 {
-	ImGui::Begin("Doom Engine", &tool_active, ImGuiWindowFlags_MenuBar);
-	if (ImGui::CollapsingHeader("Scene")) {
-		Renderer::CalculateObjectsVectors();
-		if (ImGui::Button("Create a gameobject")) {
-			Renderer::CreateGameObject();
-			Renderer::CalculateObjectsVectors().size();
-			selected = Renderer::GetAmountOfObjects() - Renderer::GetObjectsWithOwnerReference().size() - 1;
-		}
-		if (ImGui::CollapsingHeader("GameObjects")) {
-			ImGui::ListBox("Objects", &selected, Renderer::GetItems(), Renderer::GetObjectsWithNoOwnerReference().size());
-		}
-		GameObject* go = nullptr;
+	ImGui::Begin("Console", &tool_active);
+	if (ImGui::Button("Save")) {
+		Renderer::Save("C:/Users/Alexandr/Desktop/saved.txt");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load")) {
+		selected = 0;
+		Renderer::Load("C:/Users/Alexandr/Desktop/saved.txt");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("EXIT")) {
+		glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
+	}
+	ImGui::End();
+	ImGui::Begin("Scene", &tool_active);
+	Renderer::CalculateObjectsVectors();
+	if (ImGui::Button("Create a gameobject")) {
+		Renderer::CreateGameObject();
+		Renderer::CalculateObjectsVectors().size();
+		selected = Renderer::GetAmountOfObjects() - Renderer::GetObjectsWithOwnerReference().size() - 1;
+	}
+	if (ImGui::CollapsingHeader("GameObjects")) {
+		ImGui::ListBox("Objects", &selected, Renderer::GetItems(), Renderer::GetObjectsWithNoOwnerReference().size());
+	}
+	go = static_cast<GameObject*>(Renderer::GetReference(Renderer::GetObjectsWithNoOwnerReference()[selected]));
+	if (ImGui::Button("Clone gameobject")) {
+		GameObject* clgo = Renderer::CreateGameObject();
+		clgo->operator=(*go);
+		selected = Renderer::GetObjectsWithNoOwnerReference().size();
+	}
+	if (ImGui::Button("Delete selected gameobject")) {
+		if (selected == Renderer::GetObjectsWithNoOwnerReference().size() - 1)
+			selected--;
+		Renderer::DeleteObject(go->GetId());
+		ImGui::End();
+		return;
+	}
+	ImGui::End();
+	ImGui::Begin("Properties", &tool_active);
+	 {
 		if (Renderer::GetObjectsWithNoOwnerReference().size() > 0) {
 			go = static_cast<GameObject*>(Renderer::GetReference(Renderer::GetObjectsWithNoOwnerReference()[selected]));
 			if (go == nullptr)
@@ -52,20 +80,6 @@ void Editor::EditorUpdate()
 					}
 					selected = 0;
 				}
-			}
-			if (ImGui::Button("Clone gameobject")) {
-				GameObject* clgo = Renderer::CreateGameObject();
-				clgo->operator=(*go);
-				selected = Renderer::GetObjectsWithNoOwnerReference().size();
-			}
-			if (ImGui::Button("Delete selected gameobject")) {
-				if (selected == Renderer::GetObjectsWithNoOwnerReference().size() - 1)
-					selected--;
-				Renderer::DeleteObject(go->GetId());
-				ImGui::End();
-				//ImGui::Render();
-				//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-				return;
 			}
 			if (go->GetChilds().size() >  0) {
 				if (ImGui::CollapsingHeader("Childs")) {
@@ -362,23 +376,13 @@ void Editor::EditorUpdate()
 			
 
 			ImGui::Checkbox("Visible collisions", &Doom::Collision::IsVisible);
-			ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 1000.f);
+			ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 100.f);
 			Window::GetCamera().Zoom(abs(Window::GetCamera().GetZoomLevel()));
 			tr->Translate(tr->position.x, tr->position.y);
 		}
-		if (ImGui::Button("Save")) {
-			Renderer::Save("C:/Users/Alexandr/Desktop/saved.txt");
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Load")) {
-			selected = 0;
-			Renderer::Load("C:/Users/Alexandr/Desktop/saved.txt");
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("EXIT")) {
-			glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
-		}
+		
 	}
+
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS) , Draw calls %d", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate, Renderer::DrawCalls);
 	ImGui::End();
 }

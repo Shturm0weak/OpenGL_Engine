@@ -7,7 +7,7 @@ class ShooterGame : public Application {
 	double timer = 1;
 	virtual void OnStart() override {
 		Renderer::Load("C:/Users/Alexandr/Desktop/ShooterGameSave.txt");
-		pl = new PlayerCharacter("Player",0,10);
+		pl = new PlayerCharacter("Player",0,15);
 		font = new Font();
 		font->LoadFont("src/font.txt", "src/arial.png");
 		font->LoadCharacters();

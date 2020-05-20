@@ -10,6 +10,7 @@ namespace Doom {
 
 	class DOOM_API Editor {
 	private:
+		GameObject* go = nullptr;
 		float spriteSize[2] = {128,128};
 		float campos[2] = { 0,0 };
 		bool IsActiveEditor = false;

@@ -30,9 +30,8 @@ namespace Doom {
 		Window() {}
 
 	public:
-
 		static ImGuiContext* imGuiContext;
-
+		static ImGuiIO* io;
 		static OrthographicCamera& GetCamera() {
 			return m_camera;
 		}
@@ -72,19 +71,19 @@ namespace Doom {
 				EventSystem::Instance()->SendEvent("OnWindowResize", nullptr, props);
 			});
 			imGuiContext = ImGui::CreateContext();
-			ImGuiIO& io = ImGui::GetIO();
+			io = &ImGui::GetIO();
 			(void)io;
 			ImGui_ImplGlfw_InitForOpenGL(Window::GetWindow(), true);
 			ImGui_ImplOpenGL3_Init("#version 330");
 
 			ImGui::StyleColorsDark();
+			ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			//glEnable(GL_DEPTH_TEST);
 			// Фрагмент будет выводиться только в том, случае, если он находится ближе к камере, чем предыдущий
 			//glDepthFunc(GL_LESS);
-
 			return 0;
 		}
 		inline static GLFWwindow* GetWindow() { return m_window; }
@@ -100,8 +99,8 @@ namespace Doom {
 			static Position mousePos;
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
-			mousePos.x = (ImGui::GetMousePosOnOpeningCurrentPopup().x / GetProps()[0] - 0.5) * 32. * Window::GetCamera().GetZoomLevel();
-			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetProps()[1]) + 0.5) * 18. * Window::GetCamera().GetZoomLevel();
+			mousePos.x = (ImGui::GetMousePosOnOpeningCurrentPopup().x   / GetProps()[0]  - 0.5)  * 32.;
+			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetProps()[1]) + 0.5) * 18.;
 			return mousePos;
 		}
 

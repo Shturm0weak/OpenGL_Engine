@@ -4,11 +4,13 @@
 #include "Batch.h"
 #include "../Core/Timer.h"
 #include "Line.h"
+#include "ViewPort.h"
 
 using namespace Doom;
 
 void Doom::Renderer::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
 void Doom::Renderer::DeleteAll() {
@@ -218,7 +220,7 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 
 bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
 {
-	glm::vec2 MousePos = glm::vec2(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
+	glm::vec2 MousePos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 
 	for (unsigned int a = 0; a < p.size(); a++)
 	{

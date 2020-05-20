@@ -55,6 +55,12 @@
     <ClInclude Include="src\Doom\Core\Sound.h" />
     <ClInclude Include="src\Doom\Render\TextureAtlas.h" />
     <ClInclude Include="src\Doom\Render\TileMap.h" />
+    <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
+    <ClInclude Include="src\Doom\Render\ViewPort.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImSequencer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -88,6 +94,11 @@
     <ClCompile Include="src\Doom\Core\Sound.cpp" />
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />
+    <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImSequencer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

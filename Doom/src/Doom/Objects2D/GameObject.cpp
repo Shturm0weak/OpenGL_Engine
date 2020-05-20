@@ -87,6 +87,12 @@ void GameObject::SetTexture(const std::string& path) {
 }
 
 void GameObject::SetTexture(Texture* texture) {
+	if (texture == nullptr) {
+		*pathToTexture = "None";
+		this->texture = nullptr;
+		this->texture = texture;
+		return;
+	}
 	this->texture = nullptr;
 	this->texture = texture;
 	*pathToTexture = texture->GetFilePath();
@@ -168,8 +174,6 @@ void GameObject::SetRenderType(RenderType type)
 }
 
 void GameObject::SetColor(vec4 color) {
-	if (this->color == color)
-		return;
 	this->color = color;
 }
 
