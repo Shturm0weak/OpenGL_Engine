@@ -8,7 +8,8 @@ class Bomb : public GameObject {
 
 	Collision* col = nullptr;
 	Transform* tr = nullptr;
-	ParticleSystem* particle = new ParticleSystem(0, 0, 100, 2.5, 10, 2, 1, 0.5, 0, 0.2);
+	Texture* whiteCircle = new Texture("src/Images/WhiteCircle.png");
+	ParticleSystem* particle = new ParticleSystem(0, 0, 100, 2.5, 10, 2, 1, 0.5, 0, 0.2,whiteCircle);
 	bool particlePlay = false;
 public:
 	Bomb(const std::string name = "Bomb", float x = 0, float y = 0) :GameObject(name, x, y) {

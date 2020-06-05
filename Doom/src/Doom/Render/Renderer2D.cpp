@@ -34,7 +34,8 @@ const char** Renderer2DLayer::GetItemsNames() {
 	items = new const char*[Childs.size()];
 	for (unsigned int i = 0; i < Childs.size(); i++)
 	{
-		items[i] = static_cast<Renderer2DLayer*>(Childs[i])->name->c_str();
+		items[i] = reinterpret_cast<Renderer2DLayer*>(Childs[i])->name->c_str();
+
 	}
 	return items;
 }

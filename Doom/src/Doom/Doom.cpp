@@ -5,6 +5,8 @@
 #include "Core/Timer.h"
 #include "Render/Batch.h"
 #include "Render/Line.h"
+#include "Render/ParticleSystem.h"
+
 
 using namespace Doom;
 
@@ -13,7 +15,6 @@ DOOM_API std::vector <std::reference_wrapper<Renderer2DLayer>> Renderer2DLayer::
 //storage of all references to our object's collisions in the scene
 DOOM_API std::vector <std::reference_wrapper<Renderer2DLayer>> Renderer2DLayer::collision2d;
 DOOM_API Batch* Batch::instance;
-DOOM_API  std::vector<Character*> Font::characters;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithOwner;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithNoOwner;
 DOOM_API const char** Renderer::items;
@@ -27,6 +28,7 @@ DOOM_API int Renderer2DLayer::col_id = 0;
 //Textures
 DOOM_API std::vector<std::string> Editor::texturesPath;
 DOOM_API std::vector<Texture*> Editor::texture;
+DOOM_API std::vector<Texture*> Editor::textureVecTemp;
 DOOM_API int Texture::bindedAmount = 0;
 DOOM_API Texture* Texture::WhiteTexture = new Texture();
 DOOM_API double Texture::VRAMused = 0;
@@ -59,6 +61,7 @@ DOOM_API vec4 COLORS::White(1, 1, 1, 1);
 DOOM_API vec4 COLORS::Orange(1, 0.31, 0, 1);
 DOOM_API vec4 COLORS::Gray(0.86, 0.86, 0.86, 1);
 DOOM_API vec4 COLORS::Silver(0.75, 0.75, 0.75, 1);
+DOOM_API vec4 COLORS::DarkGray(0.4, 0.4, 0.4, 1);
 
 
 DOOM_API bool Renderer::isReadyToRenderFirstThread = false;
@@ -69,3 +72,8 @@ DOOM_API float Line::width = 1.0f;
 
 DOOM_API std::vector<TextureAtlas*> TextureAtlas::textureAtlases;
 DOOM_API const char** TextureAtlas::items;
+
+DOOM_API Shader* Shader::defaultShader = nullptr;
+DOOM_API std::vector<Shader*> Shader::shaders;
+
+DOOM_API std::vector<Particle*> Particle::particles;

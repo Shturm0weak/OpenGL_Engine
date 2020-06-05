@@ -1,6 +1,7 @@
 #ifndef CHARACTER_H_
 #define CHARACTER_H_
 #include "../pch.h"
+#include "ViewPort.h"
 
 namespace Doom {
 
@@ -18,11 +19,11 @@ namespace Doom {
 		};
 
 
-		glm::mat4 scale = glm::mat4(1.f);
-		glm::mat4 pos = glm::mat4(1.f);
-		glm::mat4 viewXscale = glm::mat4(1.f);
-		glm::mat4 MVP = glm::mat4(1.f);
-		glm::mat4 view = glm::mat4(1.f);
+		//glm::mat4 scale = glm::mat4(1.f);
+		//glm::mat4 pos = glm::mat4(1.f);
+		//glm::mat4 viewXscale = glm::mat4(1.f);
+		//glm::mat4 MVP = glm::mat4(1.f);
+		//glm::mat4 view = glm::mat4(1.f);
 
 		unsigned int indeces2D[6] = { 0,1,2,3,2,0 };
 		float mesh2D[20] = {
@@ -42,13 +43,8 @@ namespace Doom {
 		float xadvance;
 
 	private:
-		glm::mat4 ViewProjecTionRelatedToScreen = glm::ortho(-16.f, 16.f, -9.f, 9.f, 1.f, -1.f);
+		glm::mat4 ViewProjecTionRelatedToScreen;
 		glm::vec4 color = COLORS::White;
-		GLuint vao;
-		VertexBufferLayout* layout = new VertexBufferLayout;
-		VertexBuffer* vb;
-		VertexArray* va = new VertexArray;
-		IndexBuffer* ib = new IndexBuffer(indeces2D, 6);
 		Texture* texture = nullptr;
 		Shader* shader = nullptr;
 		Position position;
@@ -63,12 +59,12 @@ namespace Doom {
 		Font* font = nullptr;
 		void Changecharater(Font* font, char ch);
 		Character(Font* font, char ch, float x = 0, float y = 0, float scale = 1);
-		void OnRunning(OrthographicCamera& camera);
-		void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
+		//void OnRunning(OrthographicCamera& camera);
+		/*void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
 			va.Bind();
 			ib.Bind();
 			glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
-		}
+		}*/
 		void InitShader();
 		void Scale(float scale);
 		void Translate(float x, float y);
@@ -96,11 +92,12 @@ namespace Doom {
 			delete[] yoffset;
 			delete[] xadvance;
 		}
-		static std::vector<Character*> characters;
+		std::vector<Character*> characters;
 		Texture* fontAtlas = nullptr;
 		std::string name = "";
 		Shader* shader = nullptr;
 		unsigned int count = 0;
+		unsigned int size = 0;
 		unsigned int *id;
 		int *x;
 		int *y;
@@ -117,8 +114,8 @@ namespace Doom {
 			if (in_file.is_open()) {
 				in_file >> name;
 				in_file >> count;
-				//std::cout << name << std::endl;
-				//std::cout << count << std::endl;
+				count++;
+				in_file >> size;
 				id = new unsigned int[count];
 				x = new int[count];
 				y = new int[count];
@@ -149,7 +146,7 @@ namespace Doom {
 				}
 			}
 			in_file.close();
-			std::cout << "Font has been loaded" << std::endl;
+			std::cout << BOLDGREEN << "Font " << name <<" has been loaded" << RESET << std::endl;
 		}
 
 		void LoadCharacters() {
@@ -160,7 +157,7 @@ namespace Doom {
 				characters.push_back(character);
 				//std::cout << i << "	" << int(characters[i].get().ch) << "	" << characters[i].get().ch << std::endl;
 			}
-			std::cout << "Characters has been loaded" << std::endl;
+			std::cout << BOLDGREEN << "Characters has been loaded" << RESET << std::endl;
 		}
 	};
 

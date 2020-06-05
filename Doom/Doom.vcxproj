@@ -107,6 +107,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
@@ -136,8 +137,6 @@
     <ClInclude Include="src\Doom\ECS\ComponentManager.h" />
     <ClInclude Include="src\Doom\ECS\IComponent.h" />
     <ClInclude Include="src\Doom\EntryPoint.h" />
-    <ClInclude Include="src\Doom\Gui\Button.h" />
-    <ClInclude Include="src\Doom\Gui\GuiItem.h" />
     <ClInclude Include="src\Doom\Objects2D\GameObject.h" />
     <ClInclude Include="src\Doom\pch.h" />
     <ClInclude Include="src\Doom\Render\Batch.h" />
@@ -152,7 +151,7 @@
     <ClInclude Include="src\Doom\Render\RenderText.h" />
     <ClInclude Include="src\Doom\Render\Shader.h" />
     <ClInclude Include="src\Doom\Render\stb_image.h" />
-    <ClInclude Include="src\Doom\Render\Text.h" />
+    <ClInclude Include="src\Doom\Render\Gui.h" />
     <ClInclude Include="src\Doom\Render\Texture.h" />
     <ClInclude Include="src\Doom\Render\TextureAtlas.h" />
     <ClInclude Include="src\Doom\Render\TileMap.h" />
@@ -177,8 +176,6 @@
     <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Doom.cpp" />
     <ClCompile Include="src\Doom\EntryPoint.cpp" />
-    <ClCompile Include="src\Doom\Gui\Button.cpp" />
-    <ClCompile Include="src\Doom\Gui\GuiItem.cpp" />
     <ClCompile Include="src\Doom\Objects2D\GameObject.cpp" />
     <ClCompile Include="src\Doom\pch.cpp" />
     <ClCompile Include="src\Doom\Render\Batch.cpp" />
@@ -192,7 +189,7 @@
     <ClCompile Include="src\Doom\Render\Renderer2D.cpp" />
     <ClCompile Include="src\Doom\Render\Shader.cpp" />
     <ClCompile Include="src\Doom\Render\stb_image.cpp" />
-    <ClCompile Include="src\Doom\Render\Text.cpp" />
+    <ClCompile Include="src\Doom\Render\Gui.cpp" />
     <ClCompile Include="src\Doom\Render\Texture.cpp" />
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />

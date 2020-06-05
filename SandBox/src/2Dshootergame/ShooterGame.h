@@ -9,8 +9,9 @@ class ShooterGame : public Application {
 		Renderer::Load("C:/Users/Alexandr/Desktop/ShooterGameSave.txt");
 		pl = new PlayerCharacter("Player",0,15);
 		font = new Font();
-		font->LoadFont("src/font.txt", "src/arial.png");
+		font->LoadFont("src/calibri.txt", "src/calibri.png");
 		font->LoadCharacters();
+		Gui::GetInstance()->FontBind(font);
 	}
 
 	virtual void OnUpdate() override {
@@ -25,9 +26,9 @@ class ShooterGame : public Application {
 		Window::GetCamera().SetPosition(glm::vec3(pl->GetPositions().x,pl->GetPositions().y,0));
 		Batch::GetInstance()->indexcount = 0;
 		Batch::GetInstance()->Begin();
-		Gui::GetInstance()->Text(font, "IsLanded: %d", true, 30, 36, 22, COLORS::White, 2,pl->isLanded);
-		Gui::GetInstance()->Text(font, "Distance: %f", true, 30, 33, 22, COLORS::White, 3, pl->x);
-		Gui::GetInstance()->Text(font, "Count: %d", true, 30, 30, 22, COLORS::White, 3, pl->count);
+		Gui::GetInstance()->Text("IsLanded: %d", true, 300, 460, 76, COLORS::White, 2,pl->isLanded);
+		Gui::GetInstance()->Text("Distance: %f", true, 300, 380, 76, COLORS::White, 3, pl->x);
+		Gui::GetInstance()->Text("Count: %d", true, 300, 300, 76, COLORS::White, 3, pl->count);
 		Batch::GetInstance()->End();
 	}
 	

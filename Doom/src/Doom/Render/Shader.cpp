@@ -4,13 +4,35 @@
 using namespace Doom;
 
 Shader::Shader(std::string filepath) : m_FilePath(filepath), m_RendererID(0) {
+	size_t size = shaders.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		if (filepath == shaders[i]->m_FilePath) {
+			this->m_RendererID = shaders[i]->m_RendererID;
+			this->m_UniformLocationCache = shaders[i]->m_UniformLocationCache;
+			return;
+		}
+	}
 	ShaderProgramSource source = Parseshader(filepath);
 	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 	//std::cout << source.FragmentSource;
 }
 
 Shader::~Shader() {
-	glDeleteProgram(m_RendererID);
+	size_t size = shaders.size();
+	int count = 0;
+	for (size_t i = 0; i < size; i++)
+	{
+		if (this->m_FilePath == shaders[i]->m_FilePath) {
+			count++;
+		}
+	}
+	if (count == 0) {
+		glDeleteProgram(m_RendererID);
+	}
+	auto iter = std::find(shaders.begin(), shaders.end(), this);
+	if(iter != shaders.end())
+		shaders.erase(iter);
 }
 
 void Shader::Bind() const {
@@ -64,7 +86,7 @@ int Shader::GetUniformLocation(const std::string& name) {
 		return m_UniformLocationCache[name];
 	int location = glGetUniformLocation(m_RendererID, name.c_str());
 	if (location == -1)
-		std::cout << "Warning: uniform " << name << " doesn't exist!" << std::endl;
+		std::cout << RED << "Warning: uniform " << name << " doesn't exist!" << RESET << std::endl;
 	m_UniformLocationCache[name] = location;
 	return location;
 }

@@ -119,11 +119,11 @@ public:
 
 	void Keys() {
 		tr->Move(0, -5, 0);
-		if (Input::IsKeyPressed(Keycode::SPACE) && isLanded) {
+		if (Input::IsKeyDown(Keycode::SPACE) && isLanded) {
 			speedy = 25;
 			isLanded = false;
 		}
-		else if (Input::IsKeyPressed(Keycode::KEY_D)) {
+		else if (Input::IsKeyDown(Keycode::KEY_D)) {
 			tr->Move(speedx, 0, 0);
 			if (isLanded){
 				auto iter = anim->animations.find(anim->GetAnimations()[5]);
@@ -131,7 +131,7 @@ public:
 			}
 			prevKey = Keycode::KEY_D;
 		}
-		else if (Input::IsKeyPressed(Keycode::KEY_A)) {
+		else if (Input::IsKeyDown(Keycode::KEY_A)) {
 			tr->Move(-speedx, 0, 0);
 			if (isLanded) {
 				auto iter = anim->animations.find(anim->GetAnimations()[4]);

@@ -70,8 +70,25 @@ Texture::Texture(std::string path,bool IsEmpty)
 	m_height(0), m_width(0), m_BPP(0)
 {
 
+
 	stbi_set_flip_vertically_on_load(1);
 	m_LocalBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 4);
+
+	for (unsigned int i = 0; i < texturesArray.size(); i++)
+	{
+		if (path == texturesArray[i]->m_FilePath) {
+			m_RendererID = texturesArray[i]->m_RendererID;
+			m_BPP = texturesArray[i]->m_BPP;
+			m_height = texturesArray[i]->m_height;
+			m_width = texturesArray[i]->m_width;
+			m_FilePath = texturesArray[i]->m_FilePath;
+			auto it = Texturesused.find(m_RendererID);
+			if (it != Texturesused.end())
+				(*it).second++;
+			isExisted = true;
+			return;
+		}
+	}
 }
 
 Texture::~Texture() {
@@ -83,6 +100,14 @@ Texture::~Texture() {
 			Texturesused.erase(it);
 			glDeleteTextures(1, &m_RendererID);
 			bindedAmount--;
+		}
+	}
+	unsigned int size = texturesArray.size();
+	for (unsigned int i = 0; i < size; i++)
+	{
+		if (texturesArray[i] == this) {
+			texturesArray.erase(texturesArray.begin() + i);
+			break;
 		}
 	}
 }

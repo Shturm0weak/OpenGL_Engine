@@ -12,6 +12,7 @@ namespace Doom {
 	class DOOM_API GameObject : public Renderer2DLayer, public Listener
 	{
 	public:
+
 		enum ShaderType { SHADER_TEXTURE, SHADER_COLOR, SHADER_BLOOM };
 
 		bool AlwaysDraw = false;
@@ -19,8 +20,6 @@ namespace Doom {
 		ShaderType shadertype = SHADER_COLOR;
 		ComponentManager* component_manager;
 		bool draw_once = false;
-
-		glm::mat4 ViewProjecTionRelatedToScreen = glm::ortho(-5.f, 5.f, -3.75f, 3.75f, 1.f, -1.f);
 
 		void InitShader();
 		virtual void OnRunning(OrthographicCamera& camera) override;
@@ -78,15 +77,14 @@ namespace Doom {
 		glm::mat4 viewXscale = glm::mat4(1.f);
 		glm::mat4 MVP = glm::mat4(1.f);
 		glm::mat4 view = glm::mat4(1.f);
-		glm::vec2* submitedVectors = new glm::vec2[4];
 
 	private:
 		glm::vec4 color = COLORS::White;
-		GLuint vao;
-		VertexBufferLayout* layout = new VertexBufferLayout;
-		VertexBuffer* vb = new VertexBuffer(mesh2D, 4 * 4 * sizeof(float));
-		VertexArray* va = new VertexArray;
-		IndexBuffer* ib = new IndexBuffer(indeces2D, 6);
+		//GLuint vao;
+		//VertexBufferLayout* layout = new VertexBufferLayout;
+		//VertexBuffer* vb = new VertexBuffer(mesh2D, 4 * 4 * sizeof(float));
+		//VertexArray* va = new VertexArray;
+		//IndexBuffer* ib = new IndexBuffer(indeces2D, 6);
 		Texture* texture = nullptr;
 		Shader* shader = nullptr;
 
@@ -100,12 +98,14 @@ namespace Doom {
 		friend class Doom::Renderer;
 		friend class Doom::Ray;
 
-	public:float WorldVertexPositions[8] = {
+	public:
+		float WorldVertexPositions[8] = {
 		-0.5f, -0.5f,
 		 0.5f, -0.5f,
 		 0.5f,  0.5f,
 		-0.5f,  0.5f
 	};
+
 		TextureAtlas* textureAtlas = nullptr;
 
 		void ReverseUVs();
@@ -124,6 +124,7 @@ namespace Doom {
 		~GameObject() { EventSystem::Instance()->UnregisterAll(this); }
 
 		int GetTexture() { return texture->m_RendererID; }
+		Texture* GetTexturePointer() { return texture; }
 		void operator=(GameObject go);
 		using Renderer2DLayer::name;
 		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0);

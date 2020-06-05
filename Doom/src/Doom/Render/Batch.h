@@ -3,7 +3,6 @@
 #include "Renderer.h"
 #include "Character.h"
 #include "Line.h"
-#include "../Gui/GuiItem.h"
 #include <array>
 #include <mutex>
 
@@ -22,7 +21,6 @@ namespace Doom {
 		glm::vec4 m_color;
 		float isGui;
 		float texIndex;
-		int m_particle;
 		glm::vec4 rotationMat0;
 		glm::vec4 rotationMat1;
 		glm::vec4 rotationMat2;
@@ -105,7 +103,8 @@ namespace Doom {
 		Batch();
 		~Batch();
 		void Submit(Character& character);
-		void Submit(GuiItem& gameobeject);
+		void Submit(glm::mat4 pos,glm::mat4 view, glm::vec4 color,glm::vec2 scale, Texture* texture = nullptr);
+		void Submit(float* mesh2D, glm::vec4 color,Texture* texture = nullptr);
 		void Submit(GameObject& gameobject);
 		void Submit(Line& line);
 		void Submit(Collision& collision);

@@ -10,13 +10,11 @@ layout(location = 5) in vec4 rotationMat0;
 layout(location = 6) in vec4 rotationMat1;
 layout(location = 7) in vec4 rotationMat2;
 layout(location = 8) in vec4 rotationMat3;
-layout(location = 9) in int m_isParticle;
 layout(location = 10) in vec4 positionMat0;
 layout(location = 11) in vec4 positionMat1;
 layout(location = 12) in vec4 positionMat2;
 layout(location = 13) in vec4 positionMat3;
 
-out int particle;
 out vec4 positionsfrag;
 out float tex_index;
 out vec4 out_color;
@@ -47,7 +45,6 @@ void main() {
 	v_textcoords = texcoords;
 	out_color = m_color;
 	tex_index = texIndex;
-	particle = m_isParticle;
 	positionsfrag = gl_Position;
 };
 
@@ -59,7 +56,6 @@ in vec4 positionsfrag;
 in float tex_index;
 in vec4 out_color;
 in vec2 v_textcoords;
-in int particle;
 
 uniform sampler2D u_Texture[32];
 

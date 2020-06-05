@@ -9,9 +9,14 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	MainThread::Init();
 	ThreadPool::Init();
 	Batch::Init();
-	this->app = app;
+	Gui::GetInstance()->LoadStandartFonts();
 	EventSystem::Instance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
+	Shader::defaultShader = new Shader("src/Shaders/Basic.shader");
+	if (app == nullptr)
+		this->app = new Application();
+	else
+		this->app = app;
 }
 void EntryPoint::Run()
 {
@@ -19,7 +24,6 @@ void EntryPoint::Run()
 	double editortimer = 1;
 	app->OnStart();
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
-
 		Renderer::DrawCalls = 0;
 		
 		ImGui_ImplOpenGL3_NewFrame();
@@ -59,12 +63,16 @@ void EntryPoint::Run()
 		void* tex = reinterpret_cast<void*>(Window::GetCamera().frameBuffer->texture);
 
 		ImGui::Begin("ViewPort", &ViewPort::Instance()->toolOpen, ImGuiWindowFlags_NoScrollbar);
-		if (ImGui::IsWindowHovered()) {
+		if (ImGui::IsWindowFocused())
+			ViewPort::Instance()->IsActive = true;
+		else
+			ViewPort::Instance()->IsActive = false;
+
+		if (ImGui::IsWindowHovered())
 			ViewPort::Instance()->IsHovered = true;
-		}
-		else {
+		else
 			ViewPort::Instance()->IsHovered = false;
-		}
+
 		ViewPort::Instance()->SetViewPortPos(ImGui::GetWindowPos().x,ImGui::GetWindowPos().y);
 		if (ViewPort::Instance()->GetSize().x != ImGui::GetWindowSize().x || ViewPort::Instance()->GetSize().y != ImGui::GetWindowSize().y) {
 			ViewPort::Instance()->SetSize(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
@@ -74,7 +82,7 @@ void EntryPoint::Run()
 			ViewPort::Instance()->viewportResized = false;
 
 		ImGui::GetWindowDrawList()->AddImage(tex, ImVec2(ViewPort::Instance()->GetViewPortPos().x,
-                            ViewPort::Instance()->GetViewPortPos().y), ImVec2(ViewPort::Instance()->GetViewPortPos().x + ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetViewPortPos().y + ViewPort::Instance()->GetSize().y), ImVec2(0, 1), ImVec2(1, 0));
+        ViewPort::Instance()->GetViewPortPos().y), ImVec2(ViewPort::Instance()->GetViewPortPos().x + ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetViewPortPos().y + ViewPort::Instance()->GetSize().y), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();
 
 		if (isEditorEnable)
@@ -89,7 +97,7 @@ void EntryPoint::Run()
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
-
+		Input::Clear();
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}

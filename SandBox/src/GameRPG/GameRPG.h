@@ -31,7 +31,9 @@ public:
 	}
 
 	virtual void OnCollision(void* _col) override {
-		SetColor(COLORS::Red);
+		Collision* col = static_cast<Collision*>(_col);
+		if (col->GetTag() == "B")
+			SetColor(COLORS::Red);
 	}
 };
 
@@ -42,6 +44,7 @@ public:
 	TextureAtlas* textureAtlas = nullptr;
 	PlayerRPG* pl = nullptr;
 	GameObject* go = nullptr;
+	GameObject* go1 = nullptr;
 	double timer = -1;
 	int id = 0;
 	Font* font = nullptr;
@@ -49,6 +52,7 @@ public:
 		obstacle = new GameObject("obstacle", 0, -10);
 		obstacle->GetComponentManager()->AddComponent<Collision>()->IsTrigger = true;
 		pl = new PlayerRPG("Player",0,0);
+		go1 = new GameObject("test", 0, 0);
 		textureAtlas = new TextureAtlas(128,128,"src/GameRPG/Textures/RPGpack_sheet_2X.png");
 		std::unordered_map<char, glm::vec2> textures;
 		const char* map =
@@ -81,7 +85,6 @@ public:
 		
 		timer += DeltaTime::deltatime;
 
-		Batch::GetInstance()->indexcount = 0;
 		Batch::GetInstance()->Begin();
 		Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, -70, 36, 22, COLORS::Green, 6, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 		Gui::GetInstance()->Text(font, "ID : %d", true, -70, 33, 22, COLORS::Green, 0, id);

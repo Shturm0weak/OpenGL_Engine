@@ -52,10 +52,13 @@ const float borderedge = 0.0;
 uniform sampler2D u_Texture[32];
 
 void main() {
-	if (flagIsGui > 0.5) {
-		color = vec4(out_color.r, out_color.g, out_color.b,0.3);
-	}
-	else if(flagIsGui <= 0.5){
+	//if (flagIsGui > 0.5) {
+	//	int index = int(tex_index);
+	//	vec4 texColor = texture(u_Texture[index], v_textcoords);
+	//	color = texColor * out_color;
+	//	//color = out_color;
+	//}
+	//else if(flagIsGui <= 0.5){
 		//float distance = 1.0 - texture(u_Texture[tex_index], v_textcoords).a;
 		//float alpha = 1.0 - smoothstep(width, width + edge, distance);
 		int index = int(tex_index);
@@ -67,5 +70,5 @@ void main() {
 		//float overallalpha = alpha + (1.0 - alpha) * outlinealpha;
 		//vec3 overallcolor = mix(outlineColor, vec3(out_color.r, out_color.g, out_color.b), alpha / overallalpha);
 		//color = vec4(out_color.r, out_color.g, out_color.b, alpha);
-	}
+	//}
 };

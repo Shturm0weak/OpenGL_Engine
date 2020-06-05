@@ -2,54 +2,150 @@
 #include "Editor.h"
 #include <iostream>
 #include <filesystem>
+#include "ColoredOutput.h"
 namespace fs = std::filesystem;
 
 using namespace Doom;
 
 void Editor::EditorUpdate()
 {
-	ImGui::Begin("Console", &tool_active);
+	Debug();
+
+	ImGui::Begin("Console");
+
 	if (ImGui::Button("Save")) {
 		Renderer::Save("C:/Users/Alexandr/Desktop/saved.txt");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load")) {
-		selected = 0;
 		Renderer::Load("C:/Users/Alexandr/Desktop/saved.txt");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("EXIT")) {
 		glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
 	}
+	if (ImGui::Button("Create Atlas")) {
+		IsActiveTextureAtlasCreation = !IsActiveTextureAtlasCreation;
+	}
+	CreateTextureAtlas();
+
+	ImGui::Checkbox("Visible collisions", &Doom::Collision::IsVisible);
+	ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 100.f);
+	Window::GetCamera().Zoom(abs(Window::GetCamera().GetZoomLevel()));
 	ImGui::End();
-	ImGui::Begin("Scene", &tool_active);
+
+	ImGui::Begin("Scene");
+	if (ImGui::BeginPopupContextWindow())
+	{
+		if (ImGui::MenuItem("Create GameObject"))
+		{
+			Renderer::CreateGameObject();
+			Renderer::CalculateObjectsVectors().size();
+			go = static_cast<GameObject*>(&Renderer2DLayer::objects2d.back().get());
+		}
+		if (ImGui::MenuItem("Clone"))
+		{
+			GameObject* clgo = Renderer::CreateGameObject();
+			clgo->operator=(*go);
+			go = clgo;
+		}
+			
+		if (ImGui::MenuItem("Delete"))
+		{
+			if (go != nullptr) {
+				if (Renderer2DLayer::objects2d.size() > 1) {
+					Renderer::DeleteObject(go->GetId());
+				}
+				else {
+					go->Enable = false;
+					std::cout << BOLDYELLOW << "Warning: you cannot delete the last object on the scene, create new one or current object will be set to disable\n" << RESET;
+				}
+				go = static_cast<GameObject*>(&Renderer2DLayer::objects2d[0].get());
+			}
+			ImGui::EndPopup();
+			ImGui::End();
+			return;
+		}
+		ImGui::EndPopup();
+	}
+
+	ImGui::SetWindowFontScale(1.25);
 	Renderer::CalculateObjectsVectors();
-	if (ImGui::Button("Create a gameobject")) {
-		Renderer::CreateGameObject();
-		Renderer::CalculateObjectsVectors().size();
-		selected = Renderer::GetAmountOfObjects() - Renderer::GetObjectsWithOwnerReference().size() - 1;
+
+	
+	if (go == nullptr) {
+		go = static_cast<GameObject*>(&Renderer2DLayer::objects2d[0].get());
 	}
-	if (ImGui::CollapsingHeader("GameObjects")) {
-		ImGui::ListBox("Objects", &selected, Renderer::GetItems(), Renderer::GetObjectsWithNoOwnerReference().size());
+
+	if (ImGui::CollapsingHeader("Game Objects")) {
+		unsigned int amount = Renderer::GetAmountOfObjects();
+		for (unsigned int i = 0; i < amount; i++)
+		{
+			GameObject* go = static_cast<GameObject*>(&Renderer2DLayer::objects2d[i].get());
+			if (go->GetOwner() != nullptr) {
+				continue;
+			}
+			ImGui::PushID(go->GetId());
+			if (this->go == go && ImGui::IsItemVisible()) {
+				ImVec2 sp = ImGui::GetCursorScreenPos();
+				ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
+			}
+			if (ImGui::TreeNode(go->name->c_str())) {
+				if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
+					this->go = go;
+				unsigned int childsAmount = go->GetChilds().size();
+				if (childsAmount > 0) {
+					for (unsigned int j = 0; j < childsAmount; j++)
+					{
+						GameObject* child = static_cast<GameObject*>(go->GetChilds()[j]);
+						ImGui::Indent();
+						ImGui::PushID(child->GetId());
+						if (this->go == child && ImGui::IsItemVisible()) {
+							ImVec2 sp = ImGui::GetCursorScreenPos();
+							ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
+						}
+						if (ImGui::TreeNode(child->name->c_str())) {
+							if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
+								this->go = child;
+							unsigned int childsAmount = child->GetChilds().size();
+							if (childsAmount > 0) {
+								for (unsigned int j = 0; j < childsAmount; j++)
+								{
+									GameObject* child1 = static_cast<GameObject*>(child->GetChilds()[j]);
+									ImGui::PushID(child1->GetId());
+									ImGui::Indent();
+									if (this->go == child1 && ImGui::IsItemVisible()) {
+										ImVec2 sp = ImGui::GetCursorScreenPos();
+										ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
+									}
+									if (ImGui::TreeNode(child1->name->c_str())) {
+										if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
+											this->go = child1;
+										ImGui::TreePop();
+									}
+									ImGui::PopID();
+									ImGui::Unindent();
+								}
+							}
+							ImGui::TreePop();
+						}
+						ImGui::PopID();
+						ImGui::Unindent();
+					}
+				}
+				ImGui::TreePop();
+			}
+			ImGui::PopID();
+		}
 	}
-	go = static_cast<GameObject*>(Renderer::GetReference(Renderer::GetObjectsWithNoOwnerReference()[selected]));
-	if (ImGui::Button("Clone gameobject")) {
-		GameObject* clgo = Renderer::CreateGameObject();
-		clgo->operator=(*go);
-		selected = Renderer::GetObjectsWithNoOwnerReference().size();
-	}
-	if (ImGui::Button("Delete selected gameobject")) {
-		if (selected == Renderer::GetObjectsWithNoOwnerReference().size() - 1)
-			selected--;
-		Renderer::DeleteObject(go->GetId());
-		ImGui::End();
-		return;
-	}
+
+	ImGui::NewLine();
 	ImGui::End();
-	ImGui::Begin("Properties", &tool_active);
+
+	ImGui::Begin("Properties");
 	 {
+		ImGui::SetWindowFontScale(1.25);
 		if (Renderer::GetObjectsWithNoOwnerReference().size() > 0) {
-			go = static_cast<GameObject*>(Renderer::GetReference(Renderer::GetObjectsWithNoOwnerReference()[selected]));
 			if (go == nullptr)
 				return;
 			Doom::Transform* tr = go->component_manager->GetComponent<Doom::Transform>();
@@ -72,134 +168,17 @@ void Editor::EditorUpdate()
 				}
 				go->Setlayer(go->GetLayer());
 				Renderer::CalculateObjectsVectors();
-				for (unsigned int i = 0; i < Renderer::GetObjectsWithNoOwnerReference().size(); i++)
-				{
-					if (Renderer::GetObjectsWithNoOwnerReference()[i] == go->GetId()) {
-						selected = i;
-						break;
-					}
-					selected = 0;
-				}
 			}
-			if (go->GetChilds().size() >  0) {
-				if (ImGui::CollapsingHeader("Childs")) {
-					ImGui::ListBox("Childs", &selectedchild, go->GetItemsNames(), go->GetChilds().size());
-				}
-			}
-			if (selectedchild > -1) {
-				GameObject* child = static_cast<GameObject*>(Renderer::GetReference(Renderer::GetObjectsWithOwnerReference()[selectedchild]));
-				Doom::Transform* trchild = child->component_manager->GetComponent<Doom::Transform>();
-				Doom::Collision* colchild = child->component_manager->GetComponent<Doom::Collision>();
-				ImGui::Begin(child->name->c_str(), &tool_active);
-				ImGui::Text("ID %d", child->GetId());
-				if (ImGui::CollapsingHeader("Components")) {
-					ImGui::ListBox("Components", &selectedcomponent, child->GetComponentManager()->GetItems(), child->GetComponentManager()->GetAmountOfComponents());
-					if (colchild == nullptr) {
-						if (ImGui::Button("Add collision")) {
-							child->GetComponentManager()->AddComponent<Doom::Collision>();
-						}
-					}
-				}
-				if (ImGui::CollapsingHeader("Transform")) {
-					ImGui::Text("Position: x: %lf y: %lf", child->GetPositions().x, child->GetPositions().y);
-					ImGui::InputFloat2("Set the borders of X and Y position slider", changeSliderPos);
-					ImGui::SliderFloat("Position X", &(trchild->position.x), changeSliderPos[0], changeSliderPos[1]);
-					ImGui::SliderFloat("Position Y", &(trchild->position.y), changeSliderPos[0], changeSliderPos[1]);
-					ImGui::InputFloat2("Positions", &(trchild->position.x, trchild->position.x));
-					ImGui::Text("Scale");
-					ImGui::InputFloat2("Set the borders of X and Y scale slider", changeSliderScale);
-					ImGui::SliderFloat("Scale X", &(child->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
-					ImGui::SliderFloat("Scale Y", &(child->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
-					ImGui::InputFloat2("Scale", &(child->scaleValues[0], child->scaleValues[0]));
-					color = child->GetColor();
-					ImGui::ColorEdit4("Color", color);
-					trchild->Scale(child->scaleValues[0], child->scaleValues[1]);
-					if (child->GetComponentManager()->GetComponent<Animator>() == nullptr || child->GetComponentManager()->GetComponent<Animator>()->isPlayingAnim == false)
-						child->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
-					delete[] color;
-					int counterImagesButtons = 0;
-					for (unsigned int i = 0; i < texture.size(); i++)
-					{
-						void* my_tex_id = reinterpret_cast<void*>(texture[i]->m_RendererID);
-						int frame_padding = -1;
-						if (counterImagesButtons > 9) {
-							ImGui::NewLine();
-							counterImagesButtons = 0;
-						}
-						if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
-							if (child != nullptr) {
-								child->SetTexture(texturesPath[i]);
-							}
-						}
-						ImGui::SameLine();
-						counterImagesButtons++;
-					}
-					ImGui::NewLine();
-					if (ImGui::Button("Nod texture")) {
-						if (child != nullptr)
-							child->SetTexture(nullptr);
-					}
-					ImGui::NewLine();
-					if (ImGui::Button("Refresh textures")) {
-						for (unsigned int i = 0; i < texture.size(); i++)
-						{
-							texture[i]->~Texture();
-						}
-						texturesPath.clear();
-						texture.clear();
-						CheckTexturesFolder("src/Images");
-					}
-					ImGui::SliderAngle("Rotate", &trchild->angle);
-					ImGui::InputInt3("Rotate axes", axes);
-					trchild->RotateOnce(trchild->angle, glm::vec3(axes[0], axes[1], axes[2]));
-				}
-				if (colchild != nullptr) {
-					if (ImGui::CollapsingHeader("Collision")) {
-						ImGui::Text("Collision");
-						ImGui::Text("ID %d", colchild->GetId());
-						ImGui::Text("Tag %s", colchild->GetTag().c_str());
-						ImGui::InputText("Tag", tag, sizeof(tag));
-						ImGui::SameLine();
-						if (ImGui::Button("Change tag")) {
-							colchild->SetTag(tag);
-						}
-						ImGui::Checkbox("Enable collision", &colchild->Enable);
-						ImGui::Checkbox("Trigger", &colchild->IsTrigger);
-						ImGui::InputFloat2("Set the borders of X and Y offset slider", changeSliderCollisionOffset);
-						ImGui::SliderFloat("Offset X", &colchild->offsetX, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-						ImGui::SliderFloat("Offset Y", &colchild->offsetY, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-						ImGui::InputFloat2("Offset", &(colchild->offsetX, colchild->offsetX));
-						colchild->SetOffset(colchild->offsetX, colchild->offsetY);
-						if (ImGui::Button("Remove collision")) {
-							child->component_manager->RemoveComponent<Doom::Collision>();
-							selectedcomponent = 0;
-						}
-					}
-				}
-				if(ImGui::Button("Close")) {
-					selectedchild = -1;
-				}
-				ImGui::End();
-			}
-			if (ImGui::CollapsingHeader("Components")) {
-				ImGui::ListBox("Components",&selectedcomponent, go->GetComponentManager()->GetItems(), go->GetComponentManager()->GetAmountOfComponents());
-				if (col == nullptr) {
-					if (ImGui::Button("Add collision")) {
-						go->GetComponentManager()->AddComponent<Doom::Collision>();
-					}
-				}
-			}
+
 			if (ImGui::CollapsingHeader("Transform")) {
 				ImGui::Text("Position: x: %lf y: %lf", go->GetPositions().x, go->GetPositions().y);
 				ImGui::InputFloat2("Set the borders of X and Y position slider", changeSliderPos);
 				ImGui::SliderFloat("Position X", &(tr->position.x), changeSliderPos[0], changeSliderPos[1]);
 				ImGui::SliderFloat("Position Y", &(tr->position.y), changeSliderPos[0], changeSliderPos[1]);
-				ImGui::InputFloat2("Positions", &(tr->position.x, tr->position.x));
 				ImGui::Text("Scale");
 				ImGui::InputFloat2("Set the borders of X and Y scale slider", changeSliderScale);
 				ImGui::SliderFloat("Scale X", &(go->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
 				ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
-				ImGui::InputFloat2("Scale", &(go->scaleValues[0], go->scaleValues[0]));
 				tr->Scale(go->scaleValues[0], go->scaleValues[1]);
 				
 				ImGui::SliderAngle("Rotate", &tr->angle);
@@ -207,7 +186,6 @@ void Editor::EditorUpdate()
 				tr->RotateOnce(tr->angle, glm::vec3(axes[0], axes[1], axes[2]));
 			}
 			if (ImGui::CollapsingHeader("Render")) {
-				//if (go->GetComponentManager()->GetComponent<Animator>() == nullptr || go->GetComponentManager()->GetComponent<Animator>()->isPlayingAnim == false)
 				color = go->GetColor();
 				ImGui::ColorEdit4("Color", color);
 				go->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
@@ -218,7 +196,7 @@ void Editor::EditorUpdate()
 				{
 					void* my_tex_id = reinterpret_cast<void*>(texture[i]->m_RendererID);
 					int frame_padding = -1;
-					if (counterImagesButtons > 9) {
+					if (counterImagesButtons > 6) {
 						ImGui::NewLine();
 						counterImagesButtons = 0;
 					}
@@ -235,27 +213,6 @@ void Editor::EditorUpdate()
 					counterImagesButtons++;
 				}
 
-				/*ImGui::NewLine();
-				ImGui::Text("Texture Atlases");
-				int counterAtlasesButtons = 0;
-				for (unsigned int i = 0; i < TextureAtlas::textureAtlases.size(); i++)
-				{
-					void* my_tex_id = reinterpret_cast<void*>(TextureAtlas::textureAtlases[i]->GetTexture()->m_RendererID);
-					int frame_padding = -1;
-					if (counterAtlasesButtons > 9) {
-						ImGui::NewLine();
-						counterAtlasesButtons = 0;
-					}
-					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
-						if (go != nullptr) {
-							go->textureAtlas = TextureAtlas::textureAtlases[i];
-							go->SetTexture(go->textureAtlas->GetTexture());
-						}
-					}
-					ImGui::SameLine();
-					counterAtlasesButtons++;
-				}
-				*/
 				ImGui::NewLine();
 				ImGui::InputFloat2("UVs Offset", uvsOffset);
 
@@ -263,7 +220,10 @@ void Editor::EditorUpdate()
 					if (go != nullptr && go->textureAtlas != nullptr)
 						go->SetUVs(go->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
 				}
-
+				if (ImGui::Button("Original UVs")) {
+					if (go != nullptr)
+						go->OriginalUvs();
+				}
 				if (ImGui::Button("No texture")) {
 					if (go != nullptr)
 						go->SetTexture(nullptr);
@@ -271,53 +231,56 @@ void Editor::EditorUpdate()
 				if (ImGui::Button("Refresh textures")) {
 					for (unsigned int i = 0; i < texture.size(); i++)
 					{
-						texture[i]->~Texture();
+						delete texture[i];
 					}
 					texturesPath.clear();
 					texture.clear();
-					CheckTexturesFolder("src/Images");
+					CheckTexturesFolderUnique("src/Images");
 				}
+				int prevselectedAtlas = selectedAtlas;
 				if (TextureAtlas::textureAtlases.size() > 0) {
 					ImGui::ListBox("Texture atlases", &selectedAtlas, TextureAtlas::GetTextureAtlases(), TextureAtlas::textureAtlases.size());
 				}
 				if (selectedAtlas != -1) {
-					ImGui::Begin("Texture Atlas", &tool_active, ImGuiWindowFlags_MenuBar);
-
-					Texture* textureOfAtlas = TextureAtlas::textureAtlases[selectedAtlas]->GetTexture();
-					int frame_padding = -1;
-					unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteWidth());
-					unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteHeight());
-					for (unsigned int i = 0; i < amountOfSpritesY; i++)
-					{
-						for (unsigned int j = 0; j < amountOfSpritesX; j++)
+					if (selectedAtlas != prevselectedAtlas)
+						tool_active = true;
+					if (tool_active) {
+						ImGui::Begin("Texture Atlas", &tool_active);
+					
+						Texture* textureOfAtlas = TextureAtlas::textureAtlases[selectedAtlas]->GetTexture();
+						int frame_padding = -1;
+						unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteWidth());
+						unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteHeight());
+						for (unsigned int i = 0; i < amountOfSpritesY; i++)
 						{
-							float* uvs = TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteUVs(j, amountOfSpritesY - i);
-							ImGui::PushID((i * amountOfSpritesX) + j);
-							if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
+							for (unsigned int j = 0; j < amountOfSpritesX; j++)
 							{
-								//std::cout << "Sprite: " << j << "	" << amountOfSpritesY - i << "\n";
-								if (go != nullptr) {
-									go->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
-									go->SetTexture(textureOfAtlas);
-									go->SetUVs(uvs);
+								float* uvs = TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteUVs(j, amountOfSpritesY - i);
+								ImGui::PushID((i * amountOfSpritesX) + j);
+								if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
+								{
+									if (go != nullptr) {
+										go->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
+										go->SetTexture(textureOfAtlas);
+										go->SetUVs(uvs);
+									}
 								}
+								ImGui::PopID();
+								ImGui::SameLine();
 							}
-							ImGui::PopID();
-							ImGui::SameLine();
+							ImGui::NewLine();
 						}
 						ImGui::NewLine();
+						ImGui::InputFloat2("Sprite size", spriteSize);
+						if (ImGui::Button("Apply")) {
+							TextureAtlas::textureAtlases[selectedAtlas]->SetSpriteSize(spriteSize[0], spriteSize[1]);
+						}
+						ImGui::End();
 					}
-					ImGui::NewLine();
-					ImGui::InputFloat2("Sprite size", spriteSize);
-					if (ImGui::Button("Apply")) {
-						TextureAtlas::textureAtlases[selectedAtlas]->SetSpriteSize(spriteSize[0], spriteSize[1]);
-					}
-					ImGui::NewLine();
-					if (ImGui::Button("Close")) {
+					else
 						selectedAtlas = -1;
-					}
-					ImGui::End();
 				}
+				
 			}
 			if (col != nullptr) {
 				if (ImGui::CollapsingHeader("Collision")) {
@@ -373,42 +336,89 @@ void Editor::EditorUpdate()
 				}
 			}
 
+			ImGui::NewLine();
+			ImGui::Indent(ImGui::GetWindowSize().x * 0.4);
+			if (col == nullptr) {
+				if (ImGui::Button("Add collision")) {
+					go->GetComponentManager()->AddComponent<Doom::Collision>();
+				}
+			}
 			
-
-			ImGui::Checkbox("Visible collisions", &Doom::Collision::IsVisible);
-			ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 100.f);
-			Window::GetCamera().Zoom(abs(Window::GetCamera().GetZoomLevel()));
+			ImGui::NewLine();
+			if (ImGui::Button("Add Child")) {
+				GameObject* child1 = new GameObject("Child", 0, 0);
+				go->AddChild((void*)child1);
+				child1->SetOwner((void*)go);
+			}
+			ImGui::Unindent();
 			tr->Translate(tr->position.x, tr->position.y);
 		}
 		
 	}
 
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS) , Draw calls %d", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate, Renderer::DrawCalls);
+
 	ImGui::End();
 }
 
-glm::vec4 Editor::ColorPickUp(float* c) {
-	
-	bool tool_active = true;
-	ImGui::Begin("Pick Color", &tool_active, ImGuiWindowFlags_MenuBar);
-	ImGui::ColorEdit4("Color", c);
-	glm::vec4 color = glm::vec4(c[0],c[1],c[2],c[3]);
-	ImGui::End();
+void Editor::CreateTextureAtlas() {
+	if (!IsActiveTextureAtlasCreation)
+		return;
+	ImGui::Begin("Texture Atlas creation", &IsActiveTextureAtlasCreation);
+	ImGui::InputFloat2("Sprite size", spriteSize);
+	ImGui::InputText("Path to texture folder from solution directory", pathToTextureFolder, 64);
+	if(ImGui::Button("Check Folder")) {
+		std::string path = pathToTextureFolder;
+		CheckTexturesFolder(path);
+	}
 
-	
-	return color;
+	int counterImagesButtons = 0;
+	ImGui::Text("Textures");
+	for (unsigned int i = 0; i < Texture::texturesArray.size(); i++)
+	{
+		void* my_tex_id = reinterpret_cast<void*>(Texture::texturesArray[i]->m_RendererID);
+		int frame_padding = -1;
+		if (counterImagesButtons > 6) {
+			ImGui::NewLine();
+			counterImagesButtons = 0;
+		}
+
+		if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
+			textureForAtlas = Texture::texturesArray[i];
+		}
+
+		ImGui::SameLine();
+		counterImagesButtons++;
+	}
+
+	ImGui::NewLine();
+	if (ImGui::Button("Apply") &&  textureForAtlas != nullptr) {
+		IsActiveTextureAtlasCreation = false;
+		TextureAtlas* textureAtlas = new TextureAtlas(spriteSize[0],spriteSize[1],textureForAtlas);
+	}
+	ImGui::End();
 }
 
-void Editor::CheckTexturesFolder(const std::string path)
+void Editor::CheckTexturesFolderUnique(const std::string path)
 {
 	auto f = std::bind([](std::string path) {
-		for (const auto & entry : fs::directory_iterator(path)) {
-			texturesPath.push_back(entry.path().string());
-			size_t index = 0;
-			index = texturesPath.back().find("\\", index);
-			texturesPath.back().replace(index, 1, "/");
-			texture.push_back(new Texture(texturesPath.back(),true));
+		try
+		{
+			for (const auto & entry : fs::directory_iterator(path)) {
+				std::string pathToTexture = entry.path().string();
+				if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+					texturesPath.push_back(pathToTexture);
+					size_t index = 0;
+					index = texturesPath.back().find("\\", index);
+					texturesPath.back().replace(index, 1, "/");
+					texture.push_back(new Texture(texturesPath.back(),true));
+				}
+			}
 		}
+		catch (const std::exception&)
+		{
+				
+		}
+		
 		for (unsigned int i = 0; i < texture.size(); i++)
 		{
 			std::function<void()> f2 = std::bind(&Texture::GenTexture,texture[i]);
@@ -419,8 +429,50 @@ void Editor::CheckTexturesFolder(const std::string path)
 		
 	}, path);
 	ThreadPool::Instance()->enqueue(f);
+}
 
-	
+void Editor::CheckTexturesFolder(const std::string path)
+{
+	auto f = std::bind([](std::string path) {
+		try
+		{
+			for (const auto & entry : fs::directory_iterator(path)) {
+				std::string pathToTexture = entry.path().string();
+				if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+					size_t index = 0;
+					index = pathToTexture.find("\\", index);
+					pathToTexture.replace(index, 1, "/");
+					Texture* text = new Texture(pathToTexture, true);
+					textureVecTemp.push_back(text);
+				}
+			}
+		}
+		catch (const std::exception&)
+		{
+
+		}
+
+		for (unsigned int i = 0; i < textureVecTemp.size(); i++)
+		{
+			std::function<void()> f2 = std::bind(&Texture::GenTexture, textureVecTemp[i]);
+			std::function<void()>* f1 = new std::function<void()>(f2);
+			EventSystem::Instance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+		}
+		textureVecTemp.clear();
+
+	}, path);
+	ThreadPool::Instance()->enqueue(f);
+}
+
+void Doom::Editor::Debug()
+{
+	ImGui::Begin("Debug");
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::Text("Draw calls %d", Renderer::DrawCalls);
+	ImGui::Text("VRAM used %lf",Texture::VRAMused);
+	ImGui::Text("Textures binded %d", Texture::bindedAmount);
+	ImGui::Text("Textures amount %d", Texture::texturesArray.size());
+	ImGui::End();
 }
 
 Editor * Editor::Instance()

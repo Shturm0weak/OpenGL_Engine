@@ -5,6 +5,7 @@
 #include "../Core/Timer.h"
 #include "Line.h"
 #include "ViewPort.h"
+#include "ParticleSystem.h"
 
 using namespace Doom;
 
@@ -53,6 +54,16 @@ void Doom::Renderer::DeleteObject(int id) {
 			Renderer2DLayer::objects2d[i].get().SetId(i);
 			Renderer2DLayer::objects2d[i].get().GetLayer() = i;
 		}
+	}
+	unsigned int childsAmount = go->GetChilds().size();
+	for (unsigned int i = 0; i < childsAmount; i++)
+	{
+		GameObject* child = static_cast<GameObject*>(go->GetChilds()[i]);
+		child->SetOwner(nullptr);
+	}
+	if (go->GetOwner() != nullptr) {
+		GameObject* owner = static_cast<GameObject*>(go->GetOwner());
+		owner->RemoveChild(go);
 	}
 	delete go;
 }
@@ -176,7 +187,7 @@ void Doom::Renderer::Load(const std::string filename)
 		}
 	}
 	in_file.close();
-	std::cout << "Save has been loaded" << std::endl;
+	std::cout << GREEN << "Save has been loaded" << RESET << std::endl;
 }
 
 GameObject* Doom::Renderer::SelectObject()
@@ -258,6 +269,13 @@ void Renderer::Render() {
 	
 	SubmitGameObjects(*camera); 
 	
+	size_t particleSize = Particle::particles.size();
+	for (size_t i = 0; i < particleSize; i++)
+	{
+		Particle* p = Particle::particles[i];
+		if (p->Enable)
+			Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX,p->scaleY),p->texture);
+	}
 	
 	//Simple render. one line in one draw call.
 	/*for (unsigned int i = 0; i < Line::lines.size(); i++)
@@ -307,7 +325,7 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 			}*/
 			for (auto object : Renderer2DLayer::objects2d) {
 				GameObject* go = (GameObject*)&object.get();
-				if (go->Enable == true && (go->AlwaysDraw || sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 30 * Window::GetCamera().GetZoomLevel()))
+				if (go->Enable == true && (go->AlwaysDraw || sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel()))
 				{
 					batch->Submit(*go);
 				}
@@ -318,59 +336,59 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 	}
 }
 
-void Doom::Renderer::CalculateMVPforAllObjects()
-{
-	
-	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
-	unsigned int size = GetAmountOfObjects() * 0.33333;
-		for (unsigned int i = 0; i < size; i++)
-		{
-			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
-			float * scaleVal = go->GetScale();
-			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
-			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
-			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
-			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
-			//go->MVP = go->pos * go->view;
-		}
-		isReadyToRenderFirstThread = true;
-		Renderer::condVar.notify_one();
-	});
-	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
-		unsigned int size = GetAmountOfObjects() - GetAmountOfObjects() * 0.33333;
-		unsigned int size1 = GetAmountOfObjects() * 0.33333 ;
-		for (unsigned int i = size1; i < size; i++)
-		{
-			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
-			float * scaleVal = go->GetScale();
-			//go->MVP = go->pos * go->view;
-			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
-			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
-			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
-			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
-			
-		}
-		isReadyToRenderSecondThread = true;
-		Renderer::condVar.notify_one();
-	});
-	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
-		unsigned int size = GetAmountOfObjects();
-		unsigned int size1 = size - GetAmountOfObjects() * 0.33333;
-		for (unsigned int i = size1; i < size; i++)
-		{
-			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
-			float * scaleVal = go->GetScale();
-			//go->MVP = go->pos * go->view;
-			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
-			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
-			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
-			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
-			
-		}
-		Renderer::isReadyToRenderThirdThread = true; 
-		Renderer::condVar.notify_one();
-	});
-}
+//void Doom::Renderer::CalculateMVPforAllObjects()
+//{
+//	
+//	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
+//	unsigned int size = GetAmountOfObjects() * 0.33333;
+//		for (unsigned int i = 0; i < size; i++)
+//		{
+//			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
+//			float * scaleVal = go->GetScale();
+//			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
+//			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
+//			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
+//			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
+//			//go->MVP = go->pos * go->view;
+//		}
+//		isReadyToRenderFirstThread = true;
+//		Renderer::condVar.notify_one();
+//	});
+//	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
+//		unsigned int size = GetAmountOfObjects() - GetAmountOfObjects() * 0.33333;
+//		unsigned int size1 = GetAmountOfObjects() * 0.33333 ;
+//		for (unsigned int i = size1; i < size; i++)
+//		{
+//			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
+//			float * scaleVal = go->GetScale();
+//			//go->MVP = go->pos * go->view;
+//			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
+//			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
+//			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
+//			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
+//			
+//		}
+//		isReadyToRenderSecondThread = true;
+//		Renderer::condVar.notify_one();
+//	});
+//	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
+//		unsigned int size = GetAmountOfObjects();
+//		unsigned int size1 = size - GetAmountOfObjects() * 0.33333;
+//		for (unsigned int i = size1; i < size; i++)
+//		{
+//			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i].get());
+//			float * scaleVal = go->GetScale();
+//			//go->MVP = go->pos * go->view;
+//			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
+//			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
+//			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
+//			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
+//			
+//		}
+//		Renderer::isReadyToRenderThirdThread = true; 
+//		Renderer::condVar.notify_one();
+//	});
+//}
 
 void Doom::Renderer::RenderText() {
 	Batch::GetInstance()->flushText(Batch::GetInstance()->TextShader);

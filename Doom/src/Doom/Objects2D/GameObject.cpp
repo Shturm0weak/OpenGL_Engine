@@ -13,23 +13,23 @@ GameObject::GameObject(const std::string name,float x, float y) {
 	component_manager->GetComponent<Transform>()->position.x = position.x = x;
 	component_manager->GetComponent<Transform>()->position.y = position.y = y;
 	this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
-	glGenVertexArrays(1, &this->vao);
-	glBindVertexArray(this->vao);
-	if (rendertype == Render2D) {
-		this->layout->Push<float>(2);
-		this->layout->Push<float>(2);
-	}
-	else if (rendertype == Render3D)
-	{
-		this->layout->Push<float>(2);
-		this->layout->Push<float>(2);
-	}
-	this->va->AddBuffer(*this->vb, *this->layout);
+	//glGenVertexArrays(1, &this->vao);
+	//glBindVertexArray(this->vao);
+	//if (rendertype == Render2D) {
+	//	this->layout->Push<float>(2);
+	//	this->layout->Push<float>(2);
+	//}
+	//else if (rendertype == Render3D)
+	//{
+	//	this->layout->Push<float>(2);
+	//	this->layout->Push<float>(2);
+	//}
+	//this->va->AddBuffer(*this->vb, *this->layout);
 	InitShader();
-	this->va->UnBind();
+	//this->va->UnBind();
 	this->shader->UnBind();
-	this->vb->UnBind();
-	this->ib->UnBind();
+	//this->vb->UnBind();
+	//this->ib->UnBind();
 	Renderer2DLayer::PushObj(*this);
 }
 
@@ -62,21 +62,21 @@ void GameObject::operator=(GameObject go) {
 }
 
 void GameObject::OnRunning(OrthographicCamera& camera) {
-		this->shader->Bind();
-		//this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
-		this->viewXscale = scale * view;
-		if (Static == false) {
-			this->MVP = camera.GetProjectionMatrix() * pos * viewXscale;
-			this->shader->UploadUnifromMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-		}
-		else {
-			this->MVP = ViewProjecTionRelatedToScreen * pos * viewXscale;
-			this->shader->UploadUnifromMat4("u_ViewProjection", ViewProjecTionRelatedToScreen);
-		}
-		this->shader->SetUniformMat4f("u_MVP", this->MVP);
-		if (shadertype == SHADER_TEXTURE)
-			this->texture->Bind(this->texture->m_RendererID);
-	Renderer2DLayer::Draw(*this->va, *this->ib, *this->shader);
+	//	this->shader->Bind();
+	//	//this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
+	//	this->viewXscale = scale * view;
+	//	if (Static == false) {
+	//		this->MVP = camera.GetProjectionMatrix() * pos * viewXscale;
+	//		this->shader->UploadUnifromMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+	//	}
+	//	else {
+	//		this->MVP = ViewProjecTionRelatedToScreen * pos * viewXscale;
+	//		this->shader->UploadUnifromMat4("u_ViewProjection", ViewProjecTionRelatedToScreen);
+	//	}
+	//	this->shader->SetUniformMat4f("u_MVP", this->MVP);
+	//	if (shadertype == SHADER_TEXTURE)
+	//		this->texture->Bind(this->texture->m_RendererID);
+	//Renderer2DLayer::Draw(*this->va, *this->ib, *this->shader);
 }
 
 
@@ -99,36 +99,7 @@ void GameObject::SetTexture(Texture* texture) {
 }
 
 void GameObject::InitShader() {
-	if (texture == (void*)0xCCCCCCCC && shadertype == SHADER_TEXTURE || texture == nullptr && shadertype == SHADER_TEXTURE) {
-		std::cout  << "InitShader" << " : "  << "Texture doesn't exist!"  << std::endl;
-		shadertype = SHADER_COLOR;
-	}
-	if (shader != (void*)0xCCCCCCCC || shader != nullptr) {
-		shader->UnBind();
-		delete(shader);
-		shader = nullptr;
-	}
-	if (shadertype == SHADER_TEXTURE) {
-		shader = new Shader("src/Shaders/Basic.shader");
-		shader->Bind();
-		this->texture->Bind(this->texture->m_RendererID);
-		this->shader->SetUniform1i("u_Texture", this->texture->m_RendererID);
-	}
-	else if (shadertype == SHADER_COLOR) {
-		shader = new Shader("src/Shaders/newshader.shader");
-		shader->Bind();
-		shader->SetUniform4fv("U_Color",this->color);
-	}
-	else if (shadertype == SHADER_BLOOM) {
-		shader = new Shader("src/Shaders/Bloom.shader");
-		shader->Bind();
-		if (texture == nullptr)
-			delete texture;
-		texture = new Texture("src/Images/bird.png");
-		this->texture->Bind(this->texture->m_RendererID);
-		this->shader->SetUniform1i("u_Texture", this->texture->m_RendererID);
-	}
-
+	shader = Shader::defaultShader;
 }
 
 void GameObject::SetShader(int _enum) {
@@ -152,7 +123,7 @@ void GameObject::SetShader(int _enum) {
 
 void GameObject::SetRenderType(RenderType type)
 {
-	rendertype = type;
+	/*rendertype = type;
 	delete va;
 	delete vb;
 	delete ib;
@@ -170,7 +141,7 @@ void GameObject::SetRenderType(RenderType type)
 		vb = new VertexBuffer(mesh3D, 24 * sizeof(float));
 		this->layout->Push<float>(3);
 	}
-	this->va->AddBuffer(*this->vb, *this->layout);
+	this->va->AddBuffer(*this->vb, *this->layout);*/
 }
 
 void GameObject::SetColor(vec4 color) {

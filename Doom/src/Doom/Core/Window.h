@@ -1,5 +1,6 @@
 #pragma once
 #include "../pch.h"
+#include "ColoredOutput.h"
 #include <ImGui/imgui.h>
 #include <ImGui/examples/imgui_impl_glfw.h>
 #include <ImGui/examples/imgui_impl_opengl3.h>
@@ -41,6 +42,10 @@ namespace Doom {
 			return props;
 		}
 
+		static void Exit() {
+			glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
+		}
+
 		static int Init(const char* Label,int width, int height,bool vsync) {
 			if (!glfwInit())
 				return -1;
@@ -60,7 +65,7 @@ namespace Doom {
 				std::cout << "error" << std::endl;
 				return -1;
 			}
-			std::cout << "Initialized window" << std::endl;
+			std::cout << BOLDGREEN << "Initialized window" << RESET << std::endl;
 
 			glfwSwapInterval(vsync); // Enable vsync
 
@@ -76,7 +81,7 @@ namespace Doom {
 			ImGui_ImplGlfw_InitForOpenGL(Window::GetWindow(), true);
 			ImGui_ImplOpenGL3_Init("#version 330");
 
-			ImGui::StyleColorsDark();
+			ImGui::StyleColorsClassic();
 			ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 			glEnable(GL_BLEND);

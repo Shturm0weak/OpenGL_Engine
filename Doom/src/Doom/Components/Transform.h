@@ -27,6 +27,7 @@ namespace Doom {
 		void Scale(float scaleX, float scaleY);
 		void Translate(float x, float y);
 		void RotateOnce(float angle, glm::vec3 axis);
+		void RotateOnce(glm::vec3 direction, glm::vec3 axis);
 	};
 
 }

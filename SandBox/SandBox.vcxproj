@@ -111,6 +111,8 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="src\2Dshootergame\PlayerCharacter.cpp" />
+    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
+    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -127,8 +129,13 @@
     <ClInclude Include="src\game\StressTest.h" />
     <ClInclude Include="src\game\TestImGui.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
+    <ClInclude Include="src\SpaceFire\Bullet.h" />
+    <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
+    <ClInclude Include="src\SpaceFire\ShipPlayer.h" />
+    <ClInclude Include="src\SpaceFire\SpaceFire.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="imgui.ini" />
     <None Include="src\Shaders\Basic.shader" />
     <None Include="src\Shaders\Batch.shader" />
     <None Include="src\Shaders\Bloom.shader" />
@@ -139,12 +146,16 @@
     <None Include="src\Shaders\Text.shader" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\font.txt" />
+    <Text Include="src\Fonts\arial.txt" />
+    <Text Include="src\Fonts\calibri.txt" />
+    <Text Include="src\Fonts\harrington.txt" />
     <Text Include="src\saved.txt" />
     <Text Include="src\savedRayCastTest.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\arial.png" />
+    <Image Include="src\Fonts\arial.png" />
+    <Image Include="src\Fonts\calibri.png" />
+    <Image Include="src\Fonts\harrington.png" />
     <Image Include="src\GameRPG\Textures\RPGpack_sheet_2X.png" />
     <Image Include="src\Images\arial.png" />
     <Image Include="src\Images\background.jpg" />
@@ -163,6 +174,10 @@
     <Image Include="src\Images\tube.png" />
     <Image Include="src\Images\watermellon.png" />
     <Image Include="src\Images\WhiteCircle.png" />
+    <Image Include="src\SpaceFire\Images\Ammo.png" />
+    <Image Include="src\SpaceFire\Images\SpaceBack.png" />
+    <Image Include="src\SpaceFire\Images\SpaceShip.png" />
+    <Image Include="src\SpaceFire\Images\WhiteCircle.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="src\Sounds\Coin.wav" />

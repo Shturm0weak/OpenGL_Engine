@@ -15,6 +15,7 @@ namespace Doom {
 		bool viewportResized = false;
 		bool toolOpen = true;
 		bool IsHovered = false;
+		bool IsActive = false;
 
 		static ViewPort* ViewPort::Instance() {
 			static ViewPort instance;

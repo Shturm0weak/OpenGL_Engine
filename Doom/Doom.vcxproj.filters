@@ -41,15 +41,12 @@
     <ClInclude Include="src\Doom\Render\RenderText.h" />
     <ClInclude Include="src\Doom\Render\Shader.h" />
     <ClInclude Include="src\Doom\Render\stb_image.h" />
-    <ClInclude Include="src\Doom\Render\Text.h" />
     <ClInclude Include="src\Doom\Render\Texture.h" />
     <ClInclude Include="src\Doom\Render\VertexArray.h" />
     <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
     <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
     <ClInclude Include="src\Doom\Core\AllStatics.h" />
     <ClInclude Include="src\Doom\EntryPoint.h" />
-    <ClInclude Include="src\Doom\Gui\Button.h" />
-    <ClInclude Include="src\Doom\Gui\GuiItem.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
     <ClInclude Include="src\Doom\Core\Ray.h" />
     <ClInclude Include="src\Doom\Core\Sound.h" />
@@ -61,6 +58,8 @@
     <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImSequencer.h" />
+    <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
+    <ClInclude Include="src\Doom\Render\Gui.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -82,13 +81,10 @@
     <ClCompile Include="src\Doom\Render\Renderer2D.cpp" />
     <ClCompile Include="src\Doom\Render\Shader.cpp" />
     <ClCompile Include="src\Doom\Render\stb_image.cpp" />
-    <ClCompile Include="src\Doom\Render\Text.cpp" />
     <ClCompile Include="src\Doom\Render\Texture.cpp" />
     <ClCompile Include="src\Doom\Render\VertexArray.cpp" />
     <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
     <ClCompile Include="src\Doom\EntryPoint.cpp" />
-    <ClCompile Include="src\Doom\Gui\Button.cpp" />
-    <ClCompile Include="src\Doom\Gui\GuiItem.cpp" />
     <ClCompile Include="src\Doom\Render\Line.cpp" />
     <ClCompile Include="src\Doom\Core\Ray.cpp" />
     <ClCompile Include="src\Doom\Core\Sound.cpp" />
@@ -99,6 +95,7 @@
     <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImSequencer.cpp" />
+    <ClCompile Include="src\Doom\Render\Gui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

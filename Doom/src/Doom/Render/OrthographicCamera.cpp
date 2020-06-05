@@ -64,11 +64,11 @@ void Doom::OrthographicCamera::ChangeAspectRation(float left, float right, float
 }
 
 void OrthographicCamera::Increase() {
-	if (Input::IsKeyPressed(Keycode::KEY_LEFT_CONTROL)) {
-		if (Input::IsKeyPressed(Keycode::KEY_PAGE_UP)) {
+	if (Input::IsKeyDown(Keycode::KEY_LEFT_CONTROL)) {
+		if (Input::IsKeyDown(Keycode::KEY_PAGE_UP)) {
 			Zoom(abs(GetZoomLevel() + (1 * DeltaTime::GetDeltaTime())));
 		}
-		else if (Input::IsKeyPressed(Keycode::KEY_PAGE_DOWN)) {
+		else if (Input::IsKeyDown(Keycode::KEY_PAGE_DOWN)) {
 			if (GetZoomLevel() <= 0)
 				return;
 			Zoom(abs(GetZoomLevel() - (1 * DeltaTime::GetDeltaTime())));
@@ -83,25 +83,30 @@ void OrthographicCamera::SetOnStart() {
 }
 
 void OrthographicCamera::CameraMovement() {
-	if (Input::IsKeyPressed(Keycode::KEY_UP)) {
-		MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime()), 0));
+	if (Input::IsKeyDown(Keycode::KEY_UP)) {
+		MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
 	}
-	if (Input::IsKeyPressed(Keycode::KEY_DOWN)) {
-		MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime()), 0));
+	if (Input::IsKeyDown(Keycode::KEY_DOWN)) {
+		MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
 	}
-	if (Input::IsKeyPressed(Keycode::KEY_RIGHT)) {
-		MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime()), 0, 0));
+	if (Input::IsKeyDown(Keycode::KEY_RIGHT)) {
+		MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
 	}
-	if (Input::IsKeyPressed(Keycode::KEY_LEFT)) {
-		MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime()), 0, 0));
+	if (Input::IsKeyDown(Keycode::KEY_LEFT)) {
+		MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
 	}
-	if (Input::IsKeyPressed(Keycode::KEY_G)) {
+	if (Input::IsKeyDown(Keycode::KEY_G)) {
 		if (Editor::Instance()->selectedGO != nullptr) {
 			Editor::Instance()->selectedGO->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 		}
 	}
 	Increase();
 	SetOnStart();
+}
+
+glm::vec2 Doom::OrthographicCamera::GetRatio()
+{ 
+	return glm::vec2(GetAspectRation().x / Window::GetProps()[0], GetAspectRation().y / Window::GetProps()[1]);
 }
 
 

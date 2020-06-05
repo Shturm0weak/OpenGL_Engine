@@ -10,11 +10,14 @@ namespace Doom {
 
 	class DOOM_API Shader {
 	private:
+		static std::vector<Shader*> shaders;
 		std::string m_FilePath;
 		unsigned int m_RendererID;
 		int GetUniformLocation(const std::string& name);
 		std::unordered_map<std::string, int> m_UniformLocationCache;
 	public:
+		static Shader* defaultShader;
+
 		Shader(std::string filepath);
 		~Shader();
 

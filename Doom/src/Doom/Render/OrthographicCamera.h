@@ -49,6 +49,9 @@ namespace Doom {
 
 		void CameraMovement();
 
+		glm::vec2 GetRatio();
+
+		glm::vec2 GetAspectRation() { return glm::vec2(abs(aspectration[0]),abs(aspectration[3])); }
 		void RecalculateViewMatrix();
 		void Zoom(float zoomlevel);
 

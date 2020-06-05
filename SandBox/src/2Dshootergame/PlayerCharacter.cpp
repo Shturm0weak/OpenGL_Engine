@@ -113,7 +113,7 @@ void PlayerCharacter::PlayerMovement()
 {
 	animIndex = 1;
 	tr->Move(0, -5 + jump, 0);
-	if (fireRateTimer > fireRate && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
+	if (fireRateTimer > fireRate && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 		//Sound::Play(L"src/Sounds/GunFire.wav");
 		Hit hit;
 		glm::vec2 direction;
@@ -132,7 +132,7 @@ void PlayerCharacter::PlayerMovement()
 		line->Enable = false;
 		muzzleFlashObj->Enable = false;
 	}
-	if (Input::IsKeyPressed(Keycode::KEY_D)) {
+	if (Input::IsKeyDown(Keycode::KEY_D)) {
 		tr->Move(speed, 0,0);
 		animIndex = 3;
 		OriginalUvs();
@@ -140,7 +140,7 @@ void PlayerCharacter::PlayerMovement()
 		flashOffset.x = 1.1f;
 		turnSide = 0;
 	}
-	if (Input::IsKeyPressed(Keycode::KEY_A)) {
+	if (Input::IsKeyDown(Keycode::KEY_A)) {
 		tr->Move(-speed, 0,0);
 		animIndex = 3;
 		muzzleFlashObj->ReversedUvs();

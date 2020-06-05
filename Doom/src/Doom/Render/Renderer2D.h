@@ -45,6 +45,9 @@ namespace Doom {
 		friend class Batch;
 		friend class Ray;
 
+
+		static std::vector <std::reference_wrapper<Renderer2DLayer>> collision2d;
+		static std::vector <std::reference_wrapper<Renderer2DLayer>> objects2d;
 	protected:
 		Position position;
 		virtual ~Renderer2DLayer() {}
@@ -54,8 +57,7 @@ namespace Doom {
 		static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
 		std::string* type = new std::string("");
 		std::string* name = new std::string("");
-		static std::vector <std::reference_wrapper<Renderer2DLayer>> collision2d;
-		static std::vector <std::reference_wrapper<Renderer2DLayer>> objects2d;
+		
 		static int obj_id;
 		static int col_id;
 		RenderType rendertype = Render2D;
