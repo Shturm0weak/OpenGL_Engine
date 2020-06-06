@@ -15,6 +15,7 @@ namespace Doom {
 		struct Position {
 			float x = 0;
 			float y = 0;
+			float z = 0;
 		};
 	public:
 		void SetObjectType(std::string _type) { *type = _type; }

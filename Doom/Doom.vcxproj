@@ -59,8 +59,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;_WIN64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;_CRT_SECURE_NO_WARNINGS;_WIN64;_USE_MATH_DEFINES;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;$(SolutionDir)OpenAl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -68,7 +68,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Doom\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Debug-windows-x86_64\Doom\Doom.lib</ImportLibrary>
     </Link>
@@ -80,8 +80,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;_WIN64;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;WIN32;VORBIS_FPU_CONTROL;_CRT_SECURE_NO_WARNINGS;_WIN64;_USE_MATH_DEFINES;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;$(SolutionDir)OpenAl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -98,7 +98,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Doom\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Release-windows-x86_64\Doom\Doom.lib</ImportLibrary>
     </Link>
@@ -107,6 +107,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Doom\Application\Application.h" />
+    <ClInclude Include="src\Doom\Application\Bomb.h" />
+    <ClInclude Include="src\Doom\Application\Coin.h" />
+    <ClInclude Include="src\Doom\Application\HP.h" />
+    <ClInclude Include="src\Doom\Application\Player.h" />
+    <ClInclude Include="src\Doom\Audio\SoundManager.h" />
+    <ClInclude Include="src\Doom\Audio\wavParser.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
@@ -128,7 +135,6 @@
     <ClInclude Include="src\Doom\Core\KeyCode.h" />
     <ClInclude Include="src\Doom\Core\Listener.h" />
     <ClInclude Include="src\Doom\Core\Ray.h" />
-    <ClInclude Include="src\Doom\Core\Sound.h" />
     <ClInclude Include="src\Doom\Core\ThreadPool.h" />
     <ClInclude Include="src\Doom\Core\Timer.h" />
     <ClInclude Include="src\Doom\Core\Window.h" />
@@ -159,8 +165,11 @@
     <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
     <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
     <ClInclude Include="src\Doom\Render\ViewPort.h" />
+    <ClInclude Include="src\Doom\Audio\Sound.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Doom\Audio\Sound.cpp" />
+    <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
@@ -171,7 +180,6 @@
     <ClCompile Include="src\Doom\Core\Editor.cpp" />
     <ClCompile Include="src\Doom\Core\EventSystem.cpp" />
     <ClCompile Include="src\Doom\Core\Ray.cpp" />
-    <ClCompile Include="src\Doom\Core\Sound.cpp" />
     <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
     <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -195,6 +203,7 @@
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />
     <ClCompile Include="src\Doom\Render\VertexArray.cpp" />
     <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
+    <ClCompile Include="src\Doom\vorbis.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\vendor\ImGui\ImGui.vcxproj">

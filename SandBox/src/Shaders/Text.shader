@@ -41,34 +41,30 @@ in float flagIsGui;
 in vec4 out_color;
 in vec2 v_textcoords;
 
-const vec3 outlineColor = vec3(1.0, 1.0, 1.0);
-
-const float width = 0.9;
-const float edge = 0.1;
-
-const float borderwidth = 0.0;
-const float borderedge = 0.0;
-
+uniform vec4 u_outlineColor;
+uniform float u_width;
+uniform float u_edge;
+uniform float u_borderwidth;
+uniform float u_borderedge;
+uniform vec2 u_offset;
 uniform sampler2D u_Texture[32];
 
 void main() {
-	//if (flagIsGui > 0.5) {
-	//	int index = int(tex_index);
-	//	vec4 texColor = texture(u_Texture[index], v_textcoords);
-	//	color = texColor * out_color;
-	//	//color = out_color;
-	//}
-	//else if(flagIsGui <= 0.5){
-		//float distance = 1.0 - texture(u_Texture[tex_index], v_textcoords).a;
-		//float alpha = 1.0 - smoothstep(width, width + edge, distance);
+	if (flagIsGui > 0.5) {
 		int index = int(tex_index);
 		vec4 texColor = texture(u_Texture[index], v_textcoords);
 		color = texColor * out_color;
-		//float distance2 = 1.0 - texture(u_Texture, v_textcoords).a;
-		//float outlinealpha = 1.0 - smoothstep(borderwidth, borderwidth + borderedge, distance2);
+	}
+	else if (flagIsGui <= 0.5) {
+		int index = int(tex_index);
+		float distance = 1.0 - texture(u_Texture[index], v_textcoords).a;
+		float alpha = 1.0 - smoothstep(u_width, u_width + u_edge, distance);
+		float distance2 = 1.0 - texture(u_Texture[index], v_textcoords + u_offset).a;
+		float outlinealpha = 1.0 - smoothstep(u_borderwidth, u_borderwidth + u_borderedge, distance2);
 
-		//float overallalpha = alpha + (1.0 - alpha) * outlinealpha;
-		//vec3 overallcolor = mix(outlineColor, vec3(out_color.r, out_color.g, out_color.b), alpha / overallalpha);
-		//color = vec4(out_color.r, out_color.g, out_color.b, alpha);
-	//}
+		float overallalpha = alpha + (1.0 - alpha) * outlinealpha;
+		vec3 overallcolor = mix(vec3(u_outlineColor.r, u_outlineColor.g, u_outlineColor.b), vec3(out_color.r, out_color.g, out_color.b), alpha / overallalpha);
+		color = vec4(overallcolor, overallalpha);
+	}
+		
 };

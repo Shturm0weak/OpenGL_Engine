@@ -39,6 +39,9 @@ namespace Doom {
 		
 		void CreateTextureAtlas();
 
+		float TextColor[4] = {255,255,255,255};
+		float shadowOffset[2] = {0,0};
+
 	public:
 
 		static std::vector<Texture*> textureVecTemp;
@@ -52,6 +55,7 @@ namespace Doom {
 		static void CheckTexturesFolder(const std::string path);
 		friend class Doom::Renderer;
 		void Debug();
+		void TextProps();
 	};
 
 }

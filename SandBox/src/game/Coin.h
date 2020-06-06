@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include <random>
-#include "Core/Sound.h"
+#include "Audio/Sound.h"
 
 using namespace Doom;
 
@@ -63,7 +63,6 @@ public:
 	virtual void OnCollision(void* _col)override {
 		Collision* col = static_cast<Collision*>(_col);
 		if (col->GetTag() == "Player") {
-			Sound::Play(L"src/Sounds/Coin.wav",12000);
 			this->col->Enable = false;
 			Player* player = dynamic_cast<Player*>(&col->GetOwnerOfComponent());
 			player->scores++;

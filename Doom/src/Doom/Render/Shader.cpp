@@ -77,7 +77,7 @@ void Shader::UploadUnifromMat4(const std::string& name,const glm::mat4& matrix)
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void Shader::SetUniform1fv(std::string name, float v0) {
+void Shader::SetUniform1f(std::string name, float v0) {
 	glUniform1fv(GetUniformLocation(name), 1, &v0);
 }
 

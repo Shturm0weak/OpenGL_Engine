@@ -22,10 +22,10 @@ namespace Doom {
 		Transform();
 		Position position;
 		float angle = 0;
-		void Move(float speedX, float speedY, float speedZ);
+		void Move(float speedX = 0, float speedY = 0, float speedZ = 0);
 		void Rotate(float angle, glm::vec3 axis);
-		void Scale(float scaleX, float scaleY);
-		void Translate(float x, float y);
+		void Scale(float scaleX, float scaleY,float scaleZ = 0);
+		void Translate(float x = 0, float y = 0,float z = 0);
 		void RotateOnce(float angle, glm::vec3 axis);
 		void RotateOnce(glm::vec3 direction, glm::vec3 axis);
 	};

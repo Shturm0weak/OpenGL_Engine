@@ -5,8 +5,20 @@
 
 namespace Doom {
 
+	struct TextProperties {
+	public:
+		float width = 0.4;
+		float edge = 0.1;
+		float borderwidth = 0.f;
+		float borderedge = 0.01f;
+		glm::vec4 outLineColor = COLORS::White;
+		glm::vec2 shadowOffset = glm::vec2(0.000, 0.000);
+	};
+
 	class DOOM_API Gui {
 	public:
+
+		TextProperties textProps;
 
 		enum AlignHorizontally {
 			XCENTER = 1,
@@ -23,6 +35,9 @@ namespace Doom {
 			CALIBRI = 0,
 			ARIAL = 1,
 			HARRINGTON = 2,
+			PEAK = 3,
+			PLAYBALL = 4,
+			SEGOE = 5,
 		};
 
 		AlignHorizontally xAlign = LEFT;

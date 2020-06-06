@@ -35,12 +35,12 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float scal
 			for (size_t j = 0; j < s.size(); j++)
 			{
 				pchar = s[j];
-				if (pchar == '.') {
+				if (pchar == '.' || pchar == ',') {
 					border = true;
 				}
 				if (border == true)
 					counter1++;
-				if (charsAfterComma == 0 && pchar == '.')
+				if (charsAfterComma == 0 && (pchar == '.' || pchar == ','))
 					break;
 				
 				size_t size = font->characters.size();
@@ -206,15 +206,29 @@ void Doom::Gui::LoadStandartFonts()
 	standartFonts.push_back(font);
 
 	font = new Font();
-	font->LoadFont("src/Fonts/arial.txt", "src/Fonts/arial.png");
+	font->LoadFont("src/fonts/arial.txt", "src/fonts/arial.png");
 	font->LoadCharacters();
 	standartFonts.push_back(font);
 
 	font = new Font();
-	font->LoadFont("src/Fonts/harrington.txt", "src/Fonts/harrington.png");
+	font->LoadFont("src/fonts/harrington.txt", "src/fonts/harrington.png");
 	font->LoadCharacters();
 	standartFonts.push_back(font);
 
+	font = new Font();
+	font->LoadFont("src/Fonts/Peak.txt", "src/Fonts/Peak.png");
+	font->LoadCharacters();
+	standartFonts.push_back(font);
+
+	font = new Font();
+	font->LoadFont("src/Fonts/playball.txt", "src/Fonts/playball.png");
+	font->LoadCharacters();
+	standartFonts.push_back(font);
+
+	font = new Font();
+	font->LoadFont("src/Fonts/segoe.txt", "src/Fonts/segoe.png");
+	font->LoadCharacters();
+	standartFonts.push_back(font);
 
 	FontBind(standartFonts.front());
 }

@@ -49,7 +49,6 @@
     <ClInclude Include="src\Doom\EntryPoint.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
     <ClInclude Include="src\Doom\Core\Ray.h" />
-    <ClInclude Include="src\Doom\Core\Sound.h" />
     <ClInclude Include="src\Doom\Render\TextureAtlas.h" />
     <ClInclude Include="src\Doom\Render\TileMap.h" />
     <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
@@ -60,6 +59,14 @@
     <ClInclude Include="src\Doom\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\Render\Gui.h" />
+    <ClInclude Include="src\Doom\Application\Application.h" />
+    <ClInclude Include="src\Doom\Application\Bomb.h" />
+    <ClInclude Include="src\Doom\Application\Coin.h" />
+    <ClInclude Include="src\Doom\Application\HP.h" />
+    <ClInclude Include="src\Doom\Application\Player.h" />
+    <ClInclude Include="src\Doom\Audio\Sound.h" />
+    <ClInclude Include="src\Doom\Audio\SoundManager.h" />
+    <ClInclude Include="src\Doom\Audio\wavParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -87,7 +94,6 @@
     <ClCompile Include="src\Doom\EntryPoint.cpp" />
     <ClCompile Include="src\Doom\Render\Line.cpp" />
     <ClCompile Include="src\Doom\Core\Ray.cpp" />
-    <ClCompile Include="src\Doom\Core\Sound.cpp" />
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />
     <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
@@ -96,6 +102,9 @@
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="src\Doom\Render\Gui.cpp" />
+    <ClCompile Include="src\Doom\vorbis.h" />
+    <ClCompile Include="src\Doom\Audio\Sound.cpp" />
+    <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

@@ -187,7 +187,7 @@ void Doom::Renderer::Load(const std::string filename)
 		}
 	}
 	in_file.close();
-	std::cout << GREEN << "Save has been loaded" << RESET << std::endl;
+	std::cout << BOLDGREEN << "Save has been loaded" << RESET << std::endl;
 }
 
 GameObject* Doom::Renderer::SelectObject()

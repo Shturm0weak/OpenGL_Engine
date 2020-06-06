@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ShipPlayer.h"
 #include "ShipEnemy.h"
 #include "Core/Timer.h"
@@ -15,28 +16,35 @@ class SpaceFire : public Application {
 	double textRenderTimer = 0;
 	bool pause = false;
 	double fps = 0;
+	int fontSize = 40;
+	Sound* backSound = new Sound("src/SpaceFire/Sounds/back.ogg");
 public:
 	void OnStart() {
-		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->CALIBRI]);
-		ImGui::SetCurrentContext(Window::imGuiContext);
-		ammoTexture = new Texture("src/SpaceFire/Images/Ammo.png");
-		backgroundTexture = new Texture("src/SpaceFire/Images/SpaceBack.png");
-		background1 = new GameObject("BackGround1");
-		background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		background1->SetTexture(backgroundTexture);
-		background2 = new GameObject("BackGround2");
-		background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 101);
-		background2->SetTexture(backgroundTexture);
-		background2->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
-		pl = new ShipPlayer();
-		float x = -10;
-		for (unsigned int i = 0; i < 3; i++)
-		{
-			enemies.push_back(new ShipEnemy("ShipEnemy", x, 20));
-			enemies[i]->pl = pl;
-			x += 10;
-		}
-		pl->hp = 0;
+			SoundManager::CreateSoundAsset("back", backSound);
+			backSound->SetVolume(0.03f);
+			SoundManager::Loop(backSound);
+			Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PEAK]);
+			ImGui::SetCurrentContext(Window::imGuiContext);
+			ammoTexture = new Texture("src/SpaceFire/Images/Ammo.png");
+			backgroundTexture = new Texture("src/SpaceFire/Images/SpaceBack.png");
+			background1 = new GameObject("BackGround1");
+			background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
+			background1->SetTexture(backgroundTexture);
+			background2 = new GameObject("BackGround2");
+			background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
+			background2->SetTexture(backgroundTexture);
+			pl = new ShipPlayer();
+			float x = -10;
+			for (unsigned int i = 0; i < 3; i++)
+			{
+				enemies.push_back(new ShipEnemy("ShipEnemy", x, 20));
+				enemies[i]->pl = pl;
+				x += 10;
+			}
+			pl->hp = 0;
+			background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 0);
+			background2->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
+			
 	}
 
 	void Menu() {
@@ -44,10 +52,10 @@ public:
 		double y = 400 * 0.5;
 
 		Gui::GetInstance()->Panel(x, y, 700, 400, COLORS::DarkGray * 0.8f);
-		if (Gui::GetInstance()->Button("Exit", x - x - 150, y - 200 - 10, 48, 300, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+		if (Gui::GetInstance()->Button("Exit", x - x - 250, y - 200 - 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			Window::Exit();
 		}
-		if (Gui::GetInstance()->Button("Restart", x - x - 150, y - 100 + 10, 48, 300, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+		if (Gui::GetInstance()->Button("Restart", x - x - 250, y - 100 + 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			pl->Respawn();
 			pause = false;
 		}
@@ -81,9 +89,9 @@ public:
 		}
 		else {
 			Debug();
-			Gui::GetInstance()->Text("HP %f", true, Window::GetProps()[0] * 0.8, -Window::GetProps()[1] * 0.8, 76, COLORS::White, 0, pl->hp);
-			Gui::GetInstance()->Text("Kills %d", true, Window::GetProps()[0] * 0.8, -Window::GetProps()[1] * 0.8 + 100, 76, COLORS::White, 0, pl->kills);
-			Gui::GetInstance()->Text("%d", true, -Window::GetProps()[0] * 0.8, -Window::GetProps()[1] * 0.8, 76, COLORS::White, 0, pl->ammo);
+			Gui::GetInstance()->Text("HP %f", true, Window::GetProps()[0] * 0.7, -Window::GetProps()[1] * 0.8, fontSize, COLORS::White, 0, pl->hp);
+			Gui::GetInstance()->Text("Kills %d", true, Window::GetProps()[0] * 0.7, -Window::GetProps()[1] * 0.8 + 100, fontSize, COLORS::White, 0, pl->kills);
+			Gui::GetInstance()->Text("%d", true, -Window::GetProps()[0] * 0.8, -Window::GetProps()[1] * 0.8 - 25, fontSize, COLORS::White, 0, pl->ammo);
 			Gui::GetInstance()->Panel(-Window::GetProps()[0] * 0.8 - 10 - 100, -Window::GetProps()[1] * 0.8,100,100,COLORS::White,ammoTexture);
 		}
 
@@ -104,14 +112,14 @@ public:
 
 	void Debug() {
 		fps = 1000.f / (DeltaTime::deltatime * 1000.f);
-		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::XCENTER;
-		Gui::GetInstance()->Text("FPS : %f", true, 900, 900, 76, COLORS::White, 0, fps);
-		Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 900, 820, 76, COLORS::White, 2, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
-		Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 900, 740, 76, COLORS::White, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
-		Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 900, 660, 76, COLORS::White, 2, pl->GetPositions().x, pl->GetPositions().y);
-		Gui::GetInstance()->Text("Collisions: %d", true, 900, 580, 76, COLORS::White, 0, Renderer::GetAmountOfCollisions());
-		Gui::GetInstance()->Text("Textures: %d", true, 900, 500, 76, COLORS::White, 0, Texture::bindedAmount);
-		Gui::GetInstance()->Text("VRAM used: %f MB", true, 900, 420, 76, COLORS::White, 3, Texture::VRAMused);
+		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::LEFT;
+		Gui::GetInstance()->Text("FPS : %f", true, 400, 900, fontSize, COLORS::White, 0, fps);
+		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 400, 820, fontSize, COLORS::White, 1, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 400, 740, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
+		Gui::GetInstance()->Text("Player X : %f Y : %f", true, 400, 660, fontSize, COLORS::White, 1, pl->GetPositions().x, pl->GetPositions().y);
+		Gui::GetInstance()->Text("Collisions: %d", true, 400, 580, fontSize, COLORS::White, 0, Renderer::GetAmountOfCollisions());
+		Gui::GetInstance()->Text("Textures: %d", true, 400, 500, fontSize, COLORS::White, 0, Texture::bindedAmount);
+		Gui::GetInstance()->Text("VRAM used: %f MB", true, 400, 420, fontSize, COLORS::White, 3, Texture::VRAMused);
 		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::LEFT;
 	}
 };

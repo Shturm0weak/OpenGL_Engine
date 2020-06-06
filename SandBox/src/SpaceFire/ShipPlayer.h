@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Audio/SoundManager.h"
+
 using namespace Doom;
 
 class Bullet;
@@ -13,7 +15,7 @@ private:
 	unsigned int usedBulletCounter = 0;
 	unsigned int amountOfBulletsInPool = 50;
 public:
-
+	Sound* fireSound = new Sound("src/SpaceFire/Sounds/fire.wav");
 	int ammo = 100;
 	unsigned int kills = 0;
 	bool isDead = false;

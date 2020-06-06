@@ -159,9 +159,9 @@ void Transform::Rotate(float theta, glm::vec3 axis) {
 	}
 }
 
-void Transform::Scale(float scaleX, float scaleY) {
-	owner->scale = glm::scale(glm::mat4(1.f), glm::vec3(scaleX, scaleY, 0));
-	owner->scaleValues[0] = scaleX; owner->scaleValues[1] = scaleY;
+void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
+	owner->scale = glm::scale(glm::mat4(1.f), glm::vec3(scaleX, scaleY, scaleZ));
+	owner->scaleValues[0] = scaleX; owner->scaleValues[1] = scaleY; owner->scaleValues[2] = scaleZ;
 	RealVertexPositions();
 	{
 		owner->WorldVertexPositions[0] = WorldVerPos[0];
@@ -184,11 +184,11 @@ void Transform::Scale(float scaleX, float scaleY) {
 	{
 		GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 		if (go->Enable == true)
-			go->GetComponentManager()->GetComponent<Transform>()->Scale(scaleX, scaleY);
+			go->GetComponentManager()->GetComponent<Transform>()->Scale(scaleX, scaleY,scaleZ);
 	}
 }
 
-void Transform::Translate(float x, float y)
+void Transform::Translate(float x, float y,float z)
 {
 	unsigned int size = owner->GetChilds().size();
 	for (unsigned int i = 0; i < size; i++)
@@ -196,12 +196,13 @@ void Transform::Translate(float x, float y)
 		GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 		double _x = go->position.x - owner->position.x;
 		double _y = go->position.y - owner->position.y;
+		double _z = go->position.z - owner->position.z;
 		if (go->Enable == true)
-			go->GetComponentManager()->GetComponent<Transform>()->Translate(_x + x, _y + y);
+			go->GetComponentManager()->GetComponent<Transform>()->Translate(_x + x, _y + y,_z + z);
 	}
 	position.x = x;
 	position.y = y;
-	position.z = 0;
+	position.z = z;
 	owner->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, position.z));
 	RealVertexPositions();
 	{
@@ -221,4 +222,5 @@ void Transform::Translate(float x, float y)
 		col->UpdateCollision(position.x, position.y, owner->pos, owner->view, owner->scale);
 	owner->position.x = position.x;
 	owner->position.y = position.y;
+	owner->position.z = position.z;
 }

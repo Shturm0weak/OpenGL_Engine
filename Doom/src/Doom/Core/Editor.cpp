@@ -3,6 +3,7 @@
 #include <iostream>
 #include <filesystem>
 #include "ColoredOutput.h"
+#include "../Render/Gui.h"
 namespace fs = std::filesystem;
 
 using namespace Doom;
@@ -472,6 +473,22 @@ void Doom::Editor::Debug()
 	ImGui::Text("VRAM used %lf",Texture::VRAMused);
 	ImGui::Text("Textures binded %d", Texture::bindedAmount);
 	ImGui::Text("Textures amount %d", Texture::texturesArray.size());
+	ImGui::End();
+	TextProps();
+}
+
+void Doom::Editor::TextProps()
+{
+	Gui* g = Gui::GetInstance();
+	ImGui::Begin("Text properties");
+	ImGui::SliderFloat("Width", &g->textProps.width,0,0.9);
+	ImGui::SliderFloat("Edge", &g->textProps.edge, 0.01, 0.9);
+	ImGui::SliderFloat("Border width", &g->textProps.borderwidth, 0, 0.9);
+	ImGui::SliderFloat("Border edge", &g->textProps.borderedge, 0.01, 0.9);
+	ImGui::ColorPicker4("Out line color", TextColor);
+	g->textProps.outLineColor = glm::vec4(TextColor[0], TextColor[1], TextColor[2], TextColor[3]);
+	ImGui::SliderFloat2("Shaddow offset", shadowOffset,-0.01,0.01);
+	g->textProps.shadowOffset = glm::vec2(shadowOffset[0], shadowOffset[1]);
 	ImGui::End();
 }
 

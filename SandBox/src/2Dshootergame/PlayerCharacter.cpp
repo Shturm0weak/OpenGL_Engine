@@ -2,7 +2,7 @@
 #include "Render/Line.h"
 #include "Core/Ray.h"
 #include "PlayerCharacter.h"
-#include "Core/Sound.h"
+#include "Audio/Sound.h"
 
 PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :GameObject(name, x, y)
 {

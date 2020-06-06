@@ -1,14 +1,16 @@
 #include "EntryPoint.h"
 #include "Core/Timer.h"
 #include "Render/Line.h"
+#include "Audio/SoundManager.h"
 
 using namespace Doom;
 
 EntryPoint::EntryPoint(Doom::Application* app) {
-	Window::Init("Doom Engine", 800, 600, false);
+	Window::Init("Doom Engine", 1280, 720, false);
 	MainThread::Init();
 	ThreadPool::Init();
 	Batch::Init();
+	SoundManager::Init();
 	Gui::GetInstance()->LoadStandartFonts();
 	EventSystem::Instance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
@@ -23,19 +25,28 @@ void EntryPoint::Run()
 	bool isEditorEnable = false;
 	double editortimer = 1;
 	app->OnStart();
+
+	bool FirstFrame = true;
+
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
-		Renderer::DrawCalls = 0;
+		DeltaTime::calculateDeltaTime();
+
+		if (FirstFrame) {
+			DeltaTime::deltatime = 0.000001;
+			FirstFrame = false;
+		}
+ 		Renderer::DrawCalls = 0;
 		
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-		DeltaTime::calculateDeltaTime();
 		Window::GetCamera().WindowResize();
 
 		EventSystem::Instance()->ProcessEvents();
 		Window::GetCamera().CameraMovement();
+		SoundManager::UpdateSourceState();
 
 		if (editortimer > 0.2 && Input::IsKeyPressed(Keycode::KEY_E)) {
 			if (isEditorEnable)
@@ -109,6 +120,7 @@ EntryPoint::~EntryPoint() {
 	delete app;
 	EventSystem::Instance()->Shutdown();
 	ThreadPool::Instance()->shutdown();
+	SoundManager::ShutDown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 	glfwTerminate();

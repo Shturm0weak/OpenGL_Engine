@@ -65,6 +65,7 @@ void ShipPlayer::ScreenBorders()
 
 ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y)
 {
+	SoundManager::CreateSoundAsset("fire", fireSound);
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
@@ -108,7 +109,7 @@ void ShipPlayer::Respawn()
 }
 
 void ShipPlayer::OnStart() {
-
+	
 }
 
 void ShipPlayer::OnUpdate() {
@@ -148,6 +149,7 @@ void ShipPlayer::Fire() {
 		bullets[usedBulletCounter]->lifeTimer = 0;
 		usedBulletCounter++;
 		ammo--;
+		SoundManager::Play(fireSound);
 	}
 	timerFire += DeltaTime::deltatime;
 }

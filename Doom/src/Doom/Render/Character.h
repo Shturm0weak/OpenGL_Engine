@@ -58,7 +58,7 @@ namespace Doom {
 		char ch;
 		Font* font = nullptr;
 		void Changecharater(Font* font, char ch);
-		Character(Font* font, char ch, float x = 0, float y = 0, float scale = 1);
+		Character(Font* font, int ch, float x = 0, float y = 0, float scale = 1);
 		//void OnRunning(OrthographicCamera& camera);
 		/*void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) {
 			va.Bind();
@@ -128,7 +128,7 @@ namespace Doom {
 				{
 					//std::cout << i << "	";
 					in_file >> id[i];
-					//std::cout << id[i] << "	";
+					//std::cout << id[i] << "	\n";
 					in_file >> x[i];
 					//std::cout << x[i] << "	";
 					in_file >> y[i];
@@ -145,6 +145,7 @@ namespace Doom {
 					//std::cout << xadvance[i] << std::endl;
 				}
 			}
+			//std::cout << "count " << count << std::endl;
 			in_file.close();
 			std::cout << BOLDGREEN << "Font " << name <<" has been loaded" << RESET << std::endl;
 		}
@@ -153,7 +154,7 @@ namespace Doom {
 			Character* character = nullptr;
 			for (unsigned int i = 0; i < count; i++)
 			{
-				character = (new Character(this, id[i]));
+				character = (new Character(this, i));
 				characters.push_back(character);
 				//std::cout << i << "	" << int(characters[i].get().ch) << "	" << characters[i].get().ch << std::endl;
 			}

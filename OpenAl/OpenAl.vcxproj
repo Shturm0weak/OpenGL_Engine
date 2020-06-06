@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{CA8183C9-F56D-4F35-AC20-B77FF6E17823}</ProjectGuid>
+    <RootNamespace>OpenAl</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)OpenAl\OpenAl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="OpenAl\alc\alc.cpp" />
+    <ClCompile Include="OpenAl\alc\alconfig.cpp" />
+    <ClCompile Include="OpenAl\alc\alu.cpp" />
+    <ClCompile Include="OpenAl\alc\ambdec.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\alsa.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\base.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\coreaudio.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\dsound.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\jack.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\loopback.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\null.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\oboe.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\opensl.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\oss.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\portaudio.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\pulseaudio.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\sdl2.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\sndio.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\solaris.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\wasapi.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\wave.cpp" />
+    <ClCompile Include="OpenAl\alc\backends\winmm.cpp" />
+    <ClCompile Include="OpenAl\alc\bformatdec.cpp" />
+    <ClCompile Include="OpenAl\alc\bs2b.cpp" />
+    <ClCompile Include="OpenAl\alc\bsinc_tables.cpp" />
+    <ClCompile Include="OpenAl\alc\converter.cpp" />
+    <ClCompile Include="OpenAl\alc\cpu_caps.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\autowah.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\chorus.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\compressor.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\dedicated.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\distortion.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\echo.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\equalizer.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\fshifter.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\modulator.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\null.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\pshifter.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\reverb.cpp" />
+    <ClCompile Include="OpenAl\alc\effects\vmorpher.cpp" />
+    <ClCompile Include="OpenAl\alc\filters\biquad.cpp" />
+    <ClCompile Include="OpenAl\alc\filters\nfc.cpp" />
+    <ClCompile Include="OpenAl\alc\filters\splitter.cpp" />
+    <ClCompile Include="OpenAl\alc\fpu_ctrl.cpp" />
+    <ClCompile Include="OpenAl\alc\helpers.cpp" />
+    <ClCompile Include="OpenAl\alc\hrtf.cpp" />
+    <ClCompile Include="OpenAl\alc\mastering.cpp" />
+    <ClCompile Include="OpenAl\alc\mixer\mixer_c.cpp" />
+    <ClCompile Include="OpenAl\alc\mixer\mixer_neon.cpp" />
+    <ClCompile Include="OpenAl\alc\mixer\mixer_sse.cpp" />
+    <ClCompile Include="OpenAl\alc\mixer\mixer_sse2.cpp" />
+    <ClCompile Include="OpenAl\alc\mixer\mixer_sse3.cpp" />
+    <ClCompile Include="OpenAl\alc\mixer\mixer_sse41.cpp" />
+    <ClCompile Include="OpenAl\alc\panning.cpp" />
+    <ClCompile Include="OpenAl\alc\ringbuffer.cpp" />
+    <ClCompile Include="OpenAl\alc\uhjfilter.cpp" />
+    <ClCompile Include="OpenAl\alc\uiddefs.cpp" />
+    <ClCompile Include="OpenAl\alc\voice.cpp" />
+    <ClCompile Include="OpenAl\al\auxeffectslot.cpp" />
+    <ClCompile Include="OpenAl\al\buffer.cpp" />
+    <ClCompile Include="OpenAl\al\effect.cpp" />
+    <ClCompile Include="OpenAl\al\error.cpp" />
+    <ClCompile Include="OpenAl\al\event.cpp" />
+    <ClCompile Include="OpenAl\al\extension.cpp" />
+    <ClCompile Include="OpenAl\al\filter.cpp" />
+    <ClCompile Include="OpenAl\al\listener.cpp" />
+    <ClCompile Include="OpenAl\al\source.cpp" />
+    <ClCompile Include="OpenAl\al\state.cpp" />
+    <ClCompile Include="OpenAl\common\alcomplex.cpp" />
+    <ClCompile Include="OpenAl\common\alexcpt.cpp" />
+    <ClCompile Include="OpenAl\common\alfstream.cpp" />
+    <ClCompile Include="OpenAl\common\almalloc.cpp" />
+    <ClCompile Include="OpenAl\common\alstring.cpp" />
+    <ClCompile Include="OpenAl\common\dynload.cpp" />
+    <ClCompile Include="OpenAl\common\polyphase_resampler.cpp" />
+    <ClCompile Include="OpenAl\common\strutils.cpp" />
+    <ClCompile Include="OpenAl\common\threads.cpp" />
+    <ClCompile Include="OpenAl\examples\alffplay.cpp" />
+    <ClCompile Include="OpenAl\examples\alhrtf.c" />
+    <ClCompile Include="OpenAl\examples\allatency.c" />
+    <ClCompile Include="OpenAl\examples\alloopback.c" />
+    <ClCompile Include="OpenAl\examples\almultireverb.c" />
+    <ClCompile Include="OpenAl\examples\alplay.c" />
+    <ClCompile Include="OpenAl\examples\alrecord.c" />
+    <ClCompile Include="OpenAl\examples\alreverb.c" />
+    <ClCompile Include="OpenAl\examples\alstream.c" />
+    <ClCompile Include="OpenAl\examples\alstreamcb.cpp" />
+    <ClCompile Include="OpenAl\examples\altonegen.c" />
+    <ClCompile Include="OpenAl\examples\common\alhelpers.c" />
+    <ClCompile Include="OpenAl\router\al.cpp" />
+    <ClCompile Include="OpenAl\router\alc.cpp" />
+    <ClCompile Include="OpenAl\router\router.cpp" />
+    <ClCompile Include="OpenAl\utils\alsoft-config\main.cpp" />
+    <ClCompile Include="OpenAl\utils\alsoft-config\mainwindow.cpp" />
+    <ClCompile Include="OpenAl\utils\alsoft-config\verstr.cpp" />
+    <ClCompile Include="OpenAl\utils\getopt.c" />
+    <ClCompile Include="OpenAl\utils\makemhr\loaddef.cpp" />
+    <ClCompile Include="OpenAl\utils\makemhr\loadsofa.cpp" />
+    <ClCompile Include="OpenAl\utils\makemhr\makemhr.cpp" />
+    <ClCompile Include="OpenAl\utils\openal-info.c" />
+    <ClCompile Include="OpenAl\utils\sofa-info.cpp" />
+    <ClCompile Include="OpenAl\utils\sofa-support.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpenAl\al.h" />
+    <ClInclude Include="OpenAl\alc.h" />
+    <ClInclude Include="OpenAl\alc\alcmain.h" />
+    <ClInclude Include="OpenAl\alc\alconfig.h" />
+    <ClInclude Include="OpenAl\alc\alcontext.h" />
+    <ClInclude Include="OpenAl\alc\alu.h" />
+    <ClInclude Include="OpenAl\alc\ambdec.h" />
+    <ClInclude Include="OpenAl\alc\ambidefs.h" />
+    <ClInclude Include="OpenAl\alc\backends\alsa.h" />
+    <ClInclude Include="OpenAl\alc\backends\base.h" />
+    <ClInclude Include="OpenAl\alc\backends\coreaudio.h" />
+    <ClInclude Include="OpenAl\alc\backends\dsound.h" />
+    <ClInclude Include="OpenAl\alc\backends\jack.h" />
+    <ClInclude Include="OpenAl\alc\backends\loopback.h" />
+    <ClInclude Include="OpenAl\alc\backends\null.h" />
+    <ClInclude Include="OpenAl\alc\backends\oboe.h" />
+    <ClInclude Include="OpenAl\alc\backends\opensl.h" />
+    <ClInclude Include="OpenAl\alc\backends\oss.h" />
+    <ClInclude Include="OpenAl\alc\backends\portaudio.h" />
+    <ClInclude Include="OpenAl\alc\backends\pulseaudio.h" />
+    <ClInclude Include="OpenAl\alc\backends\sdl2.h" />
+    <ClInclude Include="OpenAl\alc\backends\sndio.h" />
+    <ClInclude Include="OpenAl\alc\backends\solaris.h" />
+    <ClInclude Include="OpenAl\alc\backends\wasapi.h" />
+    <ClInclude Include="OpenAl\alc\backends\wave.h" />
+    <ClInclude Include="OpenAl\alc\backends\winmm.h" />
+    <ClInclude Include="OpenAl\alc\bformatdec.h" />
+    <ClInclude Include="OpenAl\alc\bs2b.h" />
+    <ClInclude Include="OpenAl\alc\bsinc_defs.h" />
+    <ClInclude Include="OpenAl\alc\bsinc_tables.h" />
+    <ClInclude Include="OpenAl\alc\bufferline.h" />
+    <ClInclude Include="OpenAl\alc\compat.h" />
+    <ClInclude Include="OpenAl\alc\converter.h" />
+    <ClInclude Include="OpenAl\alc\cpu_caps.h" />
+    <ClInclude Include="OpenAl\alc\devformat.h" />
+    <ClInclude Include="OpenAl\alc\effects\base.h" />
+    <ClInclude Include="OpenAl\alc\filters\biquad.h" />
+    <ClInclude Include="OpenAl\alc\filters\nfc.h" />
+    <ClInclude Include="OpenAl\alc\filters\splitter.h" />
+    <ClInclude Include="OpenAl\alc\fpu_ctrl.h" />
+    <ClInclude Include="OpenAl\alc\front_stablizer.h" />
+    <ClInclude Include="OpenAl\alc\hrtf.h" />
+    <ClInclude Include="OpenAl\alc\inprogext.h" />
+    <ClInclude Include="OpenAl\alc\logging.h" />
+    <ClInclude Include="OpenAl\alc\mastering.h" />
+    <ClInclude Include="OpenAl\alc\mixer\defs.h" />
+    <ClInclude Include="OpenAl\alc\mixer\hrtfbase.h" />
+    <ClInclude Include="OpenAl\alc\ringbuffer.h" />
+    <ClInclude Include="OpenAl\alc\uhjfilter.h" />
+    <ClInclude Include="OpenAl\alc\voice.h" />
+    <ClInclude Include="OpenAl\al\auxeffectslot.h" />
+    <ClInclude Include="OpenAl\al\buffer.h" />
+    <ClInclude Include="OpenAl\al\effect.h" />
+    <ClInclude Include="OpenAl\al\event.h" />
+    <ClInclude Include="OpenAl\al\filter.h" />
+    <ClInclude Include="OpenAl\al\listener.h" />
+    <ClInclude Include="OpenAl\al\source.h" />
+    <ClInclude Include="OpenAl\common\albyte.h" />
+    <ClInclude Include="OpenAl\common\alcomplex.h" />
+    <ClInclude Include="OpenAl\common\alexcpt.h" />
+    <ClInclude Include="OpenAl\common\alfstream.h" />
+    <ClInclude Include="OpenAl\common\almalloc.h" />
+    <ClInclude Include="OpenAl\common\alnumeric.h" />
+    <ClInclude Include="OpenAl\common\aloptional.h" />
+    <ClInclude Include="OpenAl\common\alspan.h" />
+    <ClInclude Include="OpenAl\common\alstring.h" />
+    <ClInclude Include="OpenAl\common\atomic.h" />
+    <ClInclude Include="OpenAl\common\dynload.h" />
+    <ClInclude Include="OpenAl\common\endiantest.h" />
+    <ClInclude Include="OpenAl\common\intrusive_ptr.h" />
+    <ClInclude Include="OpenAl\common\math_defs.h" />
+    <ClInclude Include="OpenAl\common\opthelpers.h" />
+    <ClInclude Include="OpenAl\common\polyphase_resampler.h" />
+    <ClInclude Include="OpenAl\common\pragmadefs.h" />
+    <ClInclude Include="OpenAl\common\strutils.h" />
+    <ClInclude Include="OpenAl\common\threads.h" />
+    <ClInclude Include="OpenAl\common\vecmat.h" />
+    <ClInclude Include="OpenAl\common\vector.h" />
+    <ClInclude Include="OpenAl\common\win_main_utf8.h" />
+    <ClInclude Include="OpenAl\efx-creative.h" />
+    <ClInclude Include="OpenAl\EFX-Util.h" />
+    <ClInclude Include="OpenAl\efx.h" />
+    <ClInclude Include="OpenAl\examples\common\alhelpers.h" />
+    <ClInclude Include="OpenAl\include\AL\al.h" />
+    <ClInclude Include="OpenAl\include\AL\alc.h" />
+    <ClInclude Include="OpenAl\include\AL\alext.h" />
+    <ClInclude Include="OpenAl\include\AL\efx-creative.h" />
+    <ClInclude Include="OpenAl\include\AL\efx-presets.h" />
+    <ClInclude Include="OpenAl\include\AL\efx.h" />
+    <ClInclude Include="OpenAl\resources\resource.h" />
+    <ClInclude Include="OpenAl\router\router.h" />
+    <ClInclude Include="OpenAl\utils\alsoft-config\mainwindow.h" />
+    <ClInclude Include="OpenAl\utils\alsoft-config\verstr.h" />
+    <ClInclude Include="OpenAl\utils\getopt.h" />
+    <ClInclude Include="OpenAl\utils\makemhr\loaddef.h" />
+    <ClInclude Include="OpenAl\utils\makemhr\loadsofa.h" />
+    <ClInclude Include="OpenAl\utils\makemhr\makemhr.h" />
+    <ClInclude Include="OpenAl\utils\sofa-support.h" />
+    <ClInclude Include="OpenAl\xram.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenAl\resources\openal32.rc" />
+    <ResourceCompile Include="OpenAl\resources\router.rc" />
+    <ResourceCompile Include="OpenAl\resources\soft_oal.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="OpenAl\hrtf_defs\CIAIR.def" />
+    <None Include="OpenAl\hrtf_defs\IRC_1005.def" />
+    <None Include="OpenAl\hrtf_defs\MIT_KEMAR.def" />
+    <None Include="OpenAl\hrtf_defs\MIT_KEMAR_sofa.def" />
+    <None Include="OpenAl\hrtf_defs\SCUT_KEMAR.def" />
+    <None Include="OpenAl\libs\Win32\OpenAL32.def" />
+    <None Include="OpenAl\libs\Win64\OpenAL32.def" />
+    <None Include="OpenAl\utils\CIAIR.def" />
+    <None Include="OpenAl\utils\IRC_1005.def" />
+    <None Include="OpenAl\utils\MIT_KEMAR.def" />
+    <None Include="OpenAl\utils\MIT_KEMAR_sofa.def" />
+    <None Include="OpenAl\utils\SCUT_KEMAR.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

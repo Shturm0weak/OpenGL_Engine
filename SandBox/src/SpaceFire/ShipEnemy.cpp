@@ -14,6 +14,7 @@ void ShipEnemy::OnCollision(void * _col)
 
 ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y)
 {
+	SoundManager::CreateSoundAsset("explosion",explosionSound);
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
@@ -74,6 +75,7 @@ void ShipEnemy::Death()
 	Enable = false;
 	col->Enable = false;
 	isDead = true;
+	SoundManager::Play(explosionSound);
 }
 
 void ShipEnemy::Fire() {

@@ -12,7 +12,7 @@
 #include "src/SpaceFire/SpaceFire.h"
 
 int main() {
-	Game* app = new Game();
+	SpaceFire* app = new SpaceFire();
 	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);
 	entrypoint->Run();
 	return 0;

@@ -6,7 +6,7 @@
 #include "Render/Batch.h"
 #include "Render/Line.h"
 #include "Render/ParticleSystem.h"
-
+#include "Audio/SoundManager.h"
 
 using namespace Doom;
 
@@ -46,8 +46,8 @@ DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
 DOOM_API OrthographicCamera Window::m_camera(-16.f, 16.f, 9.f, -9.f);
 
 DOOM_API float DeltaTime::time;
-DOOM_API float DeltaTime::lasttime;
-DOOM_API float DeltaTime::deltatime;
+DOOM_API float DeltaTime::lasttime = (float)glfwGetTime();
+DOOM_API float DeltaTime::deltatime = 0.0000001;
 DOOM_API std::mutex DeltaTime::mtx;
 
 DOOM_API bool Collision::IsVisible;
@@ -77,3 +77,7 @@ DOOM_API Shader* Shader::defaultShader = nullptr;
 DOOM_API std::vector<Shader*> Shader::shaders;
 
 DOOM_API std::vector<Particle*> Particle::particles;
+
+DOOM_API ALCdevice* SoundManager::alcDevice = nullptr;
+DOOM_API ALCcontext* SoundManager::alcContext = nullptr;
+DOOM_API std::map<std::string,Sound*> SoundManager::sounds;

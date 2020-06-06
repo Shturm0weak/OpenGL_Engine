@@ -13,6 +13,7 @@ private:
 	void Death();
 	void Fire();
 public:
+	Sound* explosionSound = new Sound("src/SpaceFire/Sounds/Explosion.wav");
 	ShipPlayer* pl = nullptr;
 
 	void Spawn();

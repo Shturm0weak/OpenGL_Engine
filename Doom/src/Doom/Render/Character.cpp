@@ -44,19 +44,16 @@ void Character::Changecharater(Font* font,char ch)
 	}
 }
 
-Character::Character(Font* font,char ch,float posx,float posy,float scale)
+Character::Character(Font* font,int ch,float posx,float posy,float scale)
 {
 	shader = font->shader;
 	this->font = font;
 	position.x = posx;
 	position.y = posy;
 	texture = font->fontAtlas;
-	this->ch = ch;
 	{
-		int index = (int)ch;
-		int i = 0;
-		while (index != font->id[i])
-			i++;
+		int i = ch;
+		this->ch = font->id[i];
 		id = font->id[i];
 		x = font->x[i];
 		y = font->y[i];

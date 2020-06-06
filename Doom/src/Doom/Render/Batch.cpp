@@ -1,5 +1,6 @@
 #include "Batch.h"
 #include "../Core/Timer.h"
+#include "Gui.h"
 
 using namespace Doom;
 
@@ -531,6 +532,12 @@ void Batch::flushText(Shader* shader)
 	shader->SetUniform1iv("u_Texture", samplers);
 	shader->UploadUnifromMat4("u_Projection", ViewProjecTionRelatedToCamera);
 	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniformVec2("u_offset", Gui::GetInstance()->textProps.shadowOffset);
+	shader->SetUniform1f("u_width", Gui::GetInstance()->textProps.width);
+	shader->SetUniform1f("u_edge", Gui::GetInstance()->textProps.edge);
+	shader->SetUniform1f("u_borderwidth", Gui::GetInstance()->textProps.borderwidth);
+	shader->SetUniform1f("u_borderedge", Gui::GetInstance()->textProps.borderedge);
+	shader->SetUniform4fv("u_outlineColor", Gui::GetInstance()->textProps.outLineColor);
 
 	glDrawElements(GL_TRIANGLES, indexcount, GL_UNSIGNED_INT, NULL);
 	Renderer::DrawCalls++;
