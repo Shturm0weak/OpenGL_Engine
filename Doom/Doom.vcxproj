@@ -60,7 +60,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;_CRT_SECURE_NO_WARNINGS;_WIN64;_USE_MATH_DEFINES;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;$(SolutionDir)OpenAl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -69,7 +69,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Doom\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Debug-windows-x86_64\Doom\Doom.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -81,7 +81,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;WIN32;VORBIS_FPU_CONTROL;_CRT_SECURE_NO_WARNINGS;_WIN64;_USE_MATH_DEFINES;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Doom\Includes\GLEW;$(SolutionDir)Doom\Includes\GLFW;$(SolutionDir)vendor;$(SolutionDir)OpenAl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -99,7 +99,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Doom\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Release-windows-x86_64\Doom\Doom.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -203,7 +203,7 @@
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />
     <ClCompile Include="src\Doom\Render\VertexArray.cpp" />
     <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
-    <ClCompile Include="src\Doom\vorbis.h" />
+    <ClCompile Include="src\Doom\Audio\vorbis.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\vendor\ImGui\ImGui.vcxproj">

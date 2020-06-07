@@ -102,9 +102,9 @@
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="src\Doom\Render\Gui.cpp" />
-    <ClCompile Include="src\Doom\vorbis.h" />
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
+    <ClCompile Include="src\Doom\Audio\vorbis.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

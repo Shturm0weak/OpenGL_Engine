@@ -3,12 +3,12 @@
 #include <string>
 #include <iostream>
 #include "../Core/ColoredOutput.h"
-#include "../OpenAl/OpenAl/al.h"
-#include "../OpenAl/OpenAl/alc.h"
+#include "OpenAl/OpenAl/al.h"
+#include "OpenAl/OpenAl/alc.h"
 #define STB_VORBIS_HEADER_ONLY
-#include "../vorbis.h"
-#include <map>
+#include "vorbis.h"
 #undef STB_VORBIS_HEADER_ONLY
+#include <map>
 
 namespace Doom {
 
@@ -30,8 +30,6 @@ namespace Doom {
 		AudioState state;
 		float volume;
 		bool loop;
-
-		void OggParser();
 
 		friend class SoundManager;
 	public:
