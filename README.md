@@ -11,6 +11,7 @@ Collision component SAT algorithm
 Transform component
 
 Component's manager
+
 Can draw lines and squares
 
 Batch and Simple 2D renderer
