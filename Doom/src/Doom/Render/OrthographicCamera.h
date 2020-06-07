@@ -41,7 +41,7 @@ namespace Doom {
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
 
-		void ChangeAspectRation(float l, float r, float t, float b);
+		void ChangeAspectRatio(float l, float r, float t, float b);
 
 		void Increase();
 
@@ -50,8 +50,9 @@ namespace Doom {
 		void CameraMovement();
 
 		glm::vec2 GetRatio();
-
-		glm::vec2 GetAspectRation() { return glm::vec2(abs(aspectration[0]),abs(aspectration[3])); }
+		float GetRationWH();
+		float GetRationHW();
+		glm::vec2 GetAspectRatio() { return glm::vec2(abs(aspectratio[0]),abs(aspectratio[3])); }
 		void RecalculateViewMatrix();
 		void Zoom(float zoomlevel);
 
@@ -69,7 +70,7 @@ namespace Doom {
 		glm::mat4 m_ViewMatrix;
 		glm::mat4 m_ViewProjectionMatrix;
 		float m_Rotation = 0.0f;
-		float aspectration[4];
+		float aspectratio[4];
 
 	};
 

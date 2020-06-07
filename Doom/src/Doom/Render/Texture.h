@@ -25,6 +25,7 @@ namespace Doom {
 		void Bind(unsigned int slot = 0) const;
 		void UnBind() const;
 
+		static void ShutDown();
 		inline int GetWidth() const { return m_width; }
 		inline int GetHeight() const { return m_height; }
 		inline std::string GetFilePath() { return m_FilePath; }

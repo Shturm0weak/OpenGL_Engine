@@ -96,7 +96,7 @@ Texture::~Texture() {
 	if (it != Texturesused.end()) {
 		it->second--;
 		//std::cout << "\n\nDelete texture " << m_FilePath << " used " << it->second << std::endl;
-		if (it->second == 0) {
+		if (it->second < 0) {
 			Texturesused.erase(it);
 			glDeleteTextures(1, &m_RendererID);
 			bindedAmount--;
@@ -143,4 +143,15 @@ void Texture::Bind(unsigned int slot) const {
 
 void Texture::UnBind() const{
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Doom::Texture::ShutDown()
+{
+	Texturesused.clear();
+	unsigned int size = texturesArray.size();
+	for (unsigned int i = 0; i <= size; i++)
+	{
+		delete texturesArray[i];
+	}
+	texturesArray.clear();
 }

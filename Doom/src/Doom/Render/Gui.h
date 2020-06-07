@@ -3,6 +3,9 @@
 #include "Batch.h"
 #include <stdarg.h>
 
+#define HEIGHT 1001 
+#define WIDTH 1920
+
 namespace Doom {
 
 	struct TextProperties {

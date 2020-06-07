@@ -7,7 +7,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Doom\Application.h" />
-    <ClInclude Include="src\Doom\Core.h" />
     <ClInclude Include="src\Doom\Core\Window.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -45,7 +44,6 @@
     <ClInclude Include="src\Doom\Render\VertexArray.h" />
     <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
     <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
-    <ClInclude Include="src\Doom\Core\AllStatics.h" />
     <ClInclude Include="src\Doom\EntryPoint.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
     <ClInclude Include="src\Doom\Core\Ray.h" />

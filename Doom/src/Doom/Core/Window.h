@@ -46,7 +46,7 @@ namespace Doom {
 			glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
 		}
 
-		static int Init(const char* Label,int width, int height,bool vsync) {
+		static int Init(const char* Label,float width, float height,bool vsync) {
 			if (!glfwInit())
 				return -1;
 			GetProps()[0] = width;

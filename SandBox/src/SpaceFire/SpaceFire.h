@@ -48,14 +48,14 @@ public:
 	}
 
 	void Menu() {
-		double x = -700 * 0.5;
-		double y = 400 * 0.5;
+		double x = 0;
+		double y = 0;
 
 		Gui::GetInstance()->Panel(x, y, 700, 400, COLORS::DarkGray * 0.8f);
-		if (Gui::GetInstance()->Button("Exit", x - x - 250, y - 200 - 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+		if (Gui::GetInstance()->Button("Exit", x + 0, y - 50 - 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			Window::Exit();
 		}
-		if (Gui::GetInstance()->Button("Restart", x - x - 250, y - 100 + 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+		if (Gui::GetInstance()->Button("Restart", y + 0, y + 50 + 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			pl->Respawn();
 			pause = false;
 		}
@@ -89,10 +89,12 @@ public:
 		}
 		else {
 			Debug();
-			Gui::GetInstance()->Text("HP %f", true, Window::GetProps()[0] * 0.7, -Window::GetProps()[1] * 0.8, fontSize, COLORS::White, 0, pl->hp);
-			Gui::GetInstance()->Text("Kills %d", true, Window::GetProps()[0] * 0.7, -Window::GetProps()[1] * 0.8 + 100, fontSize, COLORS::White, 0, pl->kills);
-			Gui::GetInstance()->Text("%d", true, -Window::GetProps()[0] * 0.8, -Window::GetProps()[1] * 0.8 - 25, fontSize, COLORS::White, 0, pl->ammo);
-			Gui::GetInstance()->Panel(-Window::GetProps()[0] * 0.8 - 10 - 100, -Window::GetProps()[1] * 0.8,100,100,COLORS::White,ammoTexture);
+			Gui::GetInstance()->Text("HP %f", true,1350, -800, fontSize, COLORS::White, 0, pl->hp);
+			Gui::GetInstance()->Text("Kills %d", true, 1350, -800 + 100, fontSize, COLORS::White, 0, pl->kills);
+			Gui::GetInstance()->yAlign = Gui::AlignVertically::YCENTER;
+			Gui::GetInstance()->Text("%d", true, -1350, -800 - 25, fontSize, COLORS::White, 0, pl->ammo);
+			Gui::GetInstance()->yAlign = Gui::AlignVertically::TOP;
+			Gui::GetInstance()->Panel(-1350 - 10 - 100, -800 - 25,100,100,COLORS::White,ammoTexture);
 		}
 
 		if (Input::IsKeyPressed(Keycode::KEY_ESCAPE) && !pl->isDead) {

@@ -77,8 +77,8 @@ Character::Character(Font* font,int ch,float posx,float posy,float scale)
 		mesh2D[14] = x / size;
 		mesh2D[15] = abs(y - size) / size;
 
-		double widthRatio = Window::GetCamera().GetAspectRation().x / Window::GetProps()[0];
-		double heightRatio = Window::GetCamera().GetAspectRation().y / Window::GetProps()[1];
+		double widthRatio = Window::GetCamera().GetAspectRatio().x / Window::GetProps()[0];
+		double heightRatio = Window::GetCamera().GetAspectRatio().y / Window::GetProps()[1];
 
 		mesh2D[0]  = 0;
 		mesh2D[1]  = 0;
@@ -99,7 +99,7 @@ Character::Character(Font* font,int ch,float posx,float posy,float scale)
 	this->Scale(scale);
 	InitShader();
 	this->shader->UnBind();
-	glm::vec2 proj = Window::GetCamera().GetAspectRation();
+	glm::vec2 proj = Window::GetCamera().GetAspectRatio();
 	ViewProjecTionRelatedToScreen = glm::ortho(-proj.x, proj.x, -proj.y, proj.y, 1.f, -1.f);
 }
 

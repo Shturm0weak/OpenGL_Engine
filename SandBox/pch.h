@@ -1,6 +1,6 @@
 #ifndef PCH_H
 #define PCH_H
-#include "Core.h"
+#include "Core/Core.h"
 #pragma warning(push)
 #pragma warning(disable:4251)
 #include <algorithm>

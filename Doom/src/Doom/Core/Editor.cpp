@@ -229,14 +229,11 @@ void Editor::EditorUpdate()
 					if (go != nullptr)
 						go->SetTexture(nullptr);
 				}
+				ImGui::InputText("path", pathToTextureFolder, 64);
 				if (ImGui::Button("Refresh textures")) {
-					for (unsigned int i = 0; i < texture.size(); i++)
-					{
-						delete texture[i];
-					}
 					texturesPath.clear();
 					texture.clear();
-					CheckTexturesFolderUnique("src/Images");
+					CheckTexturesFolderUnique(pathToTextureFolder);
 				}
 				int prevselectedAtlas = selectedAtlas;
 				if (TextureAtlas::textureAtlases.size() > 0) {

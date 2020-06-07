@@ -4,16 +4,18 @@
 
 using namespace Doom;
 
-void Doom::Gui::Text(std::string str, int m_static, float x, float y, float scale, glm::vec4 color , int charsAfterComma, ...)
+void Doom::Gui::Text(std::string str, int m_static, float x, float y, float startscale, glm::vec4 color , int charsAfterComma, ...)
 {
-	scale /= font->size;
+	x *= ((float)Window::GetProps()[0] / WIDTH);
+	y *= ((float)Window::GetProps()[1] / HEIGHT);
+	float scale = startscale / font->size;
 	std::vector<Character*> characters1;
 	std::vector<unsigned int> newLines1;
 
 	std::vector<Character*> characters;
 	std::vector<unsigned int> newLines;
-	double widthRatio = Window::GetCamera().GetAspectRation().x  / Window::GetProps()[0];
-	double heightRatio = Window::GetCamera().GetAspectRation().y / Window::GetProps()[1];
+	double widthRatio = Window::GetCamera().GetRatio().x;
+	double heightRatio = Window::GetCamera().GetRatio().y;
 	text = str;
 	m_charsAfterComma = charsAfterComma;
 	int counter1 = 0;
@@ -82,11 +84,13 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float scal
 	for (unsigned int i = 0; i < size; i++)
 	{
 		character = characters[i];
+		character->_scale.x = scale * ((float)Window::GetProps()[0] / WIDTH);
+		character->_scale.y = scale * ((float)Window::GetProps()[1] / HEIGHT);
+		if (_height < character->height)
+			_height = character->height *character->_scale.y;
 		_width += character->xadvance * character->_scale.x;
 		
 	}
-	
-	_height += 80 * character->_scale.y;
 
 	if (xAlign == AlignHorizontally::XCENTER) {
 		x -= _width * 0.5;
@@ -102,7 +106,7 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float scal
 		for (unsigned int j = 0; j < newLinesSize; j++)
 		{
 			if (i == newLines[j]) {
-				y -= 80 * scale;
+				y -= startscale * 1.5;
 				counter = 0;
 				newLines.erase(newLines.begin() + j);
 				break;
@@ -110,8 +114,6 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float scal
 		}
 		character = characters[i];
 		character->isRelatedToCam = m_static;
-		character->_scale.x = scale;
-		character->_scale.y = scale;
 		character->color = color;
 
 		//Pos is top-left corner
@@ -140,21 +142,31 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float scal
 
 bool Doom::Gui::Button(std::string str, float x, float y,float scale, float width, float height, glm::vec4 btnColor, glm::vec4 pressedBtnColor, glm::vec4 textColor)
 {
+	float tempx = x;
+	float tempy = y;
 	this->btnColor = btnColor;
 	bool tempResult = false;
 	bool returnResult = false;
-	
-	glm::vec2 pos = glm::vec2(Window::GetCamera().GetRatio().x * x, Window::GetCamera().GetRatio().y * y);
+	x *= ((float)Window::GetProps()[0] / WIDTH);
+	y *= ((float)Window::GetProps()[1] / HEIGHT);
+	glm::vec2 pos = glm::vec2(Window::GetCamera().GetRatio().x * x , Window::GetCamera().GetRatio().y * y);
 	glm::dvec2 mousePos = ViewPort::Instance()->GetMousePositionToScreenSpace();
 
-	double tempX = width * Window::GetCamera().GetRatio().x;
-	double tempY = -height * Window::GetCamera().GetRatio().y;
+	double tempX = width * Window::GetCamera().GetRatio().x   * ((float)Window::GetProps()[0] / WIDTH);
+	double tempY = -height * Window::GetCamera().GetRatio().y * ((float)Window::GetProps()[1] / HEIGHT);
 
-	float vertecies[8] = {
+	/*float vertecies[8] = {
 		pos.x,(tempY) + pos.y,
 		(tempX) + pos.x,(tempY) + pos.y,
 		(tempX) + pos.x,pos.y,
 		pos.x,pos.y
+	};*/
+
+	float vertecies[8] = {
+		- tempX * 0.5 + pos.x,(tempY * 0.5)+pos.y,
+		tempX * 0.5 + pos.x,(tempY * 0.5) + pos.y,
+		tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
+		-tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
 	};
 
 
@@ -174,7 +186,7 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 
 	xAlign = AlignHorizontally::XCENTER;
 	yAlign = AlignVertically::YCENTER;
-	Text(str, true, (width * 0.5) + x, y - (height * 0.5), scale, textColor);
+	Text(str, true, tempx,tempy, scale, textColor);
 	yAlign = AlignVertically::BOTTOM;
 	xAlign = AlignHorizontally::LEFT;
 	return returnResult;
@@ -182,16 +194,18 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 
 void Doom::Gui::Panel(float x, float y, float width, float height, glm::vec4 color,Texture* texture)
 {
+	x *= ((float)Window::GetProps()[0] / WIDTH);
+	y *= ((float)Window::GetProps()[1] / HEIGHT);
 	glm::vec2 pos = glm::vec2(Window::GetCamera().GetRatio().x * x, Window::GetCamera().GetRatio().y * y);
 
-	double tempX = width * Window::GetCamera().GetRatio().x;
-	double tempY = -height * Window::GetCamera().GetRatio().y;
+	double tempX = width * Window::GetCamera().GetRatio().x   * ((float)Window::GetProps()[0] / WIDTH);
+	double tempY = -height * Window::GetCamera().GetRatio().y * ((float)Window::GetProps()[1] / HEIGHT);
 
 	float vertecies[8] = {
-		pos.x,(tempY)+pos.y,
-		(tempX)+pos.x,(tempY)+pos.y,
-		(tempX)+pos.x,pos.y,
-		pos.x,pos.y
+		-tempX * 0.5 + pos.x,(tempY * 0.5) + pos.y,
+		tempX * 0.5 + pos.x,(tempY * 0.5) + pos.y,
+		tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
+		-tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
 	};
 
 	Batch::GetInstance()->Submit(vertecies, color,texture);

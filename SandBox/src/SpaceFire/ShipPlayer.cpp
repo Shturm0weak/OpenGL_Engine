@@ -46,7 +46,7 @@ void ShipPlayer::ShipMovement()
 
 void ShipPlayer::ScreenBorders()
 {
-	double xBorder = (Window::GetCamera().GetAspectRation().x * Window::GetCamera().GetZoomLevel());
+	double xBorder = (Window::GetCamera().GetAspectRatio().x * Window::GetCamera().GetZoomLevel());
 	if (position.x > xBorder - GetWidth() * 0.5) {
 		tr->Translate(xBorder - GetWidth() * 0.5,position.y);
 	}
@@ -54,7 +54,7 @@ void ShipPlayer::ScreenBorders()
 		tr->Translate(-xBorder + GetWidth() * 0.5,position.y);
 	}
 
-	double yBorder = (Window::GetCamera().GetAspectRation().y * Window::GetCamera().GetZoomLevel());
+	double yBorder = (Window::GetCamera().GetAspectRatio().y * Window::GetCamera().GetZoomLevel());
 	if (position.y > yBorder - GetHeight() * 0.5) {
 		tr->Translate(position.x, yBorder - GetHeight() * 0.5);
 	}

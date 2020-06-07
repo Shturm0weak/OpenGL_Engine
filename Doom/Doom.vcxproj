@@ -123,8 +123,6 @@
     <ClInclude Include="src\Doom\Components\Animator.h" />
     <ClInclude Include="src\Doom\Components\Collision.h" />
     <ClInclude Include="src\Doom\Components\Transform.h" />
-    <ClInclude Include="src\Doom\Core.h" />
-    <ClInclude Include="src\Doom\Core\AllStatics.h" />
     <ClInclude Include="src\Doom\Core\ColorsRGBA.h" />
     <ClInclude Include="src\Doom\Core\Core.h" />
     <ClInclude Include="src\Doom\Core\DeltaTime.h" />

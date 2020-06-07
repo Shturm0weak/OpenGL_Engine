@@ -6,7 +6,7 @@
 using namespace Doom;
 
 EntryPoint::EntryPoint(Doom::Application* app) {
-	Window::Init("Doom Engine", 1280, 720, false);
+	Window::Init("Doom Engine", 640, 360, false);
 	MainThread::Init();
 	ThreadPool::Init();
 	Batch::Init();
@@ -118,6 +118,7 @@ void EntryPoint::Run()
 EntryPoint::~EntryPoint() {
 	
 	delete app;
+	Texture::ShutDown();
 	EventSystem::Instance()->Shutdown();
 	ThreadPool::Instance()->shutdown();
 	SoundManager::ShutDown();

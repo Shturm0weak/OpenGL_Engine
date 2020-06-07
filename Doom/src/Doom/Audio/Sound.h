@@ -1,14 +1,18 @@
 #pragma once
-#include "../Core.h"
+
+#include "../Core/Core.h"
+#include "../Core/ColoredOutput.h"
+
 #include <string>
 #include <iostream>
-#include "../Core/ColoredOutput.h"
+#include <map>
+
 #include "OpenAl/OpenAl/al.h"
 #include "OpenAl/OpenAl/alc.h"
+
 #define STB_VORBIS_HEADER_ONLY
 #include "vorbis.h"
 #undef STB_VORBIS_HEADER_ONLY
-#include <map>
 
 namespace Doom {
 

@@ -10,10 +10,10 @@ OrthographicCamera::OrthographicCamera(float left,float right,float top,float bo
 	: m_ProjectionMatrix(glm::ortho(left * zoomlevel,right * zoomlevel,bottom * zoomlevel,top * zoomlevel,-1.f,1.f)),m_ViewMatrix(1.0f)
 {
 	EventSystem::Instance()->RegisterClient("OnWindowResize", this);
-	aspectration[0] = left;
-	aspectration[1] = right;
-	aspectration[2] = top;
-	aspectration[3] = bottom;
+	aspectratio[0] = left;
+	aspectratio[1] = right;
+	aspectratio[2] = top;
+	aspectratio[3] = bottom;
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	
 }
@@ -43,7 +43,7 @@ void OrthographicCamera::WindowResize() {
 void OrthographicCamera::Zoom(float zoomlevel)
 {
 	this->zoomlevel = zoomlevel;
-	m_ProjectionMatrix = glm::ortho(aspectration[0] * zoomlevel,aspectration[1] * zoomlevel,aspectration[3] * zoomlevel,aspectration[2] * zoomlevel,-1.0f,1.0f);
+	m_ProjectionMatrix = glm::ortho(aspectratio[0] * zoomlevel,aspectratio[1] * zoomlevel,aspectratio[3] * zoomlevel,aspectratio[2] * zoomlevel,-1.0f,1.0f);
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
@@ -53,13 +53,13 @@ void OrthographicCamera::OnWindowResize(void * _props)
 	IsWindowResized = true;
 }
 
-void Doom::OrthographicCamera::ChangeAspectRation(float left, float right, float top, float bottom)
+void Doom::OrthographicCamera::ChangeAspectRatio(float left, float right, float top, float bottom)
 {
-	aspectration[0] = left;
-	aspectration[1] = right;
-	aspectration[2] = top;
-	aspectration[3] = bottom;
-	m_ProjectionMatrix = glm::ortho(aspectration[0] * zoomlevel, aspectration[1] * zoomlevel, aspectration[3] * zoomlevel, aspectration[2] * zoomlevel, -1.0f, 1.0f);
+	aspectratio[0] = left;
+	aspectratio[1] = right;
+	aspectratio[2] = top;
+	aspectratio[3] = bottom;
+	m_ProjectionMatrix = glm::ortho(aspectratio[0] * zoomlevel, aspectratio[1] * zoomlevel, aspectratio[3] * zoomlevel, aspectratio[2] * zoomlevel, -1.0f, 1.0f);
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
@@ -106,7 +106,11 @@ void OrthographicCamera::CameraMovement() {
 
 glm::vec2 Doom::OrthographicCamera::GetRatio()
 { 
-	return glm::vec2(GetAspectRation().x / Window::GetProps()[0], GetAspectRation().y / Window::GetProps()[1]);
+	return glm::vec2(GetAspectRatio().x / (float)Window::GetProps()[0], GetAspectRatio().y / (float)Window::GetProps()[1]);
 }
 
+float OrthographicCamera::GetRationWH()
+{ return ((float)Window::GetProps()[0] / (float)Window::GetProps()[1]); }
+float OrthographicCamera::GetRationHW()
+{ return ((float)Window::GetProps()[1] / (float)Window::GetProps()[0]); }
 

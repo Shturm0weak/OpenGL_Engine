@@ -48,7 +48,6 @@ namespace Doom {
 
 		GameObject* selectedGO = nullptr;
 		bool isItemActive = false;
-		glm::vec4 ColorPickUp(float* c);
 		static Editor* Instance();
 		void EditorUpdate();
 		static void CheckTexturesFolderUnique(const std::string path);

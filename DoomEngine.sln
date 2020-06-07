@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "vendor\ImGui\ImGui
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SandBox", "SandBox\SandBox.vcxproj", "{D43924E3-4019-A37E-4931-2E55B58F09E0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAl", "OpenAl\OpenAl.vcxproj", "{CA8183C9-F56D-4F35-AC20-B77FF6E17823}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenAl", "vendor\OpenAl\OpenAl.vcxproj", "{CA8183C9-F56D-4F35-AC20-B77FF6E17823}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
