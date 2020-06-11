@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PCH_H
+#define PCH_H
+
 #include "Core/Core.h"
 
 #pragma warning(push)
@@ -38,3 +40,4 @@
 #include "Render/Texture.h"
 #include "Objects2D/GameObject.h"
 #include <Windows.h>
+#endif // !PCH_H

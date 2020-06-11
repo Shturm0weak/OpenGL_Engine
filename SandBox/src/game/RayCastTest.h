@@ -5,20 +5,18 @@ public:
 	std::vector<Ray*> rays;
 	std::vector<Line*> lines;
 	glm::vec2 pos = glm::vec2(0, 0);
-	GameObject* cursor = nullptr;
 	GameObject* coin = nullptr;
 
 
 	virtual void OnStart() override {
 		Renderer::Load("src/savedRayCastTest.txt");
+		Window::GetCamera().Zoom(2.9);
 		coin = new GameObject("Coin",5,5);
 		Collision* col = coin->GetComponentManager()->AddComponent<Collision>();
-		coin->SetTexture("src/Images/Bird.png");
+		coin->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture("src/Images/Bird.png");
 		coin->GetComponentManager()->GetComponent<Transform>()->Scale(3, 3);
 		col->SetTag("Coin");
-		cursor = new GameObject("Cursor",0,0);
-		cursor->SetTexture("src/Images/WhiteCircle.png");
-		cursor->SetColor(COLORS::Red);
+		
 		float angle = 0;
 		for (unsigned int i = 0; i < 2000; i++)
 		{
@@ -33,7 +31,6 @@ public:
 	}
 
 	virtual void OnUpdate() override {
-		cursor->GetComponentManager()->GetComponent<Transform>()->Translate(pos.x, pos.y);
 		pos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 		coin->Enable = false;
 		for (unsigned int i = 0; i < 2000; i++)
@@ -52,6 +49,6 @@ public:
 	}
 
 	virtual void OnClose() override {
-		
+		//Renderer::Save("src/savedRayCastTest.txt");
 	}
 };

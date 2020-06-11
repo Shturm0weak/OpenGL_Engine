@@ -7,13 +7,15 @@
 #include "Render/Line.h"
 #include "Render/ParticleSystem.h"
 #include "Audio/SoundManager.h"
+#include "Core/Editor.h"
+#include "Components/Collision.h"
 
 using namespace Doom;
 
 //storage of all references to our objects in the scene
-DOOM_API std::vector <Renderer2DLayer*> Renderer2DLayer::objects2d;
+DOOM_API std::vector <GameObject*> Renderer::objects2d;
 //storage of all references to our object's collisions in the scene
-DOOM_API std::vector <Renderer2DLayer*> Renderer2DLayer::collision2d;
+DOOM_API std::vector <Collision*> Renderer::collision2d;
 DOOM_API Batch* Batch::instance;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithOwner;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithNoOwner;
@@ -22,8 +24,8 @@ DOOM_API std::mutex Renderer::mtx;
 DOOM_API std::condition_variable Renderer::condVar;
 DOOM_API int Renderer::DrawCalls;
 //visible collisions
-DOOM_API int Renderer2DLayer::obj_id = 0;
-DOOM_API int Renderer2DLayer::col_id = 0;
+DOOM_API int Renderer::obj_id = 0;
+DOOM_API int Renderer::col_id = 0;
 //ThreadPool
 //Textures
 DOOM_API std::vector<std::string> Editor::texturesPath;

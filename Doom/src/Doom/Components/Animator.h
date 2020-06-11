@@ -1,5 +1,9 @@
 #pragma once
 
+#include "../Core/Core.h"
+#include "../Render/Texture.h"
+#include "../ECS/Component.h"
+
 namespace Doom {
 
 	class DOOM_API Animator : public Component {

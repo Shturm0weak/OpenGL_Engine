@@ -1,14 +1,16 @@
-#include "../pch.h"
 #include "Collision.h"
+#include "../Render/Renderer.h"
+#include "../pch.h"
+
 
 using namespace Doom;
 
 Collision::Collision(GameObject* owner,double x, double y){
 	SetType("Collision");
 	this->owner = owner;
-	id = Renderer2DLayer::col_id;
-	Renderer2DLayer::col_id++;
-	Renderer2DLayer::collision2d.push_back(this);
+	id = Renderer::col_id;
+	Renderer::col_id++;
+	Renderer::collision2d.push_back(this);
 	if (owner != nullptr) {
 		position.x = owner->component_manager->GetComponent<Transform>()->position.x;
 		position.y = owner->component_manager->GetComponent<Transform>()->position.y;
@@ -187,10 +189,11 @@ void Collision::IsCollidedSAT() {
 		return;
 	}
 	if (Enable == true) {
-		for (unsigned int i = 0; i < collision2d.size(); i++)
+		uint32_t sizeCol = Renderer::collision2d.size();
+		for (unsigned int i = 0; i < sizeCol; i++)
 		{
-			if (collision2d[i]->IsCollisionEnabled() == true) {
-				col = dynamic_cast<Collision*>(collision2d[i]->GetCollisionReference());
+			if (Renderer::collision2d[i]->Enable == true) {
+				col = Renderer::collision2d[i];
 				if (this != col) {
 					if (col == nullptr) {
 						return;
@@ -227,11 +230,11 @@ void Collision::IsCollidedDIAGS()
 		return;
 	}
 	if (Enable == true) {
-
-		for (unsigned int i = 0; i < collision2d.size(); i++)
+		uint32_t sizeCol = Renderer::collision2d.size();
+		for (unsigned int i = 0; i < sizeCol; i++)
 		{
-			if (collision2d[i]->IsCollisionEnabled() == true) {
-				col = dynamic_cast<Collision*>(collision2d[i]->GetCollisionReference());
+			if (Renderer::collision2d[i]->Enable == true) {
+				col = Renderer::collision2d[i];
 				if (this != col) {
 					if (col == nullptr) {
 						return;

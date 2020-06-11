@@ -42,7 +42,7 @@ void Editor::EditorUpdate()
 		{
 			Renderer::CreateGameObject();
 			Renderer::CalculateObjectsVectors().size();
-			go = static_cast<GameObject*>(Renderer2DLayer::objects2d.back());
+			go = Renderer::objects2d.back();
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
@@ -54,14 +54,14 @@ void Editor::EditorUpdate()
 		if (ImGui::MenuItem("Delete"))
 		{
 			if (go != nullptr) {
-				if (Renderer2DLayer::objects2d.size() > 1) {
+				if (Renderer::objects2d.size() > 1) {
 					Renderer::DeleteObject(go->GetId());
 				}
 				else {
 					go->Enable = false;
 					std::cout << BOLDYELLOW << "Warning: you cannot delete the last object on the scene, create new one or current object will be set to disable\n" << RESET;
 				}
-				go = static_cast<GameObject*>(Renderer2DLayer::objects2d[0]);
+				go = Renderer::objects2d[0];
 			}
 			ImGui::EndPopup();
 			ImGui::End();
@@ -75,14 +75,14 @@ void Editor::EditorUpdate()
 
 	
 	if (go == nullptr) {
-		go = static_cast<GameObject*>(Renderer2DLayer::objects2d[0]);
+		go = Renderer::objects2d[0];
 	}
 
 	if (ImGui::CollapsingHeader("Game Objects")) {
 		unsigned int amount = Renderer::GetAmountOfObjects();
 		for (unsigned int i = 0; i < amount; i++)
 		{
-			GameObject* go = static_cast<GameObject*>(Renderer2DLayer::objects2d[i]);
+			GameObject* go = Renderer::objects2d[i];
 			if (go->GetOwner() != nullptr) {
 				continue;
 			}
@@ -167,7 +167,7 @@ void Editor::EditorUpdate()
 					std::cout << "Error: layer out of range" << std::endl;
 					return;
 				}
-				go->Setlayer(go->GetLayer());
+				go->GetComponentManager()->GetComponent<SpriteRenderer>()->Setlayer(go->GetLayer());
 				Renderer::CalculateObjectsVectors();
 			}
 
@@ -182,9 +182,9 @@ void Editor::EditorUpdate()
 				ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
 				tr->Scale(go->scaleValues[0], go->scaleValues[1]);
 				
-				ImGui::SliderAngle("Rotate", &tr->angle);
+				ImGui::SliderAngle("Rotate", &tr->angleRad);
 				ImGui::InputInt3("Rotate axes",axes);
-				tr->RotateOnce(tr->angle, glm::vec3(axes[0], axes[1], axes[2]));
+				tr->RotateOnce(tr->angleRad, glm::vec3(axes[0], axes[1], axes[2]),true);
 			}
 			if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && ImGui::CollapsingHeader("Render")) {
 				color = go->GetComponentManager()->GetComponent<SpriteRenderer>()->GetColor();

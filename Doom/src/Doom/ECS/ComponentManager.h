@@ -1,13 +1,16 @@
+#pragma once
 #ifndef COMPONENTMANAGER_H
 #define COMPONENTMANAGER_H
 
-#include "../Render/Renderer2D.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "Component.h"
-
-#include "../Components/Collision.h"
+#include "../Render/Renderer.h"
+#include "../Components/SpriteRenderer.h"
 #include "../Components/Transform.h"
 #include "../Components/Animator.h"
-#include "../Components/SpriteRenderer.h"
+#include "../Components/Collision.h"
 
 namespace Doom {
 
@@ -63,13 +66,13 @@ namespace Doom {
 					components[i]->m_Id = i;;
 				}
 			}
-			Renderer2DLayer::collision2d.erase(_id + Renderer2DLayer::collision2d.begin());
-			Renderer2DLayer::col_id--;
-			unsigned int size = Renderer2DLayer::collision2d.size();
+			Renderer::collision2d.erase(_id + Renderer::collision2d.begin());
+			Renderer::col_id--;
+			unsigned int size = Renderer::collision2d.size();
 			if (_id != size) {
 				for (unsigned int i = _id; i < size; i++)
 				{
-					Renderer2DLayer::collision2d[i]->SetId(i);
+					Renderer::collision2d[i]->SetId(i);
 				}
 			}
 			GetComponent<Transform>()->col = nullptr;
@@ -197,7 +200,7 @@ namespace Doom {
 		Collision* AddComponent<Collision>() {
 			if (GetComponent<Collision>() == nullptr) {
 				Collision* object = new Collision(owner);
-				object->SetOwner(this->owner);
+				object->owner = (this->owner);
 				object->m_Id = components.size();
 				components.push_back(object);
 				return object;

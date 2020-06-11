@@ -28,7 +28,6 @@
     <ClInclude Include="src\Doom\Components\Transform.h" />
     <ClInclude Include="src\Doom\ECS\Component.h" />
     <ClInclude Include="src\Doom\ECS\ComponentManager.h" />
-    <ClInclude Include="src\Doom\ECS\IComponent.h" />
     <ClInclude Include="src\Doom\Objects2D\GameObject.h" />
     <ClInclude Include="src\Doom\Render\Batch.h" />
     <ClInclude Include="src\Doom\Render\Character.h" />
@@ -36,8 +35,6 @@
     <ClInclude Include="src\Doom\Render\OrthographicCamera.h" />
     <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
     <ClInclude Include="src\Doom\Render\Renderer.h" />
-    <ClInclude Include="src\Doom\Render\Renderer2D.h" />
-    <ClInclude Include="src\Doom\Render\RenderText.h" />
     <ClInclude Include="src\Doom\Render\Shader.h" />
     <ClInclude Include="src\Doom\Render\stb_image.h" />
     <ClInclude Include="src\Doom\Render\Texture.h" />
@@ -84,7 +81,6 @@
     <ClCompile Include="src\Doom\Render\OrthographicCamera.cpp" />
     <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
     <ClCompile Include="src\Doom\Render\Renderer.cpp" />
-    <ClCompile Include="src\Doom\Render\Renderer2D.cpp" />
     <ClCompile Include="src\Doom\Render\Shader.cpp" />
     <ClCompile Include="src\Doom\Render\stb_image.cpp" />
     <ClCompile Include="src\Doom\Render\Texture.cpp" />

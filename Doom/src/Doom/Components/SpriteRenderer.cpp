@@ -1,6 +1,6 @@
+
 #include "../pch.h"
 #include "SpriteRenderer.h"
-
 
 using namespace Doom;
 
@@ -122,4 +122,18 @@ float * SpriteRenderer::GetUVs()
 	uvs[6] = mesh2D[14];
 	uvs[7] = mesh2D[15];
 	return uvs;
+}
+
+void SpriteRenderer::Setlayer(int layer)
+{
+	unsigned int size = Renderer::objects2d.size();
+	std::cout << owner->name << " is set from layer " << owner->GetId() << " to " << layer << std::endl;
+	Renderer::objects2d.erase(Renderer::objects2d.begin() + owner->GetId());
+	Renderer::objects2d.insert(Renderer::objects2d.begin() + layer, owner);
+	for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
+	{
+		Renderer::objects2d[i]->SetId(i);
+		Renderer::objects2d[i]->GetLayer() = i;
+	}
+	return;
 }

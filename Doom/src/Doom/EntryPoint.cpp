@@ -2,6 +2,7 @@
 #include "Core/Timer.h"
 #include "Render/Line.h"
 #include "Audio/SoundManager.h"
+#include "Core/Editor.h"
 
 using namespace Doom;
 
@@ -109,11 +110,13 @@ void EntryPoint::Run()
 		glfwPollEvents();
 	}
 	app->OnClose();
-	delete app;
 	Renderer::RenderShutDown();
+	delete app;
+	
 }
 
 EntryPoint::~EntryPoint() {
+
 	EventSystem::Instance()->Shutdown();
 	ThreadPool::Instance()->shutdown();
 	Texture::ShutDown();

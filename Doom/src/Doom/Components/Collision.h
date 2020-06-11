@@ -3,12 +3,17 @@
 
 #include "../ECS/Component.h"
 #include "../Core/EventSystem.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "../Core/ColorsRGBA.h"
+#include "../Render/Shader.h"
 #include "Transform.h"
 #include <mutex>
 
 namespace Doom {
 
-	class DOOM_API Collision : public Renderer2DLayer, public Component {
+	class DOOM_API Collision : public Component {
 	private:
 		std::mutex mtx;
 		const float positions[16] = {
@@ -18,15 +23,19 @@ namespace Doom {
 		-0.5f,  0.5f, 0.0f, 1.0f };
 		const unsigned int indeces[6] = { 0,1,2,3,2,0 };
 
+		int id = 0;
+		//void* Owner = nullptr;
 		Collision* col = nullptr;
 		Transform* trans = nullptr;
-
+		
 		float scaleValues[3] = { 1,1,1 };
 
 		struct Displacement {
 			float x = 0;
 			float y = 0;
 		};
+
+		glm::vec2 position;
 
 		float* arrver1 = nullptr;
 		double* arrpos1 = nullptr;
@@ -46,9 +55,7 @@ namespace Doom {
 
 		bool ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2);
 		bool ShapeOverlap_SAT(Collision &r1, Collision &r2);
-		virtual bool IsCollisionEnabled() override { return Enable; }
 		void UpdateCollision(double x, double y, glm::mat4 pos, glm::mat4 view, glm::mat4 scale);
-		virtual Renderer2DLayer* GetCollisionReference() override { return this; }
 		void RealVerPos();
 		float* GetVertexPositions();
 		
@@ -72,7 +79,9 @@ namespace Doom {
 		bool Collided_side_top = false;
 		bool Collided_side_bottom = false;
 	public:
-		virtual Position GetPositions() override {
+		void SetOwner(GameObject* _owner) { owner = _owner; }
+
+		glm::vec2 GetPositions(){
 			return position;
 		};
 
@@ -80,10 +89,11 @@ namespace Doom {
 
 		Collision* collidedObject = nullptr;
 		std::string GetTag() { return tag; }
-		virtual void SetId(int id)override { this->id = id; }
-		virtual int GetId()override { return id; }
+		void SetId(int id) { this->id = id; }
+		int GetId() { return id; }
 
 		static bool IsVisible;
+		bool Enable = true;
 		bool isCollided = false;
 		bool IsTrigger = false;
 

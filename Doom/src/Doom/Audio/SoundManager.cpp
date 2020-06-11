@@ -57,6 +57,11 @@ Sound* SoundManager::GetSound(std::string name)
 	return nullptr;
 }
 
+void Doom::SoundManager::SetVolume(float volume)
+{
+	alListenerf(AL_GAIN, volume);
+}
+
 void Doom::SoundManager::UpdateSourceState()
 {
 	for (auto i = sounds.begin(); i != sounds.end(); i++)

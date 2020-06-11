@@ -1,5 +1,5 @@
-#include "../pch.h"
 #include "Animator.h"
+#include "../pch.h"
 #include <filesystem>
 
 namespace fs = std::filesystem;

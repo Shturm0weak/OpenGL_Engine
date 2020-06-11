@@ -1,0 +1,64 @@
+Unnamed
+1
+GameObject
+0 12.41
+-0
+0 0 1
+0
+0 0
+0
+NONE
+src/Images/background.png
+1 1 1 1
+100 100 0
+0 0 1 0 1 1 0 1
+0
+0 0
+Land
+0
+GameObject
+0 -15.468
+0
+0 0 1
+1
+0 0
+0
+Land
+None
+1 1 1 1
+63 2 0
+0 0 1 0 1 1 0 1
+0
+0 0
+Unnamed
+0
+GameObject
+-32 0
+0
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 50 0
+0 0 1 0 1 1 0 1
+0
+0 0
+Unnamed(clone)
+0
+GameObject
+32 0
+0
+0 0 1
+1
+0 0
+0
+General
+None
+1 1 1 1
+1 50 0
+0 0 1 0 1 1 0 1
+0
+0 0

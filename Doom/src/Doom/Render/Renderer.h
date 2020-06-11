@@ -1,12 +1,9 @@
+#pragma once
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "../Render/Renderer2D.h"
-#include "../Render/RenderText.h"
-#include "../Components/Collision.h"
-#include "../Core/Editor.h"
-#include "../ECS/ComponentManager.h"
 #include <mutex>
+#include "../Components/Collision.h"
 
 namespace Doom {
 
@@ -18,61 +15,54 @@ namespace Doom {
 		static bool isReadyToRenderThirdThread;
 		static void DeleteObject(int id);
 		static void DeleteAll();
-		static void SubmitGameObjects(OrthographicCamera& camera);
+		static void SubmitGameObjects();
 		static void Render();
 		static void CalculateMVPforAllObjects();
 		static void RenderText();
-		static void RenderCollision(OrthographicCamera& camera);
+		static void RenderCollision();
 		static void Clear();
 		static void Save(const std::string filename);
 		static void Load(const std::string filename);
 		static GameObject* SelectObject();
 		static std::vector<unsigned int> CalculateObjectsVectors();
-		static std::vector<unsigned int> GetObjectsWithNoOwnerReference() { return ObjectsWithNoOwner; }
-		static std::vector<unsigned int> GetObjectsWithOwnerReference() { return ObjectsWithOwner; }
-		inline static unsigned int GetAmountOfObjects() { return Renderer2DLayer::objects2d.size(); }
-		inline static unsigned int GetAmountOfCollisions() { return Renderer2DLayer::collision2d.size(); }
-		static Renderer2DLayer* GetReference(int id) { return Renderer2DLayer::objects2d[id]; }
+		inline static std::vector<unsigned int> GetObjectsWithNoOwnerReference() { return ObjectsWithNoOwner; }
+		inline static std::vector<unsigned int> GetObjectsWithOwnerReference() { return ObjectsWithOwner; }
+		inline static unsigned int GetAmountOfObjects() { return objects2d.size(); }
+		inline static unsigned int GetAmountOfCollisions() { return collision2d.size(); }
+		static GameObject* GetReference(int id) { return objects2d[id]; }
 		static const char** items;
-		static void RenderShutDown() {
-			size_t sizeO = Renderer2DLayer::objects2d.size();
-			for (size_t i = 0; i < sizeO; i++)
-			{
-				delete Renderer2DLayer::objects2d[i];
-			}
-			Renderer2DLayer::objects2d.clear();
-		}
+		static void RenderShutDown();
 
-		static const char** GetItems() {
-			delete[] items;
-			items = new const char*[GetObjectsWithNoOwnerReference().size()];
-			for (unsigned int i = 0; i < GetObjectsWithNoOwnerReference().size(); i++)
-			{
-				int id = GetObjectsWithNoOwnerReference()[i];
-					items[i] = Renderer2DLayer::objects2d[id]->name.c_str();
-				
-			}
-			return items;
-		}
+		static const char** GetItems();
 
-		static GameObject* CreateGameObject() {
-			GameObject * go = new GameObject("Unnamed", 0, 0);
-			return go;
-		}
+		static GameObject* CreateGameObject();
+
 	private:
 		static bool ObjectCollided(std::vector<glm::vec2>& p,int i);
 		static std::vector<unsigned int> ObjectsWithNoOwner;
 		static std::vector<unsigned int> ObjectsWithOwner;
+		static std::vector <Collision*> collision2d;
+		static int obj_id;
+		static int col_id;
+		static std::vector <GameObject*> objects2d;
 		static std::mutex mtx;
 		static std::condition_variable condVar;
-		Renderer() {}
+
+		friend class Renderer2DLayer;
+		friend class GameObject;
+		friend class SpriteRenderer;
+		friend class Editor;
+		friend class ComponentManager;
+		friend class Ray;
+		friend class Collision;
 
 		template<typename T>
-		static void LoadObj(std::string name, std::string pathtotext, float angle, float color[4],
+		static void LoadObj(bool enable,std::string name, std::string pathtotext, float angle, float color[4],
 			float scale[3], double pos[2], bool hascollision, float* offset, int* axes, bool istrigger, std::string tag,float* uvs,bool isSprite,float* spriteSize) {
 			T* go = new T(name, pos[0], pos[1]);
+			go->Enable = enable;
 			go->GetComponentManager()->GetComponent<Transform>()->Scale(scale[0], scale[1]);
-			go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angle, glm::vec3(axes[0], axes[1], axes[2]));
+			go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angle, glm::vec3(axes[0], axes[1], axes[2]),true);
 			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[2] = uvs[0];
 			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[3] = uvs[1];
 			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[6] = uvs[2];

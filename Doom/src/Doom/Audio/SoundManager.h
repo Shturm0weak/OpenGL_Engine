@@ -17,6 +17,7 @@ namespace Doom {
 		static void Pause(Sound* sound);
 		static void Stop(Sound* sound);
 		static Sound* GetSound(std::string name);
+		static void SetVolume(float volume);
 		static void UpdateSourceState();
 		static void ShutDown();
 	};

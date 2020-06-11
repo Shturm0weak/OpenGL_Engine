@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio/SoundManager.h"
 #include "Application.h"
 #include "Components/Collision.h"
 #include "Components/Transform.h"
@@ -12,17 +13,16 @@
 #include "Render/Line.h"
 #include "Core/Ray.h"
 
+
 using namespace Doom;
 
 class Game : public Doom::Application{
-
 	Player* go = nullptr;
 	double max, lowest, fps;
-	double timer;
 	double delay;
 	bool pause;
 	int previndexcount;
-	Coin* coins = nullptr;
+	std::vector<Coin*> coins;
 	HP* hp = nullptr;
 	Font* font = nullptr;
 	Texture* texturecoin = nullptr;
@@ -34,16 +34,14 @@ class Game : public Doom::Application{
 	double timerFadeOut = 0;
 public:
 	virtual void OnStart() override{
-	
-		Renderer::Load("src/saved.txt");
-		go = new Player("player", -1, 20);
+		SoundManager::SetVolume(0.1);
+		Renderer::Load("src/game/savePlatformer.txt");
+		go = new Player("player", -1, 10);
 		max = 0, lowest = 1000000, fps = 0;
-		timer = 5;
 		delay = 1;
 		bomb = new Bomb();
 		pause = false;
 		previndexcount = 0;
-		coins = new Coin[5];
 		hp = new HP(-14, 6);
 		font = new Font();
 		texturecoin = new Texture("src/Images/coin.png");
@@ -54,18 +52,18 @@ public:
 		ray->ignoreMask.push_back("Player");
 		for (unsigned int i = 0; i < 5; i++)
 		{
-			coins[i].GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texturecoin);
-			coins[i].Randomize();
+			coins.push_back(new Coin());
+			coins[i]->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texturecoin);
+			coins[i]->Randomize();
 		}
-		Window::GetCamera().MovePosition(glm::vec3(0, 12, 0));
-		Window::GetCamera().Zoom(1.5);
+		Window::GetCamera().MovePosition(glm::vec3(0, 0, 0));
+		Window::GetCamera().Zoom(2);
 		line = new Line(glm::vec2(-5, -5), glm::vec2(-5, 5));
 		line->width = 5.f;
+		line->Enable = false;
 	}
 
 	virtual void OnUpdate() override {
-		//line->SetEndPoint(Window::GetMousePositionToWorldSpace().x, Window::GetMousePositionToWorldSpace().y);
-		//line->SetStartPoint(go->GetPositions().x,go->GetPositions().y);
 		EventSystem::Instance()->SendEvent("OnUpdate", nullptr);
 		EventSystem::Instance()->StopProcessEvents(pause);
 		Window::GetCamera().CameraMovement();
@@ -82,19 +80,20 @@ public:
 		delay += DeltaTime::deltatime;
 		if (go->isDead) {
 			pause = true;
-			Batch::GetInstance()->indexcount = 0;
-			Batch::GetInstance()->Begin();
-			Gui::GetInstance()->Text("Press Enter to restart", true, -22, 0, 32);
-			Batch::GetInstance()->End();
+			Gui::GetInstance()->Begin();
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
+			Gui::GetInstance()->Text("Press Enter to restart", true, -0, 0, 76);
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
+			Gui::GetInstance()->End();
 			if (Input::IsKeyPressed(Keycode::KEY_ENTER)) {
 				pause = false;
 				for (unsigned int i = 0; i < 5; i++)
 				{
-					coins[i].Randomize();
+					coins[i]->Randomize();
 				}
 				for (unsigned int i = 0; i < 3; i++)
 				{
-					hp->hearts[i].Enable = true;
+					hp->hearts[i]->Enable = true;
 				}
 				bomb->Randomize();
 				go->hp = 3;
@@ -108,17 +107,17 @@ public:
 		}
 		else if (!pause) {
 			{
-				if (fireTimer > 2.99 && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
+				if (fireTimer > 2.99 && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 					Hit hit;
 					glm::vec2 direction = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x - go->GetPositions().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y - go->GetPositions().y);
 					Ray::Normilize(direction);
 					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPositions().x, go->GetPositions().y), direction, ray->ignoreMask)) {
 						if (hit.Object->GetTag() == "Coin") {
-							Coin* coin = (Coin*)&hit.Object->GetOwnerOfComponent();
+							Coin* coin = (Coin*)hit.Object->GetOwnerOfComponent();
 							coin->OnCollision(go->col);
 						}
 						else if (hit.Object->GetTag() == "Bomb") {
-							Bomb* bomb = (Bomb*)&hit.Object->GetOwnerOfComponent();
+							Bomb* bomb = (Bomb*)hit.Object->GetOwnerOfComponent();
 							go->col->SetTag("Land");
 							bomb->OnCollision(go->col);
 							go->col->SetTag("Player");
@@ -135,8 +134,9 @@ public:
 						fireTimer = 0;
 					}
 				}
-				if (line->Enable)
+				if (line->Enable) {
 					timerFadeOut += DeltaTime::deltatime;
+				}
 				if (timerFadeOut > 0.5 && line->Enable) {
 					line->Enable = false;
 					timerFadeOut = 0;
@@ -151,40 +151,52 @@ public:
 					lowest = fps;
 
 				Gui::GetInstance()->Begin();
-				Gui::GetInstance()->Text("FPS : %f", true, 950, 900, 76, COLORS::Red, 0, fps);
-				Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 950, 820, 76, COLORS::Red, 2, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
-				Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 950, 740, 76, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
-				Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 950, 660, 76, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
-				Gui::GetInstance()->Text("Textures: %d", true, 950, 580, 76, COLORS::Red, 0, Texture::bindedAmount);
+				Gui::GetInstance()->Text("FPS : %f", true, 850, 900, 60, COLORS::Red, 0, fps);
+				Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 850, 820, 60, COLORS::Red, 2, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+				Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 850, 740, 60, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
+				Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 850, 660, 60, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
+				Gui::GetInstance()->Text("Textures: %d", true, 850, 580, 60, COLORS::Red, 0, Texture::bindedAmount);
 				Gui::GetInstance()->Text("Score: %d", true, 1300, -820, 76, COLORS::White, 0, go->scores);
 				Gui::GetInstance()->Text("Missed: %d", true, 1300, -900, 76, COLORS::White, 0, go->missed);
-				Gui::GetInstance()->Text("Collisions: %d", true, 950, 500, 76, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
-				Gui::GetInstance()->Text("VRAM used: %f MB", true, 950, 420, 76, COLORS::Red, 3, Texture::VRAMused);
-				Gui::GetInstance()->Text("Time since start: %f", true, 950, 340, 76, COLORS::Red, 3, time);
+				Gui::GetInstance()->Text("Collisions: %d", true, 850, 500, 60, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
+				Gui::GetInstance()->Text("VRAM used: %f MB", true, 850, 420, 60, COLORS::Red, 3, Texture::VRAMused);
+				Gui::GetInstance()->Text("Time since start: %f", true, 850, 340, 60, COLORS::Red, 3, time);
 				Gui::GetInstance()->Text("Fire Reload: %f", true, -1800, -900, 76, COLORS::White, 3, fireTimer);
 				Gui::GetInstance()->End();
 			}
 		}
 		else {
-			if (timer > 0.05) {
-				Batch::GetInstance()->indexcount = 0;
-				Batch::GetInstance()->Begin();
-				/*Button button1(font, "Pause", -5, -5, 2, 1, 22, 2);
-				if (button1.IsPressed()) {
-					if (Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
-						glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
-					}
-				}*/
-				timer = 0;
-				Batch::GetInstance()->End();
+			double x = 0;
+			double y = 0;
+			Gui::GetInstance()->Begin();
+			Gui::GetInstance()->Panel(x, y, 700, 400, COLORS::DarkGray * 0.8f);
+			if (Gui::GetInstance()->Button("Exit", x + 0, y - 50 - 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+				Window::Exit();
 			}
+			if (Gui::GetInstance()->Button("Restart", y + 0, y + 50 + 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+				pause = false;
+				for (unsigned int i = 0; i < 5; i++)
+				{
+					coins[i]->Randomize();
+				}
+				for (unsigned int i = 0; i < 3; i++)
+				{
+					hp->hearts[i]->Enable = true;
+				}
+				bomb->Randomize();
+				go->hp = 3;
+				go->scores = 0;
+				go->missed = 0;
+				go->isDead = false;
+				go->col->Enable = true;
+				go->tr->Translate(0, 8);
+				pause = false;
+			}
+			Gui::GetInstance()->End();
 		}
-		timer += DeltaTime::deltatime;
 	}
 
 	void OnClose() {
-		delete[] coins;
-		delete hp;
-		delete go;
+		//Renderer::Save("src/game/savePlatformer.txt");
 	}
 };

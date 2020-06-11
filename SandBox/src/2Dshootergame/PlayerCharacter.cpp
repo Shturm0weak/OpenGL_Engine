@@ -12,7 +12,7 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	col = GetComponentManager()->AddComponent<Collision>();
 	col->SetTag("Player");
 	tr = GetComponentManager()->GetComponent<Transform>();
-	Renderer2DLayer::type = "Player";
+	type = "Player";
 	anim = GetComponentManager()->AddComponent<Animator>();
 	anim->SetAnimation("src/ShooterAnimation");
 	tr->Scale(3, 3);

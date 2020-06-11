@@ -1,4 +1,4 @@
-#include "../pch.h"
+#include "../ECS/ComponentManager.h"
 #include "Renderer.h"
 #include <iostream>
 #include "Batch.h"
@@ -6,6 +6,8 @@
 #include "Line.h"
 #include "ViewPort.h"
 #include "ParticleSystem.h"
+#include "../Core/Editor.h"
+
 
 using namespace Doom;
 
@@ -15,30 +17,30 @@ void Doom::Renderer::Clear() {
 }
 
 void Doom::Renderer::DeleteAll() {
-	for (unsigned int i = 0; i < Renderer2DLayer::objects2d.size(); i++)
+	for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
 	{
-		delete(Renderer2DLayer::objects2d[i]);
+		delete(Renderer::objects2d[i]);
 	}
-	for (unsigned int i = 0; i < Renderer2DLayer::collision2d.size(); i++)
+	for (unsigned int i = 0; i < Renderer::collision2d.size(); i++)
 	{
-		delete(Renderer2DLayer::collision2d[i]);
+		delete(Renderer::collision2d[i]);
 	}
-	Renderer2DLayer::collision2d.clear();
-	Renderer2DLayer::objects2d.clear();
-	Renderer2DLayer::col_id = 0;
-	Renderer2DLayer::obj_id = 0;
+	Renderer::collision2d.clear();
+	Renderer::objects2d.clear();
+	Renderer::col_id = 0;
+	Renderer::obj_id = 0;
 }
 
 void Doom::Renderer::DeleteObject(int id) {
-	Renderer2DLayer* go = Renderer2DLayer::objects2d[id];
-	Renderer2DLayer::objects2d.erase(Renderer2DLayer::objects2d.begin() + id);	
-	Renderer2DLayer::obj_id--;
-	unsigned int size = Renderer2DLayer::objects2d.size();
+	GameObject* go = Renderer::objects2d[id];
+	Renderer::objects2d.erase(Renderer::objects2d.begin() + id);	
+	Renderer::obj_id--;
+	unsigned int size = Renderer::objects2d.size();
 	if (id != size) {
 		for (unsigned int i = 0; i < size; i++)
 		{
-			Renderer2DLayer::objects2d[i]->SetId(i);
-			Renderer2DLayer::objects2d[i]->GetLayer() = i;
+			Renderer::objects2d[i]->SetId(i);
+			Renderer::objects2d[i]->GetLayer() = i;
 		}
 	}
 	unsigned int childsAmount = go->GetChilds().size();
@@ -58,25 +60,26 @@ void Doom::Renderer::Save(const std::string filename) {
 	std::ofstream out_file;
 	out_file.open(filename, std::ofstream::trunc);
 	if (out_file.is_open()) {
-		for (unsigned int i = 0; i < Renderer2DLayer::objects2d.size(); i++)
+		for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
 		{
-			GameObject* go = (GameObject*)Renderer2DLayer::objects2d[i];
+			GameObject* go = (GameObject*)Renderer::objects2d[i];
 			SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
-			if (Renderer2DLayer::objects2d[i]->type.c_str() == "GameObject")
+			if (Renderer::objects2d[i]->type.c_str() == "GameObject")
 				continue;
 			float* color = sr->GetColor();
-			float* scale = Renderer2DLayer::objects2d[i]->GetScale();
-			out_file << Renderer2DLayer::objects2d[i]->name << "\n"
-				<< Renderer2DLayer::objects2d[i]->type << "\n"
-				<< Renderer2DLayer::objects2d[i]->GetPositions().x << " " << Renderer2DLayer::objects2d[i]->GetPositions().y << "\n"
-				<< Renderer2DLayer::objects2d[i]->GetAngle() << "\n"
+			float* scale = Renderer::objects2d[i]->GetScale();
+			out_file << Renderer::objects2d[i]->name << "\n"
+				<< Renderer::objects2d[i]->Enable << "\n"
+				<< Renderer::objects2d[i]->type << "\n"
+				<< Renderer::objects2d[i]->GetPositions().x << " " << Renderer::objects2d[i]->GetPositions().y << "\n"
+				<< Renderer::objects2d[i]->GetAngle() << "\n"
 				<< Editor::Instance()->axes[0] << " " << Editor::Instance()->axes[1] << " " << Editor::Instance()->axes[2] << "\n";
-			if (static_cast<ComponentManager*>(Renderer2DLayer::objects2d[i]->GetComponentManager())->GetComponent<Collision>() != nullptr) {
+			if (static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>() != nullptr) {
 				out_file << 1 << "\n";
-				out_file << static_cast<ComponentManager*>(Renderer2DLayer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->offsetX
-					<< " " << static_cast<ComponentManager*>(Renderer2DLayer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->offsetY << "\n"
-					<< static_cast<ComponentManager*>(Renderer2DLayer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->IsTrigger << "\n"
-					<< static_cast<ComponentManager*>(Renderer2DLayer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->GetTag() << "\n";
+				out_file << static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->offsetX
+					<< " " << static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->offsetY << "\n"
+					<< static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->IsTrigger << "\n"
+					<< static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->GetTag() << "\n";
 			}
 			else {
 				out_file << 0 << "\n";
@@ -84,7 +87,10 @@ void Doom::Renderer::Save(const std::string filename) {
 				out_file << 0 << "\n";
 				out_file << "NONE" << "\n";
 			}
-			out_file << Renderer2DLayer::objects2d[i]->GetPathToTexture() << "\n";
+			if (Renderer::objects2d[i]->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr)
+				out_file << Renderer::objects2d[i]->GetComponentManager()->GetComponent<SpriteRenderer>()->GetPathToTexture() << "\n";
+			else
+				out_file << "None" << "\n";
 			out_file << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << "\n";
 			out_file << scale[0] << " " << scale[1] << " " << scale[2] << "\n";
 		
@@ -98,7 +104,7 @@ void Doom::Renderer::Save(const std::string filename) {
 				out_file << 1 << "\n";
 				out_file << sr->textureAtlas->spriteWidth << " " << sr->textureAtlas->spriteHeight;
 			}
-			if (i + 1 != Renderer2DLayer::objects2d.size())
+			if (i + 1 != Renderer::objects2d.size())
 				out_file << "\n";
 			delete color;
 
@@ -117,6 +123,7 @@ void Doom::Renderer::Save(const std::string filename) {
 void Doom::Renderer::Load(const std::string filename)
 {
 	DeleteAll();
+	bool enable = true;
 	std::string name = "";
 	std::string type = "";
 	std::string pathtotext = "";
@@ -138,6 +145,8 @@ void Doom::Renderer::Load(const std::string filename)
 		while (in_file.peek() != EOF) {
 				in_file >> name;
 				//std::cout << name << std::endl;
+				in_file >> enable;
+				//std::cout << enable << std::endl;
 				in_file >> type;
 				//std::cout << type << std::endl;
 				in_file >> pos[0] >> pos[1];
@@ -163,7 +172,7 @@ void Doom::Renderer::Load(const std::string filename)
 				in_file >> isSprite;
 				in_file >> spriteSize[0] >> spriteSize[1];
 				if (type == "GameObject") {		
-					LoadObj<GameObject>(name, pathtotext, angle, color, scale, pos, hascollision, offset, axes, istrigger, tag, UVs,isSprite,spriteSize);
+					LoadObj<GameObject>(enable,name, pathtotext, angle, color, scale, pos, hascollision, offset, axes, istrigger, tag, UVs,isSprite,spriteSize);
 				}
 		}
 	}
@@ -176,7 +185,7 @@ GameObject* Doom::Renderer::SelectObject()
 	std::vector < glm::vec2> p;
 	for (unsigned int i = 0; i < GetAmountOfObjects(); i++)
 	{
-		GameObject* go = static_cast<GameObject*>(Renderer2DLayer::objects2d[i]);
+		GameObject* go = static_cast<GameObject*>(Renderer::objects2d[i]);
 		SpriteRenderer* sr= go->GetComponentManager()->GetComponent<SpriteRenderer>();
 		p.clear();
 		p.push_back(glm::vec2(sr->WorldVertexPositions[0] + go->GetPositions().x, sr->WorldVertexPositions[1] + go->GetPositions().y));
@@ -199,16 +208,45 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 {
 	ObjectsWithNoOwner.clear();
 	ObjectsWithOwner.clear();
-	for (unsigned int i = 0; i < Renderer2DLayer::objects2d.size(); i++)
+	for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
 	{
-		if (Renderer2DLayer::objects2d[i]->GetOwner() == nullptr) {
-			ObjectsWithNoOwner.push_back(Renderer2DLayer::objects2d[i]->GetId());
+		if (Renderer::objects2d[i]->GetOwner() == nullptr) {
+			ObjectsWithNoOwner.push_back(Renderer::objects2d[i]->GetId());
 		}
 		else {
-			ObjectsWithOwner.push_back(Renderer2DLayer::objects2d[i]->GetId());
+			ObjectsWithOwner.push_back(Renderer::objects2d[i]->GetId());
 		}
 	}
 	return ObjectsWithNoOwner;
+}
+
+void Doom::Renderer::RenderShutDown()
+{
+	size_t sizeO = objects2d.size();
+	for (size_t i = 0; i < sizeO; i++)
+	{
+		delete objects2d[i];
+	}
+	objects2d.clear();
+}
+
+const char ** Doom::Renderer::GetItems()
+{
+	delete[] items;
+	items = new const char*[GetObjectsWithNoOwnerReference().size()];
+	for (unsigned int i = 0; i < GetObjectsWithNoOwnerReference().size(); i++)
+	{
+		int id = GetObjectsWithNoOwnerReference()[i];
+		items[i] = objects2d[id]->name.c_str();
+
+	}
+	return items;
+}
+
+GameObject * Doom::Renderer::CreateGameObject()
+{
+	GameObject * go = new GameObject("Unnamed", 0, 0);
+	return go;
 }
 
 bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
@@ -249,7 +287,7 @@ bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
 void Renderer::Render() {
 	OrthographicCamera* camera = &Window::GetCamera();
 	
-	SubmitGameObjects(*camera); 
+	SubmitGameObjects(); 
 	
 	size_t particleSize = Particle::particles.size();
 	for (size_t i = 0; i < particleSize; i++)
@@ -270,7 +308,7 @@ void Renderer::Render() {
 	glLineWidth(1.0f);*/
 	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
 	Batch::GetInstance()->Lindexcount = 0;
-	RenderCollision(*camera);
+	RenderCollision();
 	Batch::GetInstance()->BeginLines();
 	unsigned int size = Line::lines.size();
 	for (unsigned int i = 0; i < size; i++)
@@ -284,7 +322,7 @@ void Renderer::Render() {
 	RenderText();
 }
 
-void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
+void Doom::Renderer::SubmitGameObjects()
 {
 	//std::unique_lock<std::mutex> lock(Renderer::mtx);
 	{
@@ -292,22 +330,22 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 		//isReadyToRenderFirstThread = false;
 		//isReadyToRenderSecondThread = false;
 		//isReadyToRenderThirdThread = false;
-		size_t size = Renderer2DLayer::objects2d.size();
+		size_t size = Renderer::objects2d.size();
 		if (size > 0)
 		{
 			Batch* batch = Batch::GetInstance();
 			batch->Gindexcount = 0;
 			batch->BeginGameObjects();
 			/*for (size_t i = 0; i < size; i++) {
-				GameObject* go = (GameObject*)&Renderer2DLayer::objects2d[i];
+				GameObject* go = (GameObject*)&Renderer::objects2d[i];
 				if (go->Enable == true)
 				{
 					batch->Submit(*go);
 				}
 			}*/
-			for (auto object : Renderer2DLayer::objects2d) {
+			for (auto object : Renderer::objects2d) {
 				GameObject* go = (GameObject*)object;
-				if (go->Enable == true && (go->AlwaysDraw || sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel()))
+				if (go->Enable == true && (go->GetComponentManager()->GetComponent<SpriteRenderer>()->AlwaysDraw || sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel()))
 				{
 					batch->Submit(*go->GetComponentManager()->GetComponent<SpriteRenderer>());
 				}
@@ -325,7 +363,7 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 //	unsigned int size = GetAmountOfObjects() * 0.33333;
 //		for (unsigned int i = 0; i < size; i++)
 //		{
-//			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i]);
+//			GameObject* go = (GameObject*)(&Renderer::objects2d[i]);
 //			float * scaleVal = go->GetScale();
 //			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
 //			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
@@ -341,7 +379,7 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 //		unsigned int size1 = GetAmountOfObjects() * 0.33333 ;
 //		for (unsigned int i = size1; i < size; i++)
 //		{
-//			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i]);
+//			GameObject* go = (GameObject*)(&Renderer::objects2d[i]);
 //			float * scaleVal = go->GetScale();
 //			//go->MVP = go->pos * go->view;
 //			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
@@ -358,7 +396,7 @@ void Doom::Renderer::SubmitGameObjects(OrthographicCamera& camera)
 //		unsigned int size1 = size - GetAmountOfObjects() * 0.33333;
 //		for (unsigned int i = size1; i < size; i++)
 //		{
-//			GameObject* go = (GameObject*)(&Renderer2DLayer::objects2d[i]);
+//			GameObject* go = (GameObject*)(&Renderer::objects2d[i]);
 //			float * scaleVal = go->GetScale();
 //			//go->MVP = go->pos * go->view;
 //			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
@@ -376,17 +414,14 @@ void Doom::Renderer::RenderText() {
 	Batch::GetInstance()->flushText(Batch::GetInstance()->TextShader);
 }
 
-void Doom::Renderer::RenderCollision(OrthographicCamera& camera){
-	if (Collision::IsVisible == true && Renderer2DLayer::collision2d.size() > 0) {
+void Doom::Renderer::RenderCollision(){
+	if (Collision::IsVisible == true && Renderer::collision2d.size() > 0) {
 		Batch::GetInstance()->Gindexcount = 0;
 		Batch::GetInstance()->BeginGameObjects();
-		for (unsigned int i = 0; i < Renderer2DLayer::collision2d.size(); i++) {
-			Renderer2DLayer* col = Renderer2DLayer::collision2d[i];
+		for (unsigned int i = 0; i < Renderer::collision2d.size(); i++) {
+			Collision* col = Renderer::collision2d[i];
 			if (col != nullptr && col->Enable == true) {
-				if (col->IsCollisionEnabled()) {
-					Collision* go = static_cast<Collision*>(col);
-					Batch::GetInstance()->Submit(*go);
-				}
+				Batch::GetInstance()->Submit(*col);
 			}
 		}
 		Batch::GetInstance()->EndGameObjects();

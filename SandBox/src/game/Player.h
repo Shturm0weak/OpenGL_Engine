@@ -9,7 +9,7 @@ public:
 	Collision* col = nullptr;
 	Transform* tr = nullptr;
 	Animator* anim = nullptr;
-	double speedx = 15.;
+	double speedx = 20.;
 	double speedy = 0.;
 	int prevKey = 65;
 	int scores = 0;
@@ -26,10 +26,10 @@ public:
 		col = GetComponentManager()->AddComponent<Collision>();
 		col->SetTag("Player");
 		tr = GetComponentManager()->GetComponent<Transform>();
-		Renderer2DLayer::type = "Player";
+		type = "Player";
 		anim = GetComponentManager()->AddComponent<Animator>();
 		anim->SetAnimation("src/Animations");
-		tr->Scale(3,4);
+		tr->Scale(4,5);
 		anim->isPlayingAnim = true;
 		
 	}
@@ -50,8 +50,8 @@ public:
 			if (missed >= 3) {
 				missed -= 3;
 				hp--;
-				if (HpBar->hearts[hp].Enable == true) {
-					HpBar->hearts[hp].Enable = false;
+				if (HpBar->hearts[hp]->Enable == true) {
+					HpBar->hearts[hp]->Enable = false;
 					HpBar->Shake();
 					return;
 				}
@@ -104,7 +104,7 @@ public:
 						anim->PlayAnim(iter->second);
 					}
 				}
-			if (tr->position.y < -5)
+			if (tr->position.y < -18)
 				Dead();
 		}
 	}
@@ -120,7 +120,7 @@ public:
 	void Keys() {
 		tr->Move(0, -5, 0);
 		if (Input::IsKeyDown(Keycode::SPACE) && isLanded) {
-			speedy = 25;
+			speedy = 27;
 			isLanded = false;
 		}
 		else if (Input::IsKeyDown(Keycode::KEY_D)) {

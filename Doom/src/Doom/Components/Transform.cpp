@@ -70,11 +70,19 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 	//EventSystem::Instance()->SendEvent("OnMove",(Listener*)owner);
 }
 
-void Transform::RotateOnce(float theta, glm::vec3 axis) {
+void Transform::RotateOnce(float theta, glm::vec3 axis,bool isRad) {
+	this->angleDeg = theta;
 	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
-	this->angle = (-theta * (2 * 3.14159f) / 360.0f);
+	if (isRad) {
+		this->angleDeg = (-theta * 360.0f) / (2 * 3.14159f);
+		this->angleRad = theta;
+	}
+	else {
+		this->angleRad = (-theta * (2 * 3.14159f) / 360.0f);
+		this->angleDeg = theta;
+	}
 	sr->view = glm::mat4(1.0f);
-	sr->view = glm::rotate(sr->view, angle, axis);
+	sr->view = glm::rotate(sr->view, angleRad, axis);
 	RealVertexPositions();
 	{
 		sr->WorldVertexPositions[0] = WorldVerPos[0];
@@ -98,7 +106,7 @@ void Transform::RotateOnce(float theta, glm::vec3 axis) {
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(this->angle, axis);
+				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(this->angleRad, axis);
 		}
 	}
 }
@@ -107,11 +115,11 @@ void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 axis)
 {
 	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
 	glm::vec3 b = glm::vec3(0,1,0);
-	this->angle = acosf((a.x * b.x + a.y * b.y + a.z * b.z)/((sqrtf(a.x * a.x + a.y * a.y + a.z * a.z) * (sqrtf(b.x * b.x + b.y * b.y + b.z * b.z)))));
+	this->angleRad = acosf((a.x * b.x + a.y * b.y + a.z * b.z)/((sqrtf(a.x * a.x + a.y * a.y + a.z * a.z) * (sqrtf(b.x * b.x + b.y * b.y + b.z * b.z)))));
 	if (ViewPort::Instance()->GetMousePositionToWorldSpace().x > position.x)
-		this->angle = -this->angle;
+		this->angleRad = -this->angleRad;
 	sr->view = glm::mat4(1.0f);
-	sr->view = glm::rotate(sr->view, angle, axis);
+	sr->view = glm::rotate(sr->view, angleRad, axis);
 	RealVertexPositions();
 	{
 		sr->WorldVertexPositions[0] = WorldVerPos[0];
@@ -135,15 +143,16 @@ void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 axis)
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angle, axis);
+				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angleRad, axis);
 		}
 	}
 }
 
 void Transform::Rotate(float theta, glm::vec3 axis) {
+	this->angleDeg = theta;
 	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
-	this->angle = (-theta * (2 * 3.14159f) / 360.0f);
-	sr->view = glm::rotate(sr->view, angle * DeltaTime::GetDeltaTime(), axis);
+	this->angleRad = (-theta * (2 * 3.14159f) / 360.0f);
+	sr->view = glm::rotate(sr->view, angleDeg * DeltaTime::GetDeltaTime(), axis);
 	RealVertexPositions();
 	{
 		sr->WorldVertexPositions[0] = WorldVerPos[0];
@@ -167,7 +176,7 @@ void Transform::Rotate(float theta, glm::vec3 axis) {
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(this->angle, axis);
+				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(this->angleRad, axis);
 		}
 	}
 }

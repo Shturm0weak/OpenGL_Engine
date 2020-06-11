@@ -1,4 +1,5 @@
 #include "../pch.h"
+#include "../Render/Renderer.h"
 #include "Ray.h"
 
 using namespace Doom;
@@ -98,13 +99,13 @@ bool Ray::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, st
 	
 	std::vector<glm::vec2> corners;
 	std::multimap<Collision*,glm::vec2*> points;
-	unsigned int size = Renderer2DLayer::collision2d.size();
+	unsigned int size = Renderer::collision2d.size();
 
 	bool ignoreFlag = false;
 
 	for (unsigned int i = 0; i < size; i++)
 	{
-		Collision* col = (Collision*)&Renderer2DLayer::collision2d[i];
+		Collision* col = Renderer::collision2d[i];
 
 		unsigned int ignoreMaskSize = ignoreMask.size();
 		for (unsigned int i = 0; i < ignoreMaskSize; i++)

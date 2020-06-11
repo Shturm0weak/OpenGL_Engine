@@ -6,7 +6,7 @@ void ShipEnemy::OnCollision(void * _col)
 {
 	Collision* __col = static_cast<Collision*>(_col);
 	if (__col->GetTag() == "Bullet") {
-		Bullet* bullet = static_cast<Bullet*>(__col->GetOwner());
+		Bullet* bullet = static_cast<Bullet*>(__col->GetOwnerOfComponent());
 		hp -= bullet->damage;
 		bullet->Death();
 	}

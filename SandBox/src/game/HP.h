@@ -6,7 +6,7 @@ using namespace Doom;
 class HP : public Listener{
 public:
 	unsigned int count = 3;
-	GameObject hearts[3];
+	std::vector <GameObject*> hearts;
 	Texture* texture = new Texture("src/Images/Heart.png",1);
 	float prevYPos = 0;
 	bool isShake = false;
@@ -17,14 +17,15 @@ public:
 		EventSystem::Instance()->RegisterClient("OnUpdate", this);
 		for (unsigned int i = 0; i < 3; i++)
 		{
-			hearts[i].SetName("HP");
-			hearts[i].GetComponentManager()->GetComponent<Transform>()->Scale(2,2);
-			hearts[i].Static = true;
-			hearts[i].GetComponentManager()->GetComponent<Transform>()->Translate(x + i * (hearts[i].GetWidth() + 0.25),y);
-			hearts[i].SetTexture(texture);
+			hearts.push_back(new GameObject());
+			hearts[i]->SetName("HP");
+			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Scale(2,2);
+			hearts[i]->Static = true;
+			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Translate(x + i * (hearts[i]->GetWidth() + 0.25),y);
+			hearts[i]->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texture);
 		}
 	}
-
+	
 	void Shake() {
 		isShake = true;
 	}
@@ -33,7 +34,7 @@ public:
 		if (isShake) {
 			for (unsigned int i = 0; i < count - 1; i++)
 			{
-				Transform* tr = hearts[i].GetComponentManager()->GetComponent<Transform>();
+				Transform* tr = hearts[i]->GetComponentManager()->GetComponent<Transform>();
 				if (secondtphase[i]) {
 					tr->Move(0, 40, 0);
 					if (tr->position.y > prevYPos * 1.1) {

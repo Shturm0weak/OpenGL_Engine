@@ -111,7 +111,7 @@ public:
 
 	void Debug() {
 		fps = 1000.f / (DeltaTime::deltatime * 1000.f);
-		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::LEFT;
+		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::XCENTER;
 		Gui::GetInstance()->Text("FPS : %f", true, 400, 900, fontSize, COLORS::White, 0, fps);
 		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 400, 820, fontSize, COLORS::White, 1, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 400, 740, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);

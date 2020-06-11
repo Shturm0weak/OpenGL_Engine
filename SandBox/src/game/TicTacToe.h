@@ -45,12 +45,10 @@ public:
 	Texture* circleTexture = nullptr;
 
 	Plate* plates = nullptr;
-	Font* font = nullptr;
 
 	GameObject* background = nullptr;
 
 	double timer = 1.0;
-	double debugTextTimer = 1;
 
 	int selected = -1;
 	unsigned int turn = 0;
@@ -64,10 +62,7 @@ public:
 	virtual void OnStart()override {
 		ai = new AI();
 		Window::GetCamera().Zoom(0.56);
-		font = new Font();
-		font->LoadFont("src/font.txt", "src/arial.png");
-		font->LoadCharacters();
-
+		
 		plates = new Plate[9];
 		float offsetX = -3.f;
 		float offsetY = -3.f;
@@ -78,9 +73,9 @@ public:
 
 		background = new GameObject("BackGround", 0, 0);
 		background->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		background->SetColor(COLORS::Silver);
-		background->Setlayer(0);
-		background->AlwaysDraw = true;
+		background->GetComponentManager()->GetComponent<SpriteRenderer>()->SetColor(COLORS::Silver);
+		background->GetComponentManager()->GetComponent<SpriteRenderer>()->Setlayer(0);
+		background->GetComponentManager()->GetComponent<SpriteRenderer>()->AlwaysDraw = true;
 
 		for (unsigned int i = 0; i < 9; i++)
 		{
@@ -107,15 +102,14 @@ public:
 			if (plate != nullptr) {
 				if (plate->isEmpty) {
 					amountOfNonEmpty++;
-					Sound::Play(L"src/Sounds/Place.wav");
 					plate->isEmpty = false;
 					if (turn == 0) {
-						plate->plate->SetTexture(crossLinesTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(crossLinesTexture);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
-						plate->plate->SetTexture(circleTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(circleTexture);
 						plate->owner = turn;
 						turn = 0;
 					}
@@ -128,16 +122,15 @@ public:
 			plate = ai->DecideWhereToPlace(plates);
 			if (plate != nullptr) {
 				if (plate->isEmpty) {
-					Sound::Play(L"src/Sounds/Place.wav");
 					amountOfNonEmpty++;
 					plate->isEmpty = false;
 					if (turn == 0) {
-						plate->plate->SetTexture(crossLinesTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(crossLinesTexture);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
-						plate->plate->SetTexture(circleTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(circleTexture);
 						plate->owner = turn;
 						turn = 0;
 					}
@@ -147,27 +140,26 @@ public:
 
 
 		timer += DeltaTime::deltatime;
-		debugTextTimer += DeltaTime::deltatime;
 
-		if(debugTextTimer > 0.1f){
-			debugTextTimer = 0;
-			Batch::GetInstance()->indexcount = 0;
-			Batch::GetInstance()->Begin();
-			Gui::GetInstance()->Text(font, "selected : %d", true, 30, 28, 22, COLORS::Red, 0, selected);
-			if(selected >= 0)
-				Gui::GetInstance()->Text(font, "IsEmpty : %d", true, 30, 22, 22, COLORS::Red, 0, plates[selected].isEmpty);
-			Gui::GetInstance()->Text(font, "Mouse X : %f   Y : %f", true, 30, 31, 22, COLORS::Red, 2, mousePos.x, mousePos.y);
-			Gui::GetInstance()->Text(font, "Not empty : %d", true, 30, 25, 22, COLORS::Red, 0, amountOfNonEmpty);
-			Gui::GetInstance()->Text(font, "FPS : %f", true, 30, 19, 22, COLORS::Red, 0, Window::GetFPS());
-			Batch::GetInstance()->End();
-		}
+		Gui::GetInstance()->Begin();
+		Gui::GetInstance()->Text("selected : %d", true, 900, 800, 76, COLORS::Red, 0, selected);
+		if(selected >= 0)
+		Gui::GetInstance()->Text("IsEmpty : %d", true, 900, 720, 76, COLORS::Red, 0, plates[selected].isEmpty);
+		Gui::GetInstance()->Text("Mouse X:%f Y:%f", true, 900, 640, 76, COLORS::Red, 1, mousePos.x, mousePos.y);
+		Gui::GetInstance()->Text("Not empty : %d", true, 900, 560, 76, COLORS::Red, 0, amountOfNonEmpty);
+		Gui::GetInstance()->Text("FPS : %f", true, 900, 480, 76, COLORS::Red, 0, Window::GetFPS());
+		Gui::GetInstance()->End();
 
 		if (amountOfNonEmpty >= 9) {
 			end = true;
 			turn = 0;
-			Batch::GetInstance()->indexcount = 0;
-			Batch::GetInstance()->Begin();
-			Gui::GetInstance()->Text(font, "           Draw\nPress Enter to restart", true, -40, 0, 50, COLORS::Yellow, 0);
+			Gui::GetInstance()->Begin();
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
+			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::YCENTER;
+			Gui::GetInstance()->Text("Draw", true, 0, 0, 76, COLORS::Yellow);
+			Gui::GetInstance()->Text("Press Enter to restart", true, 0, -80, 76, COLORS::Yellow);
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
+			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
 			Batch::GetInstance()->End();
 
 			if (Input::IsKeyPressed(Keycode::KEY_ENTER))
@@ -177,10 +169,14 @@ public:
 		int whowin = WhoWin(plates);
 		if (whowin >= 0) {
 			turn = 0;
-			Batch::GetInstance()->indexcount = 0;
-			Batch::GetInstance()->Begin();
-			Gui::GetInstance()->Text(font, "     Player %d won!!!\nPress Enter to restart", true,-40, 0, 50, COLORS::Yellow, 0, whowin);
-			Batch::GetInstance()->End();
+			Gui::GetInstance()->Begin();
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
+			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::YCENTER;
+			Gui::GetInstance()->Text("Player %d won!!!", true,-0, 0, 76, COLORS::Yellow, 0, whowin);
+			Gui::GetInstance()->Text("Press Enter to restart", true, -0, -80, 76, COLORS::Yellow, 0, whowin);
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
+			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
+			Gui::GetInstance()->End();
 			end = true;
 
 			if (Input::IsKeyPressed(Keycode::KEY_ENTER))
@@ -189,12 +185,6 @@ public:
 	}
 
 	virtual void OnClose()override {
-		delete crossLinesTexture;
-		delete circleTexture;
-		delete[] plates;
-		delete font;
-		delete ai;
-		delete background;
 	}
 
 	Plate* isCollided(Plate* plates,int* selected) {
@@ -236,7 +226,7 @@ public:
 		{
 			plates[i].isEmpty = true;
 			plates[i].owner = -1;
-			plates[i].plate->SetTexture(nullptr);
+			plates[i].plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(nullptr);
 		}
 		end = false;
 		amountOfNonEmpty = 0;

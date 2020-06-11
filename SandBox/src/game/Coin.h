@@ -1,7 +1,6 @@
 #pragma once
 #include "pch.h"
 #include <random>
-#include "Audio/Sound.h"
 
 using namespace Doom;
 
@@ -12,19 +11,24 @@ public:
 	bool playanim = false;
 	bool secondphase = false;
 	float prevscale[2];
+	Sound* coinSound = new Sound("src/Sounds/Coin.wav");
 
-	Coin(const std::string name = "Coin", float x = 0, float y = 30) :GameObject(name, x, y) {
+	Coin(const std::string name = "Coin", float x = 0, float y = 15) :GameObject(name, x, y) {
 		EventSystem::Instance()->RegisterClient("OnUpdate", (GameObject*)this);
 		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
+		SoundManager::CreateSoundAsset("coin", coinSound);
 		col = GetComponentManager()->AddComponent<Collision>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		col->SetOwner(this);
-		Renderer2DLayer::type = "GameObject";
-		tr->Scale(2, 2);
+		type = "GameObject";
+		tr->Scale(3, 3);
 		col->IsTrigger = true;
 		col->SetTag("Coin");
 		prevscale[0] = scaleValues[0];
 		prevscale[1] = scaleValues[1];
+	}
+
+	~Coin() {
 	}
 
 	virtual void OnUpdate() override {
@@ -53,7 +57,7 @@ public:
 			EventSystem::Instance()->SendEvent("OnCollision", this, col->collidedObject);
 		}
 		tr->Move(0,-5,0);
-		if (tr->position.y <= -5) {
+		if (tr->position.y <= -18) {
 			Randomize();
 			EventSystem::Instance()->SendEvent("OnMiss", nullptr);
 		}
@@ -63,8 +67,9 @@ public:
 	virtual void OnCollision(void* _col)override {
 		Collision* col = static_cast<Collision*>(_col);
 		if (col->GetTag() == "Player") {
+			SoundManager::Play(coinSound);
 			this->col->Enable = false;
-			Player* player = dynamic_cast<Player*>(&col->GetOwnerOfComponent());
+			Player* player = dynamic_cast<Player*>(col->GetOwnerOfComponent());
 			player->scores++;
 			player = nullptr;
 			playanim = true;
@@ -81,7 +86,7 @@ public:
 		this->col->Enable = true;
 		std::random_device rd;
 		std::mt19937 e2(rd());
-		std::uniform_real_distribution<float> distribution(-20.f, 20.f);
+		std::uniform_real_distribution<float> distribution(-30.f, 30.f);
 		float x = distribution(e2);
 		std::uniform_real_distribution<float> distribution1(0.f, 5.f);
 		float y = distribution1(e2);
