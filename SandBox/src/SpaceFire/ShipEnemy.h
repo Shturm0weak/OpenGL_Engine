@@ -29,11 +29,11 @@ public:
 
 	Transform* tr = nullptr;
 	Collision* col = nullptr;
+	SpriteRenderer* sr = nullptr;
 	Texture* texture = new Texture("src/SpaceFire/Images/SpaceShip.png");
 
 	void OnCollision(void* _col);
 	void OnUpdate();
 
 	ShipEnemy(std::string name = "ShipEnemy", float x = 0, float y = 0);
-	~ShipEnemy();
 };

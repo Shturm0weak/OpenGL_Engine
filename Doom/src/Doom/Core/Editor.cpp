@@ -42,7 +42,7 @@ void Editor::EditorUpdate()
 		{
 			Renderer::CreateGameObject();
 			Renderer::CalculateObjectsVectors().size();
-			go = static_cast<GameObject*>(&Renderer2DLayer::objects2d.back().get());
+			go = static_cast<GameObject*>(Renderer2DLayer::objects2d.back());
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
@@ -61,7 +61,7 @@ void Editor::EditorUpdate()
 					go->Enable = false;
 					std::cout << BOLDYELLOW << "Warning: you cannot delete the last object on the scene, create new one or current object will be set to disable\n" << RESET;
 				}
-				go = static_cast<GameObject*>(&Renderer2DLayer::objects2d[0].get());
+				go = static_cast<GameObject*>(Renderer2DLayer::objects2d[0]);
 			}
 			ImGui::EndPopup();
 			ImGui::End();
@@ -75,14 +75,14 @@ void Editor::EditorUpdate()
 
 	
 	if (go == nullptr) {
-		go = static_cast<GameObject*>(&Renderer2DLayer::objects2d[0].get());
+		go = static_cast<GameObject*>(Renderer2DLayer::objects2d[0]);
 	}
 
 	if (ImGui::CollapsingHeader("Game Objects")) {
 		unsigned int amount = Renderer::GetAmountOfObjects();
 		for (unsigned int i = 0; i < amount; i++)
 		{
-			GameObject* go = static_cast<GameObject*>(&Renderer2DLayer::objects2d[i].get());
+			GameObject* go = static_cast<GameObject*>(Renderer2DLayer::objects2d[i]);
 			if (go->GetOwner() != nullptr) {
 				continue;
 			}
@@ -91,7 +91,7 @@ void Editor::EditorUpdate()
 				ImVec2 sp = ImGui::GetCursorScreenPos();
 				ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
 			}
-			if (ImGui::TreeNode(go->name->c_str())) {
+			if (ImGui::TreeNode(go->name.c_str())) {
 				if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
 					this->go = go;
 				unsigned int childsAmount = go->GetChilds().size();
@@ -105,7 +105,7 @@ void Editor::EditorUpdate()
 							ImVec2 sp = ImGui::GetCursorScreenPos();
 							ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
 						}
-						if (ImGui::TreeNode(child->name->c_str())) {
+						if (ImGui::TreeNode(child->name.c_str())) {
 							if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
 								this->go = child;
 							unsigned int childsAmount = child->GetChilds().size();
@@ -119,7 +119,7 @@ void Editor::EditorUpdate()
 										ImVec2 sp = ImGui::GetCursorScreenPos();
 										ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
 									}
-									if (ImGui::TreeNode(child1->name->c_str())) {
+									if (ImGui::TreeNode(child1->name.c_str())) {
 										if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
 											this->go = child1;
 										ImGui::TreePop();
@@ -186,10 +186,10 @@ void Editor::EditorUpdate()
 				ImGui::InputInt3("Rotate axes",axes);
 				tr->RotateOnce(tr->angle, glm::vec3(axes[0], axes[1], axes[2]));
 			}
-			if (ImGui::CollapsingHeader("Render")) {
-				color = go->GetColor();
+			if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && ImGui::CollapsingHeader("Render")) {
+				color = go->GetComponentManager()->GetComponent<SpriteRenderer>()->GetColor();
 				ImGui::ColorEdit4("Color", color);
-				go->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
+				go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
 				delete[] color;
 				int counterImagesButtons = 0;
 				ImGui::Text("Textures");
@@ -205,7 +205,7 @@ void Editor::EditorUpdate()
 					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
 						if (go != nullptr) {
 
-							go->SetTexture(texture[i]);
+							go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texture[i]);
 						}
 
 					}
@@ -218,16 +218,16 @@ void Editor::EditorUpdate()
 				ImGui::InputFloat2("UVs Offset", uvsOffset);
 
 				if (ImGui::Button("Use these UVs")) {
-					if (go != nullptr && go->textureAtlas != nullptr)
-						go->SetUVs(go->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
+					if (go != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->textureAtlas != nullptr)
+						go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetUVs(go->GetComponentManager()->GetComponent<SpriteRenderer>()->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
 				}
 				if (ImGui::Button("Original UVs")) {
 					if (go != nullptr)
-						go->OriginalUvs();
+						go->GetComponentManager()->GetComponent<SpriteRenderer>()->OriginalUvs();
 				}
 				if (ImGui::Button("No texture")) {
 					if (go != nullptr)
-						go->SetTexture(nullptr);
+						go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(nullptr);
 				}
 				ImGui::InputText("path", pathToTextureFolder, 64);
 				if (ImGui::Button("Refresh textures")) {
@@ -258,9 +258,10 @@ void Editor::EditorUpdate()
 								if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
 								{
 									if (go != nullptr) {
-										go->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
-										go->SetTexture(textureOfAtlas);
-										go->SetUVs(uvs);
+										SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
+										sr->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
+										sr->SetTexture(textureOfAtlas);
+										sr->SetUVs(uvs);
 									}
 								}
 								ImGui::PopID();

@@ -20,30 +20,30 @@ class SpaceFire : public Application {
 	Sound* backSound = new Sound("src/SpaceFire/Sounds/back.ogg");
 public:
 	void OnStart() {
-			SoundManager::CreateSoundAsset("back", backSound);
-			backSound->SetVolume(0.03f);
-			SoundManager::Loop(backSound);
-			Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PEAK]);
-			ImGui::SetCurrentContext(Window::imGuiContext);
-			ammoTexture = new Texture("src/SpaceFire/Images/Ammo.png");
-			backgroundTexture = new Texture("src/SpaceFire/Images/SpaceBack.png");
-			background1 = new GameObject("BackGround1");
-			background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-			background1->SetTexture(backgroundTexture);
-			background2 = new GameObject("BackGround2");
-			background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-			background2->SetTexture(backgroundTexture);
-			pl = new ShipPlayer();
-			float x = -10;
-			for (unsigned int i = 0; i < 3; i++)
-			{
-				enemies.push_back(new ShipEnemy("ShipEnemy", x, 20));
-				enemies[i]->pl = pl;
-				x += 10;
-			}
-			pl->hp = 0;
-			background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 0);
-			background2->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
+		SoundManager::CreateSoundAsset("back", backSound);
+		backSound->SetVolume(0.03f);
+		SoundManager::Loop(backSound);
+		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PEAK]);
+		ImGui::SetCurrentContext(Window::imGuiContext);
+		ammoTexture = new Texture("src/SpaceFire/Images/Ammo.png");
+		backgroundTexture = new Texture("src/SpaceFire/Images/SpaceBack.png");
+		background1 = new GameObject("BackGround1");
+		background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
+		background1->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(backgroundTexture);
+		background2 = new GameObject("BackGround2");
+		background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
+		background2->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(backgroundTexture);
+		pl = new ShipPlayer();
+		float x = -10;
+		for (unsigned int i = 0; i < 3; i++)
+		{
+			enemies.push_back(new ShipEnemy("ShipEnemy", x, 20));
+			enemies[i]->pl = pl;
+			x += 10;
+		}
+		pl->hp = 0;
+		background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 0);
+		background2->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
 			
 	}
 
@@ -107,9 +107,6 @@ public:
 	}
 
 	void OnClose() {
-		delete pl;
-		delete background1;
-		delete background2;
 	}
 
 	void Debug() {

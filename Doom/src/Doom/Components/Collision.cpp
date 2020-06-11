@@ -8,7 +8,7 @@ Collision::Collision(GameObject* owner,double x, double y){
 	this->owner = owner;
 	id = Renderer2DLayer::col_id;
 	Renderer2DLayer::col_id++;
-	Renderer2DLayer::PushCol(*this);
+	Renderer2DLayer::collision2d.push_back(this);
 	if (owner != nullptr) {
 		position.x = owner->component_manager->GetComponent<Transform>()->position.x;
 		position.y = owner->component_manager->GetComponent<Transform>()->position.y;
@@ -36,17 +36,6 @@ Collision::Collision(GameObject* owner,double x, double y){
 	p.push_back(p2);
 	p.push_back(p3);
 	p.push_back(p4);
-	glGenVertexArrays(1, &this->vao);
-	glBindVertexArray(this->vao);
-	this->layout->Push<float>(2);
-	this->layout->Push<float>(2);
-	this->va->AddBuffer(*this->vb, *this->layout);
-	//shader->Bind();
-	//shader->SetUniform4fv("U_Color", this->Color);
-	this->va->UnBind();
-	this->shader->UnBind();
-	this->vb->UnBind();
-	this->ib->UnBind();
 	if (owner != nullptr) {
 		Translate(owner->GetPositions().x, owner->GetPositions().y);
 		SetOffset(offsetX, offsetY);
@@ -68,18 +57,6 @@ void Collision::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,
 		p[i].x = ScaledVerPos[4 * i] + position.x;
 		p[i].y = ScaledVerPos[4 * i + 1] + position.y;
 	}
-}
-
-void Collision::OnRunning(OrthographicCamera& camera)
-{
-		this->shader->Bind();
-		//this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
-		//this->scaleXview = scale * view;
-		this->MVP = camera.GetProjectionMatrix() * pos * scaleXview;
-		//camera.RecalculateViewMatrix();
-		this->shader->UploadUnifromMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-		this->shader->SetUniformMat4f("u_MVP", this->MVP);
-	Renderer2DLayer::Draw(*this->va, *this->ib, *this->shader);
 }
 
 void Collision::RealVerPos() {
@@ -142,9 +119,9 @@ void Collision::SetOffset(float x, float y) {
 		Collided_side_bottom = false;
 		for (unsigned int i = 0; i < collision2d.size(); i++)
 		{
-			if (collision2d[i].get().IsCollisionEnabled() == true) {
+			if (collision2d[i]->IsCollisionEnabled() == true) {
 				if (this != &collision2d[i].get()) {
-					col = dynamic_cast<Collision*>(collision2d[i].get().GetCollisionReference());
+					col = dynamic_cast<Collision*>(collision2d[i]->GetCollisionReference());
 					if (col == nullptr) {
 						return false;
 						
@@ -212,8 +189,8 @@ void Collision::IsCollidedSAT() {
 	if (Enable == true) {
 		for (unsigned int i = 0; i < collision2d.size(); i++)
 		{
-			if (collision2d[i].get().IsCollisionEnabled() == true) {
-				col = dynamic_cast<Collision*>(collision2d[i].get().GetCollisionReference());
+			if (collision2d[i]->IsCollisionEnabled() == true) {
+				col = dynamic_cast<Collision*>(collision2d[i]->GetCollisionReference());
 				if (this != col) {
 					if (col == nullptr) {
 						return;
@@ -253,8 +230,8 @@ void Collision::IsCollidedDIAGS()
 
 		for (unsigned int i = 0; i < collision2d.size(); i++)
 		{
-			if (collision2d[i].get().IsCollisionEnabled() == true) {
-				col = dynamic_cast<Collision*>(collision2d[i].get().GetCollisionReference());
+			if (collision2d[i]->IsCollisionEnabled() == true) {
+				col = dynamic_cast<Collision*>(collision2d[i]->GetCollisionReference());
 				if (this != col) {
 					if (col == nullptr) {
 						return;
@@ -364,15 +341,11 @@ bool Collision::ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2)
 	//only if the both objects have not the same x
 	//so it needs to be overthought either do we need continues collision detection or not
 	glm::vec2 posToTranslate = glm::vec2(0,0);
-	//if(abs((r2.positions[9] * r2.owner->scaleValues[1]) + r2.owner->GetPositions().y) - abs((r1.positions[9] * r1.owner->scaleValues[1]) + r1.owner->GetPositions().y) > 0)
 	
 	posToTranslate.x = trans1->position.x;
 	if ((r2.positions[9] * r2.owner->scaleValues[1]) + r2.owner->GetPositions().y - 0.15 > (r1.positions[1] * r1.owner->scaleValues[1]) + r1.owner->GetPositions().y)
 		posToTranslate.x = trans1->position.x - (overlap * d.x / s);
 		
-	//if(abs((r2.positions[9] * r2.owner->scaleValues[1]) + r2.owner->GetPositions().y) - abs((r1.positions[9] * r1.owner->scaleValues[1]) + r1.owner->GetPositions().y) < 0)
-	//else
-	//	posToTranslate.y = trans1->position.y;
 	posToTranslate.y = trans1->position.y - (overlap * d.y / s);
 	trans1->Translate(posToTranslate.x, posToTranslate.y);
 	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::Instance(), "OnCollision", (Listener*)(owner), &r2);

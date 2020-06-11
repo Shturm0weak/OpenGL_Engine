@@ -273,7 +273,7 @@ void Doom::Batch::Submit(Line & line)
 	Lindexcount += 2;
 }
 
-void Batch::Submit(GameObject & c)
+void Batch::Submit(SpriteRenderer & c)
 {
 
 	if (GtextureSlotsIndex > maxTextureSlots - 1 || Gindexcount >= RENDERER_INDICES_SIZE) {
@@ -299,9 +299,9 @@ void Batch::Submit(GameObject & c)
 		}
 	}
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[0] * c.scaleValues[0], c.mesh2D[1] * c.scaleValues[1]);
+	Gbuffer->vertex = glm::vec2(c.mesh2D[0] * c.owner->scaleValues[0], c.mesh2D[1] * c.owner->scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
-	Gbuffer->m_static = c.Static;
+	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = c.view[0];
@@ -314,9 +314,9 @@ void Batch::Submit(GameObject & c)
 	Gbuffer->posMat3 = c.pos[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[4] * c.scaleValues[0], c.mesh2D[5] * c.scaleValues[1]);
+	Gbuffer->vertex = glm::vec2(c.mesh2D[4] * c.owner->scaleValues[0], c.mesh2D[5] * c.owner->scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[6], c.mesh2D[7]);
-	Gbuffer->m_static = c.Static;
+	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = c.view[0];
@@ -329,9 +329,9 @@ void Batch::Submit(GameObject & c)
 	Gbuffer->posMat3 = c.pos[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[8] * c.scaleValues[0], c.mesh2D[9] * c.scaleValues[1]);
+	Gbuffer->vertex = glm::vec2(c.mesh2D[8] * c.owner->scaleValues[0], c.mesh2D[9] * c.owner->scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[10], c.mesh2D[11]);
-	Gbuffer->m_static = c.Static;
+	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = c.view[0];
@@ -344,9 +344,9 @@ void Batch::Submit(GameObject & c)
 	Gbuffer->posMat3 = c.pos[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[12] * c.scaleValues[0], c.mesh2D[13] * c.scaleValues[1]);
+	Gbuffer->vertex = glm::vec2(c.mesh2D[12] * c.owner->scaleValues[0], c.mesh2D[13] * c.owner->scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[14], c.mesh2D[15]);
-	Gbuffer->m_static = c.Static;
+	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = c.view[0];
@@ -363,7 +363,7 @@ void Batch::Submit(GameObject & c)
 }
 
 void Batch::Submit(Collision& c) {
-	glm::mat4 mvp = c.owner->pos * c.owner->view;
+	glm::mat4 mvp = c.owner->GetComponentManager()->GetComponent<SpriteRenderer>()->pos * c.owner->GetComponentManager()->GetComponent<SpriteRenderer>()->view;
 	if (GtextureSlotsIndex > maxTextureSlots - 1) {
 		EndGameObjects();
 		flushGameObjects(shader);

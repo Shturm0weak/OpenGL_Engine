@@ -25,11 +25,6 @@ public:
 	Shader* shader = nullptr;
 
 	glm::vec4 color = COLORS::Red;
-	GLuint vao;
-	VertexBufferLayout* layout = new VertexBufferLayout;
-	VertexBuffer* vb = nullptr;
-	VertexArray* va = new VertexArray;
-	IndexBuffer* ib = new IndexBuffer(indeces, 2);
 
 	glm::mat4 pos = glm::mat4(1.f);
 	glm::mat4 MVP = glm::mat4(1.f);

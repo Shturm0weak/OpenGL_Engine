@@ -26,7 +26,7 @@ public:
 		col = GetComponentManager()->AddComponent<Collision>();
 		col->SetTag("Player");
 		tr = GetComponentManager()->GetComponent<Transform>();
-		*Renderer2DLayer::type = "Player";
+		Renderer2DLayer::type = "Player";
 		anim = GetComponentManager()->AddComponent<Animator>();
 		anim->SetAnimation("src/Animations");
 		tr->Scale(3,4);

@@ -24,10 +24,11 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
 	col = GetComponentManager()->AddComponent<Collision>();
 	tr = GetComponentManager()->GetComponent<Transform>();
+	sr = GetComponentManager()->GetComponent<SpriteRenderer>();
 	tr->Scale(5, 5);
 	tr->RotateOnce(180, glm::vec3(0, 0, 1));
-	SetColor(COLORS::Red);
-	SetTexture(texture);
+	sr->SetColor(COLORS::Red);
+	sr->SetTexture(texture);
 	col->IsTrigger = false;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
@@ -92,11 +93,4 @@ void ShipEnemy::Fire() {
 		usedBulletCounter++;
 	}
 	timerFire += DeltaTime::deltatime;
-}
-
-ShipEnemy::~ShipEnemy()
-{
-	delete texture;
-	delete col;
-	delete tr;
 }

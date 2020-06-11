@@ -35,7 +35,6 @@ public:
 	Texture* texture = new Texture("src/SpaceFire/Images/SpaceShip.png");
 
 	ShipPlayer(std::string name = "ShipPlayer",float x = 0,float y = 0);
-	~ShipPlayer();
 
 	void Death();
 	void Respawn();

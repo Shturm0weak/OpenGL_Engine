@@ -104,7 +104,7 @@ bool Ray::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, st
 
 	for (unsigned int i = 0; i < size; i++)
 	{
-		Collision* col = (Collision*)&Renderer2DLayer::collision2d[i].get();
+		Collision* col = (Collision*)&Renderer2DLayer::collision2d[i];
 
 		unsigned int ignoreMaskSize = ignoreMask.size();
 		for (unsigned int i = 0; i < ignoreMaskSize; i++)

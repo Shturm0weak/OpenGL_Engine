@@ -16,12 +16,12 @@ public:
 		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
 		col = GetComponentManager()->AddComponent<Collision>();
 		tr = GetComponentManager()->GetComponent<Transform>();
-		*Renderer2DLayer::type = "GameObject";
+		Renderer2DLayer::type = "GameObject";
 		tr->Scale(2, 2);
 		col->IsTrigger = true;
 		col->SetTag("Bomb");
 		Randomize();
-		SetTexture("src/Images/bomb.png");
+		GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture("src/Images/bomb.png");
 		particle->ChangeOpacity(0.2f);
 		particle->gravity = 2.f;
 	}

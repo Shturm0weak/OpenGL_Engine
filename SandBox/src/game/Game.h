@@ -54,7 +54,7 @@ public:
 		ray->ignoreMask.push_back("Player");
 		for (unsigned int i = 0; i < 5; i++)
 		{
-			coins[i].SetTexture(texturecoin);
+			coins[i].GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texturecoin);
 			coins[i].Randomize();
 		}
 		Window::GetCamera().MovePosition(glm::vec3(0, 12, 0));

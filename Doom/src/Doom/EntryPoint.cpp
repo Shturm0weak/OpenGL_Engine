@@ -23,7 +23,6 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
-	double editortimer = 1;
 	app->OnStart();
 
 	bool FirstFrame = true;
@@ -43,19 +42,15 @@ void EntryPoint::Run()
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
 		Window::GetCamera().WindowResize();
-
-		EventSystem::Instance()->ProcessEvents();
 		Window::GetCamera().CameraMovement();
 		SoundManager::UpdateSourceState();
 
-		if (editortimer > 0.2 && Input::IsKeyPressed(Keycode::KEY_E)) {
+		if (Input::IsKeyPressed(Keycode::KEY_E)) {
 			if (isEditorEnable)
 				isEditorEnable = false;
 			else
 				isEditorEnable = true;
-			editortimer = 0;
 		}
-		editortimer += DeltaTime::deltatime;
 
 		app->OnUpdate();
 		app->OnImGuiRender();
@@ -108,20 +103,22 @@ void EntryPoint::Run()
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
+		EventSystem::Instance()->ProcessEvents();
 		Input::Clear();
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}
 	app->OnClose();
+	delete app;
+	Renderer::RenderShutDown();
 }
 
 EntryPoint::~EntryPoint() {
-	
-	delete app;
-	Texture::ShutDown();
 	EventSystem::Instance()->Shutdown();
 	ThreadPool::Instance()->shutdown();
+	Texture::ShutDown();
 	SoundManager::ShutDown();
+	
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 	glfwTerminate();

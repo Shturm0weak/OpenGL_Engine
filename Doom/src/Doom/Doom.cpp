@@ -11,9 +11,9 @@
 using namespace Doom;
 
 //storage of all references to our objects in the scene
-DOOM_API std::vector <std::reference_wrapper<Renderer2DLayer>> Renderer2DLayer::objects2d;
+DOOM_API std::vector <Renderer2DLayer*> Renderer2DLayer::objects2d;
 //storage of all references to our object's collisions in the scene
-DOOM_API std::vector <std::reference_wrapper<Renderer2DLayer>> Renderer2DLayer::collision2d;
+DOOM_API std::vector <Renderer2DLayer*> Renderer2DLayer::collision2d;
 DOOM_API Batch* Batch::instance;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithOwner;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithNoOwner;

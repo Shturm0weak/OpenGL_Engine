@@ -7,6 +7,7 @@ public:
 	double maxTimeToLive = 10;
 	Transform* tr = nullptr;
 	Collision* col = nullptr;
+	SpriteRenderer* sr = nullptr;
 	bool isActive = false;
 	glm::vec3 moveDir;
 	float speed = 40.f;
@@ -18,10 +19,11 @@ public:
 		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
 		col = GetComponentManager()->AddComponent<Collision>();
 		tr = GetComponentManager()->GetComponent<Transform>();
+		sr = GetComponentManager()->GetComponent<SpriteRenderer>();
 		col->SetTag(tag);
 		this->moveDir = glm::vec3(moveDir * (1.f / sqrtf(moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z)));
-		SetTexture(texture);
-		SetColor(COLORS::Orange);
+		sr->SetTexture(texture);
+		sr->SetColor(COLORS::Orange);
 		tr->Scale(0.5, 0.5);
 		col->IsTrigger = true;
 	}

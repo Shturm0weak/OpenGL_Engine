@@ -17,28 +17,11 @@ namespace Doom {
 			float y = 0;
 			float z = 0;
 		};
+
 	public:
-		void SetObjectType(std::string _type) { *type = _type; }
-		std::vector<void*> GetChilds() { return Childs; }
-		void AddChild(void* child) { Childs.push_back(child); }
-		void RemoveChild(void* child) {
-			for (size_t i = 0; i < Childs.size(); i++)
-			{
-				if (Childs[i] == child) {
-					Childs.erase(Childs.begin() + i);
-					return;
-				}
-			}
-		}
-		void* GetOwner() { return Owner; }
-		void SetOwner(void* owner) { this->Owner = owner; }
 
 		bool Enable = true;
-		virtual void Setlayer(int layer);
-		inline virtual int GetId() { return 0; }
-		enum RenderType { Render2D, Render3D };
-		int& GetLayer() { return layer; }
-
+		
 		friend class Renderer;
 		friend class Collision;
 		friend class ComponentManager;
@@ -46,35 +29,41 @@ namespace Doom {
 		friend class Batch;
 		friend class Ray;
 
+		static std::vector <Renderer2DLayer*> collision2d;
+		static std::vector <Renderer2DLayer*> objects2d;
 
-		static std::vector <std::reference_wrapper<Renderer2DLayer>> collision2d;
-		static std::vector <std::reference_wrapper<Renderer2DLayer>> objects2d;
+		std::vector<void*> GetChilds() { return Childs; }
+		void SetObjectType(std::string _type) { type = _type; }
+		void AddChild(void* child) { Childs.push_back(child); }
+		void* GetOwner() { return Owner; }
+		void SetOwner(void* owner) { this->Owner = owner; }
+		void RemoveChild(void* child);
+		virtual void Setlayer(int layer);
+		inline virtual int GetId() { return 0; }
+		int& GetLayer() { return layer; }
+
 	protected:
 		Position position;
-		virtual ~Renderer2DLayer() {}
-		Renderer2DLayer() { layer = objects2d.size(); }
+		
 		int id = 0;
 		int layer = 0;
-		static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
-		std::string* type = new std::string("");
-		std::string* name = new std::string("");
+		std::string type;
+		std::string name;
 		
 		static int obj_id;
 		static int col_id;
-		RenderType rendertype = Render2D;
-		void PushObj(Renderer2DLayer& obj) { objects2d.push_back(obj); }
-		void PushCol(Renderer2DLayer& col) { collision2d.push_back(col); }
+
+		Renderer2DLayer() { layer = objects2d.size(); }
+		virtual ~Renderer2DLayer() {}
+		static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
 		virtual void OnRunning(OrthographicCamera& camera);
 		inline virtual void SetId(int id) {}
 		inline virtual float* GetVertexPositions() { return nullptr; }
-		inline virtual float* GetColor() { return nullptr; }
 		inline virtual float* GetScale() { return nullptr; }
 		const char** GetItemsNames();
 		inline virtual float GetAngle() { return 0; }
 		inline virtual Position GetPositions() { return position; }
-		inline virtual int GetRenderType() { return rendertype; }
-		inline virtual int GetShaderType() { return 1; }
-		inline virtual std::string* GetPathToTexture() { return nullptr; }
+		inline virtual std::string GetPathToTexture() { return nullptr; }
 		inline virtual bool IsCollisionEnabled() { return false; }
 		inline virtual Renderer2DLayer* GetCollisionReference() { return nullptr; }
 		inline virtual ComponentManager* GetComponentManager() { return nullptr; };

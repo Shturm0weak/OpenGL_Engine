@@ -114,6 +114,7 @@
     <ClInclude Include="src\Doom\Application\Player.h" />
     <ClInclude Include="src\Doom\Audio\SoundManager.h" />
     <ClInclude Include="src\Doom\Audio\wavParser.h" />
+    <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
@@ -168,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
+    <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />

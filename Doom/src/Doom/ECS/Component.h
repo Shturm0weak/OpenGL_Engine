@@ -10,7 +10,6 @@ namespace Doom {
 	private:
 		int m_Id;
 		const char* m_Type;
-		Component* GetReference() { return this; }
 	protected:
 		GameObject* owner = nullptr;
 
@@ -21,6 +20,8 @@ namespace Doom {
 		GameObject& GetOwnerOfComponent() { return *owner; }
 		int GetComponentID() { return m_Id; }
 		friend class ComponentManager;
+
+		~Component() {}
 	};
 
 }

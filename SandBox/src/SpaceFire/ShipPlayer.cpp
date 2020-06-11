@@ -76,7 +76,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	col = GetComponentManager()->AddComponent<Collision>();
 	tr = GetComponentManager()->GetComponent<Transform>();
 	tr->Scale(5, 5);
-	SetTexture(texture);
+	GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texture);
 	col->SetTag("Player");
 	col->IsTrigger = true;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
@@ -152,11 +152,4 @@ void ShipPlayer::Fire() {
 		SoundManager::Play(fireSound);
 	}
 	timerFire += DeltaTime::deltatime;
-}
-
-ShipPlayer::~ShipPlayer()
-{
-	delete texture;
-	delete col;
-	delete tr;
 }

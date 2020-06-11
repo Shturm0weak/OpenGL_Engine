@@ -33,6 +33,7 @@ namespace Doom {
 		double left, right, top, bottom;
 		double diffbt, difftb, diffrl, difflr;
 
+
 		glm::vec4 Color = COLORS::White;
 		glm::mat4 scale = glm::mat4(1.f);
 		glm::mat4 pos = glm::mat4(1.f);
@@ -41,16 +42,10 @@ namespace Doom {
 		glm::mat4 scaleXview = glm::mat4(1.f);
 		glm::vec2 NormalVector(glm::vec2 vec2);
 
-		GLuint vao;
-		VertexBufferLayout* layout = new VertexBufferLayout;
-		VertexBuffer* vb = new VertexBuffer(positions, 4 * 4 * sizeof(float));
-		VertexArray* va = new VertexArray;
-		IndexBuffer* ib = new IndexBuffer(indeces, 6);
 		Shader* shader = nullptr;
 
 		bool ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2);
 		bool ShapeOverlap_SAT(Collision &r1, Collision &r2);
-		virtual void OnRunning(OrthographicCamera& camera) override;
 		virtual bool IsCollisionEnabled() override { return Enable; }
 		void UpdateCollision(double x, double y, glm::mat4 pos, glm::mat4 view, glm::mat4 scale);
 		virtual Renderer2DLayer* GetCollisionReference() override { return this; }
@@ -93,6 +88,9 @@ namespace Doom {
 		bool IsTrigger = false;
 
 		Collision(GameObject* owner = nullptr,double x = 0, double y = 0);
+		~Collision() {
+			//std::cout << "Collision destroyed\n";
+		}
 
 		void SetTag(std::string tag) { this->tag = tag; }
 		void Scale(float x, float y);

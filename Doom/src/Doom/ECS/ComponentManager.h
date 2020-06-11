@@ -7,26 +7,29 @@
 #include "../Components/Collision.h"
 #include "../Components/Transform.h"
 #include "../Components/Animator.h"
+#include "../Components/SpriteRenderer.h"
 
 namespace Doom {
 
 	class DOOM_API ComponentManager {
 		GameObject* owner = nullptr;
 		std::string owner_name;
-		int maxComponents = 32;
-		int currentLength = 0;
 		const char** items = nullptr;
-		std::vector <std::reference_wrapper<Component>> components;
-		void pushcomponents(Component& obj) { components.push_back(obj); }
+		std::vector <Component*> components;
 
 	public:
-		~ComponentManager() { delete[] items; }
+		~ComponentManager() { 
+			delete[] items;
+			RemoveComponent<Collision>();
+			RemoveComponent<Transform>();
+			RemoveComponent<Animator>();
+		}
 		ComponentManager(GameObject* owner, std::string& owner_name) {
 			this->owner = owner;
 			this->owner_name = owner_name;
 		}
 
-		int GetAmountOfComponents() { return currentLength; }
+		int GetAmountOfComponents() { return components.size(); }
 
 		const char** GetItems() {
 			if (items != nullptr)
@@ -34,7 +37,7 @@ namespace Doom {
 			items = new const char*[components.size()];
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				items[i] = components[i].get().GetComponentType();
+				items[i] = components[i]->GetComponentType();
 			}
 			return items;
 		}
@@ -48,27 +51,83 @@ namespace Doom {
 		void RemoveComponent<Collision>() {
 			Collision* col = nullptr;
 			col = GetComponent<Collision>();
+			if (col == nullptr)
+				return;
 			int _id = col->GetId();
-			components.erase(components.begin() + col->m_Id);
-			currentLength--;
+			if (col->m_Id < components.size())
+				components.erase(components.begin() + col->m_Id);
 			unsigned int _size = components.size();
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i].get().m_Id = i;;
+					components[i]->m_Id = i;;
 				}
 			}
-			//std::unique_ptr<Renderer2DLayer> my_p_col(new Renderer2DLayer(std::move(*col)));
 			Renderer2DLayer::collision2d.erase(_id + Renderer2DLayer::collision2d.begin());
 			Renderer2DLayer::col_id--;
 			unsigned int size = Renderer2DLayer::collision2d.size();
 			if (_id != size) {
 				for (unsigned int i = _id; i < size; i++)
 				{
-					Renderer2DLayer::collision2d[i].get().SetId(i);
+					Renderer2DLayer::collision2d[i]->SetId(i);
 				}
 			}
 			GetComponent<Transform>()->col = nullptr;
+			delete col;
+			return;
+		}
+
+		template <>
+		void RemoveComponent<Transform>() {
+			Transform* col = nullptr;
+			col = GetComponent<Transform>();
+			if (col == nullptr)
+				return;
+			components.erase(components.begin() + col->m_Id);
+			unsigned int _size = components.size();
+			if (col->m_Id != _size) {
+				for (unsigned int i = col->m_Id; i < _size; i++)
+				{
+					components[i]->m_Id = i;;
+				}
+			}
+			col->col = nullptr;
+			delete col;
+			return;
+		}
+
+		template <>
+		void RemoveComponent<Animator>() {
+			Animator* col = nullptr;
+			col = GetComponent<Animator>();
+			if (col == nullptr)
+				return;
+			components.erase(components.begin() + col->m_Id);
+			unsigned int _size = components.size();
+			if (col->m_Id != _size) {
+				for (unsigned int i = col->m_Id; i < _size; i++)
+				{
+					components[i]->m_Id = i;;
+				}
+			}
+			delete col;
+			return;
+		}
+
+		template <>
+		void RemoveComponent<SpriteRenderer>() {
+			SpriteRenderer* col = nullptr;
+			col = GetComponent<SpriteRenderer>();
+			if (col == nullptr)
+				return;
+			components.erase(components.begin() + col->m_Id);
+			unsigned int _size = components.size();
+			if (col->m_Id != _size) {
+				for (unsigned int i = col->m_Id; i < _size; i++)
+				{
+					components[i]->m_Id = i;;
+				}
+			}
 			delete col;
 			return;
 		}
@@ -82,8 +141,20 @@ namespace Doom {
 		Collision* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i].get().GetComponentType() == "Collision") {
-					return (Collision*)components[i].get().GetReference();
+				if (components[i]->GetComponentType() == "Collision") {
+					return (Collision*)components[i];
+				}
+			}
+			//std::cout << yellow << "Warning:" << white << " there is no component of type <Collision> for gameobject: " << owner_name << std::endl;
+			return nullptr;
+		}
+
+		template<>
+		SpriteRenderer* GetComponent() {
+			for (unsigned int i = 0; i < components.size(); i++)
+			{
+				if (components[i]->GetComponentType() == "SpriteRenderer") {
+					return (SpriteRenderer*)components[i];
 				}
 			}
 			//std::cout << yellow << "Warning:" << white << " there is no component of type <Collision> for gameobject: " << owner_name << std::endl;
@@ -94,8 +165,8 @@ namespace Doom {
 		Animator* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i].get().GetComponentType() == "Animator") {
-					return (Animator*)components[i].get().GetReference();
+				if (components[i]->GetComponentType() == "Animator") {
+					return (Animator*)components[i];
 				}
 			}
 			//std::cout << yellow << "Warning:" << white << " there is no component of type <Collision> for gameobject: " << owner_name << std::endl;
@@ -108,8 +179,9 @@ namespace Doom {
 		Transform* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i].get().GetComponentType() == "Transform") {
-					return (Transform*)components[i].get().GetReference();
+				Component* comp = components[i];
+				if (comp->GetComponentType() == "Transform") {
+					return (Transform*)comp;
 				}
 			}
 			//std::cout << yellow << "Warning:" << white << " there is no component of this type <Transform> for gameobject: " << owner_name << std::endl;
@@ -123,15 +195,23 @@ namespace Doom {
 
 		template <>
 		Collision* AddComponent<Collision>() {
-			if (currentLength >= maxComponents) {
-				return nullptr;
-			}
-			else if (GetComponent<Collision>() == nullptr) {
+			if (GetComponent<Collision>() == nullptr) {
 				Collision* object = new Collision(owner);
 				object->SetOwner(this->owner);
-				object->m_Id = currentLength;
-				currentLength++;
-				pushcomponents(*object);
+				object->m_Id = components.size();
+				components.push_back(object);
+				return object;
+			}
+			return nullptr;
+		}
+
+		template <>
+		SpriteRenderer* AddComponent<SpriteRenderer>() {
+			if (GetComponent<SpriteRenderer>() == nullptr) {
+				SpriteRenderer* object = new SpriteRenderer(owner);
+				object->owner = (this->owner);
+				object->m_Id = components.size();
+				components.push_back(object);
 				return object;
 			}
 			return nullptr;
@@ -139,15 +219,11 @@ namespace Doom {
 
 		template <>
 		Animator* AddComponent<Animator>() {
-			if (currentLength >= maxComponents) {
-				return nullptr;
-			}
-			else if (GetComponent<Animator>() == nullptr) {
+			if (GetComponent<Animator>() == nullptr) {
 				Animator* animator = new Animator();
 				animator->owner = owner;
-				animator->m_Id = currentLength;
-				currentLength++;
-				pushcomponents(*animator);
+				animator->m_Id = components.size();
+				components.push_back(animator);
 				return animator;
 			}
 			return nullptr;
@@ -155,16 +231,12 @@ namespace Doom {
 
 		template <>
 		Transform* AddComponent<Transform>() {
-			if (currentLength >= maxComponents) {
-				return nullptr;
-			}
-			else if (GetComponent<Transform>() == nullptr) {
+			if (GetComponent<Transform>() == nullptr) {
 				Transform* object = new Transform();
 				object->owner = owner;
 				object->init();
-				object->m_Id = currentLength;
-				currentLength++;
-				pushcomponents(*object);
+				object->m_Id = components.size();
+				components.push_back(object);
 				return object;
 			}
 			return nullptr;
