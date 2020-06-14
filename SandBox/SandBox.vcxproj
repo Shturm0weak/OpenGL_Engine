@@ -129,6 +129,7 @@
     <ClInclude Include="src\game\StressTest.h" />
     <ClInclude Include="src\game\TestImGui.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
+    <ClInclude Include="src\SpaceFire\Ammo.h" />
     <ClInclude Include="src\SpaceFire\Bullet.h" />
     <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
     <ClInclude Include="src\SpaceFire\ShipPlayer.h" />
@@ -149,6 +150,7 @@
     <Text Include="src\Fonts\arial.txt" />
     <Text Include="src\Fonts\calibri.txt" />
     <Text Include="src\Fonts\harrington.txt" />
+    <Text Include="src\game\savePlatformer.txt" />
     <Text Include="src\saved.txt" />
     <Text Include="src\savedRayCastTest.txt" />
   </ItemGroup>

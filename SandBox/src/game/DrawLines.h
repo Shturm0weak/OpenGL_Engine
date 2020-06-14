@@ -65,8 +65,4 @@ class DrawLines : public Application {
 		}
 		dotsCircles.push_back(&dot);
 	}
-
-	virtual void OnImGuiRender() override {
-		
-	}
 };

@@ -7,7 +7,11 @@
 using namespace Doom;
 
 EntryPoint::EntryPoint(Doom::Application* app) {
-	Window::Init("Doom Engine", 640, 360, false);
+	if (app == nullptr)
+		this->app = new Application();
+	else
+		this->app = app;
+	Window::Init(app->name.c_str(),app->width,app->height,app->Vsync);
 	MainThread::Init();
 	ThreadPool::Init();
 	Batch::Init();
@@ -16,10 +20,6 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	EventSystem::Instance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
 	Shader::defaultShader = new Shader("src/Shaders/Basic.shader");
-	if (app == nullptr)
-		this->app = new Application();
-	else
-		this->app = app;
 }
 void EntryPoint::Run()
 {
@@ -52,9 +52,15 @@ void EntryPoint::Run()
 			else
 				isEditorEnable = true;
 		}
+		
+		if(Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
+			Renderer::SelectObject();
 
 		app->OnUpdate();
-		app->OnImGuiRender();
+
+		Gui::GetInstance()->Begin();
+		app->OnGuiRender();
+		Gui::GetInstance()->End();
 		
 		if (ImGui::IsAnyItemActive())
 			Editor::Instance()->isItemActive = true;

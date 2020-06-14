@@ -7,6 +7,8 @@ public:
 	glm::vec2 pos = glm::vec2(0, 0);
 	GameObject* coin = nullptr;
 
+	RayCastTest(std::string name,float x ,float y , bool Vsync) : Application(name,x,y,Vsync){
+	}
 
 	virtual void OnStart() override {
 		Renderer::Load("src/savedRayCastTest.txt");
@@ -25,7 +27,7 @@ public:
 			rays[i]->Rotate(angle);
 			lines[i]->SetEndPoint(rays[i]->end.x, rays[i]->end.y);
 			angle += 0.18f;
-			lines[i]->color = COLORS::Yellow;
+			lines[i]->color = COLORS::Gray;
 			lines[i]->width = 1.f;
 		}
 	}

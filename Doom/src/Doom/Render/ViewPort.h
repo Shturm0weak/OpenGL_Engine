@@ -36,13 +36,31 @@ namespace Doom {
 			mousePos.y = (((-((cursorPos.y + (Window::GetProps()[1] - size.y)) / Window::GetProps()[1])) + 0.5)) * 18 * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().y;
 			return mousePos;
 		};
-		glm::dvec2 GetMousePositionToScreenSpace() {
+
+		glm::dvec2 GetStaticMousePosition() {
 
 			glfwGetCursorPos(Window::GetWindow(), &cursorPos.x, &cursorPos.y);
 			mousePos.x = ((((cursorPos.x - viewportPos.x) / (Window::GetProps()[0] - 1))) - 0.5 ) * 32;
 			mousePos.y = (((-((cursorPos.y + (Window::GetProps()[1] - size.y)) / Window::GetProps()[1])) + 0.5)) * 18;
 			return mousePos;
 		};
+
+		glm::dvec2 GetMousePositionToScreenSpace() {
+
+			glfwGetCursorPos(Window::GetWindow(), &cursorPos.x, &cursorPos.y);
+			mousePos.x = ((((cursorPos.x - viewportPos.x) / (Window::GetProps()[0] - 1))) - 0.5) * Window::GetProps()[0];
+			mousePos.y = (((-((cursorPos.y + (Window::GetProps()[1] - size.y)) / Window::GetProps()[1])) + 0.5)) * Window::GetProps()[1];
+			return mousePos;
+		};
+
+		glm::dvec2 GetFromWorldToScreenSpace(glm::vec2 pos) {
+			return glm::dvec2((pos.x) / (16.* Window::GetCamera().GetZoomLevel()) * WIDTH, (pos.y) / (9. * Window::GetCamera().GetZoomLevel()) * HEIGHT);
+		}
+
+		glm::dvec2 GetFromWorldToScreenSpace(float x,float y) {
+			return glm::dvec2((x) / (16.* Window::GetCamera().GetZoomLevel()) * WIDTH, (y) / (9. * Window::GetCamera().GetZoomLevel()) * HEIGHT);
+
+		}
 	};
 
 }

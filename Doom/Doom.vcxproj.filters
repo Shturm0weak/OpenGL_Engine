@@ -63,6 +63,7 @@
     <ClInclude Include="src\Doom\Audio\SoundManager.h" />
     <ClInclude Include="src\Doom\Audio\wavParser.h" />
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
+    <ClInclude Include="src\Doom\Components\IRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />

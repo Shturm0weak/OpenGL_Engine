@@ -3,9 +3,6 @@
 #include "Batch.h"
 #include <stdarg.h>
 
-#define HEIGHT 1001 
-#define WIDTH 1920
-
 namespace Doom {
 
 	struct TextProperties {
@@ -55,6 +52,8 @@ namespace Doom {
 		bool Button(std::string str, float x = 0, float y = 0,float scale = 24, float width = 100,float height = 50,glm::vec4 btnColor = COLORS::Gray,glm::vec4 pressedBtnColor = COLORS::Gray * 0.5f, glm::vec4 textColor = COLORS::White);
 
 		void Panel(float x = 0, float y = 0, float width = 400, float height = 400,glm::vec4 color = COLORS::Gray,Texture* texture = nullptr);
+
+		void Bar(float x, float y, float value, float maxValue, glm::vec4 color, glm::vec4 outColor, float width, float height);
 
 		void Begin() {
 			Batch::GetInstance()->indexcount = 0;

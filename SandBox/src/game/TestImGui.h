@@ -26,8 +26,4 @@ class TestImGui : public Application {
 		//Gui::GetInstance()->End();
 	}
 
-	virtual void OnImGuiRender() override {
-		
-	}
-
 };

@@ -2,6 +2,8 @@
 #include "ShipPlayer.h"
 #include "Render/ViewPort.h"
 #include "Bullet.h"
+#include "Core/Timer.h"
+#include "Ammo.h"
 
 void ShipPlayer::ShipMovement()
 {
@@ -41,6 +43,7 @@ void ShipPlayer::ShipMovement()
 	dir = glm::vec3(ViewPort::Instance()->GetMousePositionToWorldSpace(), 0);
 	dir.x -= GetPositions().x;
 	dir.y -= GetPositions().y;
+	
 	tr->RotateOnce(dir, glm::vec3(0, 0, 1));
 }
 
@@ -87,6 +90,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
 		bullets[i]->Enable = false;
 		bullets[i]->col->Enable = false;
+		bullets[i]->damage = 15.f;
 	}
 }
 
@@ -106,6 +110,7 @@ void ShipPlayer::Respawn()
 	col->Enable = true;
 	isDead = false;
 	tr->Translate(0, 0);
+	kills = 0;
 }
 
 void ShipPlayer::OnStart() {
@@ -133,6 +138,12 @@ void ShipPlayer::OnCollision(void * _col)
 		Bullet* bullet = static_cast<Bullet*>(__col->GetOwnerOfComponent());
 		hp -= bullet->damage;
 		bullet->Death();
+	}
+	else if (__col->GetTag() == "Ammo") {
+		Ammo* a = static_cast<Ammo*>(__col->GetOwnerOfComponent());
+		ammo += a->GetAmmo();
+		SoundManager::Play(SoundManager::GetSound("pickUp"));
+		Renderer::DeleteObject(a->GetId());
 	}
 }
 

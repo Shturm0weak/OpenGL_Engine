@@ -2,9 +2,9 @@
 
 class Bullet : public GameObject {
 public:
-	float damage = 30.f;
+	float damage = 15.f;
 	double lifeTimer = 0;
-	double maxTimeToLive = 10;
+	double maxTimeToLive = 5;
 	Transform* tr = nullptr;
 	Collision* col = nullptr;
 	SpriteRenderer* sr = nullptr;

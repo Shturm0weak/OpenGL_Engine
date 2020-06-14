@@ -193,13 +193,13 @@ GameObject* Doom::Renderer::SelectObject()
 		p.push_back(glm::vec2(sr->WorldVertexPositions[4] + go->GetPositions().x, sr->WorldVertexPositions[5] + go->GetPositions().y));
 		p.push_back(glm::vec2(sr->WorldVertexPositions[6] + go->GetPositions().x, sr->WorldVertexPositions[7] + go->GetPositions().y));
 		if (ObjectCollided(p,i)) {
-			if (Editor::Instance()->selectedGO != go) {
-				Editor::Instance()->selectedGO = go;
+			if (Editor::Instance()->go != go) {
+				Editor::Instance()->go = go;
 				return go;
 			}
 		}
 	}
-	Editor::Instance()->selectedGO = nullptr;
+	Editor::Instance()->go = nullptr;
 	return nullptr;
 
 }
@@ -347,7 +347,7 @@ void Doom::Renderer::SubmitGameObjects()
 				GameObject* go = (GameObject*)object;
 				if (go->Enable == true && (go->GetComponentManager()->GetComponent<SpriteRenderer>()->AlwaysDraw || sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel()))
 				{
-					batch->Submit(*go->GetComponentManager()->GetComponent<SpriteRenderer>());
+					static_cast<Irenderer*>(go->GetComponentManager()->GetComponent<SpriteRenderer>())->Render();
 				}
 			}
 			batch->EndGameObjects();

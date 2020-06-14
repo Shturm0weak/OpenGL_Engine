@@ -1,5 +1,6 @@
 #pragma once
 #include "ShipPlayer.h"
+#include "Render/ParticleSystem.h"
 
 using namespace Doom;
 
@@ -15,9 +16,11 @@ private:
 public:
 	Sound* explosionSound = new Sound("src/SpaceFire/Sounds/Explosion.wav");
 	ShipPlayer* pl = nullptr;
+	ParticleSystem* ps = nullptr;
 
 	void Spawn();
 
+	bool psPlay = false;
 	bool isDead = false;
 	double fireRate = 2;
 	double TimePerBullet = (100. / fireRate) / 100; //bullets per second

@@ -1,6 +1,7 @@
 
 #include "../pch.h"
 #include "SpriteRenderer.h"
+#include "../Render/Batch.h"
 
 using namespace Doom;
 
@@ -37,6 +38,11 @@ Doom::SpriteRenderer::SpriteRenderer(GameObject* _owner)
 
 Doom::SpriteRenderer::~SpriteRenderer()
 {
+}
+
+void Doom::SpriteRenderer::Render()
+{
+	Batch::GetInstance()->Submit(*this);
 }
 
 void SpriteRenderer::SetColor(vec4 color) {

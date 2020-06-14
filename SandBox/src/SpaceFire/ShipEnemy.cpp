@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ShipEnemy.h"
 #include "Bullet.h"
+#include "Render/Gui.h"
+#include "Ammo.h"
 
 void ShipEnemy::OnCollision(void * _col)
 {
@@ -40,9 +42,20 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 		bullets[i]->col->Enable = false;
 		bullets[i]->damage = 10;
 	}
+	ps = new ParticleSystem(0, 0, 50, 1, 10, 1, 0.5, 0.5, 0, 0.2,nullptr);
+	ps->SetOwner((void*)this);
+	AddChild((void*)ps);
 }
 
 void ShipEnemy::OnUpdate() {
+
+	Gui::GetInstance()->Begin();
+	Gui::GetInstance()->Bar(0, 0, hp, 100, COLORS::Red, COLORS::DarkGray, 400, 50);
+	Gui::GetInstance()->End();
+
+	if (psPlay)
+		ps->Play();
+
 	if (Enable == false)
 		return;
 
@@ -77,6 +90,22 @@ void ShipEnemy::Death()
 	col->Enable = false;
 	isDead = true;
 	SoundManager::Play(explosionSound);
+	ps->SetPosition(position.x,position.y);
+	ps->Restart();
+	psPlay = true;
+	std::random_device rd;
+	std::mt19937 e2(rd());
+	std::uniform_int_distribution<int> distribution(0, 4);
+	int chance = distribution(e2);
+	std::uniform_int_distribution<int> distribution1(5, 40);
+	int ammo = distribution1(e2);
+	if (chance <= 1) {
+		Ammo* a = new Ammo("AmmoPickUp", position.x, position.y, ammo);
+		a->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture("src/SpaceFire/Images/Ammo.png");
+		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
+		Collision* col = a->GetComponentManager()->AddComponent<Collision>();
+		col->SetTag("Ammo");
+	}
 }
 
 void ShipEnemy::Fire() {

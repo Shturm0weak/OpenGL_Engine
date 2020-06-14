@@ -25,7 +25,7 @@ namespace Doom {
 		friend class Renderer;
 	};
 
-	class DOOM_API ParticleSystem : private GameObject{
+	class DOOM_API ParticleSystem : public GameObject{
 	public:
 		glm::vec4 color;
 		unsigned int AmountOfParticles = 10;

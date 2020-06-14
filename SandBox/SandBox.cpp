@@ -11,7 +11,7 @@
 #include "src/SpaceFire/SpaceFire.h"
 
 int main() {
-	SpaceFire* app = new SpaceFire();
+	RayCastTest* app = new RayCastTest("Doom Engine", 800, 600, true);
 	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);
 	entrypoint->Run();
 	return 0;

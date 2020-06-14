@@ -150,7 +150,7 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	x *= ((float)Window::GetProps()[0] / WIDTH);
 	y *= ((float)Window::GetProps()[1] / HEIGHT);
 	glm::vec2 pos = glm::vec2(Window::GetCamera().GetRatio().x * x , Window::GetCamera().GetRatio().y * y);
-	glm::dvec2 mousePos = ViewPort::Instance()->GetMousePositionToScreenSpace();
+	glm::dvec2 mousePos = ViewPort::Instance()->GetStaticMousePosition();
 
 	double tempX = width * Window::GetCamera().GetRatio().x   * ((float)Window::GetProps()[0] / WIDTH);
 	double tempY = -height * Window::GetCamera().GetRatio().y * ((float)Window::GetProps()[1] / HEIGHT);
@@ -209,6 +209,14 @@ void Doom::Gui::Panel(float x, float y, float width, float height, glm::vec4 col
 	};
 
 	Batch::GetInstance()->Submit(vertecies, color,texture);
+}
+
+void Doom::Gui::Bar(float x, float y, float value, float maxValue, glm::vec4 color,glm::vec4 outColor, float width, float height)
+{
+	Panel(x,y,width,height,outColor);
+	float _width = width * (value / maxValue);
+	float diff = width - _width;
+	Panel(x - diff / 2., y, _width, height, color);
 }
 
 void Doom::Gui::LoadStandartFonts()

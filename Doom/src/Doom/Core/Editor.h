@@ -10,7 +10,6 @@ namespace Doom {
 
 	class DOOM_API Editor {
 	private:
-		GameObject* go = nullptr;
 		float campos[2] = { 0,0 };
 		bool IsActiveTextureAtlasCreation = false;
 		bool IsActiveEditor = false;
@@ -45,8 +44,7 @@ namespace Doom {
 	public:
 
 		static std::vector<Texture*> textureVecTemp;
-
-		GameObject* selectedGO = nullptr;
+		GameObject* go = nullptr;
 		bool isItemActive = false;
 		static Editor* Instance();
 		void EditorUpdate();

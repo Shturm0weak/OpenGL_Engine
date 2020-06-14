@@ -22,6 +22,8 @@ namespace Doom {
 		friend class ComponentManager;
 		float WorldVerPos[16];
 
+		Position prevPosition;
+
 	public:
 		Transform();
 		~Transform() {

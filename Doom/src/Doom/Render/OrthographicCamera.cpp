@@ -96,8 +96,8 @@ void OrthographicCamera::CameraMovement() {
 		MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
 	}
 	if (Input::IsKeyDown(Keycode::KEY_G)) {
-		if (Editor::Instance()->selectedGO != nullptr) {
-			Editor::Instance()->selectedGO->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+		if (Editor::Instance()->go != nullptr) {
+			Editor::Instance()->go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
 		}
 	}
 	Increase();
