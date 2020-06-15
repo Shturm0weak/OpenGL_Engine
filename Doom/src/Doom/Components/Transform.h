@@ -5,12 +5,12 @@
 
 namespace Doom {
 
-	class SpriteRenderer;
+	class Irenderer;
 	class Collision;
 
 	class DOOM_API Transform : public Component {
 	private:
-		SpriteRenderer* sr = nullptr;
+		Irenderer* sr = nullptr;
 		Collision* col = nullptr;
 		struct Position {
 			float x = 0;
@@ -23,6 +23,7 @@ namespace Doom {
 		float WorldVerPos[16];
 
 		Position prevPosition;
+		float prevAngle;
 
 	public:
 		Transform();

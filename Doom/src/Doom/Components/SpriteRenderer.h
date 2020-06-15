@@ -9,6 +9,10 @@
 #include "../Render/TextureAtlas.h"
 #include "../Core/ColorsRGBA.h"
 #include "../Render/Shader.h"
+#include "../Render/VertexArray.h"
+#include "../Render/VertexBuffer.h"
+#include "../Render/VertexBufferLayout.h"
+#include "../Render/IndexBuffer.h"
 
 namespace Doom {
 
@@ -23,8 +27,6 @@ namespace Doom {
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
 
-		glm::vec4 color = COLORS::White;
-
 		Transform* tr = nullptr;
 		Texture* texture = nullptr;
 		Shader* shader = nullptr;
@@ -38,20 +40,12 @@ namespace Doom {
 		friend class GameObject;
 		friend class Batch;
 		friend class Renderer;
-
-	protected:
-		glm::mat4 scale = glm::mat4(1.f);
-		glm::mat4 pos = glm::mat4(1.f);
-		glm::mat4 viewXscale = glm::mat4(1.f);
-		glm::mat4 MVP = glm::mat4(1.f);
-		glm::mat4 view = glm::mat4(1.f);
 	
 	public:
-		TextureAtlas* textureAtlas = nullptr;
-
 		SpriteRenderer(GameObject* owner);
 		~SpriteRenderer();
 
+		virtual void Update(glm::vec3 pos) override;
 		virtual void Render() override;
 
 		float WorldVertexPositions[8] = {
@@ -65,9 +59,11 @@ namespace Doom {
 
 		inline int GetTexture() { return texture->m_RendererID; }
 		inline Texture* GetTexturePointer() { return texture; }
+		double GetWidth();
+		double GetHeight();
 
 		float* GetUVs();
-		float* GetColor();
+		
 
 		//Only in int size from 0 to 1 !!!
 		void ReversedUvs();
@@ -76,8 +72,59 @@ namespace Doom {
 		void SetUVs(float* uvs);
 		void SetTexture(const std::string& path);
 		void SetTexture(Texture* texture);
-		void SetColor(vec4 color);
 		void Setlayer(int layer);
+
+	};
+
+	class DOOM_API Renderer3D : public Irenderer {
+	public:
+
+		Transform* tr = nullptr;
+
+		Shader* shader = nullptr;
+		unsigned int indeces3D[36] = {
+			// front
+			0, 1, 2,
+			2, 3, 0,
+			// right
+			1, 5, 6,
+			6, 2, 1,
+			// back
+			7, 6, 5,
+			5, 4, 7,
+			// left
+			4, 0, 3,
+			3, 7, 4,
+			// bottom
+			4, 5, 1,
+			1, 0, 4,
+			// top
+			3, 2, 6,
+			6, 7, 3
+		};
+
+		float mesh3D[56] = {
+			-1.0, -1.0,  1.0, 1, 0, 0,			 1,
+			 1.0, -1.0,  1.0,1, 1, 0,			 1,
+			 1.0,  1.0,  1.0,0, 0, 1,			 1,
+			-1.0,  1.0,  1.0,0, 1, 0,			 1,
+			// back			 //					 
+			-1.0, -1.0, -1.0,0.5, 0.3, 0.1,		 1,
+			 1.0, -1.0, -1.0,1, 1, 1,			 1,
+			 1.0,  1.0, -1.0,1, 0.31, 0,		 1,
+			-1.0,  1.0, -1.0,0.86, 0.86, 0.86	 ,1
+		};
+
+		Renderer3D(GameObject* _owner);
+
+		virtual void Render() override;
+
+	private:
+
+		VertexBufferLayout* layout = new VertexBufferLayout();
+		VertexBuffer* vb = new VertexBuffer(mesh3D, 56 * sizeof(float));
+		VertexArray* va = new VertexArray();
+		IndexBuffer* ib = new IndexBuffer(indeces3D, 36);
 
 	};
 }

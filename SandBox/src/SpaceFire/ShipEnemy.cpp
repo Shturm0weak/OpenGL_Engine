@@ -26,7 +26,7 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
 	col = GetComponentManager()->AddComponent<Collision>();
 	tr = GetComponentManager()->GetComponent<Transform>();
-	sr = GetComponentManager()->GetComponent<SpriteRenderer>();
+	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 	tr->Scale(5, 5);
 	tr->RotateOnce(180, glm::vec3(0, 0, 1));
 	sr->SetColor(COLORS::Red);
@@ -101,7 +101,7 @@ void ShipEnemy::Death()
 	int ammo = distribution1(e2);
 	if (chance <= 1) {
 		Ammo* a = new Ammo("AmmoPickUp", position.x, position.y, ammo);
-		a->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture("src/SpaceFire/Images/Ammo.png");
+		static_cast<SpriteRenderer*>(a->GetComponentManager()->GetComponent<Irenderer>())->SetTexture("src/SpaceFire/Images/Ammo.png");
 		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
 		Collision* col = a->GetComponentManager()->AddComponent<Collision>();
 		col->SetTag("Ammo");

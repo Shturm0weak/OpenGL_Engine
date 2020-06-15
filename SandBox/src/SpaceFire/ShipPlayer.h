@@ -6,9 +6,18 @@ using namespace Doom;
 
 class Bullet;
 
+enum Stages {
+	ZERO = 1,
+	FIRST = 2,
+	SECOND = 3,
+	THIRD = 4,
+};
+
 class ShipPlayer : public GameObject {
 private:
-	void Fire();
+	Stages currentStage = ZERO;
+
+	void Fire(float xOffset = 0, float yOffset = 0);
 	void ShipMovement();
 	void ScreenBorders();
  
@@ -30,6 +39,7 @@ public:
 	GameObject* bulletsPlaceHolder = nullptr;
 	std::vector<Bullet*> bullets;
 	glm::vec3 dir;
+	SpriteRenderer* sr = nullptr;
 	Transform* tr = nullptr;
 	Collision* col = nullptr;
 	Texture* texture = new Texture("src/SpaceFire/Images/SpaceShip.png");

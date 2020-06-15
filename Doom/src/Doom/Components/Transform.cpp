@@ -14,40 +14,20 @@ Transform::Transform() {
 void Transform::init() {
 	position.x = owner->position.x;
 	position.y = owner->position.y;
-	position.z = 0;
+	position.z = owner->position.z;
 }
 
 void Transform::RealVertexPositions()
 {
-	if (prevPosition.x + prevPosition.y + prevPosition.z != position.x + position.y + position.z) {
-		sr->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, position.z));
+	if (prevPosition.x + prevPosition.y + prevPosition.z != position.x + position.y + position.z || prevAngle != angleDeg) {
+		prevAngle == angleDeg;
 		prevPosition = position;
-		sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
-		glm::mat4 scaleXview = sr->view * sr->scale;
-		float* pSource;
-		pSource = (float*)glm::value_ptr(scaleXview);
-		for (unsigned int i = 0; i < 4; i++) {
-			for (unsigned int j = 0; j < 4; j++) {
-				WorldVerPos[i * 4 + j] = 0;
-				for (unsigned int k = 0; k < 4; k++) {
-					WorldVerPos[i * 4 + j] += sr->mesh2D[i * 4 + k] * pSource[k * 4 + j];
-				}
-			}
-		}
-		sr->WorldVertexPositions[0] = WorldVerPos[0];
-		sr->WorldVertexPositions[1] = WorldVerPos[1];
-		sr->WorldVertexPositions[2] = WorldVerPos[4];
-		sr->WorldVertexPositions[3] = WorldVerPos[5];
-		sr->WorldVertexPositions[4] = WorldVerPos[8];
-		sr->WorldVertexPositions[5] = WorldVerPos[9];
-		sr->WorldVertexPositions[6] = WorldVerPos[12];
-		sr->WorldVertexPositions[7] = WorldVerPos[13];
-		pSource = nullptr;
+		sr->Update(glm::vec3(position.x,position.y,position.z));
 	}
 }
 
 void Transform::Move(float speedX,float speedY,float speedZ) {
-	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
+	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
 
 	position.x += speedX * DeltaTime::GetDeltaTime();
 	position.y += speedY * DeltaTime::GetDeltaTime();
@@ -75,9 +55,7 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 }
 
 void Transform::RotateOnce(float theta, glm::vec3 axis,bool isRad) {
-	this->angleDeg = theta;
-	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
-
+	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
 	if (isRad) {
 		this->angleDeg = (-theta * 360.0f) / (2 * 3.14159f);
 		this->angleRad = theta;
@@ -108,12 +86,13 @@ void Transform::RotateOnce(float theta, glm::vec3 axis,bool isRad) {
 
 void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 axis)
 {
-	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
+	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
 
 	glm::vec3 b = glm::vec3(0,1,0);
 	this->angleRad = acosf((a.x * b.x + a.y * b.y + a.z * b.z)/((sqrtf(a.x * a.x + a.y * a.y + a.z * a.z) * (sqrtf(b.x * b.x + b.y * b.y + b.z * b.z)))));
 	if (ViewPort::Instance()->GetMousePositionToWorldSpace().x > position.x)
 		this->angleRad = -this->angleRad;
+	this->angleDeg = (-this->angleRad * 360.0f) / (2 * 3.14159f);
 	sr->view = glm::mat4(1.0f);
 	sr->view = glm::rotate(sr->view, angleRad, axis);
 	RealVertexPositions();
@@ -136,7 +115,7 @@ void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 axis)
 
 void Transform::Rotate(float theta, glm::vec3 axis) {
 	this->angleDeg = theta;
-	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
+	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
 
 	this->angleRad = (-theta * (2 * 3.14159f) / 360.0f);
 	sr->view = glm::rotate(sr->view, angleDeg * DeltaTime::GetDeltaTime(), axis);
@@ -159,7 +138,7 @@ void Transform::Rotate(float theta, glm::vec3 axis) {
 }
 
 void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
-	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
+	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
 
 	sr->scale = glm::scale(glm::mat4(1.f), glm::vec3(scaleX, scaleY, scaleZ));
 	owner->scaleValues[0] = scaleX; owner->scaleValues[1] = scaleY; owner->scaleValues[2] = scaleZ;
@@ -183,7 +162,7 @@ void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
 
 void Transform::Translate(float x, float y,float z)
 {
-	sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
+	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
 
 	if (owner->Enable) {
 		unsigned int size = owner->GetChilds().size();

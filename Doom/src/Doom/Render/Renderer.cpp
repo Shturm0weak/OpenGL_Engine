@@ -63,23 +63,23 @@ void Doom::Renderer::Save(const std::string filename) {
 		for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
 		{
 			GameObject* go = (GameObject*)Renderer::objects2d[i];
-			SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
+			SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
 			if (Renderer::objects2d[i]->type.c_str() == "GameObject")
 				continue;
 			float* color = sr->GetColor();
-			float* scale = Renderer::objects2d[i]->GetScale();
-			out_file << Renderer::objects2d[i]->name << "\n"
-				<< Renderer::objects2d[i]->Enable << "\n"
-				<< Renderer::objects2d[i]->type << "\n"
-				<< Renderer::objects2d[i]->GetPositions().x << " " << Renderer::objects2d[i]->GetPositions().y << "\n"
-				<< Renderer::objects2d[i]->GetAngle() << "\n"
+			float* scale = go->GetScale();
+			out_file << go->name << "\n"
+				<< go->Enable << "\n"
+				<< go->type << "\n"
+				<< go->GetPositions().x << " " << go->GetPositions().y << " " << go->GetPositions().z << "\n"
+				<< go->GetAngle() << "\n"
 				<< Editor::Instance()->axes[0] << " " << Editor::Instance()->axes[1] << " " << Editor::Instance()->axes[2] << "\n";
 			if (static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>() != nullptr) {
 				out_file << 1 << "\n";
-				out_file << static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->offsetX
-					<< " " << static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->offsetY << "\n"
-					<< static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->IsTrigger << "\n"
-					<< static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>()->GetTag() << "\n";
+				out_file << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offsetX
+					<< " " << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offsetY << "\n"
+					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->IsTrigger << "\n"
+					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->GetTag() << "\n";
 			}
 			else {
 				out_file << 0 << "\n";
@@ -87,8 +87,8 @@ void Doom::Renderer::Save(const std::string filename) {
 				out_file << 0 << "\n";
 				out_file << "NONE" << "\n";
 			}
-			if (Renderer::objects2d[i]->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr)
-				out_file << Renderer::objects2d[i]->GetComponentManager()->GetComponent<SpriteRenderer>()->GetPathToTexture() << "\n";
+			if (Renderer::objects2d[i]->GetComponentManager()->GetComponent<Irenderer>() != nullptr && Renderer::objects2d[i]->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D")
+				out_file << sr->GetPathToTexture() << "\n";
 			else
 				out_file << "None" << "\n";
 			out_file << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << "\n";
@@ -131,7 +131,7 @@ void Doom::Renderer::Load(const std::string filename)
 	bool hascollision = 0;
 	bool istrigger = false;
 	float angle = 0;
-	double pos[2];
+	double pos[3];
 	float scale[3];
 	float color[4];
 	float offset[2];
@@ -149,7 +149,7 @@ void Doom::Renderer::Load(const std::string filename)
 				//std::cout << enable << std::endl;
 				in_file >> type;
 				//std::cout << type << std::endl;
-				in_file >> pos[0] >> pos[1];
+				in_file >> pos[0] >> pos[1] >> pos[2];
 				//std::cout << pos[0] << "	" << pos[1] << std::endl;
 				in_file >> angle;
 				in_file >> axes[0] >> axes[1] >> axes[2];
@@ -186,7 +186,7 @@ GameObject* Doom::Renderer::SelectObject()
 	for (unsigned int i = 0; i < GetAmountOfObjects(); i++)
 	{
 		GameObject* go = static_cast<GameObject*>(Renderer::objects2d[i]);
-		SpriteRenderer* sr= go->GetComponentManager()->GetComponent<SpriteRenderer>();
+		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
 		p.clear();
 		p.push_back(glm::vec2(sr->WorldVertexPositions[0] + go->GetPositions().x, sr->WorldVertexPositions[1] + go->GetPositions().y));
 		p.push_back(glm::vec2(sr->WorldVertexPositions[2] + go->GetPositions().x, sr->WorldVertexPositions[3] + go->GetPositions().y));
@@ -285,7 +285,7 @@ bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
 }
 
 void Renderer::Render() {
-	OrthographicCamera* camera = &Window::GetCamera();
+	Camera* camera = &Window::GetCamera();
 	
 	SubmitGameObjects(); 
 	
@@ -336,21 +336,27 @@ void Doom::Renderer::SubmitGameObjects()
 			Batch* batch = Batch::GetInstance();
 			batch->Gindexcount = 0;
 			batch->BeginGameObjects();
-			/*for (size_t i = 0; i < size; i++) {
-				GameObject* go = (GameObject*)&Renderer::objects2d[i];
-				if (go->Enable == true)
-				{
-					batch->Submit(*go);
-				}
-			}*/
 			for (auto object : Renderer::objects2d) {
 				GameObject* go = (GameObject*)object;
-				if (go->Enable == true && (go->GetComponentManager()->GetComponent<SpriteRenderer>()->AlwaysDraw || sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel()))
+				if (go->Enable == true && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
-					static_cast<Irenderer*>(go->GetComponentManager()->GetComponent<SpriteRenderer>())->Render();
+					void* renderer = go->GetComponentManager()->GetComponent<Irenderer>();
+					if(renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "2D")
+						static_cast<Irenderer*>(renderer)->Render();
 				}
 			}
 			batch->EndGameObjects();
+
+			for (auto object : Renderer::objects2d) {
+				GameObject* go = (GameObject*)object;
+				if (go->Enable == true && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
+				{
+					void* renderer = go->GetComponentManager()->GetComponent<Irenderer>();
+					if (renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "3D")
+						static_cast<Irenderer*>(renderer)->Render();
+				}
+			}
+
 		}
 		
 	}

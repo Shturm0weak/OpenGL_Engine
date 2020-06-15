@@ -162,13 +162,15 @@ void Editor::EditorUpdate()
 				go->SetName(name);
 			}
 			ImGui::SliderInt("Layer", &go->GetLayer(), 0, Renderer::GetAmountOfObjects() - 1);
-			if (ImGui::Button("Change layer")) {
-				if (go->GetLayer() > Renderer::GetAmountOfObjects() - 1) {
-					std::cout << "Error: layer out of range" << std::endl;
-					return;
+			if (go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D") {
+				if (ImGui::Button("Change layer")) {
+					if (go->GetLayer() > Renderer::GetAmountOfObjects() - 1) {
+						std::cout << "Error: layer out of range" << std::endl;
+						return;
+					}
+					static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>())->Setlayer(go->GetLayer());
+					Renderer::CalculateObjectsVectors();
 				}
-				go->GetComponentManager()->GetComponent<SpriteRenderer>()->Setlayer(go->GetLayer());
-				Renderer::CalculateObjectsVectors();
 			}
 
 			if (ImGui::CollapsingHeader("Transform")) {
@@ -176,20 +178,23 @@ void Editor::EditorUpdate()
 				ImGui::InputFloat2("Set the borders of X and Y position slider", changeSliderPos);
 				ImGui::SliderFloat("Position X", &(tr->position.x), changeSliderPos[0], changeSliderPos[1]);
 				ImGui::SliderFloat("Position Y", &(tr->position.y), changeSliderPos[0], changeSliderPos[1]);
+				ImGui::SliderFloat("Position Z", &(tr->position.z), changeSliderPos[0], changeSliderPos[1]);
 				ImGui::Text("Scale");
-				ImGui::InputFloat2("Set the borders of X and Y scale slider", changeSliderScale);
+				ImGui::InputFloat2("Set the borders of X and Y  and Z scale slider", changeSliderScale);
 				ImGui::SliderFloat("Scale X", &(go->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
 				ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
-				tr->Scale(go->scaleValues[0], go->scaleValues[1]);
-				
+				ImGui::SliderFloat("Scale Z", &(go->scaleValues[2]), changeSliderScale[0], changeSliderScale[1]);
+				tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
+				tr->Translate(tr->position.x, tr->position.y,tr->position.z);
 				ImGui::SliderAngle("Rotate", &tr->angleRad);
 				ImGui::InputInt3("Rotate axes",axes);
 				tr->RotateOnce(tr->angleRad, glm::vec3(axes[0], axes[1], axes[2]),true);
 			}
-			if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && ImGui::CollapsingHeader("Render")) {
-				color = go->GetComponentManager()->GetComponent<SpriteRenderer>()->GetColor();
+			if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D" && ImGui::CollapsingHeader("Render")) {
+				SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
+				color = sr->GetColor();
 				ImGui::ColorEdit4("Color", color);
-				go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
+				sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
 				delete[] color;
 				int counterImagesButtons = 0;
 				ImGui::Text("Textures");
@@ -205,7 +210,7 @@ void Editor::EditorUpdate()
 					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
 						if (go != nullptr) {
 
-							go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texture[i]);
+							sr->SetTexture(texture[i]);
 						}
 
 					}
@@ -218,16 +223,16 @@ void Editor::EditorUpdate()
 				ImGui::InputFloat2("UVs Offset", uvsOffset);
 
 				if (ImGui::Button("Use these UVs")) {
-					if (go != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->textureAtlas != nullptr)
-						go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetUVs(go->GetComponentManager()->GetComponent<SpriteRenderer>()->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
+					if (go != nullptr && sr->textureAtlas != nullptr)
+						sr->SetUVs(sr->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
 				}
 				if (ImGui::Button("Original UVs")) {
 					if (go != nullptr)
-						go->GetComponentManager()->GetComponent<SpriteRenderer>()->OriginalUvs();
+						sr->OriginalUvs();
 				}
 				if (ImGui::Button("No texture")) {
 					if (go != nullptr)
-						go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(nullptr);
+						sr->SetTexture(nullptr);
 				}
 				ImGui::InputText("path", pathToTextureFolder, 64);
 				if (ImGui::Button("Refresh textures")) {
@@ -350,7 +355,7 @@ void Editor::EditorUpdate()
 				child1->SetOwner((void*)go);
 			}
 			ImGui::Unindent();
-			tr->Translate(tr->position.x, tr->position.y);
+
 		}
 		
 	}
@@ -465,6 +470,16 @@ void Editor::CheckTexturesFolder(const std::string path)
 
 void Doom::Editor::Debug()
 {
+	ImGui::Begin("Camera");
+	ImGui::SliderAngle("X", &Window::GetCamera().pitch);
+	ImGui::SliderAngle("Y", &Window::GetCamera().yaw);
+	ImGui::SliderAngle("Z", &Window::GetCamera().roll);
+	if (Window::GetCamera().type == Window::GetCamera().PERSPECTIVE) {
+		ImGui::SliderAngle("fov", &Window::GetCamera().fovy, 60, 180);
+		Window::GetCamera().SetFov(Window::GetCamera().fovy);
+	}
+	Window::GetCamera().SetRotation(glm::vec3(Window::GetCamera().pitch, Window::GetCamera().yaw, Window::GetCamera().roll));
+	ImGui::End();
 	ImGui::Begin("Debug");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::Text("Draw calls %d", Renderer::DrawCalls);

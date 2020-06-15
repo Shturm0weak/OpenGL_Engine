@@ -363,7 +363,7 @@ void Batch::Submit(SpriteRenderer & c)
 }
 
 void Batch::Submit(Collision& c) {
-	glm::mat4 mvp = c.owner->GetComponentManager()->GetComponent<SpriteRenderer>()->pos * c.owner->GetComponentManager()->GetComponent<SpriteRenderer>()->view;
+	glm::mat4 mvp = c.owner->GetComponentManager()->GetComponent<Irenderer>()->pos * c.owner->GetComponentManager()->GetComponent<Irenderer>()->view;
 	if (GtextureSlotsIndex > maxTextureSlots - 1) {
 		EndGameObjects();
 		flushGameObjects(shader);

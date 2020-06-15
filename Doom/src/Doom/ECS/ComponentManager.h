@@ -118,9 +118,9 @@ namespace Doom {
 		}
 
 		template <>
-		void RemoveComponent<SpriteRenderer>() {
-			SpriteRenderer* col = nullptr;
-			col = GetComponent<SpriteRenderer>();
+		void RemoveComponent<Irenderer>() {
+			Irenderer* col = nullptr;
+			col = GetComponent<Irenderer>();
 			if (col == nullptr)
 				return;
 			components.erase(components.begin() + col->m_Id);
@@ -153,11 +153,11 @@ namespace Doom {
 		}
 
 		template<>
-		SpriteRenderer* GetComponent() {
+		Irenderer* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == "SpriteRenderer") {
-					return (SpriteRenderer*)components[i];
+				if (components[i]->GetComponentType() == "Renderer") {
+					return (Irenderer*)components[i];
 				}
 			}
 			//std::cout << yellow << "Warning:" << white << " there is no component of type <Collision> for gameobject: " << owner_name << std::endl;
@@ -212,6 +212,18 @@ namespace Doom {
 		SpriteRenderer* AddComponent<SpriteRenderer>() {
 			if (GetComponent<SpriteRenderer>() == nullptr) {
 				SpriteRenderer* object = new SpriteRenderer(owner);
+				object->owner = (this->owner);
+				object->m_Id = components.size();
+				components.push_back(object);
+				return object;
+			}
+			return nullptr;
+		}
+
+		template <>
+		Renderer3D* AddComponent<Renderer3D>() {
+			if (GetComponent<Renderer3D>() == nullptr) {
+				Renderer3D* object = new Renderer3D(owner);
 				object->owner = (this->owner);
 				object->m_Id = components.size();
 				components.push_back(object);

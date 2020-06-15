@@ -69,9 +69,6 @@ namespace Doom {
 		
 		Position GetPositions();
 		ComponentManager* GetComponentManager(){ return component_manager; };
-
-		inline double GetWidth() { return scaleValues[0] * GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[4] * 2; }
-		inline double GetHeight() { return scaleValues[1] * GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[9] * 2; }
 		inline void SetId(int id) { this->id = id; }
 		inline int GetId() { return id; }
 		inline int& GetLayer() { return layer; }

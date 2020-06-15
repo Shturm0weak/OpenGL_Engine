@@ -15,7 +15,7 @@ public:
 		Window::GetCamera().Zoom(2.9);
 		coin = new GameObject("Coin",5,5);
 		Collision* col = coin->GetComponentManager()->AddComponent<Collision>();
-		coin->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture("src/Images/Bird.png");
+		static_cast<SpriteRenderer*>(coin->GetComponentManager()->GetComponent<Irenderer>())->SetTexture("src/Images/Bird.png");
 		coin->GetComponentManager()->GetComponent<Transform>()->Scale(3, 3);
 		col->SetTag("Coin");
 		

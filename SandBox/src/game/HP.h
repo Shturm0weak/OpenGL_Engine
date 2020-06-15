@@ -18,11 +18,12 @@ public:
 		for (unsigned int i = 0; i < 3; i++)
 		{
 			hearts.push_back(new GameObject());
+			SpriteRenderer* sr = static_cast<SpriteRenderer*>(hearts[i]->GetComponentManager()->GetComponent<Irenderer>());
 			hearts[i]->SetName("HP");
 			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Scale(2,2);
 			hearts[i]->Static = true;
-			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Translate(x + i * (hearts[i]->GetWidth() + 0.25),y);
-			hearts[i]->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texture);
+			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Translate(x + i * (sr->GetWidth() + 0.25),y);
+			sr->SetTexture(texture);
 		}
 	}
 	

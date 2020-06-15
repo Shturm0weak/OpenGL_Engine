@@ -4,7 +4,7 @@ class Bullet : public GameObject {
 public:
 	float damage = 15.f;
 	double lifeTimer = 0;
-	double maxTimeToLive = 5;
+	double maxTimeToLive = 2;
 	Transform* tr = nullptr;
 	Collision* col = nullptr;
 	SpriteRenderer* sr = nullptr;
@@ -19,7 +19,7 @@ public:
 		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
 		col = GetComponentManager()->AddComponent<Collision>();
 		tr = GetComponentManager()->GetComponent<Transform>();
-		sr = GetComponentManager()->GetComponent<SpriteRenderer>();
+		sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 		col->SetTag(tag);
 		this->moveDir = glm::vec3(moveDir * (1.f / sqrtf(moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z)));
 		sr->SetTexture(texture);

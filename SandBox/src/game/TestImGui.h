@@ -2,28 +2,45 @@
 
 class TestImGui : public Application {
 
-	GameObject* go = nullptr;
-	Texture* texture = nullptr;
-	Font* font = nullptr;
+	std::vector<GameObject*> go;
+
+
 	virtual void OnStart() override {
-		texture = new Texture("src/SpaceFire/Images/SpaceBack.png");
-		go = new GameObject();
-		go->Enable = false;
-		go->SetTexture(texture);
+		float xoffset = -3.f;
+		for (size_t i = 0; i < 4; i++)
+		{
+			go.push_back(new GameObject());
+			go[i]->GetComponentManager()->RemoveComponent<Irenderer>();
+			go[i]->GetComponentManager()->AddComponent<Renderer3D>();
+			go[i]->GetComponentManager()->GetComponent<Transform>()->Translate(xoffset, 0, 0);
+			xoffset += 3;
+		}
+	
+	}
+
+	virtual void OnGuiRender() {
+		Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
+		Gui::GetInstance()->Text("It seems I got 3D Cubes",true,0,0,76);
+		Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
 	}
 
 	virtual void OnUpdate() override {
-		//Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->CALIBRI]);
-		//Gui::GetInstance()->Begin();
-		//double x = 0; double y = 0;
-		//Gui::GetInstance()->Panel(x, y,700,400,COLORS::DarkGray, nullptr);
-		//Gui::GetInstance()->Text("Yes", true, x - 700 * 0.5, y + 400 * 0.5, 48);
-		//Gui::GetInstance()->Button("Button",0,0,48,400,200);
-		//Gui::GetInstance()->Text("Mouse pos x: %f  y: %f", true,x + 20, y - 120, 48, COLORS::White, 2, ViewPort::Instance()->GetMousePositionToScreenSpace().x, ViewPort::Instance()->GetMousePositionToScreenSpace().y);
-		//if (Gui::GetInstance()->Button("Button", x + 20, y - 20, 48, 200, 100,COLORS::Blue,COLORS::Blue * 0.5f)) {
-		//	go->Enable = !go->Enable;
-		//}
-		//Gui::GetInstance()->End();
+
+		if (Input::IsKeyPressed(Keycode::SPACE)) {
+			Window::GetCamera().SetOrthographic(-16.f, 16.f, 9.f, -9.f, -10, 10);
+		}
+		else if (Input::IsKeyPressed(Keycode::KEY_F)) {
+			Window::GetCamera().SetPerspective(1,16,9,0,-10);
+		}
+
+		for (size_t i = 0; i < 3; i++)
+		{
+			go[i]->GetComponentManager()->GetComponent<Transform>()->Rotate(-1, glm::vec3(1, 1, 1));
+		}
+		
+	}
+
+	virtual void OnClose() {
 	}
 
 };

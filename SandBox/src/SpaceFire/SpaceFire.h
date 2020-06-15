@@ -34,10 +34,10 @@ public:
 		backgroundTexture = new Texture("src/SpaceFire/Images/SpaceBack.png");
 		background1 = new GameObject("BackGround1");
 		background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		background1->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(backgroundTexture);
+		static_cast<SpriteRenderer*>(background1->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(backgroundTexture);
 		background2 = new GameObject("BackGround2");
 		background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		background2->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(backgroundTexture);
+		static_cast<SpriteRenderer*>(background2->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(backgroundTexture);
 		pl = new ShipPlayer();
 		float x = -20;
 		for (unsigned int i = 0; i < 5; i++)
@@ -76,7 +76,7 @@ public:
 		{
 			if (enemies[i]->isDead)
 				continue;
-			glm::dvec2 pos = ViewPort::Instance()->GetFromWorldToScreenSpace((enemies[i]->position.x - Window::GetCamera().GetPosition().x), (enemies[i]->position.y + enemies[i]->GetHeight() - Window::GetCamera().GetPosition().y));
+			glm::dvec2 pos = ViewPort::Instance()->GetFromWorldToScreenSpace((enemies[i]->position.x - Window::GetCamera().GetPosition().x), (enemies[i]->position.y + static_cast<SpriteRenderer*>(enemies[i]->GetComponentManager()->GetComponent<Irenderer>())->GetHeight() - Window::GetCamera().GetPosition().y));
 			Gui::GetInstance()->Bar(pos.x,pos.y,enemies[i]->hp,100,COLORS::Red,COLORS::DarkGray,400 / Window::GetCamera().GetZoomLevel(),50 / Window::GetCamera().GetZoomLevel());
 		}
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <glew.h>
  
 namespace Doom {
 

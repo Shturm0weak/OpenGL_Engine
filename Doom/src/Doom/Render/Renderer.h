@@ -61,28 +61,30 @@ namespace Doom {
 			float scale[3], double pos[2], bool hascollision, float* offset, int* axes, bool istrigger, std::string tag,float* uvs,bool isSprite,float* spriteSize) {
 			T* go = new T(name, pos[0], pos[1]);
 			go->Enable = enable;
-			go->GetComponentManager()->GetComponent<Transform>()->Scale(scale[0], scale[1]);
+			go->GetComponentManager()->GetComponent<Transform>()->Translate(pos[0],pos[1],pos[2]);
+			go->GetComponentManager()->GetComponent<Transform>()->Scale(scale[0], scale[1],scale[2]);
 			go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angle, glm::vec3(axes[0], axes[1], axes[2]),true);
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[2] = uvs[0];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[3] = uvs[1];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[6] = uvs[2];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[7] = uvs[3];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[10] = uvs[4];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[11] = uvs[5];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[14] = uvs[6];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->mesh2D[15] = uvs[7];
-			go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
+			SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
+			sr->mesh2D[2] = uvs[0];
+			sr->mesh2D[3] = uvs[1];
+			sr->mesh2D[6] = uvs[2];
+			sr->mesh2D[7] = uvs[3];
+			sr->mesh2D[10] = uvs[4];
+			sr->mesh2D[11] = uvs[5];
+			sr->mesh2D[14] = uvs[6];
+			sr->mesh2D[15] = uvs[7];
+			go->GetComponentManager()->GetComponent<Irenderer>()->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
 			if(pathtotext != "None")
-				go->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(pathtotext);
+				sr->SetTexture(pathtotext);
 			if (isSprite) {
 				for (unsigned int i = 0; i < TextureAtlas::textureAtlases.size(); i++)
 				{
 					if (TextureAtlas::textureAtlases[i]->m_texture->GetFilePath() == pathtotext) {
-						go->GetComponentManager()->GetComponent<SpriteRenderer>()->textureAtlas = TextureAtlas::textureAtlases[i];
+						go->GetComponentManager()->GetComponent<Irenderer>()->textureAtlas = TextureAtlas::textureAtlases[i];
 					}
 				}
-				if(go->GetComponentManager()->GetComponent<SpriteRenderer>()->textureAtlas == nullptr)
-					go->GetComponentManager()->GetComponent<SpriteRenderer>()->textureAtlas = new TextureAtlas(spriteSize[0], spriteSize[1], pathtotext);
+				if(go->GetComponentManager()->GetComponent<Irenderer>()->textureAtlas == nullptr)
+					go->GetComponentManager()->GetComponent<Irenderer>()->textureAtlas = new TextureAtlas(spriteSize[0], spriteSize[1], pathtotext);
 			}
 			if (hascollision == 1) {
 				go->GetComponentManager()->AddComponent<Collision>();

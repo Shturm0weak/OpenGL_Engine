@@ -7,11 +7,11 @@
 #include "src/2Dshootergame/ShooterGame.h"
 //#include "src/game/StressTest.h"
 //#include "src/GameRPG/GameRPG.h"
-//#include "src/game/TestImGui.h"
+#include "src/game/TestImGui.h"
 #include "src/SpaceFire/SpaceFire.h"
 
 int main() {
-	RayCastTest* app = new RayCastTest("Doom Engine", 800, 600, true);
+	TestImGui* app = new TestImGui();
 	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);
 	entrypoint->Run();
 	return 0;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+
 namespace Doom {
 
 	class DOOM_API VertexArray {

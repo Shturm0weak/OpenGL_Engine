@@ -50,19 +50,19 @@ void ShipPlayer::ShipMovement()
 void ShipPlayer::ScreenBorders()
 {
 	double xBorder = (Window::GetCamera().GetAspectRatio().x * Window::GetCamera().GetZoomLevel());
-	if (position.x > xBorder - GetWidth() * 0.5) {
-		tr->Translate(xBorder - GetWidth() * 0.5,position.y);
+	if (position.x > xBorder - sr->GetWidth() * 0.5) {
+		tr->Translate(xBorder - sr->GetWidth() * 0.5,position.y);
 	}
-	else if (position.x < -xBorder + GetWidth() * 0.5) {
-		tr->Translate(-xBorder + GetWidth() * 0.5,position.y);
+	else if (position.x < -xBorder + sr->GetWidth() * 0.5) {
+		tr->Translate(-xBorder + sr->GetWidth() * 0.5,position.y);
 	}
 
 	double yBorder = (Window::GetCamera().GetAspectRatio().y * Window::GetCamera().GetZoomLevel());
-	if (position.y > yBorder - GetHeight() * 0.5) {
-		tr->Translate(position.x, yBorder - GetHeight() * 0.5);
+	if (position.y > yBorder - sr->GetHeight() * 0.5) {
+		tr->Translate(position.x, yBorder - sr->GetHeight() * 0.5);
 	}
-	else if (position.y < -yBorder + GetHeight() * 0.5) {
-		tr->Translate(position.x,-yBorder + GetHeight() * 0.5);
+	else if (position.y < -yBorder + sr->GetHeight() * 0.5) {
+		tr->Translate(position.x,-yBorder + sr->GetHeight() * 0.5);
 	}
 }
 
@@ -78,8 +78,9 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
 	col = GetComponentManager()->AddComponent<Collision>();
 	tr = GetComponentManager()->GetComponent<Transform>();
+	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 	tr->Scale(5, 5);
-	GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texture);
+	sr->SetTexture(texture);
 	col->SetTag("Player");
 	col->IsTrigger = true;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
@@ -121,14 +122,22 @@ void ShipPlayer::OnUpdate() {
 	if (isDead == true)
 		return;
 	ShipMovement();
-	Fire();
 	ScreenBorders();
 	//ThreadPool::Instance()->enqueue([=] {
 		col->IsCollidedSAT();
 	//});
-		if (hp <= 0) {
-			Death();
-		}
+	if (hp <= 0) {
+		Death();
+	}
+
+	if (kills == 5) {
+		currentStage = FIRST;
+	}
+	if (kills == 15) {
+		currentStage = SECOND;
+	}
+
+	Fire();
 }
 
 void ShipPlayer::OnCollision(void * _col)
@@ -147,19 +156,43 @@ void ShipPlayer::OnCollision(void * _col)
 	}
 }
 
-void ShipPlayer::Fire() {
+void ShipPlayer::Fire(float xOffset,float yOffset) {
 	if (ammo > 0 && timerFire > TimePerBullet && Input::IsMouseDown(GLFW_MOUSE_BUTTON_1)) {
 		timerFire = 0;
-		if (usedBulletCounter == amountOfBulletsInPool)
-			usedBulletCounter = 0;
-		bullets[usedBulletCounter]->SetMoveDirection(dir);
-		bullets[usedBulletCounter]->tr->Translate(position.x,position.y);
-		bullets[usedBulletCounter]->Enable = true;
-		bullets[usedBulletCounter]->col->Enable = true;
-		bullets[usedBulletCounter]->isActive = true;
-		bullets[usedBulletCounter]->lifeTimer = 0;
-		usedBulletCounter++;
-		ammo--;
+		int amount = currentStage;
+		if (currentStage != ZERO) {
+			xOffset = sr->WorldVertexPositions[0] * 0.3f;
+			yOffset = sr->WorldVertexPositions[1] * 0.3f;
+		}
+		for (size_t i = 0; i < amount; i++)
+		{
+			if (ammo <= 0)
+				return;
+			if (usedBulletCounter == amountOfBulletsInPool)
+				usedBulletCounter = 0;
+			bullets[usedBulletCounter]->SetMoveDirection(dir);
+			bullets[usedBulletCounter]->tr->Translate(position.x + xOffset,position.y + yOffset);
+			bullets[usedBulletCounter]->Enable = true;
+			bullets[usedBulletCounter]->col->Enable = true;
+			bullets[usedBulletCounter]->isActive = true;
+			bullets[usedBulletCounter]->lifeTimer = 0;
+			usedBulletCounter++;
+			ammo--;
+			if (amount == 2) {
+				xOffset = sr->WorldVertexPositions[2] * 0.3f;
+				yOffset = sr->WorldVertexPositions[3] * 0.3f;
+			}
+			else if (amount == 3) {
+				if (i == 0) {
+					xOffset = 0;
+					yOffset = 0;
+				}
+				else if (i == 1) {
+					xOffset = sr->WorldVertexPositions[2] * 0.3f;
+					yOffset = sr->WorldVertexPositions[3] * 0.3f;
+				}
+			}
+		}
 		SoundManager::Play(fireSound);
 	}
 	timerFire += DeltaTime::deltatime;

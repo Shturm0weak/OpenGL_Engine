@@ -29,7 +29,7 @@ void SpriteRenderer::InitShader() {
 
 Doom::SpriteRenderer::SpriteRenderer(GameObject* _owner)
 {
-	SetType("SpriteRenderer");
+	SetType("Renderer");
 	this->owner = _owner;
 	tr = owner->GetComponentManager()->GetComponent<Transform>();
 	this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, 0));
@@ -40,25 +40,38 @@ Doom::SpriteRenderer::~SpriteRenderer()
 {
 }
 
+void Doom::SpriteRenderer::Update(glm::vec3 pos)
+{
+	this->pos = translate(glm::mat4(1.f), pos);
+	float WorldVerPos[16];
+	glm::mat4 scaleXview = view * scale;
+	float* pSource;
+	pSource = (float*)glm::value_ptr(scaleXview);
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 0; j < 4; j++) {
+			WorldVerPos[i * 4 + j] = 0;
+			for (unsigned int k = 0; k < 4; k++) {
+				WorldVerPos[i * 4 + j] += mesh2D[i * 4 + k] * pSource[k * 4 + j];
+			}
+		}
+	}
+	WorldVertexPositions[0] = WorldVerPos[0];
+	WorldVertexPositions[1] = WorldVerPos[1];
+	WorldVertexPositions[2] = WorldVerPos[4];
+	WorldVertexPositions[3] = WorldVerPos[5];
+	WorldVertexPositions[4] = WorldVerPos[8];
+	WorldVertexPositions[5] = WorldVerPos[9];
+	WorldVertexPositions[6] = WorldVerPos[12];
+	WorldVertexPositions[7] = WorldVerPos[13];
+	pSource = nullptr;
+}
+
 void Doom::SpriteRenderer::Render()
 {
 	Batch::GetInstance()->Submit(*this);
 }
 
-void SpriteRenderer::SetColor(vec4 color) {
-	this->color = color;
-}
-
 std::string SpriteRenderer::GetPathToTexture() { return this->pathToTexture; }
-
-float* SpriteRenderer::GetColor() {
-	float* color = new float[4];
-	for (unsigned int i = 0; i < 4; i++)
-	{
-		color[i] = this->color[i];
-	}
-	return color;
-}
 
 void SpriteRenderer::ReverseUVs()
 {
@@ -116,6 +129,16 @@ void SpriteRenderer::SetUVs(float* uvs)
 	mesh2D[15] = uvs[7];
 }
 
+double Doom::SpriteRenderer::GetWidth()
+{
+	return owner->scaleValues[0] * mesh2D[4] * 2;
+}
+
+double Doom::SpriteRenderer::GetHeight()
+{
+	return owner->scaleValues[1] * mesh2D[9] * 2;
+}
+
 float * SpriteRenderer::GetUVs()
 {
 	float uvs[8];
@@ -142,4 +165,43 @@ void SpriteRenderer::Setlayer(int layer)
 		Renderer::objects2d[i]->GetLayer() = i;
 	}
 	return;
+}
+
+Doom::Renderer3D::Renderer3D(GameObject* _owner)
+{
+	renderType = "3D";
+	SetType("Renderer");
+	owner = _owner;
+	shader = new Shader("src/Shaders/Basic3D.shader");
+	tr = owner->GetComponentManager()->GetComponent<Transform>();
+	pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
+	view = glm::rotate(glm::mat4(1.f),1.6f,glm::vec3(1,1,1));
+	layout->Push<float>(3);
+	layout->Push<float>(4);
+	va->AddBuffer(*this->vb, *this->layout);
+	va->UnBind();
+	shader->UnBind();
+	vb->UnBind();
+	ib->UnBind();
+}
+
+void Doom::Renderer3D::Render()
+{
+	this->shader->Bind();
+	this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
+	this->viewXscale = view * scale;
+	this->MVP = pos * viewXscale;
+	Window::GetCamera().RecalculateViewMatrix();
+	this->shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	this->shader->SetUniformMat4f("u_MVP", this->MVP);
+	//this->shader->SetUniform4fv("m_color", color);
+	this->shader->Bind();
+	va->Bind();
+	ib->Bind();
+	vb->Bind();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDrawElements(GL_TRIANGLES, ib->GetCount(), GL_UNSIGNED_INT,nullptr);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	shader->UnBind();
+	ib->UnBind();
 }

@@ -138,6 +138,7 @@
   <ItemGroup>
     <None Include="imgui.ini" />
     <None Include="src\Shaders\Basic.shader" />
+    <None Include="src\Shaders\Basic3D.shader" />
     <None Include="src\Shaders\Batch.shader" />
     <None Include="src\Shaders\Bloom.shader" />
     <None Include="src\Shaders\guishader.shader" />
