@@ -12,9 +12,9 @@ Transform component
 
 Component's manager
 
-Can draw lines and squares
+Can draw lines and squares and 3d cubes
 
-Batch and Simple 2D renderer
+Batch and Simple renderer
 
 Text rendering
 
@@ -26,7 +26,7 @@ Multithreading
 
 Editor with ImGui
 
-2D textures
+2D textures and texture atlases
 
 Ray casting
 
