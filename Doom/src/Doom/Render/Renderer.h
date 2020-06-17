@@ -9,15 +9,18 @@ namespace Doom {
 
 	class DOOM_API Renderer {
 	public:
+		static bool PolygonMode;
 		static int DrawCalls;
 		static bool isReadyToRenderFirstThread;
 		static bool isReadyToRenderSecondThread;
 		static bool isReadyToRenderThirdThread;
 		static void DeleteObject(int id);
 		static void DeleteAll();
-		static void SubmitGameObjects();
+		static void Render2DObjects();
+		static void Render3DObjects();
 		static void Render();
 		static void CalculateMVPforAllObjects();
+		static void RenderLines();
 		static void RenderText();
 		static void RenderCollision();
 		static void Clear();
@@ -45,6 +48,7 @@ namespace Doom {
 		static int obj_id;
 		static int col_id;
 		static std::vector <GameObject*> objects2d;
+		static std::vector <GameObject*> objects3d;
 		static std::mutex mtx;
 		static std::condition_variable condVar;
 

@@ -87,8 +87,7 @@ namespace Doom {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_DEPTH_TEST);
-			//// Фрагмент будет выводиться только в том, случае, если он находится ближе к камере, чем предыдущий
-			glDepthFunc(GL_GREATER);
+			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
 			return 0;
 		}

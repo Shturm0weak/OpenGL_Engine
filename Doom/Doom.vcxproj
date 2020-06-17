@@ -68,7 +68,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Debug-windows-x86_64\Doom\Doom.lib</ImportLibrary>
     </Link>
@@ -98,7 +98,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;winmm.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Release-windows-x86_64\Doom\Doom.lib</ImportLibrary>
     </Link>
@@ -117,6 +117,10 @@
     <ClInclude Include="src\Doom\Components\IRenderer.h" />
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxnode.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
@@ -149,6 +153,7 @@
     <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
     <ClInclude Include="src\Doom\Render\IndexBuffer.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
+    <ClInclude Include="src\Doom\Render\Mesh.h" />
     <ClInclude Include="src\Doom\Render\OrthographicCamera.h" />
     <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
     <ClInclude Include="src\Doom\Render\Renderer.h" />
@@ -168,6 +173,11 @@
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxnode.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />

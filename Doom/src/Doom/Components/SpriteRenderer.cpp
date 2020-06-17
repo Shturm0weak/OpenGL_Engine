@@ -167,17 +167,23 @@ void SpriteRenderer::Setlayer(int layer)
 	return;
 }
 
-Doom::Renderer3D::Renderer3D(GameObject* _owner)
+void Doom::Renderer3D::LoadMesh(double * verteces,uint32_t vertecesSize, uint32_t* indices,uint32_t indicesSize)
 {
-	renderType = "3D";
-	SetType("Renderer");
-	owner = _owner;
-	shader = new Shader("src/Shaders/Basic3D.shader");
-	tr = owner->GetComponentManager()->GetComponent<Transform>();
-	pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
-	view = glm::rotate(glm::mat4(1.f),1.6f,glm::vec3(1,1,1));
-	layout->Push<float>(3);
-	layout->Push<float>(4);
+	this->mesh = new Mesh;
+	this->mesh->verteces = verteces;
+	this->mesh->indices = indices;
+	this->mesh->vertecesSize = vertecesSize;
+	this->mesh->indicesSize = indicesSize;
+	delete layout;
+	delete va;
+	delete vb;
+	delete ib;
+	layout = new VertexBufferLayout();
+	layout = new VertexBufferLayout();
+	vb = new VertexBuffer(this->mesh->verteces, this->mesh->vertecesSize * sizeof(double));
+	va = new VertexArray();
+	ib = new IndexBuffer(this->mesh->indices, this->mesh->indicesSize);
+	layout->Push<double>(3);
 	va->AddBuffer(*this->vb, *this->layout);
 	va->UnBind();
 	shader->UnBind();
@@ -185,23 +191,65 @@ Doom::Renderer3D::Renderer3D(GameObject* _owner)
 	ib->UnBind();
 }
 
+void Doom::Renderer3D::LoadMesh(Mesh * mesh)
+{
+	this->mesh = mesh;
+	delete layout;
+	delete va;
+	delete vb;
+	delete ib;
+	layout = new VertexBufferLayout();
+	layout = new VertexBufferLayout();
+	vb = new VertexBuffer(this->mesh->verteces, this->mesh->vertecesSize * sizeof(double));
+	va = new VertexArray();
+	ib = new IndexBuffer(this->mesh->indices, this->mesh->indicesSize);
+	layout->Push<double>(3);
+	va->AddBuffer(*this->vb, *this->layout);
+	va->UnBind();
+	shader->UnBind();
+	vb->UnBind();
+	ib->UnBind();
+}
+
+Doom::Renderer3D::Renderer3D(GameObject* _owner)
+{
+	renderType = "3D";
+	SetType("Renderer");
+	owner = _owner;
+	shader = new Shader("src/Shaders/DepthBuffer.shader");
+	tr = owner->GetComponentManager()->GetComponent<Transform>();
+	pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
+	view = glm::rotate(glm::mat4(1.f),1.6f,glm::vec3(1,1,1));
+}
+
+Doom::Renderer3D::~Renderer3D()
+{
+	delete layout;
+	delete va;
+	delete vb;
+	delete ib;
+	delete mesh;
+}
+
 void Doom::Renderer3D::Render()
 {
-	this->shader->Bind();
-	this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
-	this->viewXscale = view * scale;
-	this->MVP = pos * viewXscale;
-	Window::GetCamera().RecalculateViewMatrix();
-	this->shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-	this->shader->SetUniformMat4f("u_MVP", this->MVP);
-	//this->shader->SetUniform4fv("m_color", color);
-	this->shader->Bind();
-	va->Bind();
-	ib->Bind();
-	vb->Bind();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, ib->GetCount(), GL_UNSIGNED_INT,nullptr);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	shader->UnBind();
-	ib->UnBind();
+	if (mesh != nullptr) {
+		this->shader->Bind();
+		this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
+		this->viewXscale = view * scale;
+		this->MVP = pos * viewXscale;
+		Window::GetCamera().RecalculateViewMatrix();
+		this->shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+		this->shader->SetUniformMat4f("u_MVP", this->MVP);
+		//this->shader->SetUniform4fv("m_color", color);
+		this->shader->Bind();
+		va->Bind();
+		ib->Bind();
+		vb->Bind();
+		
+		Renderer::DrawCalls++;
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+		shader->UnBind();
+		ib->UnBind();
+	}
 }

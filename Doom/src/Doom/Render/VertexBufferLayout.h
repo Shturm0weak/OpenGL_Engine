@@ -14,6 +14,7 @@ namespace Doom {
 			case GL_FLOAT:			return 4;
 			case GL_UNSIGNED_INT:	return 4;
 			case GL_UNSIGNED_BYTE:	return 1;
+			case GL_DOUBLE:			return 8;
 			}
 			return 0;
 		}
@@ -38,6 +39,12 @@ namespace Doom {
 		void Push<float>(unsigned int count) {
 			m_Elements.push_back({ GL_FLOAT, count ,GL_FALSE });
 			m_Stride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
+		}
+
+		template<>
+		void Push<double>(unsigned int count) {
+			m_Elements.push_back({ GL_DOUBLE, count ,GL_FALSE });
+			m_Stride += count * VertexBufferElement::GetSizeOfType(GL_DOUBLE);
 		}
 
 		template<>

@@ -64,6 +64,11 @@
     <ClInclude Include="src\Doom\Audio\wavParser.h" />
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Components\IRenderer.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxnode.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
+    <ClInclude Include="src\Doom\Render\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -102,6 +107,11 @@
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
     <ClCompile Include="src\Doom\Audio\vorbis.h" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxnode.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

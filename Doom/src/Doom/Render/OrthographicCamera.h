@@ -116,6 +116,8 @@ namespace Doom {
 		float pitch = 0.0f;
 		float yaw = 0.0f;
 		float aspectratio[4];
+		public:
+			glm::vec3 startDir = { 0,0,-1 };
 
 	};
 

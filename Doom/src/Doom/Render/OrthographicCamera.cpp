@@ -1,6 +1,8 @@
 #include "../pch.h"
 #include "OrthographicCamera.h"
 #include "../vendor/glm/gtc/matrix_transform.hpp"
+#include "../vendor/glm/gtc/type_ptr.hpp"
+#include "../vendor/glm/gtx/rotate_vector.hpp"
 #include "../Core/Editor.h"
 #include "ViewPort.h"
 
@@ -19,10 +21,15 @@ Camera::Camera(float left,float right,float top,float bottom,float znear,float z
 }
 
 void Camera::RecalculateViewMatrix() {
+	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), roll, glm::vec3(0, 0, 1))
+					* glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0))
+					* glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(1, 0, 0));
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f),m_Position)
-		* glm::rotate(glm::mat4(1.0f), roll, glm::vec3(0, 0, 1))
-		* glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0))
-		* glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(1, 0, 0));
+		* rot;
+
+	startDir.z = cos(yaw)*cos(pitch);
+	startDir.x = sin(yaw)*cos(pitch);
+	startDir.y = sin(pitch);
 
 	m_ViewMatrix = glm::inverse(transform);
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
@@ -91,30 +98,84 @@ void Camera::SetOnStart() {
 }
 
 void Camera::CameraMovement() {
-	if (Input::IsKeyDown(Keycode::KEY_UP)) {
-		MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
+	if (type == ORTHOGRAPHIC) {
+		if (Input::IsKeyDown(Keycode::KEY_UP)) {
+			MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_DOWN)) {
+			MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_RIGHT)) {
+			MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_LEFT)) {
+			MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_BACKSPACE)) {
+			MovePosition(glm::vec3(0, 0, -(20.f * DeltaTime::GetDeltaTime() * zoomlevel)));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
+			MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * zoomlevel)));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_G)) {
+			if (Editor::Instance()->go != nullptr) {
+				Editor::Instance()->go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+			}
+		}
+		Increase();
 	}
-	if (Input::IsKeyDown(Keycode::KEY_DOWN)) {
-		MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
-	}
-	if (Input::IsKeyDown(Keycode::KEY_RIGHT)) {
-		MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
-	}
-	if (Input::IsKeyDown(Keycode::KEY_LEFT)) {
-		MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
-	}
-	if (Input::IsKeyDown(Keycode::KEY_BACKSPACE)) {
-		MovePosition(glm::vec3(0, 0, -(20.f * DeltaTime::GetDeltaTime() * zoomlevel)));
-	}
-	if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
-		MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * zoomlevel)));
-	}
-	if (Input::IsKeyDown(Keycode::KEY_G)) {
-		if (Editor::Instance()->go != nullptr) {
-			Editor::Instance()->go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+	else {
+		float speed = 2.f;
+		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
+			speed *= 3;
+
+		}
+		startDir *= speed * DeltaTime::deltatime;
+		if (Input::IsKeyDown(Keycode::KEY_W)) {
+			MovePosition(glm::vec3(-startDir.x, startDir.y, -startDir.z));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_S)) {
+			MovePosition(glm::vec3(startDir.x, -startDir.y, startDir.z));
+
+		}
+		if (Input::IsKeyDown(Keycode::SPACE)) {
+			MovePosition(glm::vec3(0, 5.0f * DeltaTime::deltatime, 0));
+		}
+		if (Input::IsKeyDown(Keycode::KEY_C)) {
+			MovePosition(glm::vec3(0, -5.0f * DeltaTime::deltatime, 0));
+		}
+		if (ViewPort::Instance()->IsActive) {
+			glm::vec2 drag = ViewPort::Instance()->GetMousePositionToScreenSpace();
+			drag *= 0.2;
+			SetRotation(glm::vec3((drag.y * (2 * 3.14159f) / 360.0f), (-drag.x * (2 * 3.14159f) / 360.0f), 0));
+		}
+		glm::vec2 rightVec = { -(startDir.z * 1) / startDir.x ,1 };
+		rightVec *= (1.f / sqrtf(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
+		rightVec *= DeltaTime::deltatime * speed;
+		double angle = (yaw * 360.0f) / (2 * 3.14159f);
+		if (Input::IsKeyDown(Keycode::KEY_D)) {
+			if (angle >= 0 && angle < 180)
+				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
+			else if (angle >= 180)
+				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+			else if (angle <= -180)
+				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
+			else
+				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+
+		}
+		if (Input::IsKeyDown(Keycode::KEY_A)) {
+			if (angle >= 0 && angle < 180)
+				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+			else if (angle >= 180)
+				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
+			else if (angle <= -180)
+				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+			else
+				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
+
 		}
 	}
-	Increase();
 	SetOnStart();
 }
 

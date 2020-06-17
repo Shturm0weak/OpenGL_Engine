@@ -13,6 +13,7 @@ using namespace Doom;
 
 void Doom::Renderer::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearDepth(1.0f);
 	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
@@ -285,44 +286,14 @@ bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
 }
 
 void Renderer::Render() {
-	Camera* camera = &Window::GetCamera();
-	
-	SubmitGameObjects(); 
-	
-	size_t particleSize = Particle::particles.size();
-	for (size_t i = 0; i < particleSize; i++)
-	{
-		Particle* p = Particle::particles[i];
-		if (p->Enable)
-			Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX,p->scaleY),p->texture);
-	}
-	
-	//Simple render. one line in one draw call.
-	/*for (unsigned int i = 0; i < Line::lines.size(); i++)
-	{
-		if (Line::lines[i]->Enable) {
-			glLineWidth(Line::lines[i]->width);
-			Line::lines[i]->OnRunning();
-		}
-	}
-	glLineWidth(1.0f);*/
-	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
-	Batch::GetInstance()->Lindexcount = 0;
+	Render2DObjects();
+	Render3DObjects();
 	RenderCollision();
-	Batch::GetInstance()->BeginLines();
-	unsigned int size = Line::lines.size();
-	for (unsigned int i = 0; i < size; i++)
-	{
-		if (Line::lines[i]->Enable) {
-			Batch::GetInstance()->Submit(*Line::lines[i]);
-		}
-	}
-	Batch::GetInstance()->EndLines();
-	Batch::GetInstance()->flushLines(Batch::GetInstance()->LineShader);
+	RenderLines();
 	RenderText();
 }
 
-void Doom::Renderer::SubmitGameObjects()
+void Doom::Renderer::Render2DObjects()
 {
 	//std::unique_lock<std::mutex> lock(Renderer::mtx);
 	{
@@ -336,30 +307,46 @@ void Doom::Renderer::SubmitGameObjects()
 			Batch* batch = Batch::GetInstance();
 			batch->Gindexcount = 0;
 			batch->BeginGameObjects();
-			for (auto object : Renderer::objects2d) {
-				GameObject* go = (GameObject*)object;
+			for (size_t i = 0; i < size;i++) {
+				GameObject* go = Renderer::objects2d[i];
 				if (go->Enable == true && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
 					void* renderer = go->GetComponentManager()->GetComponent<Irenderer>();
-					if(renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "2D")
+					if (renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "2D")
 						static_cast<Irenderer*>(renderer)->Render();
+					else if (renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "3D")
+						objects3d.push_back(go);
 				}
+			}
+			size_t particleSize = Particle::particles.size();
+			for (size_t i = 0; i < particleSize; i++)
+			{
+				Particle* p = Particle::particles[i];
+				if (p->Enable)
+					Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX, p->scaleY), p->texture);
 			}
 			batch->EndGameObjects();
-
-			for (auto object : Renderer::objects2d) {
-				GameObject* go = (GameObject*)object;
-				if (go->Enable == true && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
-				{
-					void* renderer = go->GetComponentManager()->GetComponent<Irenderer>();
-					if (renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "3D")
-						static_cast<Irenderer*>(renderer)->Render();
-				}
-			}
 
 		}
 		
 	}
+
+	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
+}
+
+void Doom::Renderer::Render3DObjects()
+{
+	if(PolygonMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	for (auto object : Renderer::objects3d) {
+		GameObject* go = object;
+		if (go->Enable == true)
+		{
+			go->GetComponentManager()->GetComponent<Irenderer>()->Render();
+		}
+	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	Renderer::objects3d.clear();
 }
 
 //void Doom::Renderer::CalculateMVPforAllObjects()
@@ -415,6 +402,21 @@ void Doom::Renderer::SubmitGameObjects()
 //		Renderer::condVar.notify_one();
 //	});
 //}
+
+void Doom::Renderer::RenderLines()
+{
+	Batch::GetInstance()->Lindexcount = 0;
+	Batch::GetInstance()->BeginLines();
+	unsigned int size = Line::lines.size();
+	for (unsigned int i = 0; i < size; i++)
+	{
+		if (Line::lines[i]->Enable) {
+			Batch::GetInstance()->Submit(*Line::lines[i]);
+		}
+	}
+	Batch::GetInstance()->EndLines();
+	Batch::GetInstance()->flushLines(Batch::GetInstance()->LineShader);
+}
 
 void Doom::Renderer::RenderText() {
 	Batch::GetInstance()->flushText(Batch::GetInstance()->TextShader);

@@ -13,6 +13,7 @@
 #include "../Render/VertexBuffer.h"
 #include "../Render/VertexBufferLayout.h"
 #include "../Render/IndexBuffer.h"
+#include "../Render/Mesh.h"
 
 namespace Doom {
 
@@ -80,51 +81,24 @@ namespace Doom {
 	public:
 
 		Transform* tr = nullptr;
+		
+		void LoadMesh(double * mesh, uint32_t sizeMesh, uint32_t* indeces, uint32_t sizeIndeces);
+		void LoadMesh(Mesh* mesh);
 
 		Shader* shader = nullptr;
-		unsigned int indeces3D[36] = {
-			// front
-			0, 1, 2,
-			2, 3, 0,
-			// right
-			1, 5, 6,
-			6, 2, 1,
-			// back
-			7, 6, 5,
-			5, 4, 7,
-			// left
-			4, 0, 3,
-			3, 7, 4,
-			// bottom
-			4, 5, 1,
-			1, 0, 4,
-			// top
-			3, 2, 6,
-			6, 7, 3
-		};
-
-		float mesh3D[56] = {
-			-1.0, -1.0,  1.0, 1, 0, 0,			 1,
-			 1.0, -1.0,  1.0,1, 1, 0,			 1,
-			 1.0,  1.0,  1.0,0, 0, 1,			 1,
-			-1.0,  1.0,  1.0,0, 1, 0,			 1,
-			// back			 //					 
-			-1.0, -1.0, -1.0,0.5, 0.3, 0.1,		 1,
-			 1.0, -1.0, -1.0,1, 1, 1,			 1,
-			 1.0,  1.0, -1.0,1, 0.31, 0,		 1,
-			-1.0,  1.0, -1.0,0.86, 0.86, 0.86	 ,1
-		};
+		Mesh* mesh = nullptr;
 
 		Renderer3D(GameObject* _owner);
+		~Renderer3D();
 
 		virtual void Render() override;
 
 	private:
 
-		VertexBufferLayout* layout = new VertexBufferLayout();
-		VertexBuffer* vb = new VertexBuffer(mesh3D, 56 * sizeof(float));
-		VertexArray* va = new VertexArray();
-		IndexBuffer* ib = new IndexBuffer(indeces3D, 36);
+		VertexBufferLayout* layout =nullptr;
+		VertexBuffer* vb           =nullptr;
+		VertexArray* va			   =nullptr;
+		IndexBuffer* ib			   =nullptr;
 
 	};
 }

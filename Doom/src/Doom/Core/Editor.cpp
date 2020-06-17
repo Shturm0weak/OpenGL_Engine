@@ -486,6 +486,7 @@ void Doom::Editor::Debug()
 	ImGui::Text("VRAM used %lf",Texture::VRAMused);
 	ImGui::Text("Textures binded %d", Texture::bindedAmount);
 	ImGui::Text("Textures amount %d", Texture::texturesArray.size());
+	ImGui::Checkbox("Polygon mode",&Renderer::PolygonMode);
 	ImGui::End();
 	TextProps();
 }

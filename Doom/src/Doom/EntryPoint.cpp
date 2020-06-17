@@ -106,9 +106,7 @@ void EntryPoint::Run()
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		if (ViewPort::Instance()->viewportResized) {
-			glBindTexture(GL_TEXTURE_2D, Window::GetCamera().frameBuffer->texture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-			glBindTexture(GL_TEXTURE_2D, 0);
+			Window::GetCamera().frameBuffer->Resize(ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetSize().y);
 		}
 		EventSystem::Instance()->ProcessEvents();
 		Input::Clear();
