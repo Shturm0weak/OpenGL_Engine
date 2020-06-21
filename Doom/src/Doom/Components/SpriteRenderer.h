@@ -80,9 +80,13 @@ namespace Doom {
 	class DOOM_API Renderer3D : public Irenderer {
 	public:
 
+		struct Material {
+			float ambient = 0.2f;
+			float specular = 0.2f;
+		};
+
 		Transform* tr = nullptr;
-		
-		void LoadMesh(double * mesh, uint32_t sizeMesh, uint32_t* indeces, uint32_t sizeIndeces);
+
 		void LoadMesh(Mesh* mesh);
 
 		Shader* shader = nullptr;
@@ -91,10 +95,11 @@ namespace Doom {
 		Renderer3D(GameObject* _owner);
 		~Renderer3D();
 
+		Material mat;
+
 		virtual void Render() override;
 
-	private:
-
+	private:	
 		VertexBufferLayout* layout =nullptr;
 		VertexBuffer* vb           =nullptr;
 		VertexArray* va			   =nullptr;

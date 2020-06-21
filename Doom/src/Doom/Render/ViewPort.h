@@ -17,7 +17,7 @@ namespace Doom {
 		bool IsHovered = false;
 		bool IsActive = false;
 
-		static ViewPort* ViewPort::Instance() {
+		static ViewPort* ViewPort::GetInstance() {
 			static ViewPort instance;
 			return &instance;
 		}
@@ -29,6 +29,33 @@ namespace Doom {
 		inline glm::vec2 GetViewPortPos() { return viewportPos; }
 		inline void SetViewPortPos(float x, float y) { viewportPos.x = x; viewportPos.y = y; }
 		inline void SetViewPortPos(glm::vec2 _viewportPos) { viewportPos = _viewportPos; }
+
+		void Update() {
+			void* tex = reinterpret_cast<void*>(Window::GetCamera().frameBuffer->texture);
+
+			ImGui::Begin("ViewPort", &ViewPort::GetInstance()->toolOpen, ImGuiWindowFlags_NoScrollbar);
+			if (ImGui::IsWindowFocused())
+				ViewPort::GetInstance()->IsActive = true;
+			else
+				ViewPort::GetInstance()->IsActive = false;
+
+			if (ImGui::IsWindowHovered())
+				ViewPort::GetInstance()->IsHovered = true;
+			else
+				ViewPort::GetInstance()->IsHovered = false;
+
+			ViewPort::GetInstance()->SetViewPortPos(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+			if (ViewPort::GetInstance()->GetSize().x != ImGui::GetWindowSize().x || ViewPort::GetInstance()->GetSize().y != ImGui::GetWindowSize().y) {
+				ViewPort::GetInstance()->SetSize(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
+				ViewPort::GetInstance()->viewportResized = true;
+			}
+			else
+				ViewPort::GetInstance()->viewportResized = false;
+
+			ImGui::GetWindowDrawList()->AddImage(tex, ImVec2(ViewPort::GetInstance()->GetViewPortPos().x,
+				ViewPort::GetInstance()->GetViewPortPos().y), ImVec2(ViewPort::GetInstance()->GetViewPortPos().x + ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetViewPortPos().y + ViewPort::GetInstance()->GetSize().y), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::End();
+		}
 
 		glm::dvec2 GetMousePositionToWorldSpace() {
 			glfwGetCursorPos(Window::GetWindow(), &cursorPos.x, &cursorPos.y);

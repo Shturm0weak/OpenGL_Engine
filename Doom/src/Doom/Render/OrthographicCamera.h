@@ -21,7 +21,7 @@ namespace Doom {
 
 		Camera(float left, float right, float top, float bottom,float znear,float zfar);
 
-		const glm::vec3 GetPosition() const { return glm::vec3(m_Position.x, m_Position.y, m_Position.z); }
+		glm::vec3 GetPosition() const { return glm::vec3(m_Position.x, m_Position.y, m_Position.z); }
 		void MovePosition(const glm::vec3 position) {
 			m_Position.x += position.x;
 			m_Position.y += position.y;

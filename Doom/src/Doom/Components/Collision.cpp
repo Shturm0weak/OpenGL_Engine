@@ -202,9 +202,9 @@ void Collision::IsCollidedSAT() {
 						if (ShapeOverlap_SAT(*this, *col)) {
 							isCollided = true;
 							collidedObject = col;
-							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::Instance(),"OnCollision", (Listener*)(owner), (void*)this->collidedObject);
+							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::GetInstance(),"OnCollision", (Listener*)(owner), (void*)this->collidedObject);
 							std::function<void()>* f1 = new std::function<void()>(f2);
-							EventSystem::Instance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+							EventSystem::GetInstance()->SendEvent("OnMainThreadProcess", nullptr, f1);
 							//EventSystem::Instance()->SendEvent("OnCollision", (Listener*)(owner), (void*)this->collidedObject);
 						}
 						else {
@@ -351,9 +351,9 @@ bool Collision::ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2)
 		
 	posToTranslate.y = trans1->position.y - (overlap * d.y / s);
 	trans1->Translate(posToTranslate.x, posToTranslate.y);
-	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::Instance(), "OnCollision", (Listener*)(owner), &r2);
+	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), "OnCollision", (Listener*)(owner), &r2);
 	std::function<void()>* f1 = new std::function<void()>(f2);
-	EventSystem::Instance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+	EventSystem::GetInstance()->SendEvent("OnMainThreadProcess", nullptr, f1);
 	return false;
 }
 

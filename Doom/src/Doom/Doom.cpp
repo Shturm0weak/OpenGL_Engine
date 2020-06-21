@@ -13,7 +13,8 @@
 using namespace Doom;
 
 //storage of all references to our objects in the scene
-DOOM_API std::vector <GameObject*> Renderer::objects2d;
+DOOM_API GameObject* Renderer::Light = new GameObject("Light",0,0);
+DOOM_API std::vector <GameObject*> Renderer::objects2d; 
 //Warning: used only for rendering
 DOOM_API std::vector <GameObject*> Renderer::objects3d;
 //storage of all references to our object's collisions in the scene
@@ -26,6 +27,7 @@ DOOM_API std::mutex Renderer::mtx;
 DOOM_API std::condition_variable Renderer::condVar;
 DOOM_API bool Renderer::PolygonMode = false;
 DOOM_API int Renderer::DrawCalls = 0;
+DOOM_API int Renderer::Vertices = 0;
 //visible collisions
 DOOM_API int Renderer::obj_id = 0;
 DOOM_API int Renderer::col_id = 0;
@@ -86,3 +88,5 @@ DOOM_API std::vector<Particle*> Particle::particles;
 DOOM_API ALCdevice* SoundManager::alcDevice = nullptr;
 DOOM_API ALCcontext* SoundManager::alcContext = nullptr;
 DOOM_API std::map<std::string,Sound*> SoundManager::sounds;
+
+DOOM_API std::map<std::string, Mesh*> MeshManager::Meshes;

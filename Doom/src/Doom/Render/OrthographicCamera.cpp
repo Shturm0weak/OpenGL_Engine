@@ -11,7 +11,7 @@ using namespace Doom;
 Camera::Camera(float left,float right,float top,float bottom,float znear,float zfar)
 	: znear(znear),zfar(zfar),m_ProjectionMatrix(glm::ortho(left * zoomlevel,right * zoomlevel,bottom * zoomlevel,top * zoomlevel,znear,zfar)),m_ViewMatrix(1.0f)
 {
-	EventSystem::Instance()->RegisterClient("OnWindowResize", this);
+	EventSystem::GetInstance()->RegisterClient("OnWindowResize", this);
 	aspectratio[0] = left;
 	aspectratio[1] = right;
 	aspectratio[2] = top;
@@ -119,7 +119,7 @@ void Camera::CameraMovement() {
 		}
 		if (Input::IsKeyDown(Keycode::KEY_G)) {
 			if (Editor::Instance()->go != nullptr) {
-				Editor::Instance()->go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+				Editor::Instance()->go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 			}
 		}
 		Increase();
@@ -144,10 +144,30 @@ void Camera::CameraMovement() {
 		if (Input::IsKeyDown(Keycode::KEY_C)) {
 			MovePosition(glm::vec3(0, -5.0f * DeltaTime::deltatime, 0));
 		}
-		if (ViewPort::Instance()->IsActive) {
-			glm::vec2 drag = ViewPort::Instance()->GetMousePositionToScreenSpace();
+		if (ViewPort::GetInstance()->IsActive) {
+			//glm::dvec2 mousepos;
+			//glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			//glfwGetCursorPos(Window::GetWindow(), &mousepos.x, &mousepos.y);
+			glm::dvec2 drag = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
 			drag *= 0.2;
 			SetRotation(glm::vec3((drag.y * (2 * 3.14159f) / 360.0f), (-drag.x * (2 * 3.14159f) / 360.0f), 0));
+			
+			//glm::ivec2 windowpos;
+			//glm::ivec2 windowSize;
+			
+			/*glfwGetWindowPos(Window::GetWindow(), &windowpos.x, &windowpos.y);
+			glfwGetWindowSize(Window::GetWindow(), &windowSize.x, &windowSize.y);
+			if (mousepos.x > windowpos.x + windowSize.x) {
+				SetCursorPos(windowpos.x,mousepos.y );
+				RecalculateViewMatrix();
+			}
+			else if (mousepos.x < windowpos.x) {
+				SetCursorPos(windowpos.x + windowSize.x, mousepos.y);
+				RecalculateViewMatrix();
+			}*/
+		}
+		else {
+			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 		glm::vec2 rightVec = { -(startDir.z * 1) / startDir.x ,1 };
 		rightVec *= (1.f / sqrtf(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
@@ -173,7 +193,6 @@ void Camera::CameraMovement() {
 				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
 			else
 				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
-
 		}
 	}
 	SetOnStart();

@@ -54,18 +54,23 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 	//EventSystem::Instance()->SendEvent("OnMove",(Listener*)owner);
 }
 
-void Transform::RotateOnce(float theta, glm::vec3 axis,bool isRad) {
+void Transform::RotateOnce(float x, float y, float z,bool isRad) {
 	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
 	if (isRad) {
-		this->angleDeg = (-theta * 360.0f) / (2 * 3.14159f);
-		this->angleRad = theta;
+		//this->angleDeg = (-theta * 360.0f) / (2 * 3.14159f);
+		//this->angleRad = theta;
 	}
 	else {
-		this->angleRad = (-theta * (2 * 3.14159f) / 360.0f);
-		this->angleDeg = theta;
+		//this->angleRad = (-theta * (2 * 3.14159f) / 360.0f);
+		rotation.x = (-x * (2 * 3.14159f) / 360.0f);
+		rotation.y = (-y * (2 * 3.14159f) / 360.0f);
+		rotation.z = (-z * (2 * 3.14159f) / 360.0f);
+		//this->angleDeg = theta;
 	}
 	sr->view = glm::mat4(1.0f);
-	sr->view = glm::rotate(sr->view, angleRad, axis);
+	sr->view = glm::rotate(sr->view, rotation.x, glm::vec3(1, 0, 0));
+	sr->view = glm::rotate(sr->view, rotation.y, glm::vec3(0, 1, 0));
+	sr->view = glm::rotate(sr->view, rotation.z, glm::vec3(0, 0, 1));
 	RealVertexPositions();
 	if (col == nullptr) {
 		col = owner->component_manager->GetComponent<Collision>();
@@ -79,7 +84,7 @@ void Transform::RotateOnce(float theta, glm::vec3 axis,bool isRad) {
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(this->angleRad, axis);
+				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(rotation.x,rotation.y,rotation.z);
 		}
 	}
 }
@@ -90,11 +95,12 @@ void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 axis)
 
 	glm::vec3 b = glm::vec3(0,1,0);
 	this->angleRad = acosf((a.x * b.x + a.y * b.y + a.z * b.z)/((sqrtf(a.x * a.x + a.y * a.y + a.z * a.z) * (sqrtf(b.x * b.x + b.y * b.y + b.z * b.z)))));
-	if (ViewPort::Instance()->GetMousePositionToWorldSpace().x > position.x)
+	if (ViewPort::GetInstance()->GetMousePositionToWorldSpace().x > position.x)
 		this->angleRad = -this->angleRad;
 	this->angleDeg = (-this->angleRad * 360.0f) / (2 * 3.14159f);
 	sr->view = glm::mat4(1.0f);
 	sr->view = glm::rotate(sr->view, angleRad, axis);
+	axis *= angleRad;
 	RealVertexPositions();
 	if (col == nullptr) {
 		col = owner->component_manager->GetComponent<Collision>();
@@ -108,17 +114,19 @@ void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 axis)
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angleRad, axis);
+				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(axis.x,axis.y,axis.z);
 		}
 	}
 }
 
-void Transform::Rotate(float theta, glm::vec3 axis) {
-	this->angleDeg = theta;
+void Transform::Rotate(float x, float y, float z) {
 	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
-
-	this->angleRad = (-theta * (2 * 3.14159f) / 360.0f);
-	sr->view = glm::rotate(sr->view, angleDeg * DeltaTime::GetDeltaTime(), axis);
+	rotation.x = (-x * (2 * 3.14159f) / 360.0f);
+	rotation.y = (-y * (2 * 3.14159f) / 360.0f);
+	rotation.z = (-z * (2 * 3.14159f) / 360.0f);
+	sr->view = glm::rotate(sr->view, rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
+	sr->view = glm::rotate(sr->view, rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
+	sr->view = glm::rotate(sr->view, rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
 	RealVertexPositions();
 	if (col == nullptr) {
 		col = owner->component_manager->GetComponent<Collision>();
@@ -132,7 +140,7 @@ void Transform::Rotate(float theta, glm::vec3 axis) {
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(this->angleRad, axis);
+				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
 		}
 	}
 }

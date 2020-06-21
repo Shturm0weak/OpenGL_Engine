@@ -175,20 +175,22 @@ void Editor::EditorUpdate()
 
 			if (ImGui::CollapsingHeader("Transform")) {
 				ImGui::Text("Position: x: %lf y: %lf", go->GetPositions().x, go->GetPositions().y);
-				ImGui::InputFloat2("Set the borders of X and Y position slider", changeSliderPos);
+				ImGui::InputFloat2("Limits", changeSliderPos);
 				ImGui::SliderFloat("Position X", &(tr->position.x), changeSliderPos[0], changeSliderPos[1]);
 				ImGui::SliderFloat("Position Y", &(tr->position.y), changeSliderPos[0], changeSliderPos[1]);
 				ImGui::SliderFloat("Position Z", &(tr->position.z), changeSliderPos[0], changeSliderPos[1]);
 				ImGui::Text("Scale");
-				ImGui::InputFloat2("Set the borders of X and Y  and Z scale slider", changeSliderScale);
+				ImGui::InputFloat2("Limits", changeSliderScale);
 				ImGui::SliderFloat("Scale X", &(go->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
 				ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
 				ImGui::SliderFloat("Scale Z", &(go->scaleValues[2]), changeSliderScale[0], changeSliderScale[1]);
 				tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
 				tr->Translate(tr->position.x, tr->position.y,tr->position.z);
-				ImGui::SliderAngle("Rotate", &tr->angleRad);
-				ImGui::InputInt3("Rotate axes",axes);
-				tr->RotateOnce(tr->angleRad, glm::vec3(axes[0], axes[1], axes[2]),true);
+				ImGui::Text("Rotate");
+				ImGui::SliderAngle("Pitch", &tr->rotation.x);
+				ImGui::SliderAngle("Yaw", &tr->rotation.y);
+				ImGui::SliderAngle("Roll", &tr->rotation.z);
+				tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
 			}
 			if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D" && ImGui::CollapsingHeader("Render")) {
 				SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
@@ -339,7 +341,23 @@ void Editor::EditorUpdate()
 					ImGui::Checkbox("Play animation", &anim->isPlayingAnim);
 				}
 			}
-
+			if (go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "3D") {
+				if (ImGui::CollapsingHeader("Renderer 3D")) {
+					Renderer3D* r = static_cast<Renderer3D*>(go->GetComponentManager()->GetComponent<Irenderer>());
+					ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
+					if (ImGui::CollapsingHeader("Material")) {
+						ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
+						ImGui::SliderFloat("Specular", &r->mat.specular, 0, 1);
+						float* tempColor = r->GetColor();
+						ImGui::ColorPicker4("Color", tempColor);
+						r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
+					}
+					if (ImGui::CollapsingHeader("Mesh")) {
+						ImGui::Text("%s",r->mesh->name);
+					}
+					ImGui::Unindent();
+				}
+			}
 			ImGui::NewLine();
 			ImGui::Indent(ImGui::GetWindowSize().x * 0.4);
 			if (col == nullptr) {
@@ -427,7 +445,7 @@ void Editor::CheckTexturesFolderUnique(const std::string path)
 		{
 			std::function<void()> f2 = std::bind(&Texture::GenTexture,texture[i]);
 			std::function<void()>* f1 = new std::function<void()>(f2);
-			EventSystem::Instance()->SendEvent("OnMainThreadProcess",nullptr,f1);
+			EventSystem::GetInstance()->SendEvent("OnMainThreadProcess",nullptr,f1);
 		}
 		
 		
@@ -460,7 +478,7 @@ void Editor::CheckTexturesFolder(const std::string path)
 		{
 			std::function<void()> f2 = std::bind(&Texture::GenTexture, textureVecTemp[i]);
 			std::function<void()>* f1 = new std::function<void()>(f2);
-			EventSystem::Instance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+			EventSystem::GetInstance()->SendEvent("OnMainThreadProcess", nullptr, f1);
 		}
 		textureVecTemp.clear();
 
@@ -483,6 +501,7 @@ void Doom::Editor::Debug()
 	ImGui::Begin("Debug");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::Text("Draw calls %d", Renderer::DrawCalls);
+	ImGui::Text("Vertices %d", Renderer::Vertices);
 	ImGui::Text("VRAM used %lf",Texture::VRAMused);
 	ImGui::Text("Textures binded %d", Texture::bindedAmount);
 	ImGui::Text("Textures amount %d", Texture::texturesArray.size());

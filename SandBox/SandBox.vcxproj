@@ -137,6 +137,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
+    <None Include="src\Mesh\cube.fbx" />
+    <None Include="src\Mesh\Cup1.fbx" />
+    <None Include="src\Mesh\Hex.fbx" />
+    <None Include="src\Mesh\hill.fbx" />
+    <None Include="src\Mesh\house.fbx" />
+    <None Include="src\Mesh\level.fbx" />
+    <None Include="src\Mesh\mountain.fbx" />
+    <None Include="src\Mesh\plant.FBX" />
+    <None Include="src\Mesh\Stone.fbx" />
+    <None Include="src\Mesh\Stonefbx.fbx" />
+    <None Include="src\Mesh\Tree.fbx" />
     <None Include="src\Shaders\Basic.shader" />
     <None Include="src\Shaders\Basic3D.shader" />
     <None Include="src\Shaders\Batch.shader" />

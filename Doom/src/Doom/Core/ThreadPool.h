@@ -26,7 +26,7 @@ namespace Doom {
 
 		ThreadPool(int n);
 		~ThreadPool();
-		void shutdown()noexcept;
+		void Shutdown()noexcept;
 		static ThreadPool* Instance() { return thread_pool; }
 		void enqueue(Task task);
 		static void Init();

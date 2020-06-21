@@ -30,14 +30,15 @@ namespace Doom {
 		~Transform() {
 			//std::cout << "Transform destroyed\n";
 		}
+		glm::vec3 rotation = glm::vec3(0.0);
 		Position position;
 		float angleRad = 0;
 		float angleDeg = 0;
 		void Move(float speedX = 0, float speedY = 0, float speedZ = 0);
-		void Rotate(float angle, glm::vec3 axis);
+		void Rotate(float x, float y, float z );
 		void Scale(float scaleX, float scaleY,float scaleZ = 0);
 		void Translate(float x = 0, float y = 0,float z = 0);
-		void RotateOnce(float angle, glm::vec3 axis,bool isRad = false);
+		void RotateOnce(float x,float y, float z,bool isRad = false);
 		void RotateOnce(glm::vec3 direction, glm::vec3 axis);
 	};
 

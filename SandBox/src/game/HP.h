@@ -14,7 +14,7 @@ public:
 	bool secondtphase[3] = { false,false,false };
 	HP(float x, float y){
 		prevYPos = y;
-		EventSystem::Instance()->RegisterClient("OnUpdate", this);
+		EventSystem::GetInstance()->RegisterClient("OnUpdate", this);
 		for (unsigned int i = 0; i < 3; i++)
 		{
 			hearts.push_back(new GameObject());

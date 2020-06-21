@@ -221,7 +221,7 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 	return ObjectsWithNoOwner;
 }
 
-void Doom::Renderer::RenderShutDown()
+void Doom::Renderer::ShutDown()
 {
 	size_t sizeO = objects2d.size();
 	for (size_t i = 0; i < sizeO; i++)
@@ -252,7 +252,7 @@ GameObject * Doom::Renderer::CreateGameObject()
 
 bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
 {
-	glm::vec2 MousePos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+	glm::vec2 MousePos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 
 	for (unsigned int a = 0; a < p.size(); a++)
 	{
@@ -309,7 +309,7 @@ void Doom::Renderer::Render2DObjects()
 			batch->BeginGameObjects();
 			for (size_t i = 0; i < size;i++) {
 				GameObject* go = Renderer::objects2d[i];
-				if (go->Enable == true && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
+				if (go->Enable == true)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
 					void* renderer = go->GetComponentManager()->GetComponent<Irenderer>();
 					if (renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "2D")

@@ -14,8 +14,8 @@ class Bomb : public GameObject {
 public:
 	Bomb(const std::string name = "Bomb", float x = 0, float y = 0) :GameObject(name, x, y) {
 		SoundManager::CreateSoundAsset("grenade", bombSound);
-		EventSystem::Instance()->RegisterClient("OnUpdate", (GameObject*)this);
-		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
 		col = GetComponentManager()->AddComponent<Collision>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		type = "GameObject";
@@ -31,10 +31,10 @@ public:
 	void OnUpdate() {
 		col->IsCollidedDIAGS();
 		if (col->isCollided) {
-			EventSystem::Instance()->SendEvent("OnCollision", this, col->collidedObject);
+			EventSystem::GetInstance()->SendEvent("OnCollision", this, col->collidedObject);
 		}
 		tr->Move(0, -5, 0);
-		tr->Rotate(1,glm::vec3(0,0,1));
+		tr->Rotate(0,0,1);
 		if (tr->position.y <= -18) {
 			Randomize();
 		}

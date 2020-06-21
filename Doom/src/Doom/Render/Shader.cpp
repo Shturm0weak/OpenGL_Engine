@@ -62,6 +62,12 @@ void Shader::SetUniform4fv(std::string name, glm::vec4& vec4) {
 	glUniform4fv(GetUniformLocation(name), 1,color);
 }
 
+void Doom::Shader::SetUniform3fv(std::string name, glm::vec3 & vec3)
+{
+	float color[3] = { vec3[0],vec3[1],vec3[2]};
+	glUniform3fv(GetUniformLocation(name), 1, color);
+}
+
 void Shader::SetUniformMat4f(std::string name, glm::mat4& matrix) {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 }

@@ -112,6 +112,7 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxnode.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
+    <ClCompile Include="src\Doom\Render\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

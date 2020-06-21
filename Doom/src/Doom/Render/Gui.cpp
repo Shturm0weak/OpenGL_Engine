@@ -150,7 +150,7 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	x *= ((float)Window::GetProps()[0] / WIDTH);
 	y *= ((float)Window::GetProps()[1] / HEIGHT);
 	glm::vec2 pos = glm::vec2(Window::GetCamera().GetRatio().x * x , Window::GetCamera().GetRatio().y * y);
-	glm::dvec2 mousePos = ViewPort::Instance()->GetStaticMousePosition();
+	glm::dvec2 mousePos = ViewPort::GetInstance()->GetStaticMousePosition();
 
 	double tempX = width * Window::GetCamera().GetRatio().x   * ((float)Window::GetProps()[0] / WIDTH);
 	double tempY = -height * Window::GetCamera().GetRatio().y * ((float)Window::GetProps()[1] / HEIGHT);

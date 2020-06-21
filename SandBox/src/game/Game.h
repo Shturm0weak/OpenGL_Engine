@@ -64,8 +64,8 @@ public:
 	}
 
 	virtual void OnUpdate() override {
-		EventSystem::Instance()->SendEvent("OnUpdate", nullptr);
-		EventSystem::Instance()->StopProcessEvents(pause);
+		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
+		EventSystem::GetInstance()->StopProcessEvents(pause);
 		Window::GetCamera().CameraMovement();
 		time += DeltaTime::deltatime;
 		if (delay > 0.1) {
@@ -109,7 +109,7 @@ public:
 			{
 				if (fireTimer > 2.99 && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 					Hit hit;
-					glm::vec2 direction = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x - go->GetPositions().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y - go->GetPositions().y);
+					glm::vec2 direction = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x - go->GetPositions().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y - go->GetPositions().y);
 					Ray::Normilize(direction);
 					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPositions().x, go->GetPositions().y), direction, ray->ignoreMask)) {
 						if (hit.Object->GetTag() == "Coin") {
@@ -152,7 +152,7 @@ public:
 
 				Gui::GetInstance()->Begin();
 				Gui::GetInstance()->Text("FPS : %f", true, 850, 900, 60, COLORS::Red, 0, fps);
-				Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 850, 820, 60, COLORS::Red, 2, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+				Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 850, 820, 60, COLORS::Red, 2, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 				Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 850, 740, 60, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
 				Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 850, 660, 60, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
 				Gui::GetInstance()->Text("Textures: %d", true, 850, 580, 60, COLORS::Red, 0, Texture::bindedAmount);

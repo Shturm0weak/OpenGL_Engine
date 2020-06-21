@@ -23,8 +23,8 @@ namespace Doom {
 		Texture* textureForAtlas = nullptr;
 		float spriteSize[2] = {128,128};
 		int axes[3] = { 0,0,1 };
-		float changeSliderPos[2] = { -10,10 };
-		float changeSliderScale[2] = { 0,10 };
+		float changeSliderPos[2] = { -25,25 };
+		float changeSliderScale[2] = { 0,25 };
 		float changeSliderCollisionOffset[2] = { -10,10 };
 		char name[128];
 		char tag[128];

@@ -16,8 +16,8 @@ class ShooterGame : public Application {
 		}
 		timer += DeltaTime::deltatime;
 
-		EventSystem::Instance()->SendEvent("OnUpdate", nullptr);
-		EventSystem::Instance()->ProcessEvents();
+		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
+		EventSystem::GetInstance()->ProcessEvents();
 		Window::GetCamera().SetPosition(glm::vec3(pl->GetPositions().x,pl->GetPositions().y,0));
 		Gui::GetInstance()->Begin();
 		Gui::GetInstance()->Text("IsLanded: %d", true, 300, 460, 76, COLORS::White, 2,pl->isLanded);

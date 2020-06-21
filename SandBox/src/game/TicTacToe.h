@@ -94,7 +94,7 @@ public:
 	}
 
 	virtual void OnUpdate()override {
-		mousePos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+		mousePos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 
 		if (timer > 0.2f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1) && !end && turn == 1 && !end) {
 			timer = 0.0;

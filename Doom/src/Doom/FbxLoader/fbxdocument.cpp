@@ -10,7 +10,136 @@ using std::uint32_t;
 using std::uint8_t;
 
 namespace fbx {
-FBXDocument::FBXDocument()
+	Mesh * FBXDocument::LoadMesh(std::string* name,std::string filepath)
+	{
+		try
+		{
+			read(filepath);
+			Mesh* mesh = new Mesh(*name);
+			size_t size = nodes.size();
+			for (size_t i = 0; i < size; i++)
+			{
+				if (nodes[i].getName() == "Objects") {
+					size_t sizec = nodes[i].getChildren().size();
+					for (size_t j = 0; j < sizec; j++)
+					{
+						fbx::FBXNode node = nodes[i].getChildren()[j];
+						if (node.getName() == "Geometry") {
+							size_t sizeg = node.getChildren().size();
+							for (size_t k = 0; k < sizeg; k++)
+							{
+								//node.print();
+								fbx::FBXNode nodeG = node.getChildren()[k];
+								if (nodeG.getName() == "Vertices") {
+
+									size_t sizeP = nodeG.properties.size();
+									for (size_t l = 0; l < sizeP; l++)
+									{
+										mesh->vertecesSize = nodeG.properties[l].values.size();
+										mesh->verteces = new double[mesh->vertecesSize];
+										for (size_t a = 0; a < mesh->vertecesSize; a++)
+										{
+											mesh->verteces[a] = nodeG.properties[l].values[a].f64;
+										}
+									}
+								}
+								if (nodeG.getName() == "PolygonVertexIndex") {
+
+									size_t sizeP = nodeG.properties.size();
+									for (size_t l = 0; l < sizeP; l++)
+									{
+										mesh->indicesSize = nodeG.properties[l].values.size();
+										mesh->indices = new uint32_t[mesh->indicesSize];
+										for (size_t a = 0; a < mesh->indicesSize; a++)
+										{
+											if (nodeG.properties[l].values[a].i32 < 0)
+												mesh->indices[a] = (-nodeG.properties[l].values[a].i32 - 1);
+											else
+												mesh->indices[a] = (nodeG.properties[l].values[a].i32);
+										}
+									}
+								}
+								if (nodeG.getName() == "LayerElementNormal") {
+									size_t sizeF = nodeG.getChildren().size();
+									for (size_t m = 0; m < sizeF; m++)
+									{
+										FBXNode nodeE = nodeG.getChildren()[m];
+										if (nodeE.getName() == "Normals") {
+											size_t sizeP = nodeE.properties.size();
+											for (size_t l = 0; l < sizeP; l++)
+											{
+												mesh->normalsSize = nodeE.properties[l].values.size();
+												mesh->normals = new double[mesh->normalsSize];
+												for (size_t a = 0; a < mesh->normalsSize; a++)
+												{
+													mesh->normals[a] = (nodeE.properties[l].values[a].f64);
+													//std::cout << mesh->normals[a] << std::endl;
+												}
+											}
+											break;
+										}
+
+									}
+
+
+								}
+							}
+						}
+					}
+				}
+			}
+			mesh->vertecesSizeForNormals = mesh->indicesSize * 3;
+			mesh->vertecesForNormals = new double[mesh->vertecesSizeForNormals];
+			for (size_t i = 0; i < mesh->vertecesSizeForNormals; i += 3)
+			{
+				mesh->vertecesForNormals[i + 0] = mesh->verteces[mesh->indices[i / 3] * 3 + 0];
+				mesh->vertecesForNormals[i + 1] = mesh->verteces[mesh->indices[i / 3] * 3 + 1];
+				mesh->vertecesForNormals[i + 2] = mesh->verteces[mesh->indices[i / 3] * 3 + 2];
+			}
+			mesh->indicesForNormals = new uint32_t[mesh->indicesSize];
+			for (size_t i = 0; i < mesh->indicesSize; i++)
+			{
+				mesh->indicesForNormals[i] = i;
+			}
+			mesh->meshSize = mesh->vertecesSizeForNormals + mesh->normalsSize;
+			mesh->mesh = new double[mesh->meshSize];
+			uint32_t counter = 0;
+			uint32_t normalIndex = 0;
+			uint32_t vertecesIndex = 0;
+			for (size_t i = 0; i < mesh->meshSize; i++)
+			{
+				if (counter < 3) {
+					mesh->mesh[i] = mesh->vertecesForNormals[vertecesIndex];
+					vertecesIndex++;
+					//std::cout << "vertex" << std::endl;
+					counter++;
+				}
+				else if (counter < 6) {
+					mesh->mesh[i] = mesh->normals[normalIndex];
+					//std::cout << "normal" << std::endl;
+					normalIndex++;
+					counter++;
+				}
+				else {
+					counter = 0;
+					i--;
+				}
+
+			}
+			delete[] mesh->verteces;
+			delete[] mesh->vertecesForNormals;
+			delete[] mesh->indices;
+			delete[] mesh->normals;
+			return mesh;
+		}
+		catch (std::string e) {
+			std::cout << e << std::endl;
+			return nullptr;
+		}
+	}
+
+
+	FBXDocument::FBXDocument()
 {
     version = 7400;
 }

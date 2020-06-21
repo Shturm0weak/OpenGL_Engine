@@ -14,8 +14,8 @@ public:
 	Sound* coinSound = new Sound("src/Sounds/Coin.wav");
 
 	Coin(const std::string name = "Coin", float x = 0, float y = 15) :GameObject(name, x, y) {
-		EventSystem::Instance()->RegisterClient("OnUpdate", (GameObject*)this);
-		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
 		SoundManager::CreateSoundAsset("coin", coinSound);
 		col = GetComponentManager()->AddComponent<Collision>();
 		tr = GetComponentManager()->GetComponent<Transform>();
@@ -54,12 +54,12 @@ public:
 		}
 		col->IsCollidedDIAGS();
 		if (col->isCollided) {
-			EventSystem::Instance()->SendEvent("OnCollision", this, col->collidedObject);
+			EventSystem::GetInstance()->SendEvent("OnCollision", this, col->collidedObject);
 		}
 		tr->Move(0,-5,0);
 		if (tr->position.y <= -18) {
 			Randomize();
-			EventSystem::Instance()->SendEvent("OnMiss", nullptr);
+			EventSystem::GetInstance()->SendEvent("OnMiss", nullptr);
 		}
 		
 	}

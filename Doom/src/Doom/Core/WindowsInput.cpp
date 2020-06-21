@@ -22,7 +22,7 @@ bool WindowsInput::IsKeyPressedimp(int keycode)
 
 	double time = glfwGetTime();
 	const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
-	if (!ViewPort::Instance()->IsActive)
+	if (!ViewPort::GetInstance()->IsActive)
 		return GL_FALSE;
 	auto state = glfwGetKey(window, keycode);
 	if (state == GLFW_PRESS) {
@@ -53,11 +53,11 @@ bool WindowsInput::IsKeyPressedimp(int keycode)
 bool WindowsInput::IsMousePressedDownimp(int keycode) {
 	const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
 
-	if (!ViewPort::Instance()->IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
+	if (!ViewPort::GetInstance()->IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
 		return GLFW_FALSE;
 	}
 
-	if (ViewPort::Instance()->IsHovered) {
+	if (ViewPort::GetInstance()->IsHovered) {
 		auto state = glfwGetMouseButton(window, keycode);
 		return state == GLFW_PRESS;
 	}
@@ -66,7 +66,7 @@ bool WindowsInput::IsMousePressedDownimp(int keycode) {
 bool Doom::WindowsInput::IsKeyPressedDownimp(int keycode)
 {
 	const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
-	if (!ViewPort::Instance()->IsActive)
+	if (!ViewPort::GetInstance()->IsActive)
 		return GL_FALSE;
 	auto state = glfwGetKey(window, keycode);
 	return state == GLFW_PRESS;
@@ -83,11 +83,11 @@ bool WindowsInput::IsMousePressedimp(int keycode) {
 
 	const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
 	
-	if (!ViewPort::Instance()->IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
+	if (!ViewPort::GetInstance()->IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
 		return GLFW_FALSE;
 	}
 	
-	if (ViewPort::Instance()->IsHovered) {
+	if (ViewPort::GetInstance()->IsHovered) {
 		auto state = glfwGetMouseButton(window, keycode);
 		if (state == GLFW_PRESS) {
 			auto iter = pressedButtonsTime.find(keycode);

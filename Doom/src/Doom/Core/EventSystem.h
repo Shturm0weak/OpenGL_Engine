@@ -46,7 +46,7 @@ namespace Doom {
 
 		~EventSystem() { this->Shutdown(); }
 
-		static EventSystem* Instance();
+		static EventSystem* GetInstance();
 
 		void RegisterClient(const char* event, Listener* client);
 
@@ -69,7 +69,7 @@ namespace Doom {
 	public:
 		
 		MainThread() {
-			EventSystem::Instance()->RegisterClient("OnMainThreadProcess", (Listener*)this);
+			EventSystem::GetInstance()->RegisterClient("OnMainThreadProcess", (Listener*)this);
 		}
 
 		static void Init() {

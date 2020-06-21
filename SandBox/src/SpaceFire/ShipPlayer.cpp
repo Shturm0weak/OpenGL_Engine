@@ -40,7 +40,7 @@ void ShipPlayer::ShipMovement()
 	}
 
 	tr->Move(speed.x, speed.y, speed.z);
-	dir = glm::vec3(ViewPort::Instance()->GetMousePositionToWorldSpace(), 0);
+	dir = glm::vec3(ViewPort::GetInstance()->GetMousePositionToWorldSpace(), 0);
 	dir.x -= GetPositions().x;
 	dir.y -= GetPositions().y;
 	
@@ -73,9 +73,9 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	bulletsPlaceHolder->Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
 	bulletsPlaceHolder->SetOwner((void*)this);
-	EventSystem::Instance()->RegisterClient("OnUpdate", (GameObject*)this);
-	EventSystem::Instance()->RegisterClient("OnStart", (GameObject*)this);
-	EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
 	col = GetComponentManager()->AddComponent<Collision>();
 	tr = GetComponentManager()->GetComponent<Transform>();
 	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());

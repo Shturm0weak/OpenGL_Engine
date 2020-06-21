@@ -17,10 +17,11 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Batch::Init();
 	SoundManager::Init();
 	Gui::GetInstance()->LoadStandartFonts();
-	EventSystem::Instance()->SendEvent("OnStart", nullptr);
+	EventSystem::GetInstance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
 	Shader::defaultShader = new Shader("src/Shaders/Basic.shader");
 }
+
 void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
@@ -36,7 +37,7 @@ void EntryPoint::Run()
 			FirstFrame = false;
 		}
  		Renderer::DrawCalls = 0;
-		
+		Renderer::Vertices = 0;
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -73,30 +74,7 @@ void EntryPoint::Run()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		Renderer::Clear();
 
-		void* tex = reinterpret_cast<void*>(Window::GetCamera().frameBuffer->texture);
-
-		ImGui::Begin("ViewPort", &ViewPort::Instance()->toolOpen, ImGuiWindowFlags_NoScrollbar);
-		if (ImGui::IsWindowFocused())
-			ViewPort::Instance()->IsActive = true;
-		else
-			ViewPort::Instance()->IsActive = false;
-
-		if (ImGui::IsWindowHovered())
-			ViewPort::Instance()->IsHovered = true;
-		else
-			ViewPort::Instance()->IsHovered = false;
-
-		ViewPort::Instance()->SetViewPortPos(ImGui::GetWindowPos().x,ImGui::GetWindowPos().y);
-		if (ViewPort::Instance()->GetSize().x != ImGui::GetWindowSize().x || ViewPort::Instance()->GetSize().y != ImGui::GetWindowSize().y) {
-			ViewPort::Instance()->SetSize(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
-			ViewPort::Instance()->viewportResized = true;
-		}
-		else
-			ViewPort::Instance()->viewportResized = false;
-
-		ImGui::GetWindowDrawList()->AddImage(tex, ImVec2(ViewPort::Instance()->GetViewPortPos().x,
-        ViewPort::Instance()->GetViewPortPos().y), ImVec2(ViewPort::Instance()->GetViewPortPos().x + ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetViewPortPos().y + ViewPort::Instance()->GetSize().y), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::End();
+		ViewPort::GetInstance()->Update();
 
 		if (isEditorEnable)
 			Editor::Instance()->EditorUpdate();
@@ -105,24 +83,25 @@ void EntryPoint::Run()
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		if (ViewPort::Instance()->viewportResized) {
-			Window::GetCamera().frameBuffer->Resize(ViewPort::Instance()->GetSize().x, ViewPort::Instance()->GetSize().y);
+		if (ViewPort::GetInstance()->viewportResized) {
+			Window::GetCamera().frameBuffer->Resize(ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y);
 		}
-		EventSystem::Instance()->ProcessEvents();
+		EventSystem::GetInstance()->ProcessEvents();
 		Input::Clear();
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}
 	app->OnClose();
-	Renderer::RenderShutDown();
+	MeshManager::ShutDown();
+	Renderer::ShutDown();
 	delete app;
 	
 }
 
 EntryPoint::~EntryPoint() {
 
-	EventSystem::Instance()->Shutdown();
-	ThreadPool::Instance()->shutdown();
+	EventSystem::GetInstance()->Shutdown();
+	ThreadPool::Instance()->Shutdown();
 	Texture::ShutDown();
 	SoundManager::ShutDown();
 	

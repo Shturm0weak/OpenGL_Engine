@@ -76,7 +76,7 @@ public:
 		{
 			if (enemies[i]->isDead)
 				continue;
-			glm::dvec2 pos = ViewPort::Instance()->GetFromWorldToScreenSpace((enemies[i]->position.x - Window::GetCamera().GetPosition().x), (enemies[i]->position.y + static_cast<SpriteRenderer*>(enemies[i]->GetComponentManager()->GetComponent<Irenderer>())->GetHeight() - Window::GetCamera().GetPosition().y));
+			glm::dvec2 pos = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->position.x - Window::GetCamera().GetPosition().x), (enemies[i]->position.y + static_cast<SpriteRenderer*>(enemies[i]->GetComponentManager()->GetComponent<Irenderer>())->GetHeight() - Window::GetCamera().GetPosition().y));
 			Gui::GetInstance()->Bar(pos.x,pos.y,enemies[i]->hp,100,COLORS::Red,COLORS::DarkGray,400 / Window::GetCamera().GetZoomLevel(),50 / Window::GetCamera().GetZoomLevel());
 		}
 
@@ -100,9 +100,9 @@ public:
 	}
 
 	void OnUpdate() {
-		EventSystem::Instance()->SendEvent("OnUpdate", nullptr);
-		EventSystem::Instance()->ProcessEvents();
-		EventSystem::Instance()->StopProcessEvents(pause);
+		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
+		EventSystem::GetInstance()->ProcessEvents();
+		EventSystem::GetInstance()->StopProcessEvents(pause);
 		if (background1->GetPositions().y <= -100)
 			background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
 		if (background2->GetPositions().y <= -100)
@@ -131,7 +131,7 @@ public:
 		fps = 1000.f / (DeltaTime::deltatime * 1000.f);
 		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::LEFT;
 		Gui::GetInstance()->Text("FPS : %f", true, 400, 900, fontSize, COLORS::White, 0, fps);
-		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 400, 820, fontSize, COLORS::White, 1, ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 400, 820, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 400, 740, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
 		Gui::GetInstance()->Text("Player X : %f Y : %f", true, 400, 660, fontSize, COLORS::White, 1, pl->GetPositions().x, pl->GetPositions().y);
 		Gui::GetInstance()->Text("Collisions: %d", true, 400, 580, fontSize, COLORS::White, 0, Renderer::GetAmountOfCollisions());

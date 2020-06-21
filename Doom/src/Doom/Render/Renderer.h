@@ -9,6 +9,11 @@ namespace Doom {
 
 	class DOOM_API Renderer {
 	public:
+
+		//
+		static GameObject* Light;
+		//
+		static int Vertices;
 		static bool PolygonMode;
 		static int DrawCalls;
 		static bool isReadyToRenderFirstThread;
@@ -34,7 +39,7 @@ namespace Doom {
 		inline static unsigned int GetAmountOfCollisions() { return collision2d.size(); }
 		static GameObject* GetReference(int id) { return objects2d[id]; }
 		static const char** items;
-		static void RenderShutDown();
+		static void ShutDown();
 
 		static const char** GetItems();
 
@@ -67,7 +72,7 @@ namespace Doom {
 			go->Enable = enable;
 			go->GetComponentManager()->GetComponent<Transform>()->Translate(pos[0],pos[1],pos[2]);
 			go->GetComponentManager()->GetComponent<Transform>()->Scale(scale[0], scale[1],scale[2]);
-			go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angle, glm::vec3(axes[0], axes[1], axes[2]),true);
+			go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(angle,angle,angle,true);
 			SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
 			sr->mesh2D[2] = uvs[0];
 			sr->mesh2D[3] = uvs[1];

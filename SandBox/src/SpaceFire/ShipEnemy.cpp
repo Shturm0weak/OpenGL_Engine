@@ -21,14 +21,14 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	bulletsPlaceHolder->Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
 	bulletsPlaceHolder->SetOwner((void*)this);
-	EventSystem::Instance()->RegisterClient("OnUpdate", (GameObject*)this);
-	EventSystem::Instance()->RegisterClient("OnStart", (GameObject*)this);
-	EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
 	col = GetComponentManager()->AddComponent<Collision>();
 	tr = GetComponentManager()->GetComponent<Transform>();
 	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 	tr->Scale(5, 5);
-	tr->RotateOnce(180, glm::vec3(0, 0, 1));
+	tr->RotateOnce(0,0,180);
 	sr->SetColor(COLORS::Red);
 	sr->SetTexture(texture);
 	col->IsTrigger = false;

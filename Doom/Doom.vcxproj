@@ -199,6 +199,7 @@
     <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
     <ClCompile Include="src\Doom\Render\IndexBuffer.cpp" />
     <ClCompile Include="src\Doom\Render\Line.cpp" />
+    <ClCompile Include="src\Doom\Render\Mesh.cpp" />
     <ClCompile Include="src\Doom\Render\OrthographicCamera.cpp" />
     <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
     <ClCompile Include="src\Doom\Render\Renderer.cpp" />

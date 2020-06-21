@@ -34,7 +34,7 @@ void EventSystem::DispatchEvent(Event* _event) {
 	}	
 }
 
-EventSystem* EventSystem::Instance() {
+EventSystem* EventSystem::GetInstance() {
 	static EventSystem instance;
 	return &instance;
 }

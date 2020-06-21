@@ -19,10 +19,10 @@ public:
 	bool isLanded = true;
 	bool isDead = false;
 	Player(const std::string name, float x, float y) :GameObject(name, x, y) {
-		EventSystem::Instance()->RegisterClient("OnUpdate",(GameObject*)this);
-		EventSystem::Instance()->RegisterClient("OnStart", (GameObject*)this);
-		EventSystem::Instance()->RegisterClient("OnCollision", (GameObject*)this);
-		EventSystem::Instance()->RegisterClient("OnMiss", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnUpdate",(GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient("OnMiss", (GameObject*)this);
 		col = GetComponentManager()->AddComponent<Collision>();
 		col->SetTag("Player");
 		tr = GetComponentManager()->GetComponent<Transform>();
@@ -58,7 +58,7 @@ public:
 			}
 			col->IsCollidedDIAGS();
 			if (col->isCollided) {
-				EventSystem::Instance()->SendEvent("OnCollision", this, col->collidedObject);
+				EventSystem::GetInstance()->SendEvent("OnCollision", this, col->collidedObject);
 				if (prevKey == Keycode::KEY_D) {
 					auto iter = anim->animations.find(anim->GetAnimations()[0]);
 					anim->PlayAnim(iter->second);

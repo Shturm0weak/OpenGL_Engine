@@ -33,7 +33,7 @@ public:
 	}
 
 	virtual void OnUpdate() override {
-		pos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+		pos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 		coin->Enable = false;
 		for (unsigned int i = 0; i < 2000; i++)
 		{

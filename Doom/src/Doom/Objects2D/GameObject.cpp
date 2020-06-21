@@ -26,7 +26,7 @@ void GameObject::SetName(const char * _name)
 Doom::GameObject::~GameObject()
 {
 	//std::cout << "GameObject destroyed\n";
-	EventSystem::Instance()->UnregisterAll(this);
+	EventSystem::GetInstance()->UnregisterAll(this);
 	delete component_manager;
 }
 
@@ -34,7 +34,8 @@ void GameObject::operator=(GameObject& go) {
 	this->SetName(go.name.c_str());
 	this->name.append("(clone)");
 	Transform* tr = this->GetComponentManager()->GetComponent<Transform>();
-	tr->RotateOnce(go.GetAngle(), glm::vec3(0, 0, 1),true);
+	Transform* trgo = go.GetComponentManager()->GetComponent<Transform>();
+	tr->RotateOnce(trgo->rotation.x, trgo->rotation.y, trgo->rotation.z,true);
 	tr->Translate(go.GetPositions().x, go.GetPositions().y);
 	tr->Scale(go.scaleValues[0], go.scaleValues[1]);
 	SpriteRenderer* thisRenderer = this->GetComponentManager()->GetComponent<SpriteRenderer>();

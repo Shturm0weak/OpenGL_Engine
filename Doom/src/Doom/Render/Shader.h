@@ -32,6 +32,7 @@ namespace Doom {
 		void SetUniform4f(std::string name, float v0, float v1, float v2, float fv3);
 		void SetUniform1f(std::string name, float v0);
 		void SetUniform4fv(std::string name, glm::vec4& vec4);
+		void SetUniform3fv(std::string name, glm::vec3& vec3);
 		void SetUniformMat4f(std::string name, glm::mat4& matrix);
 		void UploadUnifromMat4(const std::string& name, const glm::mat4& matrix);
 		void SetUniformVec2(std::string name, glm::vec2& vec);

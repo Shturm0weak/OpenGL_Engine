@@ -13,7 +13,7 @@ ThreadPool::ThreadPool(int n)
 
 ThreadPool::~ThreadPool()
 {
-	shutdown();
+	Shutdown();
 }
 
 void ThreadPool::Infinite_loop_function()
@@ -41,7 +41,7 @@ void ThreadPool::Infinite_loop_function()
 		}); 
 	}
 }
-void ThreadPool::shutdown() noexcept
+void ThreadPool::Shutdown() noexcept
 {
 	{
 		std::unique_lock <std::mutex> umutex(m_mutex);
