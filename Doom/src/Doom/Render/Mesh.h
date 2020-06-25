@@ -20,6 +20,14 @@ public:
 	uint32_t normalsSize = 0;
 	uint32_t meshSize = 0;
 	double* mesh = nullptr;
+	uint32_t uvSize = 0;
+	double* uv;
+	uint32_t uvSizeForVert = 0;
+	double* uvForVert;
+	uint32_t uvIndexSize = 0;
+	uint32_t* uvIndex;
+	double* btangent;
+	double* tangent;
 
 	Mesh(std::string name) : name(name){}
 

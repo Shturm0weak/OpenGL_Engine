@@ -435,7 +435,6 @@ void Batch::flushGameObjects(Shader * shader)
 	for (unsigned int i = 2; i < GtextureSlotsIndex; i++)
 	{
 		glBindTextureUnit(i, GtextureSlots[i]);
-
 	}
 	for (unsigned int i = 0; i < maxTextureSlots; i++)
 	{

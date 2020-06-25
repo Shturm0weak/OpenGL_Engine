@@ -17,33 +17,39 @@ class TestImGui : public Application {
 			xoffset += 10;
 		}
 
-		MeshManager::LoadMesh("plant", "src/Mesh/tree.fbx");
-		MeshManager::LoadMesh("cube", "src/Mesh/cube.fbx");
+		MeshManager::LoadMesh("man", "src/Mesh/man.fbx");
+		MeshManager::LoadMesh("cube", "src/Mesh/box1.fbx");
+		MeshManager::LoadMesh("sphere", "src/Mesh/sphere.fbx");
 
 
 		Renderer::Light->GetComponentManager()->GetComponent<Transform>()->Translate(0, 5, 0);
 		Renderer::Light->GetComponentManager()->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
-		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::Orange);
-		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("plant"));
-		go[0]->GetComponentManager()->GetComponent<Transform>()->Scale(0.01, 0.01, 0.01);
 		Renderer::Light->GetComponentManager()->RemoveComponent<Irenderer>();
 		Renderer::Light->GetComponentManager()->AddComponent<Renderer3D>();
 		static_cast<Renderer3D*>(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
-		static_cast<Renderer3D*>(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("cube"));
-		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::Brown);
-		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("plant"));
+	    static_cast<Renderer3D*>(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("cube"));
+		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
+		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("man"));
+		go[0]->GetComponentManager()->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1); 
+		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = new Texture("src/Images/man.png");
+		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = new Texture("src/Images/normalMap.png");
+		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = new Texture("src/Images/Box1.png");
+		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = new Texture("src/Images/Box1normalmap.png");
+		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
+		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("cube"));
 	}
 
 	virtual void OnGuiRender() {
-		Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
-		glm::vec3 pos = Window::GetCamera().GetPosition();
-		Gui::GetInstance()->Text("X %f Y %f Z %f",true,0,0,76,COLORS::White,2,pos.x,pos.y,pos.z);
-		Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
+		//Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
+		//glm::vec3 pos = Window::GetCamera().GetPosition();
+		//Gui::GetInstance()->Text("X %f Y %f Z %f",true,0,0,76,COLORS::White,2,pos.x,pos.y,pos.z);
+		//Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
 	}
 
 	virtual void OnUpdate() override {
-		go[0]->GetComponentManager()->GetComponent<Transform>()->Translate(sin(t) * 15, 0, sin(t) * 15);
+		/*go[0]->GetComponentManager()->GetComponent<Transform>()->Translate(sin(t) * 15, 0, sin(t) * 15);
 		go[0]->GetComponentManager()->GetComponent<Transform>()->Rotate(30,30,30);
+		go[1]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);*/
 		t += DeltaTime::deltatime;
 		if (Input::IsKeyPressed(Keycode::KEY_BACKSPACE)) {
 			Window::GetCamera().SetOrthographic(-16.f, 16.f, 9.f, -9.f, 0.1, 100000);

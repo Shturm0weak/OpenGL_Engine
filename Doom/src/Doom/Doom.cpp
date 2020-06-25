@@ -13,7 +13,7 @@
 using namespace Doom;
 
 //storage of all references to our objects in the scene
-DOOM_API GameObject* Renderer::Light = new GameObject("Light",0,0);
+DOOM_API GameObject* Renderer::Light = nullptr;
 DOOM_API std::vector <GameObject*> Renderer::objects2d; 
 //Warning: used only for rendering
 DOOM_API std::vector <GameObject*> Renderer::objects3d;
@@ -37,7 +37,7 @@ DOOM_API std::vector<std::string> Editor::texturesPath;
 DOOM_API std::vector<Texture*> Editor::texture;
 DOOM_API std::vector<Texture*> Editor::textureVecTemp;
 DOOM_API int Texture::bindedAmount = 0;
-DOOM_API Texture* Texture::WhiteTexture = new Texture();
+DOOM_API Texture* Texture::WhiteTexture;
 DOOM_API double Texture::VRAMused = 0;
 DOOM_API std::vector<Texture*> Texture::texturesArray;
 DOOM_API std::map<unsigned int, unsigned int> Texture::Texturesused;

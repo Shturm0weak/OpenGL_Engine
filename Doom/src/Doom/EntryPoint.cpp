@@ -14,12 +14,14 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Window::Init(app->name.c_str(),app->width,app->height,app->Vsync);
 	MainThread::Init();
 	ThreadPool::Init();
+	Texture::WhiteTexture = new Texture();
 	Batch::Init();
 	SoundManager::Init();
 	Gui::GetInstance()->LoadStandartFonts();
 	EventSystem::GetInstance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
 	Shader::defaultShader = new Shader("src/Shaders/Basic.shader");
+	Renderer::Light = new GameObject("Light", 0, 0);
 }
 
 void EntryPoint::Run()

@@ -1,5 +1,6 @@
 #include "fbxdocument.h"
 #include "fbxutil.h"
+#include "glm/glm.hpp"
 
 using std::string;
 using std::cout;
@@ -80,8 +81,41 @@ namespace fbx {
 										}
 
 									}
-
-
+								}
+								if (nodeG.getName() == "LayerElementUV") {
+									//nodeG.print();
+									size_t sizeF = nodeG.getChildren().size();
+									for (size_t m = 0; m < sizeF; m++)
+									{
+										FBXNode nodeE = nodeG.getChildren()[m];
+										if (nodeE.getName() == "UV") {
+											size_t sizeP = nodeE.properties.size();
+											for (size_t l = 0; l < sizeP; l++)
+											{
+												mesh->uvSize = nodeE.properties[l].values.size();
+												mesh->uv = new double[mesh->uvSize];
+												for (size_t a = 0; a < mesh->uvSize; a++)
+												{
+													mesh->uv[a] = (nodeE.properties[l].values[a].f64);
+													//std::cout << mesh->normals[a] << std::endl;
+												}
+											}
+										}
+										if (nodeE.getName() == "UVIndex") {
+											size_t sizeP = nodeE.properties.size();
+											for (size_t l = 0; l < sizeP; l++)
+											{
+												mesh->uvIndexSize = nodeE.properties[l].values.size();
+												mesh->uvIndex = new uint32_t[mesh->uvIndexSize];
+												for (size_t a = 0; a < mesh->uvIndexSize; a++)
+												{
+													mesh->uvIndex[a] = (nodeE.properties[l].values[a].i32);
+													//std::cout << mesh->uvIndex[a] << std::endl;
+												}
+											}
+											break;
+										}
+									}
 								}
 							}
 						}
@@ -101,11 +135,78 @@ namespace fbx {
 			{
 				mesh->indicesForNormals[i] = i;
 			}
-			mesh->meshSize = mesh->vertecesSizeForNormals + mesh->normalsSize;
+
+			mesh->uvSizeForVert = mesh->uvIndexSize * 2;
+			mesh->uvForVert = new double[mesh->uvSizeForVert];
+			for (size_t i = 0; i < mesh->uvSizeForVert; i += 2)
+			{
+				mesh->uvForVert[i + 0] = mesh->uv[mesh->uvIndex[i / 2] * 2 + 0];
+				mesh->uvForVert[i + 1] = mesh->uv[mesh->uvIndex[i / 2] * 2 + 1];
+			}
+
+			uint32_t uvCounter = 0;
+			mesh->tangent = new double[mesh->vertecesSizeForNormals];
+			mesh->btangent = new double[mesh->vertecesSizeForNormals];
+			for (size_t i = 0; i < mesh->vertecesSizeForNormals; i+=9)
+			{
+				glm::vec3 tangent, btangent;
+
+				glm::vec3 pos1 = glm::vec3(mesh->vertecesForNormals[i + 0], mesh->vertecesForNormals[i + 1], mesh->vertecesForNormals[i + 2]);
+				glm::vec3 pos2 = glm::vec3(mesh->vertecesForNormals[i + 3], mesh->vertecesForNormals[i + 4], mesh->vertecesForNormals[i + 5]);
+				glm::vec3 pos3 = glm::vec3(mesh->vertecesForNormals[i + 6], mesh->vertecesForNormals[i + 7], mesh->vertecesForNormals[i + 8]);
+
+				glm::vec2 uv1 = glm::vec2(mesh->uvForVert[uvCounter + 0], mesh->uvForVert[uvCounter + 1]);
+				glm::vec2 uv2 = glm::vec2(mesh->uvForVert[uvCounter + 2], mesh->uvForVert[uvCounter + 3]);
+				glm::vec2 uv3 = glm::vec2(mesh->uvForVert[uvCounter + 4], mesh->uvForVert[uvCounter + 5]);
+
+				glm::vec3 edge1 = pos2 - pos1;
+				glm::vec3 edge2 = pos3 - pos1;
+				glm::vec2 deltaUV1 = uv2 - uv1;
+				glm::vec2 deltaUV2 = uv3 - uv1;
+
+				float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+				tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+				tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+				tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+				tangent = glm::normalize(tangent);
+
+				btangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+				btangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+				btangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+				btangent = glm::normalize(btangent);
+
+				mesh->tangent[i + 0] = tangent.x;
+				mesh->tangent[i + 1] = tangent.y;
+				mesh->tangent[i + 2] = tangent.z;
+				mesh->tangent[i + 3] = tangent.x;
+				mesh->tangent[i + 4] = tangent.y;
+				mesh->tangent[i + 5] = tangent.z;
+				mesh->tangent[i + 6] = tangent.x;
+				mesh->tangent[i + 7] = tangent.y;
+				mesh->tangent[i + 8] = tangent.z;
+
+				mesh->btangent[i + 0] = btangent.x;
+				mesh->btangent[i + 1] = btangent.y;
+				mesh->btangent[i + 2] = btangent.z;
+				mesh->btangent[i + 3] = btangent.x;
+				mesh->btangent[i + 4] = btangent.y;
+				mesh->btangent[i + 5] = btangent.z;
+				mesh->btangent[i + 6] = btangent.x;
+				mesh->btangent[i + 7] = btangent.y;
+				mesh->btangent[i + 8] = btangent.z;
+
+				uvCounter += 6;
+			}
+
+			mesh->meshSize = mesh->vertecesSizeForNormals * 3 + mesh->normalsSize + mesh->uvSizeForVert;
 			mesh->mesh = new double[mesh->meshSize];
 			uint32_t counter = 0;
 			uint32_t normalIndex = 0;
 			uint32_t vertecesIndex = 0;
+			uint32_t uvIndex = 0;
+			uint32_t tangentIndex = 0;
+			uint32_t btangentIndex = 0;
 			for (size_t i = 0; i < mesh->meshSize; i++)
 			{
 				if (counter < 3) {
@@ -120,6 +221,24 @@ namespace fbx {
 					normalIndex++;
 					counter++;
 				}
+				else if (counter < 8) {
+					mesh->mesh[i] = mesh->uvForVert[uvIndex];
+					//std::cout << "uv" << std::endl;
+					uvIndex++;
+					counter++;
+				}
+				else if (counter < 11) {
+					mesh->mesh[i] = mesh->tangent[tangentIndex];
+					//std::cout << "tangent" << std::endl;
+					tangentIndex++;
+					counter++;
+				}
+				else if (counter < 14) {
+					mesh->mesh[i] = mesh->btangent[btangentIndex];
+					//std::cout << "btangent" << std::endl;
+					btangentIndex++;
+					counter++;
+				}
 				else {
 					counter = 0;
 					i--;
@@ -130,6 +249,8 @@ namespace fbx {
 			delete[] mesh->vertecesForNormals;
 			delete[] mesh->indices;
 			delete[] mesh->normals;
+			delete[] mesh->uv;
+			delete[] mesh->uvForVert;
 			return mesh;
 		}
 		catch (std::string e) {

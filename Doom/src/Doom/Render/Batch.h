@@ -48,7 +48,7 @@ namespace Doom {
 		bool isBegan = false;
 		std::mutex mtx;
 
-		Texture* whitetexture = new Texture();
+		Texture* whitetexture = Texture::WhiteTexture;
 		void initText();
 		void initGameObjects();
 		void initLines();

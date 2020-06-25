@@ -348,6 +348,7 @@ void Editor::EditorUpdate()
 					if (ImGui::CollapsingHeader("Material")) {
 						ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
 						ImGui::SliderFloat("Specular", &r->mat.specular, 0, 1);
+						ImGui::Checkbox("NormalMap", &r->useNormalMap);
 						float* tempColor = r->GetColor();
 						ImGui::ColorPicker4("Color", tempColor);
 						r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));

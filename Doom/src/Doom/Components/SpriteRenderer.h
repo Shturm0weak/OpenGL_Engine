@@ -85,6 +85,10 @@ namespace Doom {
 			float specular = 0.2f;
 		};
 
+		bool useNormalMap = false;
+		Texture* diffuseTexture = Texture::WhiteTexture;
+		Texture* normalMapTexture = nullptr;
+
 		Transform* tr = nullptr;
 
 		void LoadMesh(Mesh* mesh);
