@@ -32,7 +32,7 @@ Ray casting
 
 Audio
 
-Custom UI(buttons,panels,text)
+Custom UI(buttons,panels,text,sliders,bars,checkboxes)
 
 
 No memory leak in runtime
