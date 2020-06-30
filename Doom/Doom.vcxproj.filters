@@ -53,11 +53,6 @@
     <ClInclude Include="src\Doom\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\Render\Gui.h" />
-    <ClInclude Include="src\Doom\Application\Application.h" />
-    <ClInclude Include="src\Doom\Application\Bomb.h" />
-    <ClInclude Include="src\Doom\Application\Coin.h" />
-    <ClInclude Include="src\Doom\Application\HP.h" />
-    <ClInclude Include="src\Doom\Application\Player.h" />
     <ClInclude Include="src\Doom\Audio\Sound.h" />
     <ClInclude Include="src\Doom\Audio\SoundManager.h" />
     <ClInclude Include="src\Doom\Audio\wavParser.h" />
@@ -69,6 +64,7 @@
     <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
     <ClInclude Include="src\Doom\Render\Mesh.h" />
     <ClInclude Include="src\Doom\Render\Camera.h" />
+    <ClInclude Include="src\Doom\Components\Render3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -115,6 +111,7 @@
     <ClCompile Include="src\Doom\Render\Camera.cpp" />
     <ClCompile Include="src\Doom\Application.cpp" />
     <ClCompile Include="src\Doom\Render\ViewPort.cpp" />
+    <ClCompile Include="src\Doom\Components\Render3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

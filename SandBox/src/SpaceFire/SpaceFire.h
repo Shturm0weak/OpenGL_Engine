@@ -99,7 +99,7 @@ public:
 			Gui::GetInstance()->yAlign = Gui::AlignVertically::YCENTER;
 			Gui::GetInstance()->Text("%d", true, -WIDTH * 0.85, -HEIGHT / Window::GetCamera().GetAspectRatio() * 0.8, fontSize, COLORS::White, 0, pl->ammo);
 			Gui::GetInstance()->yAlign = Gui::AlignVertically::TOP;
-			Gui::GetInstance()->Panel(-WIDTH * 0.9, -HEIGHT / Window::GetCamera().GetAspectRatio() * 0.8, 100, 100, COLORS::White, ammoTexture);
+			Gui::GetInstance()->Image(-WIDTH * 0.9, -HEIGHT / Window::GetCamera().GetAspectRatio() * 0.8, 100, 100, ammoTexture, COLORS::White);
 		}
 
 		if (Input::IsKeyPressed(Keycode::KEY_ESCAPE) && !pl->isDead) {

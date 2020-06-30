@@ -28,13 +28,7 @@ namespace Doom {
 		Collision* col = nullptr;
 		Transform* trans = nullptr;
 		
-		float scaleValues[3] = { 1,1,1 };
-
-		struct Displacement {
-			float x = 0;
-			float y = 0;
-		};
-
+		glm::vec3 scaleValues = { 1,1,1 };
 		glm::vec2 position;
 
 		float* arrver1 = nullptr;
@@ -67,9 +61,8 @@ namespace Doom {
 		friend class Batch;
 		friend class Ray;
 
-		Displacement displacement;
-
-		float offsetX = 0, offsetY = 0;
+		glm::vec2 displacement;
+		glm::vec2 offset = {0,0};
 
 		std::vector<glm::vec2> p;
 		std::string tag = "General";

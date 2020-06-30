@@ -8,7 +8,6 @@ public:
 
 	TestImGui(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
 
-
 	virtual void OnStart() override {
 		float xoffset = -10.f;
 		for (size_t i = 0; i < 2; i++)

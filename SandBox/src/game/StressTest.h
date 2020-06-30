@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Render/TileMap.h"
 #include "Core/Timer.h"
 
 class StressTest : public Application {
@@ -12,11 +13,28 @@ public:
 	glm::vec2 pos;
 	float radius = 0;
 	float panelRadius = 0;
+	TextureAtlas* textureAtlas = nullptr;
 	StressTest(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_2D, width, height, Vsync) {}
 	void OnStart() {
 		ImGui::SetCurrentContext(Window::imGuiContext);
 		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->ARIAL]);
-		gameobj = new GameObject();
+		textureAtlas = new TextureAtlas(128, 128, "src/GameRPG/Textures/RPGpack_sheet_2X.png");
+		std::unordered_map<char, glm::vec2> textures;
+		const char* map =
+			"WWWWWWWWWWWWWWWWWWWWWWWW"
+			"WWWWWWWWWWGGGGGGWWWWWWWW"
+			"WWWWWWWWWGGGGGGGWWWWWWWW"
+			"WWWWWWWWWGWWWWWWWWWWWWWW";
+		const char* map2 =
+			"                        "
+			"             B          "
+			"            BB          "
+			"                        ";
+		textures['W'] = glm::vec2(11, 11);
+		textures['G'] = glm::vec2(1, 11);
+		textures['B'] = glm::vec2(3, 3);
+		TileMap::LoadMap(24, 4, map, textures, textureAtlas);
+		TileMap::LoadMap(24, 4, map2, textures, textureAtlas);
 	}
 
 	void OnUpdate() {

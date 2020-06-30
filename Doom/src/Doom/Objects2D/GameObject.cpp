@@ -46,7 +46,7 @@ void GameObject::operator=(GameObject& go) {
 	if (go.GetComponentManager()->GetComponent<Collision>() != nullptr) {
 		Collision* col = this->GetComponentManager()->AddComponent<Collision>();
 		Collision* gocol = (Collision*)go.GetComponentManager()->GetComponent<Collision>();
-		col->SetOffset(gocol->offsetX, gocol->offsetY);
+		col->SetOffset(gocol->offset.x, gocol->offset.y);
 		col->Enable = gocol->Enable;
 		col->Translate(position.x, position.y);
 		col->IsTrigger = gocol->IsTrigger;
@@ -54,7 +54,7 @@ void GameObject::operator=(GameObject& go) {
 	}
 }
 
-GameObject::Position GameObject::GetPositions(){
+glm::vec3 GameObject::GetPositions(){
 	 Transform* tr = this->GetComponentManager()->GetComponent<Transform>();
 	 position.x = tr->position.x;
 	 position.y = tr->position.y;
@@ -71,6 +71,6 @@ void Doom::GameObject::RemoveChild(void * child)
 		}
 	}
 }
-float* GameObject::GetScale() {	return scaleValues;}
+glm::vec3 GameObject::GetScale() {	return scaleValues;}
 
 float GameObject::GetAngle() { return component_manager->GetComponent<Transform>()->angleRad; }

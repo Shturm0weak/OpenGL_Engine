@@ -37,7 +37,7 @@ namespace fbx {
 									for (size_t l = 0; l < sizeP; l++)
 									{
 										mesh->vertecesSize = nodeG.properties[l].values.size();
-										mesh->verteces = new double[mesh->vertecesSize];
+										mesh->verteces = new float[mesh->vertecesSize];
 										for (size_t a = 0; a < mesh->vertecesSize; a++)
 										{
 											mesh->verteces[a] = nodeG.properties[l].values[a].f64;
@@ -70,7 +70,7 @@ namespace fbx {
 											for (size_t l = 0; l < sizeP; l++)
 											{
 												mesh->normalsSize = nodeE.properties[l].values.size();
-												mesh->normals = new double[mesh->normalsSize];
+												mesh->normals = new float[mesh->normalsSize];
 												for (size_t a = 0; a < mesh->normalsSize; a++)
 												{
 													mesh->normals[a] = (nodeE.properties[l].values[a].f64);
@@ -93,7 +93,7 @@ namespace fbx {
 											for (size_t l = 0; l < sizeP; l++)
 											{
 												mesh->uvSize = nodeE.properties[l].values.size();
-												mesh->uv = new double[mesh->uvSize];
+												mesh->uv = new float[mesh->uvSize];
 												for (size_t a = 0; a < mesh->uvSize; a++)
 												{
 													mesh->uv[a] = (nodeE.properties[l].values[a].f64);
@@ -123,7 +123,7 @@ namespace fbx {
 				}
 			}
 			mesh->vertecesSizeForNormals = mesh->indicesSize * 3;
-			mesh->vertecesForNormals = new double[mesh->vertecesSizeForNormals];
+			mesh->vertecesForNormals = new float[mesh->vertecesSizeForNormals];
 			for (size_t i = 0; i < mesh->vertecesSizeForNormals; i += 3)
 			{
 				mesh->vertecesForNormals[i + 0] = mesh->verteces[mesh->indices[i / 3] * 3 + 0];
@@ -137,7 +137,7 @@ namespace fbx {
 			}
 
 			mesh->uvSizeForVert = mesh->uvIndexSize * 2;
-			mesh->uvForVert = new double[mesh->uvSizeForVert];
+			mesh->uvForVert = new float[mesh->uvSizeForVert];
 			for (size_t i = 0; i < mesh->uvSizeForVert; i += 2)
 			{
 				mesh->uvForVert[i + 0] = mesh->uv[mesh->uvIndex[i / 2] * 2 + 0];
@@ -145,8 +145,8 @@ namespace fbx {
 			}
 
 			uint32_t uvCounter = 0;
-			mesh->tangent = new double[mesh->vertecesSizeForNormals];
-			mesh->btangent = new double[mesh->vertecesSizeForNormals];
+			mesh->tangent = new float[mesh->vertecesSizeForNormals];
+			mesh->btangent = new float[mesh->vertecesSizeForNormals];
 			for (size_t i = 0; i < mesh->vertecesSizeForNormals; i+=9)
 			{
 				glm::vec3 tangent, btangent;
@@ -200,7 +200,7 @@ namespace fbx {
 			}
 
 			mesh->meshSize = mesh->vertecesSizeForNormals * 3 + mesh->normalsSize + mesh->uvSizeForVert;
-			mesh->mesh = new double[mesh->meshSize];
+			mesh->mesh = new float[mesh->meshSize];
 			uint32_t counter = 0;
 			uint32_t normalIndex = 0;
 			uint32_t vertecesIndex = 0;

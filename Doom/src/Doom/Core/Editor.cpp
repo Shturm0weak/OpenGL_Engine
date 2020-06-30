@@ -301,10 +301,10 @@ void Editor::EditorUpdate()
 					ImGui::Checkbox("Enable collision", &col->Enable);
 					ImGui::Checkbox("Trigger", &col->IsTrigger);
 					ImGui::InputFloat2("Set the borders of X and Y offset slider", changeSliderCollisionOffset);
-					ImGui::SliderFloat("Offset X", &col->offsetX, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-					ImGui::SliderFloat("Offset Y", &col->offsetY, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-					ImGui::InputFloat2("Offset", &(col->offsetX, col->offsetX));
-					col->SetOffset(col->offsetX, col->offsetY);
+					ImGui::SliderFloat("Offset X", &col->offset.x, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+					ImGui::SliderFloat("Offset Y", &col->offset.y, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+					ImGui::InputFloat2("Offset", &(col->offset.x, col->offset.x));
+					col->SetOffset(col->offset.x, col->offset.y);
 					if (ImGui::Button("Remove collision")) {
 						go->component_manager->RemoveComponent<Doom::Collision>();
 						selectedcomponent = 0;

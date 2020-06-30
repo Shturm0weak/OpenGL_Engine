@@ -1,17 +1,22 @@
+#include "../pch.h"
 #include "Render3D.h"
-#include "../Objects2D/GameObject.h"
 
-Doom::Renderer3D::Renderer3D(GameObject* _owner)
+void Doom::Renderer3D::LoadMesh(Mesh * mesh)
 {
-	SetType("Renderer");
-	owner = _owner;
-	shader = new Shader("src/Shaders/Basic3D.shader");
-	tr = owner->GetComponentManager()->GetComponent<Transform>();
-	pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, 0));
-	glGenVertexArrays(1, &this->vao);
-	glBindVertexArray(this->vao);
-	layout->Push<float> (2);
-	layout->Push<float> (2);
+	this->mesh = mesh;
+	delete layout;
+	delete va;
+	delete vb;
+	delete ib;
+	layout = new VertexBufferLayout();
+	vb = new VertexBuffer(this->mesh->mesh, this->mesh->meshSize * sizeof(float));
+	va = new VertexArray();
+	ib = new IndexBuffer(this->mesh->indicesForNormals, this->mesh->indicesSize);
+	layout->Push<float>(3);
+	layout->Push<float>(3);
+	layout->Push<float>(2);
+	layout->Push<float>(3);
+	layout->Push<float>(3);
 	va->AddBuffer(*this->vb, *this->layout);
 	va->UnBind();
 	shader->UnBind();
@@ -19,18 +24,56 @@ Doom::Renderer3D::Renderer3D(GameObject* _owner)
 	ib->UnBind();
 }
 
+Doom::Renderer3D::Renderer3D(GameObject* _owner)
+{
+	renderType = "3D";
+	SetType("Renderer");
+	owner = _owner;
+	shader = new Shader("src/Shaders/Basic3D.shader");
+	tr = owner->GetComponentManager()->GetComponent<Transform>();
+	pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
+}
+
+Doom::Renderer3D::~Renderer3D()
+{
+	delete layout;
+	delete va;
+	delete vb;
+	delete ib;
+	delete mesh;
+}
+
 void Doom::Renderer3D::Render()
 {
-	this->shader->Bind();
-	this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
-	this->viewXscale = scale * view;
-	this->MVP = Window::GetCamera().GetProjectionMatrix() * pos * viewXscale;
-	Window::GetCamera().RecalculateViewMatrix();
-	this->shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-	this->shader->SetUniformMat4f("u_MVP", this->MVP);
-	this->shader->SetUniform4fv("m_color", color);
-	this->shader->Bind();
-	va->Bind();
-	ib->Bind();
-	glDrawElements(GL_TRIANGLES, ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+	if (mesh != nullptr) {
+		this->shader->Bind();
+		glBindTextureUnit(0, this->diffuseTexture->m_RendererID);
+		this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
+		Window::GetCamera().RecalculateViewMatrix();
+		this->shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+		this->shader->SetUniformMat4f("u_Model", pos);
+		this->shader->SetUniformMat4f("u_View", view);
+		this->shader->SetUniformMat4f("u_Scale", scale);
+		this->shader->SetUniform4fv("m_color", color);
+		this->shader->SetUniform3fv("u_LightPos", glm::vec3(Renderer::Light->GetPositions().x, Renderer::Light->GetPositions().y, Renderer::Light->GetPositions().z));
+		this->shader->SetUniform3fv("u_LightColor", glm::vec3(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>()->color));
+		this->shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
+		this->shader->SetUniform1f("u_Ambient", mat.ambient);
+		this->shader->SetUniform1f("u_Specular", mat.specular);
+		this->shader->SetUniform1i("u_DiffuseTexture", 0);
+		if (useNormalMap) {
+			glBindTextureUnit(1, this->normalMapTexture->m_RendererID);
+			this->shader->SetUniform1i("u_NormalMapTexture", 1);
+		}
+		this->shader->SetUniform1i("u_isNormalMapping", useNormalMap);
+		this->shader->Bind();
+		va->Bind();
+		ib->Bind();
+		vb->Bind();
+		Renderer::Vertices += mesh->meshSize / 2;
+		Renderer::DrawCalls++;
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+		shader->UnBind();
+		ib->UnBind();
+	}
 }

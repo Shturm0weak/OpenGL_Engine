@@ -118,7 +118,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\2Dshootergame\PlayerCharacter.h" />
     <ClInclude Include="src\2Dshootergame\ShooterGame.h" />
-    <ClInclude Include="src\GameRPG\GameRPG.h" />
     <ClInclude Include="src\game\DrawLines.h" />
     <ClInclude Include="src\game\Game.h" />
     <ClInclude Include="src\game\Bomb.h" />

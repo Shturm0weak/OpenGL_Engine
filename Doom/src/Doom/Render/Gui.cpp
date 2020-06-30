@@ -171,13 +171,6 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	double tempX = width * aRatio * 0.5f;
 	double tempY = -height * aRatio * 0.5f;
 
-	/*float vertecies[8] = {
-		pos.x,(tempY) + pos.y,
-		(tempX) + pos.x,(tempY) + pos.y,
-		(tempX) + pos.x,pos.y,
-		pos.x,pos.y
-	};*/
-
 	float vertecies[8] = {
 		-tempX + pos.x, tempY + pos.y,
 		 tempX + pos.x, tempY + pos.y,
@@ -217,7 +210,7 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	return returnResult;
 }
 
-void Doom::Gui::Panel(float x, float y, float width, float height, glm::vec4 color,Texture* texture)
+void Doom::Gui::Panel(float x, float y, float width, float height, glm::vec4 color, bool changeColorWhenHovered,Texture* texture)
 {
 
 	if (IsRelatedToPanel) {
@@ -238,6 +231,13 @@ void Doom::Gui::Panel(float x, float y, float width, float height, glm::vec4 col
 
 	float ratio = aRatio;
 	float _size = (HEIGHT * 2);
+
+	if (changeColorWhenHovered && IsPanelHovered()) {
+		float alpha = color.a;
+		color *= 0.9;
+		color.a = alpha;
+	}
+
 	Batch::GetInstance()->Submit(currentPanelCoods, color, texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (edgeRadius / (_size)* ratio));
 }
 
@@ -292,6 +292,7 @@ bool Doom::Gui::CheckBox(std::string label, bool * value, float x, float y, floa
 
 float Doom::Gui::SliderFloat(std::string label, float * value, float min, float max, float x, float y, float width, float height,glm::vec4 sliderColor, glm::vec4 panelColor)
 {
+	glm::dvec2 mousePos = ViewPort::GetInstance()->GetStaticMousePosition();
 	ApplyRelatedToPanelProperties(&x, &y);
 	x += width * 0.5f;
 	y -= height * 0.5f;
@@ -299,7 +300,7 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 	float tempCoords[8];
 	for (size_t i = 0; i < 8; i++)
 		tempCoords[i] = currentPanelCoods[i];
-	Panel(x, y, width, height, panelColor);
+	Panel(x, y, width, height, panelColor,true);
 
 	if (*value < min || *value - min < 0.01 * max)
 		*value = min;
@@ -308,15 +309,16 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 
 	float _x = (width * *value) / max;
 
-	Panel(x + _x - width * 0.5f, y, 0.05f * width, 1.5f * height, sliderColor);
-
 	if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 		glm::vec2 mPos = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
-		if (mPos.x < x + width * 0.5f && mPos.x > x - width * 0.5f && mPos.y < y + height * 0.5f && mPos.y > y - height * 0.5f) {
+		if (IsPanelHovered()) {
 			float _value = mPos.x - (x - width * 0.5f);
 			*value = (_value * max) / width;
 		}
 	}
+
+	Panel(x + _x - width * 0.5f, y, 0.05f * width, 1.5f * height, sliderColor);
+
 	relatedPanelProperties = temp;
 
 	yAlign = YCENTER;
@@ -330,7 +332,32 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 
 	for (size_t i = 0; i < 8; i++)
 		currentPanelCoods[i] = tempCoords[i];
-	return 0.0f;
+	return *value;
+}
+
+void Doom::Gui::Image(float x, float y, float width, float height, Texture * texture, glm::vec4 color)
+{
+	ApplyRelatedToPanelProperties(&x, &y);
+
+	float aRatio = Window::GetCamera().GetAspectRatio();
+	glm::vec2 pos = glm::vec2(aRatio * x, aRatio * y);
+
+	double tempX = width * aRatio * 0.5f;
+	double tempY = -height * aRatio * 0.5f;
+
+	float verteces[8];
+
+	verteces[0] = -tempX + pos.x;  verteces[1] =  tempY + pos.y;
+	verteces[2] =  tempX + pos.x;  verteces[3] =  tempY + pos.y;
+	verteces[4] =  tempX + pos.x;  verteces[5] = -tempY + pos.y;
+	verteces[6] = -tempX + pos.x;  verteces[7] = -tempY + pos.y;
+
+	float ratio = aRatio;
+	float _size = (HEIGHT * 2);
+
+	Batch::GetInstance()->Submit(verteces, color, texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (edgeRadius / (_size)* ratio));
+	
+	relatedPanelProperties.yOffset += height;
 }
 
 bool Doom::Gui::IsPanelHovered() {
@@ -355,6 +382,17 @@ void Doom::Gui::UnRelateToPanel()
 	relatedPanelProperties.size = glm::vec2(0.0f);
 	relatedPanelProperties.margin = glm::vec2(0.0f);
 	relatedPanelProperties.yOffset = 0.0f;
+}
+
+void Doom::Gui::Begin()
+{
+	Batch::GetInstance()->indexcount = 0;
+	Batch::GetInstance()->Begin();
+}
+
+void Doom::Gui::End()
+{
+	Batch::GetInstance()->End();
 }
 
 void Doom::Gui::LoadStandartFonts()
@@ -399,6 +437,12 @@ void Doom::Gui::ApplyRelatedToPanelProperties(float * x, float * y)
 	*y += relatedPanelProperties.pos.y - relatedPanelProperties.margin.y;
 	if (relatedPanelProperties.autoAllignment)
 		*y -= relatedPanelProperties.yOffset;
+}
+
+void Doom::Gui::RecalculateProjectionMatrix()
+{
+	float aspectRatio = Window::GetCamera().GetAspectRatio();
+	ViewProjecTionRelatedToCamera = glm::ortho(-aspectRatio * (float)WIDTH, aspectRatio * (float)WIDTH, (float)-HEIGHT, (float)HEIGHT, -1.0f, 1.0f);
 }
 
 void Doom::Gui::ShutDown() {

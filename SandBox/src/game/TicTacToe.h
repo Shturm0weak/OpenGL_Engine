@@ -40,7 +40,7 @@ public:
 class TicTacToe : public Application {
 public:
 	AI* ai = nullptr;
-
+	Sound* backSound = new Sound("src/Sounds/Place.wav");
 	Texture* crossLinesTexture = nullptr;
 	Texture* circleTexture = nullptr;
 
@@ -50,6 +50,7 @@ public:
 
 	double timer = 1.0;
 
+	int whowin = -1;
 	int selected = -1;
 	unsigned int turn = 0;
 
@@ -60,8 +61,9 @@ public:
 	glm::vec2 mousePos;
 
 	virtual void OnStart()override {
+		SoundManager::CreateSoundAsset("back", backSound);
 		ai = new AI();
-		Window::GetCamera().Zoom(0.56);
+		Window::GetCamera().Zoom(4.5);
 		
 		plates = new Plate[9];
 		float offsetX = -3.f;
@@ -96,7 +98,7 @@ public:
 	virtual void OnUpdate()override {
 		mousePos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 
-		if (timer > 0.2f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1) && !end && turn == 1 && !end) {
+		if (timer > 0.2f && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !end && turn == 1 && !end) {
 			timer = 0.0;
 			Plate* plate = isCollided(plates, &selected);
 			if (plate != nullptr) {
@@ -105,11 +107,13 @@ public:
 					plate->isEmpty = false;
 					if (turn == 0) {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(crossLinesTexture);
+						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(circleTexture);
+						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 0;
 					}
@@ -126,11 +130,13 @@ public:
 					plate->isEmpty = false;
 					if (turn == 0) {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(crossLinesTexture);
+						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(circleTexture);
+						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 0;
 					}
@@ -141,23 +147,14 @@ public:
 
 		timer += DeltaTime::deltatime;
 
-		Gui::GetInstance()->Begin();
-		Gui::GetInstance()->Text("selected : %d", true, 900, 800, 76, COLORS::Red, 0, selected);
-		if(selected >= 0)
-		Gui::GetInstance()->Text("IsEmpty : %d", true, 900, 720, 76, COLORS::Red, 0, plates[selected].isEmpty);
-		Gui::GetInstance()->Text("Mouse X:%f Y:%f", true, 900, 640, 76, COLORS::Red, 1, mousePos.x, mousePos.y);
-		Gui::GetInstance()->Text("Not empty : %d", true, 900, 560, 76, COLORS::Red, 0, amountOfNonEmpty);
-		Gui::GetInstance()->Text("FPS : %f", true, 900, 480, 76, COLORS::Red, 0, Window::GetFPS());
-		Gui::GetInstance()->End();
-
 		if (amountOfNonEmpty >= 9) {
 			end = true;
 			turn = 0;
 			Gui::GetInstance()->Begin();
 			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
 			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::YCENTER;
-			Gui::GetInstance()->Text("Draw", true, 0, 0, 76, COLORS::Yellow);
-			Gui::GetInstance()->Text("Press Enter to restart", true, 0, -80, 76, COLORS::Yellow);
+			Gui::GetInstance()->Text("Draw", true, 0, 0, 40, COLORS::Yellow);
+			Gui::GetInstance()->Text("Press Enter to restart", true, 0, -80, 40, COLORS::Yellow);
 			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
 			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
 			Batch::GetInstance()->End();
@@ -166,17 +163,9 @@ public:
 				Restart();
 		}
 
-		int whowin = WhoWin(plates);
-		if (whowin >= 0) {
+		whowin = WhoWin(plates);
+		if (whowin > -1) {
 			turn = 0;
-			Gui::GetInstance()->Begin();
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
-			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::YCENTER;
-			Gui::GetInstance()->Text("Player %d won!!!", true,-0, 0, 76, COLORS::Yellow, 0, whowin);
-			Gui::GetInstance()->Text("Press Enter to restart", true, -0, -80, 76, COLORS::Yellow, 0, whowin);
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
-			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
-			Gui::GetInstance()->End();
 			end = true;
 
 			if (Input::IsKeyPressed(Keycode::KEY_ENTER))
@@ -219,6 +208,17 @@ public:
 		if (plates[2].owner == plates[4].owner && plates[2].owner == plates[6].owner && plates[2].owner != -1)
 			return plates[2].owner;
 		return -1;
+	}
+
+	void OnGuiRender() {
+		if (whowin > -1) {
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
+			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::YCENTER;
+			Gui::GetInstance()->Text("Player %d won!!!", true, -0, 0, 40, COLORS::Yellow, 0, whowin);
+			Gui::GetInstance()->Text("Press Enter to restart", true, -0, -80, 40, COLORS::Yellow, 0, whowin);
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
+			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
+		}
 	}
 
 	void Restart() {

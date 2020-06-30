@@ -8,6 +8,7 @@
 #include "Component.h"
 #include "../Render/Renderer.h"
 #include "../Components/SpriteRenderer.h"
+#include "../Components/Render3D.h"
 #include "../Components/Transform.h"
 #include "../Components/Animator.h"
 #include "../Components/Collision.h"
@@ -138,6 +139,11 @@ namespace Doom {
 		template <class T >
 		T* GetComponent() {
 			return nullptr;
+		}
+
+		template<>
+		SpriteRenderer* GetComponent() {
+			return static_cast<SpriteRenderer*>(GetComponent<Irenderer>());
 		}
 
 		template<>

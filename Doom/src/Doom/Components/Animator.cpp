@@ -31,7 +31,7 @@ void Doom::Animator::PlayAnim(std::vector<Texture*>& text) {
 	timer += DeltaTime::GetDeltaTime();
 	counter = timer * speed;
 	if (counter < text.size()) {
-		owner->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(text[counter]);
+		static_cast<SpriteRenderer*>(owner->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(text[counter]);
 		//if (owner->ShaderType::SHADER_TEXTURE != owner->shadertype)
 		//	owner->SetShader(GameObject::SHADER_TEXTURE);
 		//owner->shader->Bind();

@@ -57,7 +57,7 @@ public:
 			coins[i]->Randomize();
 		}
 		Window::GetCamera().MovePosition(glm::vec3(0, 0, 0));
-		Window::GetCamera().Zoom(2);
+		Window::GetCamera().Zoom(25);
 		line = new Line(glm::vec2(-5, -5), glm::vec2(-5, 5));
 		line->width = 5.f;
 		line->Enable = false;
@@ -80,11 +80,6 @@ public:
 		delay += DeltaTime::deltatime;
 		if (go->isDead) {
 			pause = true;
-			Gui::GetInstance()->Begin();
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
-			Gui::GetInstance()->Text("Press Enter to restart", true, -0, 0, 76);
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
-			Gui::GetInstance()->End();
 			if (Input::IsKeyPressed(Keycode::KEY_ENTER)) {
 				pause = false;
 				for (unsigned int i = 0; i < 5; i++)
@@ -150,30 +145,48 @@ public:
 				else if (fps < lowest)
 					lowest = fps;
 
-				Gui::GetInstance()->Begin();
-				Gui::GetInstance()->Text("FPS : %f", true, 850, 900, 60, COLORS::Red, 0, fps);
-				Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 850, 820, 60, COLORS::Red, 2, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
-				Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 850, 740, 60, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
-				Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 850, 660, 60, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
-				Gui::GetInstance()->Text("Textures: %d", true, 850, 580, 60, COLORS::Red, 0, Texture::bindedAmount);
-				Gui::GetInstance()->Text("Score: %d", true, 1300, -820, 76, COLORS::White, 0, go->scores);
-				Gui::GetInstance()->Text("Missed: %d", true, 1300, -900, 76, COLORS::White, 0, go->missed);
-				Gui::GetInstance()->Text("Collisions: %d", true, 850, 500, 60, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
-				Gui::GetInstance()->Text("VRAM used: %f MB", true, 850, 420, 60, COLORS::Red, 3, Texture::VRAMused);
-				Gui::GetInstance()->Text("Time since start: %f", true, 850, 340, 60, COLORS::Red, 3, time);
-				Gui::GetInstance()->Text("Fire Reload: %f", true, -1800, -900, 76, COLORS::White, 3, fireTimer);
-				Gui::GetInstance()->End();
+				
 			}
+		}
+	}
+
+	void OnGuiRender() {
+		if (go->isDead) {
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
+			Gui::GetInstance()->Text("Press Enter to restart", true, -0, 0, 76);
+			Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
+		}
+
+		if (!pause) {
+			Gui::GetInstance()->RelateToPanel();
+			Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
+			Gui::GetInstance()->Panel(500, 400, 450, 200, COLORS::DarkGray * 0.0f);
+			Gui::GetInstance()->Text("FPS : %f", true, 0, 0, 20, COLORS::Red, 0, fps);
+			Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 0, 0, 20, COLORS::Red, 2, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+			Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 0, 0, 20, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
+			Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 0, 0, 20, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
+			Gui::GetInstance()->Text("Textures: %d", true, 0, 0, 20, COLORS::Red, 0, Texture::bindedAmount);
+			Gui::GetInstance()->Text("Collisions: %d", true, 0, 0, 20, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
+			Gui::GetInstance()->Text("VRAM used: %f MB", true, 0, 0, 20, COLORS::Red, 3, Texture::VRAMused);
+			Gui::GetInstance()->Text("Time since start: %f", true, 0, 0, 20, COLORS::Red, 3, time);
+			Gui::GetInstance()->UnRelateToPanel();
+
+			Gui::GetInstance()->RelateToPanel();
+			Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
+			Gui::GetInstance()->Panel(600, -450, 450, 200, COLORS::DarkGray * 0.0f);
+			Gui::GetInstance()->Text("Score: %d", true, 0, 0, 40, COLORS::White, 0, go->scores);
+			Gui::GetInstance()->Text("Missed: %d", true, 0, 0, 40, COLORS::White, 0, go->missed);
+			Gui::GetInstance()->Text("Fire Reload: %f", true, 0, 0, 40, COLORS::White, 3, fireTimer);
+			Gui::GetInstance()->UnRelateToPanel();
 		}
 		else {
 			double x = 0;
 			double y = 0;
-			Gui::GetInstance()->Begin();
 			Gui::GetInstance()->Panel(x, y, 700, 400, COLORS::DarkGray * 0.8f);
-			if (Gui::GetInstance()->Button("Exit", x + 0, y - 50 - 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+			if (Gui::GetInstance()->Button("Exit", x - 250, y - 50 - 10 + 50, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 				Window::Exit();
 			}
-			if (Gui::GetInstance()->Button("Restart", y + 0, y + 50 + 10, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+			if (Gui::GetInstance()->Button("Restart", x - 250, y + 50 + 10 + 50, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 				pause = false;
 				for (unsigned int i = 0; i < 5; i++)
 				{
@@ -192,7 +205,6 @@ public:
 				go->tr->Translate(0, 8);
 				pause = false;
 			}
-			Gui::GetInstance()->End();
 		}
 	}
 

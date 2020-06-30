@@ -19,11 +19,6 @@ class ShooterGame : public Application {
 		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
 		EventSystem::GetInstance()->ProcessEvents();
 		Window::GetCamera().SetPosition(glm::vec3(pl->GetPositions().x,pl->GetPositions().y,0));
-		Gui::GetInstance()->Begin();
-		Gui::GetInstance()->Text("IsLanded: %d", true, 300, 460, 76, COLORS::White, 2,pl->isLanded);
-		Gui::GetInstance()->Text("Distance: %f", true, 300, 380, 76, COLORS::White, 3, pl->x);
-		Gui::GetInstance()->Text("Count: %d", true, 300, 300, 76, COLORS::White, 3, pl->count);
-		Gui::GetInstance()->End();
 	}
 	
 	virtual void OnClose() override  {

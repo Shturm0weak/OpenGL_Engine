@@ -68,7 +68,7 @@ void Doom::Renderer::Save(const std::string filename) {
 			if (Renderer::objects2d[i]->type.c_str() == "GameObject")
 				continue;
 			float* color = sr->GetColor();
-			float* scale = go->GetScale();
+			glm::vec3 scale = go->GetScale();
 			out_file << go->name << "\n"
 				<< go->Enable << "\n"
 				<< go->type << "\n"
@@ -77,8 +77,8 @@ void Doom::Renderer::Save(const std::string filename) {
 				<< Editor::Instance()->axes[0] << " " << Editor::Instance()->axes[1] << " " << Editor::Instance()->axes[2] << "\n";
 			if (static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>() != nullptr) {
 				out_file << 1 << "\n";
-				out_file << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offsetX
-					<< " " << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offsetY << "\n"
+				out_file << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offset.x
+					<< " " << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offset.y << "\n"
 					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->IsTrigger << "\n"
 					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->GetTag() << "\n";
 			}

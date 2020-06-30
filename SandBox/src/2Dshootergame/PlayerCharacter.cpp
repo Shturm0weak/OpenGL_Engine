@@ -21,7 +21,7 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	muzzleFlashObj = new GameObject("MuzzleFlashObj",position.x,position.x);
 	muzzleFlashObj->SetOwner(this);
 	AddChild(muzzleFlashObj);
-	muzzleFlashObj->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(muzzleFlash);
+	static_cast<SpriteRenderer*>(muzzleFlashObj->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(muzzleFlash);
 	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Scale(0.4f, 0.4f);
 	SetObjectType("Player");
 	muzzleFlashObj->SetObjectType("MuzzleFlash");
@@ -48,6 +48,7 @@ void PlayerCharacter::OnUpdate()
 	fireRateTimer += DeltaTime::deltatime;
 	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Translate(position.x + flashOffset.x, position.y + flashOffset.y);
 	PlayerMovement();
+	SpriteRenderer* sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 	//ThreadPool::Instance()->enqueue([=] {
 		//mtx.lock();
 		tr->Move(0, -9.8, 0);
@@ -55,9 +56,9 @@ void PlayerCharacter::OnUpdate()
 		Hit hit;
 		count = 0;
 		glm::vec2 resultV;
-		if (checkGround->Raycast(hit, 150, glm::vec2(this->GetComponentManager()->GetComponent<SpriteRenderer>()->WorldVertexPositions[0] + position.x,position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[0] + position.x,position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
 			if (hit.Object->GetTag() == "Land") {
- 				x = ((abs(this->GetComponentManager()->GetComponent<SpriteRenderer>()->WorldVertexPositions[1] + position.y)) - abs(hit.point.y));
+ 				x = ((abs(sr->WorldVertexPositions[1] + position.y)) - abs(hit.point.y));
 				test1->SetStartPoint(checkGround->start.x, checkGround->start.y);
 				test1->SetEndPoint(hit.point.x, hit.point.y);
 				if (x < 0.05 && x > -0.15) {
@@ -70,10 +71,10 @@ void PlayerCharacter::OnUpdate()
 		}
 
 		
-		if (checkGround->Raycast(hit, 150, glm::vec2(this->GetComponentManager()->GetComponent<SpriteRenderer>()->WorldVertexPositions[2] + position.x, position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[2] + position.x, position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
 			if (hit.Object->GetTag() == "Land") {
 
-				x = ((abs(this->GetComponentManager()->GetComponent<SpriteRenderer>()->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
+				x = ((abs(sr->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
 				test2->SetStartPoint(checkGround->start.x, checkGround->start.y);
 				test2->SetEndPoint(hit.point.x, hit.point.y);
 				if (x < 0.05 && x > -0.15) {
@@ -87,7 +88,7 @@ void PlayerCharacter::OnUpdate()
 
 		if (checkGround->Raycast(hit, 150, glm::vec2(position.x, position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
 			if (hit.Object->GetTag() == "Land") {
-				x = ((abs(this->GetComponentManager()->GetComponent<SpriteRenderer>()->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
+				x = ((abs(sr->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
 				test3->SetStartPoint(checkGround->start.x, checkGround->start.y);
 				test3->SetEndPoint(hit.point.x, hit.point.y);
 				if (x < 0.05 && x > -0.15) {
@@ -111,6 +112,8 @@ void PlayerCharacter::OnCollision(void* _col) {
 
 void PlayerCharacter::PlayerMovement()
 {
+	SpriteRenderer* sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
+	SpriteRenderer* mSr = static_cast<SpriteRenderer*>(muzzleFlashObj->GetComponentManager()->GetComponent<Irenderer>());
 	animIndex = 1;
 	tr->Move(0, -5 + jump, 0);
 	if (fireRateTimer > fireRate && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
@@ -135,16 +138,16 @@ void PlayerCharacter::PlayerMovement()
 	if (Input::IsKeyDown(Keycode::KEY_D)) {
 		tr->Move(speed, 0,0);
 		animIndex = 3;
-		GetComponentManager()->GetComponent<SpriteRenderer>()->OriginalUvs();
-		muzzleFlashObj->GetComponentManager()->GetComponent<SpriteRenderer>()->OriginalUvs();
+		sr->OriginalUvs();
+		mSr->OriginalUvs();
 		flashOffset.x = 1.1f;
 		turnSide = 0;
 	}
 	if (Input::IsKeyDown(Keycode::KEY_A)) {
 		tr->Move(-speed, 0,0);
 		animIndex = 3;
-		muzzleFlashObj->GetComponentManager()->GetComponent<SpriteRenderer>()->ReversedUvs();
-		GetComponentManager()->GetComponent<SpriteRenderer>()->ReversedUvs();
+		sr->ReversedUvs();
+		mSr->ReversedUvs();
 		flashOffset.x = -1.1f;
 		turnSide = 1;
 	}

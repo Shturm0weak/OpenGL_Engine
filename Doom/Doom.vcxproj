@@ -107,14 +107,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Doom\Application\Application.h" />
-    <ClInclude Include="src\Doom\Application\Bomb.h" />
-    <ClInclude Include="src\Doom\Application\Coin.h" />
-    <ClInclude Include="src\Doom\Application\HP.h" />
-    <ClInclude Include="src\Doom\Application\Player.h" />
     <ClInclude Include="src\Doom\Audio\SoundManager.h" />
     <ClInclude Include="src\Doom\Audio\wavParser.h" />
     <ClInclude Include="src\Doom\Components\IRenderer.h" />
+    <ClInclude Include="src\Doom\Components\Render3D.h" />
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h" />
@@ -173,6 +169,7 @@
     <ClCompile Include="src\Doom\Application.cpp" />
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
+    <ClCompile Include="src\Doom\Components\Render3D.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />

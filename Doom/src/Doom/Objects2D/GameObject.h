@@ -20,8 +20,6 @@ namespace Doom {
 
 		ComponentManager* component_manager;
 
-		float* GetScale();
-
 		friend class Doom::Transform;
 		friend class Doom::Collision;
 		friend class Doom::ComponentManager;
@@ -33,18 +31,12 @@ namespace Doom {
 
 	public:
 
-		struct Position {
-			float x = 0;
-			float y = 0;
-			float z = 0;
-		};
-
-		Position position;
+		glm::vec3 position;
 
 		uint32_t id = 0;
 		int layer = 0;
 
-		float scaleValues[3] = { 1,1,1 };
+		glm::vec3 scaleValues = { 1,1,1 };
 
 		std::string type;
 		std::string name;
@@ -67,7 +59,8 @@ namespace Doom {
 		virtual ~GameObject();
 		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0);
 		
-		Position GetPositions();
+		glm::vec3 GetScale();
+		glm::vec3 GetPositions();
 		ComponentManager* GetComponentManager(){ return component_manager; };
 		inline void SetId(int id) { this->id = id; }
 		inline int GetId() { return id; }

@@ -389,7 +389,7 @@ void Batch::Submit(Collision& c) {
 
 	GtextureIndex = 0.0f;
 	//std::cout << "Batch " << c.position.x << "	" << c.position.y << std::endl;
-	float* scaleVal = c.owner->GetScale();
+	glm::vec3 scaleVal = c.owner->GetScale();
 	Gbuffer->vertex = glm::vec2(c.positions[0] * scaleVal[0], c.positions[1] * scaleVal[1]);
 	Gbuffer->textcoords = glm::vec2(c.positions[2], c.positions[3]);
 	Gbuffer->m_static = c.Static;

@@ -76,6 +76,13 @@ Doom::Font::~Font()
 	delete[] xoffset;
 	delete[] yoffset;
 	delete[] xadvance;
+
+	for (auto i = characters.begin(); i != characters.end(); i++)
+	{
+		delete i->second;
+	}
+
+	characters.clear();
 }
 
 void Doom::Font::LoadFont(std::string filename, std::string pathToTexture)

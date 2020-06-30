@@ -40,7 +40,7 @@ Collision::Collision(GameObject* owner,double x, double y){
 	p.push_back(p4);
 	if (owner != nullptr) {
 		Translate(owner->GetPositions().x, owner->GetPositions().y);
-		SetOffset(offsetX, offsetY);
+		SetOffset(offset.x, offset.y);
 	}
 }
 
@@ -53,8 +53,8 @@ void Collision::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,
 		RealVerPos();
 	}
 	this->pos = pos;
-	this->position.x = x + offsetX;
-	this->position.y = y + offsetY;	
+	this->position.x = x + offset.x;
+	this->position.y = y + offset.y;	
 	for (unsigned int i = 0; i < p.size(); i++) {
 		p[i].x = ScaledVerPos[4 * i] + position.x;
 		p[i].y = ScaledVerPos[4 * i + 1] + position.y;
@@ -98,13 +98,13 @@ void Collision::Translate(float x, float y)
 {
 	position.x = x;
 	position.y = y;
-	this->pos = translate(glm::mat4(1.f), glm::vec3(position.x + offsetX, position.y+ offsetY, 0));
+	this->pos = translate(glm::mat4(1.f), glm::vec3(position.x + offset.x, position.y+ offset.y, 0));
 	UpdateCollision(position.x, position.y, pos, view, this->scale);
 }
 
 void Collision::SetOffset(float x, float y) {
-	offsetX = x;
-	offsetY = y;
+	offset.x = x;
+	offset.y = y;
 }
 
 /*bool Collision::IsCollided() {

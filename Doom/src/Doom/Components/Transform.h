@@ -12,26 +12,22 @@ namespace Doom {
 	private:
 		Irenderer* sr = nullptr;
 		Collision* col = nullptr;
-		struct Position {
-			float x = 0;
-			float y = 0;
-			float z = 0;
-		};
+
 		void init();
 		void RealVertexPositions();
-		friend class ComponentManager;
-		float WorldVerPos[16];
 
-		Position prevPosition;
+		float WorldVerPos[16];
 		float prevAngle;
+
+		glm::vec3 prevPosition;
+
+		friend class ComponentManager;
 
 	public:
 		Transform();
-		~Transform() {
-			//std::cout << "Transform destroyed\n";
-		}
+		~Transform() {}
 		glm::vec3 rotation = glm::vec3(0.0);
-		Position position;
+		glm::vec3 position;
 		float angleRad = 0;
 		float angleDeg = 0;
 		void Move(float speedX = 0, float speedY = 0, float speedZ = 0);

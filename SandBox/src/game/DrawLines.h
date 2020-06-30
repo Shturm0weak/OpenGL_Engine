@@ -18,10 +18,8 @@ class DrawLines : public Application {
 	}
 
 	virtual void OnUpdate() override {
-		if (isEditorEnable)
-			veccolor = Editor::Instance()->ColorPickUp(color);
 
-		if (timer > 0.19f && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
+		if (timer > 0.19f && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 			glm::vec2 pos;
 			if (Input::IsKeyPressed(Keycode::KEY_LEFT_CONTROL) && dotsCircles.size() == 2) {
 				pos = glm::vec2(dotsCircles[1]->GetPositions().x, dotsCircles[1]->GetPositions().y);
@@ -30,7 +28,7 @@ class DrawLines : public Application {
 				GameObject* dot = new GameObject("Dot", pos.x, pos.y);
 				GenerateDot(*dot);
 			}
-			pos = glm::vec2(ViewPort::Instance()->GetMousePositionToWorldSpace().x, ViewPort::Instance()->GetMousePositionToWorldSpace().y);
+			pos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 			dots.push_back(pos);
 			GameObject* dot = new GameObject("Dot", pos.x, pos.y);
 			GenerateDot(*dot);
@@ -55,9 +53,9 @@ class DrawLines : public Application {
 	}
 
 	void GenerateDot(GameObject& dot) {
-		float scaleKoef = Window::GetCamera().GetZoomLevel();
+		float scaleKoef = Window::GetCamera().GetZoomLevel() / 10;
 		dot.GetComponentManager()->GetComponent<Transform>()->Scale(scaleKoef * 0.3f, scaleKoef* 0.3f);
-		dot.SetTexture(dotTexture);
+		dot.GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(dotTexture);
 		if (dotsCircles.size() == 2) {
 			Renderer::DeleteObject(dotsCircles[0]->GetId());
 			Renderer::DeleteObject(dotsCircles[1]->GetId());
