@@ -32,7 +32,6 @@
     <ClInclude Include="src\Doom\Render\Batch.h" />
     <ClInclude Include="src\Doom\Render\Character.h" />
     <ClInclude Include="src\Doom\Render\IndexBuffer.h" />
-    <ClInclude Include="src\Doom\Render\OrthographicCamera.h" />
     <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
     <ClInclude Include="src\Doom\Render\Renderer.h" />
     <ClInclude Include="src\Doom\Render\Shader.h" />
@@ -69,6 +68,7 @@
     <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
     <ClInclude Include="src\Doom\Render\Mesh.h" />
+    <ClInclude Include="src\Doom\Render\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -84,7 +84,6 @@
     <ClCompile Include="src\Doom\Render\Batch.cpp" />
     <ClCompile Include="src\Doom\Render\Character.cpp" />
     <ClCompile Include="src\Doom\Render\IndexBuffer.cpp" />
-    <ClCompile Include="src\Doom\Render\OrthographicCamera.cpp" />
     <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
     <ClCompile Include="src\Doom\Render\Renderer.cpp" />
     <ClCompile Include="src\Doom\Render\Shader.cpp" />
@@ -113,6 +112,9 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
     <ClCompile Include="src\Doom\Render\Mesh.cpp" />
+    <ClCompile Include="src\Doom\Render\Camera.cpp" />
+    <ClCompile Include="src\Doom\Application.cpp" />
+    <ClCompile Include="src\Doom\Render\ViewPort.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

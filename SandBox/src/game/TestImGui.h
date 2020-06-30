@@ -2,9 +2,12 @@
 
 
 class TestImGui : public Application {
-
+public:
 	std::vector<GameObject*> go;
 	double t = 0;
+
+	TestImGui(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
+
 
 	virtual void OnStart() override {
 		float xoffset = -10.f;
@@ -21,7 +24,7 @@ class TestImGui : public Application {
 		MeshManager::LoadMesh("cube", "src/Mesh/box1.fbx");
 		MeshManager::LoadMesh("sphere", "src/Mesh/sphere.fbx");
 
-
+		Renderer::Light = new GameObject("Light",0,20);
 		Renderer::Light->GetComponentManager()->GetComponent<Transform>()->Translate(0, 5, 0);
 		Renderer::Light->GetComponentManager()->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
 		Renderer::Light->GetComponentManager()->RemoveComponent<Irenderer>();
@@ -40,23 +43,13 @@ class TestImGui : public Application {
 	}
 
 	virtual void OnGuiRender() {
-		//Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
-		//glm::vec3 pos = Window::GetCamera().GetPosition();
-		//Gui::GetInstance()->Text("X %f Y %f Z %f",true,0,0,76,COLORS::White,2,pos.x,pos.y,pos.z);
-		//Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
 	}
 
 	virtual void OnUpdate() override {
-		/*go[0]->GetComponentManager()->GetComponent<Transform>()->Translate(sin(t) * 15, 0, sin(t) * 15);
+		go[0]->GetComponentManager()->GetComponent<Transform>()->Translate(sin(t) * 15, 0, sin(t) * 15);
 		go[0]->GetComponentManager()->GetComponent<Transform>()->Rotate(30,30,30);
-		go[1]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);*/
+		go[1]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);
 		t += DeltaTime::deltatime;
-		if (Input::IsKeyPressed(Keycode::KEY_BACKSPACE)) {
-			Window::GetCamera().SetOrthographic(-16.f, 16.f, 9.f, -9.f, 0.1, 100000);
-		}
-		else if (Input::IsKeyPressed(Keycode::KEY_F)) {
-			Window::GetCamera().SetPerspective(1,16,9,0.1,100000);
-		}
 
 		for (size_t i = 0; i < 1; i++)
 		{

@@ -7,7 +7,7 @@ public:
 	glm::vec2 pos = glm::vec2(0, 0);
 	GameObject* coin = nullptr;
 
-	RayCastTest(std::string name,float x ,float y , bool Vsync) : Application(name,x,y,Vsync){
+	RayCastTest(std::string name,float x ,float y , bool Vsync) : Application(name,TYPE_2D,x,y,Vsync){
 	}
 
 	virtual void OnStart() override {

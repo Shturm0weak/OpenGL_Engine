@@ -12,16 +12,17 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	else
 		this->app = app;
 	Window::Init(app->name.c_str(),app->width,app->height,app->Vsync);
+	app->Init();
 	MainThread::Init();
 	ThreadPool::Init();
 	Texture::WhiteTexture = new Texture();
 	Batch::Init();
 	SoundManager::Init();
+	Font::shader = new Shader("src/Shaders/Text.shader");
 	Gui::GetInstance()->LoadStandartFonts();
 	EventSystem::GetInstance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
 	Shader::defaultShader = new Shader("src/Shaders/Basic.shader");
-	Renderer::Light = new GameObject("Light", 0, 0);
 }
 
 void EntryPoint::Run()
@@ -50,10 +51,7 @@ void EntryPoint::Run()
 		SoundManager::UpdateSourceState();
 
 		if (Input::IsKeyPressed(Keycode::KEY_E)) {
-			if (isEditorEnable)
-				isEditorEnable = false;
-			else
-				isEditorEnable = true;
+			isEditorEnable = !isEditorEnable;
 		}
 		
 		if(Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
@@ -64,11 +62,6 @@ void EntryPoint::Run()
 		Gui::GetInstance()->Begin();
 		app->OnGuiRender();
 		Gui::GetInstance()->End();
-		
-		if (ImGui::IsAnyItemActive())
-			Editor::Instance()->isItemActive = true;
-		else
-			Editor::Instance()->isItemActive = false;
 
 		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().frameBuffer->fbo);
 		Renderer::Clear();
@@ -101,7 +94,7 @@ void EntryPoint::Run()
 }
 
 EntryPoint::~EntryPoint() {
-
+	Gui::GetInstance()->ShutDown();
 	EventSystem::GetInstance()->Shutdown();
 	ThreadPool::Instance()->Shutdown();
 	Texture::ShutDown();

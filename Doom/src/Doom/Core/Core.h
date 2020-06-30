@@ -5,6 +5,5 @@
 #else
 #define DOOM_API __declspec(dllimport)
 #endif
-
-#define HEIGHT 1001 
-#define WIDTH 1920
+static int HEIGHT = 1080;
+static int WIDTH = 1080;

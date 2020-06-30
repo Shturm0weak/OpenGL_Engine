@@ -50,7 +50,7 @@ DOOM_API bool ThreadPool::initialized;
 DOOM_API GLFWwindow* Window::m_window = nullptr;
 DOOM_API ImGuiIO* Window::io = nullptr;
 DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
-DOOM_API Camera Window::m_camera(-16.f, 16.f, 9.f, -9.f,-1,10);
+DOOM_API Camera* Window::m_camera = new Camera();
 
 DOOM_API float DeltaTime::time;
 DOOM_API float DeltaTime::lasttime = (float)glfwGetTime();
@@ -90,3 +90,5 @@ DOOM_API ALCcontext* SoundManager::alcContext = nullptr;
 DOOM_API std::map<std::string,Sound*> SoundManager::sounds;
 
 DOOM_API std::map<std::string, Mesh*> MeshManager::Meshes;
+
+DOOM_API Shader* Font::shader = nullptr;

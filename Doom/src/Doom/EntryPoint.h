@@ -1,5 +1,4 @@
 #pragma once
-#include "Application.h"
 #include "Render/Renderer.h"
 #include "Render/Batch.h"
 #include "Render/Gui.h"
@@ -8,7 +7,7 @@
 #include <ImGui/examples/imgui_impl_opengl3.h>
 #include "Render/ViewPort.h"
 #include "ImGuizmo/ImGuizmo.h"
-
+#include "Application.h"
 
 namespace Doom {
 

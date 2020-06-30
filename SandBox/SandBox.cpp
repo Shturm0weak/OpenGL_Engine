@@ -5,14 +5,14 @@
 #include "src/game/RayCastTest.h"
 #include "src/game/TicTacToe.h"
 #include "src/2Dshootergame/ShooterGame.h"
-//#include "src/game/StressTest.h"
+#include "src/game/StressTest.h"
 //#include "src/GameRPG/GameRPG.h"
 #include "src/game/TestImGui.h"
 #include "src/SpaceFire/SpaceFire.h"
 
 int main() {
-	TestImGui* app = new TestImGui();
-	Doom::EntryPoint* entrypoint = new Doom::EntryPoint(app);
-	entrypoint->Run();
+	StressTest* app = new StressTest("StressTest",800,600,false);
+	Doom::EntryPoint entrypoint(app);
+	entrypoint.Run();
 	return 0;
 }

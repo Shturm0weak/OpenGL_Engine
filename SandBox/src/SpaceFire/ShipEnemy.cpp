@@ -49,10 +49,6 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 
 void ShipEnemy::OnUpdate() {
 
-	Gui::GetInstance()->Begin();
-	Gui::GetInstance()->Bar(0, 0, hp, 100, COLORS::Red, COLORS::DarkGray, 400, 50);
-	Gui::GetInstance()->End();
-
 	if (psPlay)
 		ps->Play();
 

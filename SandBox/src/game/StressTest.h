@@ -1,52 +1,67 @@
 #pragma once
 
+#include "Core/Timer.h"
+
 class StressTest : public Application {
-
-	Texture* texture1 = nullptr;
-	Texture* texture2 = nullptr;
-	GameObject** gameobj = nullptr;
-	unsigned int size = 0;
-	Font* font = nullptr;
-
+public:
+	GameObject* gameobj = nullptr;
+	float hp = 100.0f;
+	bool isHovered = false;
+	bool MoveWithMouse = true;
+	bool value = false;
+	glm::vec2 pos;
+	float radius = 0;
+	float panelRadius = 0;
+	StressTest(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_2D, width, height, Vsync) {}
 	void OnStart() {
-		texture1 = new Texture("src/Images/coin.png");
-		texture2 = new Texture("src/Images/bomb.png");
-		gameobj = new GameObject*[316];
-		float x = -10;
-		float offset = 2;
-		float y = -20;
-		for (unsigned int i = 0; i < 316; i++)
-		{
-			gameobj[i] = new GameObject[316];
-			for (unsigned int j = 0; j < 316; j++)
-			{
-				gameobj[i][j].GetComponentManager()->GetComponent<Transform>()->Translate(offset + x, y);
-				if (i % 2 == 0 && j % 2 == 0)
-					gameobj[i][j].SetTexture(texture2);
-				else
-					gameobj[i][j].SetTexture(texture1);
-				x += offset;
-				size += sizeof(gameobj[i][j]);
-			}
-			x = -10;
-			y += 2;
+		ImGui::SetCurrentContext(Window::imGuiContext);
+		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->ARIAL]);
+		gameobj = new GameObject();
+	}
+
+	void OnUpdate() {
+		hp -= 10.0f * DeltaTime::deltatime;
+		if (hp < 0)
+			hp = 100;
+
+		if (Input::IsKeyPressed(Keycode::SPACE)) {
+			MoveWithMouse = !MoveWithMouse;
 		}
-		Window::GetCamera().Zoom(5);
-		//std::cout << (size / 1024.) / 1024. << std::endl;
-
-		//std::cout << sizeof(*gameobj[0][0].GetComponentManager()->GetComponent<Transform>()) << std::endl;
-		//std::cout << sizeof(*gameobj[0][0].GetComponentManager()) << std::endl;
-		//std::cout << sizeof(*gameobj[0][0].GetTexturePointer()) << std::endl;
-		//std::cout << sizeof(Renderer2DLayer::objects2d);
-		font = new Font();
-		font->LoadFont("src/font.txt", "src/arial.png");
-		font->LoadCharacters();
-	}
-	
-	virtual void OnUpdate() {
+		//std::cout << ViewPort::GetInstance()->GetMousePositionToScreenSpace().x << "	" << ViewPort::GetInstance()->GetMousePositionToScreenSpace().y << std::endl;
+		//glm::vec2 pos = ViewPort::GetInstance()->GetMousePositionToWorldSpace();
+		//gameobj->GetComponentManager()->GetComponent<Transform>()->Translate(pos.x, pos.y);
 	}
 
-	void OnClose(){
-		delete[] gameobj;
+	void OnGuiRender() {
+		glm::vec2 posInScreen = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
+		if(MoveWithMouse)
+			pos = posInScreen;
+
+		Gui::GetInstance()->RelateToPanel();
+		Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
+		Gui::GetInstance()->relatedPanelProperties.margin = glm::vec2(30);
+		Gui::GetInstance()->relatedPanelProperties.padding.y = 15;
+		Gui::GetInstance()->edgeRadius = panelRadius;
+		Gui::GetInstance()->Panel(pos.x, pos.y, 1000, 700, glm::vec4(0.3, 0.3, 0.3, 0.8));
+		Gui::GetInstance()->edgeRadius = radius;
+		//Gui::GetInstance()->edgeRadius = 0.0f;
+		if (Gui::GetInstance()->Button("Exit", 0, 0, 20, 100, 50, COLORS::Silver, COLORS::Silver * 0.8f)) {
+			Window::Exit();
+		}
+		Gui::GetInstance()->Bar(0, 0, hp, 100, COLORS::Red, COLORS::Silver, 150, 25);
+		isHovered = Gui::GetInstance()->IsPanelHovered();
+		Gui::GetInstance()->CheckBox("Does mouse intersect the panel?", &isHovered, 0, 0, 50, COLORS::White);
+		Gui::GetInstance()->Text("Panel coords.", true, 0, 0, 20);
+		Gui::GetInstance()->Text("X: %f Y: %f", true, 0, 0, 20, COLORS::White, 2, pos.x, pos.y);
+		Gui::GetInstance()->CheckBox("Check box", &value, 0, 0, 50, COLORS::White);
+		Gui::GetInstance()->Button("Pointless", 0, 0, 20, 150, 50, COLORS::Silver, COLORS::Silver * 0.8f);
+		Gui::GetInstance()->Text("FPS: %f", true, 0, 0, 20, COLORS::White, 2, Window::GetFPS());
+		Gui::GetInstance()->Bar(0, 0, panelRadius, 100, COLORS::Yellow, COLORS::Silver, 150, 25);
+		Gui::GetInstance()->SliderFloat("Panel corners raduis", &panelRadius, 0, 100, 0, 0, 200, 25);
+		Gui::GetInstance()->SliderFloat("Elements corner radius", &radius, 0, 100, 0, 0, 200, 25);
+		Gui::GetInstance()->relatedPanelProperties.autoAllignment = false;
+		Gui::GetInstance()->relatedPanelProperties.margin = glm::vec2(0);
+		Gui::GetInstance()->relatedPanelProperties.padding.y = 0;
+		Gui::GetInstance()->UnRelateToPanel();
 	}
  };

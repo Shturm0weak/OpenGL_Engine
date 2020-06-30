@@ -1,23 +1,17 @@
 #include "../pch.h"
-#include "OrthographicCamera.h"
+#include "Camera.h"
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../vendor/glm/gtc/type_ptr.hpp"
 #include "../vendor/glm/gtx/rotate_vector.hpp"
 #include "../Core/Editor.h"
 #include "ViewPort.h"
+#include "Gui.h"
 
 using namespace Doom;
 
-Camera::Camera(float left,float right,float top,float bottom,float znear,float zfar)
-	: znear(znear),zfar(zfar),m_ProjectionMatrix(glm::ortho(left * zoomlevel,right * zoomlevel,bottom * zoomlevel,top * zoomlevel,znear,zfar)),m_ViewMatrix(1.0f)
-{
+Camera::Camera(){
+	m_Position = glm::vec3(0, 0, 0);
 	EventSystem::GetInstance()->RegisterClient("OnWindowResize", this);
-	aspectratio[0] = left;
-	aspectratio[1] = right;
-	aspectratio[2] = top;
-	aspectratio[3] = bottom;
-	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
-	
 }
 
 void Camera::RecalculateViewMatrix() {
@@ -27,26 +21,107 @@ void Camera::RecalculateViewMatrix() {
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f),m_Position)
 		* rot;
 
-	startDir.z = cos(yaw)*cos(pitch);
-	startDir.x = sin(yaw)*cos(pitch);
+	float cosPitch = cos(pitch);
+
+	startDir.z = cos(yaw) * cosPitch;
+	startDir.x = sin(yaw) * cosPitch;
 	startDir.y = sin(pitch);
 
 	m_ViewMatrix = glm::inverse(transform);
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
+void Doom::Camera::MovePosition(const glm::vec3 position)
+{
+	m_Position.x += position.x;
+	m_Position.y += position.y;
+	m_Position.z += position.z;
+
+	RecalculateViewMatrix();
+	//std::cout << "x " << m_Position.x << " y " << m_Position.y << " z " << m_Position.z << std::endl;
+}
+
 void Camera::WindowResize() {
-	if (props == nullptr)
-		return;
 	if (IsWindowResized) {
+		if (props == nullptr)
+			return;
 		if (props[0] == 0 || props[1] == 0)
 			return;
 		glViewport(0, 0, props[0], props[1]);
+		ratio = (float)props[0] / (float)props[1];
+		switch (type)
+		{
+		case Doom::Camera::ORTHOGRAPHIC:
+			SetOrthographic(ratio);
+			break;
+		case Doom::Camera::PERSPECTIVE:
+			SetPerspective(fovy, props[0], props[1], znear, zfar);
+			break;
+		default:
+			break;
+		}
+		RecalculateViewMatrix();
+		Gui::GetInstance()->RecalculateProjectionMatrix();
 		//glBindTexture(GL_TEXTURE_2D, frameBuffer->texture);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, props[0], props[1], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		//glBindTexture(GL_TEXTURE_2D, 0);
 		IsWindowResized = false;
 	}
+}
+
+void Doom::Camera::SetPosition(const glm::vec3 position)
+{
+	m_Position.x = position.x;
+	m_Position.y = position.y;
+	m_Position.z = position.z;
+
+	RecalculateViewMatrix();
+	//std::cout << "x " << m_Position.x << " y " << m_Position.y << " z " << m_Position.z << std::endl;
+}
+
+void Doom::Camera::SetPerspective(float fovy, float width, float height, float znear, float zfar)
+{
+	this->ratio = width / height;
+	aspectratio[0] = -width;
+	aspectratio[1] = width;
+	aspectratio[2] = height;
+	aspectratio[3] = -height;
+	this->zfar = (zfar);
+	this->znear = (znear);
+	this->fovy = (fovy);
+	m_ProjectionMatrix = glm::perspective(fovy, width / height, znear, zfar);
+	type = PERSPECTIVE;
+}
+
+void Doom::Camera::SetFov(float fov)
+{
+	m_ProjectionMatrix = glm::perspective(fovy, (aspectratio[1]) / (aspectratio[2]), znear, zfar);
+	RecalculateViewMatrix();
+	type = PERSPECTIVE;
+}
+
+void Doom::Camera::SetOrthographic(float ratio)
+{
+	this->ratio = ratio;
+	znear = -1.0;
+	zfar = 100;
+	aspectratio[0] = -ratio;
+	aspectratio[1] = ratio;
+	aspectratio[2] = 1;
+	aspectratio[3] = -1;
+	m_ProjectionMatrix = glm::ortho(aspectratio[0] * zoomlevel, aspectratio[1] * zoomlevel, aspectratio[3] * zoomlevel, aspectratio[2] * zoomlevel, znear, zfar);
+	type = ORTHOGRAPHIC;
+}
+
+glm::vec3 Doom::Camera::GetRotation()
+{
+	return glm::vec3(pitch, yaw, roll);
+}
+
+void Doom::Camera::SetRotation(glm::vec3 rot)
+{
+	pitch = rot.x; yaw = rot.y; roll = rot.z;
+	RecalculateViewMatrix();
 }
 
 void Camera::Zoom(float zoomlevel)
@@ -198,13 +273,8 @@ void Camera::CameraMovement() {
 	SetOnStart();
 }
 
-glm::vec2 Doom::Camera::GetRatio()
-{ 
-	return glm::vec2(GetAspectRatio().x / (float)Window::GetProps()[0], GetAspectRatio().y / (float)Window::GetProps()[1]);
-}
-
 float Camera::GetRationWH()
-{ return ((float)Window::GetProps()[0] / (float)Window::GetProps()[1]); }
+{ return ((float)Window::GetSize()[0] / (float)Window::GetSize()[1]); }
 float Camera::GetRationHW()
-{ return ((float)Window::GetProps()[1] / (float)Window::GetProps()[0]); }
+{ return ((float)Window::GetSize()[1] / (float)Window::GetSize()[0]); }
 

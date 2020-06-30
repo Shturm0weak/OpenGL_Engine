@@ -7,14 +7,22 @@ layout(location = 2) in int m_static;
 layout(location = 3) in vec4 m_color;
 layout(location = 4) in float isGui;
 layout(location = 5) in float texIndex;
+layout(location = 6) in vec2 size;
+layout(location = 7) in vec2 pos;
+layout(location = 8) in float radius;
+layout(location = 9) in vec2 windowSize;
 
+out float edgeRadius;
+out vec2 uisize;
+out vec2 uipos;
 out float tex_index;
 out float flagIsGui;
 out vec4 out_color;
 out vec2 v_textcoords;
+out vec2 viewportsize;
+
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Projection;
-uniform float u_ViewMatrix;
 
 
 void main() {
@@ -24,11 +32,15 @@ void main() {
 	else if (m_static > 1) {
 		gl_Position = u_Projection * positions;
 	}
-	
+
 	v_textcoords = texcoords;
 	out_color = m_color;
 	flagIsGui = isGui;
 	tex_index = texIndex;
+	uisize = size;
+	uipos = vec2(u_ViewProjection * vec4(pos,0,0));
+	edgeRadius = radius;
+	viewportsize = windowSize;
 };
 
 #shader fragment
@@ -40,6 +52,12 @@ in float tex_index;
 in float flagIsGui;
 in vec4 out_color;
 in vec2 v_textcoords;
+in vec2 uisize;
+in vec2 uipos;
+in float edgeRadius;
+in vec4 gl_FragCoord;
+in vec2 gl_PointCoord;
+in vec2 viewportsize;
 
 uniform vec4 u_outlineColor;
 uniform float u_width;
@@ -49,11 +67,48 @@ uniform float u_borderedge;
 uniform vec2 u_offset;
 uniform sampler2D u_Texture[32];
 
+void RoundedCorners(vec4 texColor) {
+	float alpha = 0.0;
+	float ratio = (viewportsize.x / viewportsize.y);
+	vec2 lower = vec2(uipos.x - uisize.x + edgeRadius, uipos.y + uisize.y + edgeRadius);
+	vec2 higher = vec2(uipos.x + uisize.x - edgeRadius, uipos.y - uisize.y - edgeRadius);
+	vec2 pP = gl_FragCoord.xy / viewportsize - 0.5;
+	pP.x *= ratio;
+	color = out_color * texColor;
+	alpha = color.a;
+	if (pP.x < lower.x && pP.x > lower.x - edgeRadius && pP.y < lower.y && pP.y > lower.y - edgeRadius) {
+		if (length(pP - lower) > edgeRadius) {
+			alpha = 0;
+		}
+	}
+	if (pP.x > higher.x && pP.x < higher.x + edgeRadius && pP.y > higher.y && pP.y < higher.y + edgeRadius) {
+		if (length(pP - higher) > edgeRadius) {
+			alpha = 0;
+		}
+	}
+	if (pP.x < lower.x && pP.x > lower.x - edgeRadius && pP.y < higher.y + edgeRadius && pP.y > higher.y) {
+		if (length(pP - vec2(lower.x, higher.y)) > edgeRadius) {
+			alpha = 0;
+		}
+	}
+	if (pP.x > higher.x && pP.x < higher.x + edgeRadius && pP.y < lower.y && pP.y > lower.y - edgeRadius) {
+		if (length(pP - vec2(higher.x, lower.y)) > edgeRadius) {
+			alpha = 0;
+		}
+	}
+	color.a = alpha;
+}
+
 void main() {
 	if (flagIsGui > 0.5) {
 		int index = int(tex_index);
 		vec4 texColor = texture(u_Texture[index], v_textcoords);
-		color = texColor * out_color;
+		if (edgeRadius > 0) {
+			RoundedCorners(texColor);
+		}
+		else {
+			color = out_color * texColor;
+		}
 	}
 	else if (flagIsGui <= 0.5) {
 		int index = int(tex_index);

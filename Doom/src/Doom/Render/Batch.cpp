@@ -22,7 +22,7 @@ Batch::~Batch()
 	glDeleteBuffers(1, &vbo);
 }
 
-void Batch::Submit(Character& c)
+void Batch::Submit(Character* c)
 {
 
 	if (textureSlotsIndex > maxTextureSlots - 1) {
@@ -36,7 +36,7 @@ void Batch::Submit(Character& c)
 	//std::cout << "Batch " << c.position.x << "	" << c.position.y << std::endl;
 	for (unsigned int i = 0; i < maxTextureSlots; i++)
 	{
-		if (textureSlots[i] == c.texture->m_RendererID) {
+		if (textureSlots[i] == c->texture->m_RendererID) {
 			textureIndex = (float)i;
 			break;
 		}
@@ -44,38 +44,38 @@ void Batch::Submit(Character& c)
 
 	if (textureIndex == 0.0f) {
 		textureIndex = (float)textureSlotsIndex;
-		textureSlots[textureSlotsIndex] = c.texture->m_RendererID;
+		textureSlots[textureSlotsIndex] = c->texture->m_RendererID;
 		textureSlotsIndex++;
 	}
 
-	buffer->vertex = glm::vec2((c.mesh2D[0] * c._scale.x + c.position.x), ((c.mesh2D[1]) * c._scale.y + c.position.y));
-	buffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
-	buffer->m_static = c.isRelatedToCam;
-	buffer->m_color = c.color;
+	buffer->vertex = glm::vec2((c->mesh2D[0] * c->_scale.x + c->position.x), ((c->mesh2D[1]) * c->_scale.y + c->position.y));
+	buffer->textcoords = glm::vec2(c->mesh2D[2], c->mesh2D[3]);
+	buffer->m_static = c->isRelatedToCam;
+	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[4] * c._scale.x + c.position.x), ((c.mesh2D[5]) * c._scale.y + c.position.y));
-	buffer->textcoords = glm::vec2(c.mesh2D[6], c.mesh2D[7]);
-	buffer->m_static = c.isRelatedToCam;
-	buffer->m_color = c.color;
+	buffer->vertex = glm::vec2((c->mesh2D[4] * c->_scale.x + c->position.x), ((c->mesh2D[5]) * c->_scale.y + c->position.y));
+	buffer->textcoords = glm::vec2(c->mesh2D[6], c->mesh2D[7]);
+	buffer->m_static = c->isRelatedToCam;
+	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[8] * c._scale.x + c.position.x), ((c.mesh2D[9])* c._scale.y + c.position.y));
-	buffer->textcoords = glm::vec2(c.mesh2D[10], c.mesh2D[11]);
-	buffer->m_static = c.isRelatedToCam;
-	buffer->m_color = c.color;
+	buffer->vertex = glm::vec2((c->mesh2D[8] * c->_scale.x + c->position.x), ((c->mesh2D[9])* c->_scale.y + c->position.y));
+	buffer->textcoords = glm::vec2(c->mesh2D[10], c->mesh2D[11]);
+	buffer->m_static = c->isRelatedToCam;
+	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
 	buffer++;
 
-	buffer->vertex = glm::vec2((c.mesh2D[12] * c._scale.x + c.position.x), ((c.mesh2D[13]) * c._scale.y + c.position.y));
-	buffer->textcoords = glm::vec2(c.mesh2D[14], c.mesh2D[15]);
-	buffer->m_static = c.isRelatedToCam;
-	buffer->m_color = c.color;
+	buffer->vertex = glm::vec2((c->mesh2D[12] * c->_scale.x + c->position.x), ((c->mesh2D[13]) * c->_scale.y + c->position.y));
+	buffer->textcoords = glm::vec2(c->mesh2D[14], c->mesh2D[15]);
+	buffer->m_static = c->isRelatedToCam;
+	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
 	buffer++;
@@ -179,7 +179,7 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	Gindexcount += 6;
 }
 
-void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture) {
+void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 size, glm::vec2 pos,float radius) {
 
 	if (textureSlotsIndex > maxTextureSlots - 1) {
 		End();
@@ -211,6 +211,10 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture) {
 	buffer->m_color = color;
 	buffer->isGui = 1.;
 	buffer->texIndex = textureIndex;
+	buffer->size = size;
+	buffer->pos = pos;
+	buffer->raduis = radius;
+	buffer->viewportSize = glm::vec2(Window::GetSize()[0],Window::GetSize()[1]);
 	buffer++;
 
 	buffer->vertex = glm::vec2((mesh2D[2]), (mesh2D[3]));
@@ -219,6 +223,10 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture) {
 	buffer->m_color = color;
 	buffer->isGui = 1.;
 	buffer->texIndex = textureIndex;
+	buffer->size = size;
+	buffer->pos = pos;
+	buffer->raduis = radius;
+	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
 	buffer++;
 
 	buffer->vertex = glm::vec2((mesh2D[4]), (mesh2D[5]));
@@ -227,6 +235,10 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture) {
 	buffer->m_color = color;
 	buffer->isGui = 1.;
 	buffer->texIndex = textureIndex;
+	buffer->size = size;
+	buffer->pos = pos;
+	buffer->raduis = radius;
+	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
 	buffer++;
 
 	buffer->vertex = glm::vec2((mesh2D[6]), ((mesh2D[7])));
@@ -235,6 +247,10 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture) {
 	buffer->m_color = color;
 	buffer->isGui = 1.;
 	buffer->texIndex = textureIndex;
+	buffer->size = size;
+	buffer->pos = pos;
+	buffer->raduis = radius;
+	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
 	buffer++;
 
 	indexcount += 6;
@@ -442,7 +458,7 @@ void Batch::flushGameObjects(Shader * shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->UploadUnifromMat4("u_Projection", ViewProjecTionRelatedToCamera);
+	shader->UploadUnifromMat4("u_Projection", Gui::GetInstance()->ViewProjecTionRelatedToCamera);
 	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 
 	glDrawElements(GL_TRIANGLES, Gindexcount, GL_UNSIGNED_INT, NULL);
@@ -529,7 +545,7 @@ void Batch::flushText(Shader* shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->UploadUnifromMat4("u_Projection", ViewProjecTionRelatedToCamera);
+	shader->UploadUnifromMat4("u_Projection", Gui::GetInstance()->ViewProjecTionRelatedToCamera);
 	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 	shader->SetUniformVec2("u_offset", Gui::GetInstance()->textProps.shadowOffset);
 	shader->SetUniform1f("u_width", Gui::GetInstance()->textProps.width);
@@ -592,6 +608,18 @@ void Batch::initText()
 
 	glEnableVertexArrayAttrib(vao, 5);
 	glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, texIndex));
+
+	glEnableVertexArrayAttrib(vao, 6);
+	glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, size));
+
+	glEnableVertexArrayAttrib(vao, 7);
+	glVertexAttribPointer(7, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
+
+	glEnableVertexArrayAttrib(vao, 8);
+	glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, raduis));
+
+	glEnableVertexArrayAttrib(vao, 9);
+	glVertexAttribPointer(9, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, viewportSize));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

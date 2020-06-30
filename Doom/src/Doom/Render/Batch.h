@@ -29,6 +29,10 @@ namespace Doom {
 		glm::vec4 posMat1;
 		glm::vec4 posMat2;
 		glm::vec4 posMat3;
+		glm::vec2 pos;
+		glm::vec2 size;
+		glm::vec2 viewportSize;
+		float raduis;
 	};
 
 	struct DOOM_API VertexLine {
@@ -85,7 +89,6 @@ namespace Doom {
 
 		Shader* shader = nullptr;
 	public:
-		glm::mat4 ViewProjecTionRelatedToCamera = glm::ortho(-16.f, 16.f, -9.f, 9.f, 1.f, -1.f);
 
 		static void Init();
 
@@ -102,9 +105,9 @@ namespace Doom {
 		Shader* LineShader = new Shader("src/Shaders/Line.shader");
 		Batch();
 		~Batch();
-		void Submit(Character& character);
+		void Submit(Character* character);
 		void Submit(glm::mat4 pos,glm::mat4 view, glm::vec4 color,glm::vec2 scale, Texture* texture = nullptr);
-		void Submit(float* mesh2D, glm::vec4 color,Texture* texture = nullptr);
+		void Submit(float* mesh2D, glm::vec4 color,Texture* texture = nullptr,glm::vec2 size = glm::vec2(0), glm::vec2 pos = glm::vec2(0),float raduis = 0);
 		void Submit(SpriteRenderer& gameobject);
 		void Submit(Line& line);
 		void Submit(Collision& collision);

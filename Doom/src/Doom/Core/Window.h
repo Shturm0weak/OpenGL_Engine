@@ -4,29 +4,15 @@
 #include <ImGui/imgui.h>
 #include <ImGui/examples/imgui_impl_glfw.h>
 #include <ImGui/examples/imgui_impl_opengl3.h>
-#include "../Render/OrthographicCamera.h"
+#include "../Render/Camera.h"
+#include "../Application.h"
 
 namespace Doom {
 
 	class DOOM_API Window {
-	public:
-		struct Position {
-			float x = 0.f;
-			float y = 0.f;
-
-			Position(float _x, float _y) {
-				x = _x;
-				y = _y;
-			}
-			Position() {
-				x = 0;
-				y = 0;
-			}
-
-		};
 	private:
 		static GLFWwindow* m_window;
-		static Camera m_camera;
+		static Camera* m_camera;
 
 		Window() {}
 
@@ -34,12 +20,12 @@ namespace Doom {
 		static ImGuiContext* imGuiContext;
 		static ImGuiIO* io;
 		static Camera& GetCamera() {
-			return m_camera;
+			return *m_camera;
 		}
 
-		static int* GetProps() {
-			static int props[2];
-			return props;
+		static int* GetSize() {
+			static int size[2];
+			return size;
 		}
 
 		static void Exit() {
@@ -49,8 +35,8 @@ namespace Doom {
 		static int Init(const char* Label,float width, float height,bool vsync) {
 			if (!glfwInit())
 				return -1;
-			GetProps()[0] = width;
-			GetProps()[1] = height;
+			GetSize()[0] = width;
+			GetSize()[1] = height;
 
 			m_window = glfwCreateWindow(width, height, Label, NULL, NULL);
 			if (!GetWindow())
@@ -70,7 +56,7 @@ namespace Doom {
 			glfwSwapInterval(vsync); // Enable vsync
 
 			glfwSetWindowSizeCallback(Window::GetWindow(), [](GLFWwindow* window, int width, int height) {
-				int* props = Window::GetProps();
+				int* props = Window::GetSize();
 				props[0] = width;
 				props[1] = height;
 				EventSystem::GetInstance()->SendEvent("OnWindowResize", nullptr, props);
@@ -83,29 +69,23 @@ namespace Doom {
 
 			ImGui::StyleColorsClassic();
 			ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LESS);
-			glEnable(GL_CULL_FACE);
 			return 0;
 		}
 		inline static GLFWwindow* GetWindow() { return m_window; }
-		static Position GetMousePositionToWorldSpace() {
-			static Position mousePos;
+		static glm::vec2 GetMousePositionToWorldSpace() {
+			static glm::vec2 mousePos;
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
-			mousePos.x = (ImGui::GetMousePosOnOpeningCurrentPopup().x / GetProps()[0] - 0.5) * 32. * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().x;
-			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetProps()[1]) + 0.5) * 18. * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().y;
+			mousePos.x = (ImGui::GetMousePosOnOpeningCurrentPopup().x / GetSize()[0] - 0.5) * 32. * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().x;
+			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetSize()[1]) + 0.5) * 18. * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().y;
 			return mousePos;
 		}
-		static Position GetMousePositionToScreenSpace() {
-			static Position mousePos;
+		static glm::vec2 GetMousePositionToScreenSpace() {
+			static glm::vec2 mousePos;
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
-			mousePos.x = (ImGui::GetMousePosOnOpeningCurrentPopup().x   / GetProps()[0]  - 0.5)  * 32.;
-			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetProps()[1]) + 0.5) * 18.;
+			mousePos.x = (ImGui::GetMousePosOnOpeningCurrentPopup().x   / GetSize()[0]  - 0.5)  * 32.;
+			mousePos.y = (-(ImGui::GetMousePosOnOpeningCurrentPopup().y / GetSize()[1]) + 0.5) * 18.;
 			return mousePos;
 		}
 

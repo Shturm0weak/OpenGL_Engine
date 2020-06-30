@@ -4,22 +4,16 @@
 
 using namespace Doom;
 
-void Doom::Gui::Text(std::string str, int m_static, float x, float y, float startscale, glm::vec4 color , int charsAfterComma, ...)
+void Doom::Gui::Text(std::string str, int m_static, float x, float y, float startscale, glm::vec4 color, int charsAfterComma, ...)
 {
-	x *= ((float)Window::GetProps()[0] / WIDTH);
-	y *= ((float)Window::GetProps()[1] / HEIGHT);
+	ApplyRelatedToPanelProperties(&x, &y);
 	float scale = startscale / font->size;
-	std::vector<Character*> characters1;
-	std::vector<unsigned int> newLines1;
-
 	std::vector<Character*> characters;
 	std::vector<unsigned int> newLines;
-	double widthRatio = Window::GetCamera().GetRatio().x;
-	double heightRatio = Window::GetCamera().GetRatio().y;
-	text = str;
-	m_charsAfterComma = charsAfterComma;
+	float aRatio = Window::GetCamera().GetAspectRatio();
+	float ratio = aRatio;
 	int counter1 = 0;
-	bool border = false;
+	bool dotPass = false;
 	va_list argptr;
 	va_start(argptr, charsAfterComma);
 	size_t strSize = str.size();
@@ -34,30 +28,38 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 			}
 			else if (str[i + 1] == 's')
 				s = (va_arg(argptr, std::string));
-			for (size_t j = 0; j < s.size(); j++)
+			size_t argSize = s.size();
+			for (size_t j = 0; j < argSize; j++)
 			{
-				pchar = s[j];
+				char pchar = s[j];
 				if (pchar == '.' || pchar == ',') {
-					border = true;
+					dotPass = true;
+					if (charsAfterComma == 0)
+						break;
 				}
-				if (border == true)
+
+				if(dotPass)
 					counter1++;
-				if (charsAfterComma == 0 && (pchar == '.' || pchar == ','))
-					break;
-				
-				size_t size = font->characters.size();
+
+				auto cIter = font->characters.find(pchar);
+				if (cIter != font->characters.end()) {
+					characters.push_back(cIter->second);
+				}
+
+				/*size_t size = font->characters.size();
 				for (size_t i = 0; i < size; i++)
 				{
 					if (font->characters[i]->ch == pchar) {
 						characters.push_back(font->characters[i]);
 						break;
 					}
-				}
+				}*/
+
 				if (counter1 > charsAfterComma)
 					break;
 			}
+			dotPass = false;
 			counter1 = 0;
-			border = false;
 			i++;
 		}
 		else if (strChar == '\n') {
@@ -65,14 +67,20 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 			continue;
 		}
 		else {
-			size_t size = font->characters.size();
+			auto cIter = font->characters.find(strChar);
+			if (cIter != font->characters.end()) {
+				characters.push_back(cIter->second);
+			}
+
+			/*size_t size = font->characters.size();
 			for (size_t k = 0; k < size; k++)
 			{
 				if (font->characters[k]->ch == strChar) {
 					characters.push_back(font->characters[k]);
 					break;
 				}
-			}
+			}*/
+
 		}
 	}
 
@@ -84,12 +92,13 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 	for (unsigned int i = 0; i < size; i++)
 	{
 		character = characters[i];
-		character->_scale.x = scale * ((float)Window::GetProps()[0] / WIDTH);
-		character->_scale.y = scale * ((float)Window::GetProps()[1] / HEIGHT);
-		if (_height < character->height)
-			_height = character->height *character->_scale.y;
+		character->_scale.x = scale;
+		character->_scale.y = scale;
+		float tempHeight = character->height * character->_scale.y;
+		if (_height < tempHeight)
+			_height = tempHeight;
 		_width += character->xadvance * character->_scale.x;
-		
+
 	}
 
 	if (xAlign == AlignHorizontally::XCENTER) {
@@ -99,15 +108,21 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 		y += _height * 0.5;
 	}
 
-	
+	lastTextProperties.size = glm::vec2(_width, _height);
+	lastTextProperties.pos = glm::vec2(x, y);
+
+	if (IsRelatedToPanel)
+		relatedPanelProperties.yOffset += _height + relatedPanelProperties.padding.y;
+
+	unsigned int newLinesSize = newLines.size();
 	for (unsigned int i = 0; i < size; i++)
 	{
-		unsigned int newLinesSize = newLines.size();
 		for (unsigned int j = 0; j < newLinesSize; j++)
 		{
 			if (i == newLines[j]) {
 				y -= startscale * 1.5;
-				counter = 0;
+				relatedPanelProperties.yOffset += _height + relatedPanelProperties.padding.y;
+				characterXoffset = 0;
 				newLines.erase(newLines.begin() + j);
 				break;
 			}
@@ -118,42 +133,43 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 
 		//Pos is top-left corner
 		character->mesh2D[0] = 0;
-		character->mesh2D[1] = -(heightRatio * (character->height + character->yoffset));
-		character->mesh2D[4] = (widthRatio  * (character->width));
-		character->mesh2D[5] = -(heightRatio * (character->height + character->yoffset));
-		character->mesh2D[8] = (widthRatio  * (character->width));
-		character->mesh2D[9] = -heightRatio * character->yoffset;
+		character->mesh2D[1] = -(ratio * (character->height + character->yoffset));
+		character->mesh2D[4] = (ratio * (character->width));
+		character->mesh2D[5] = -(ratio * (character->height + character->yoffset));
+		character->mesh2D[8] = (ratio * (character->width));
+		character->mesh2D[9] = -ratio * character->yoffset;
 		character->mesh2D[12] = 0;
-		character->mesh2D[13] = -heightRatio * character->yoffset;
+		character->mesh2D[13] = -ratio * character->yoffset;
 
 		if (i == 0) {
-			counter = 0;
-			character->Translate(widthRatio * (x + counter), heightRatio * y);
+			characterXoffset = 0;
+			character->Translate(ratio * (x + characterXoffset), ratio * y);
 		}
 		else {
-			character->Translate(widthRatio * (x + counter), heightRatio * y);
+			character->Translate(ratio * (x + characterXoffset), ratio * y);
 		}
-		counter += character->xadvance * character->_scale.x;
-		Batch::GetInstance()->Submit(*character);
-	}
-
+		characterXoffset += character->xadvance * character->_scale.x;
+		Batch::GetInstance()->Submit(character);
+}
 	va_end(argptr);
 }
 
-bool Doom::Gui::Button(std::string str, float x, float y,float scale, float width, float height, glm::vec4 btnColor, glm::vec4 pressedBtnColor, glm::vec4 textColor)
+bool Doom::Gui::Button(std::string str, float x, float y,float scale, float width, float height, glm::vec4 btnColor, glm::vec4 pressedBtnColor, glm::vec4 textColor,Texture* texture)
 {
+	ApplyRelatedToPanelProperties(&x, &y);
+	x += width * 0.5f;
+	y -= height * 0.5f;
 	float tempx = x;
 	float tempy = y;
+	float aRatio = Window::GetCamera().GetAspectRatio();
 	this->btnColor = btnColor;
 	bool tempResult = false;
 	bool returnResult = false;
-	x *= ((float)Window::GetProps()[0] / WIDTH);
-	y *= ((float)Window::GetProps()[1] / HEIGHT);
-	glm::vec2 pos = glm::vec2(Window::GetCamera().GetRatio().x * x , Window::GetCamera().GetRatio().y * y);
+	glm::vec2 pos = glm::vec2(aRatio * x , aRatio * y);
 	glm::dvec2 mousePos = ViewPort::GetInstance()->GetStaticMousePosition();
 
-	double tempX = width * Window::GetCamera().GetRatio().x   * ((float)Window::GetProps()[0] / WIDTH);
-	double tempY = -height * Window::GetCamera().GetRatio().y * ((float)Window::GetProps()[1] / HEIGHT);
+	double tempX = width * aRatio * 0.5f;
+	double tempY = -height * aRatio * 0.5f;
 
 	/*float vertecies[8] = {
 		pos.x,(tempY) + pos.y,
@@ -163,60 +179,182 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	};*/
 
 	float vertecies[8] = {
-		- tempX * 0.5 + pos.x,(tempY * 0.5)+pos.y,
-		tempX * 0.5 + pos.x,(tempY * 0.5) + pos.y,
-		tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
-		-tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
+		-tempX + pos.x, tempY + pos.y,
+		 tempX + pos.x, tempY + pos.y,
+		 tempX + pos.x,-tempY + pos.y,
+		-tempX + pos.x,-tempY + pos.y,
 	};
 
 
-	if (Input::IsMouseDown(GLFW_MOUSE_BUTTON_1)) {
+	if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 		tempResult = (mousePos.x > vertecies[0] && mousePos.x < vertecies[2] && mousePos.y > vertecies[1] && mousePos.y < vertecies[7]);
 		if (tempResult)
 			this->btnColor = pressedBtnColor;
 	}
 
-	if (Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
-	
+	if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
 		returnResult = tempResult;
 	}
 
-	
-	Batch::GetInstance()->Submit(vertecies, this->btnColor);
+	float ratio = aRatio;
+	float _size = (HEIGHT * 2);
+	Batch::GetInstance()->Submit(vertecies, this->btnColor,texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (edgeRadius / (_size) * ratio));
 
-	xAlign = AlignHorizontally::XCENTER;
-	yAlign = AlignVertically::YCENTER;
-	Text(str, true, tempx,tempy, scale, textColor);
-	yAlign = AlignVertically::BOTTOM;
-	xAlign = AlignHorizontally::LEFT;
+	if (str.length() > 0) {
+		xAlign = AlignHorizontally::XCENTER;
+		yAlign = AlignVertically::YCENTER;
+		Text(str, true, tempx - relatedPanelProperties.pos.x - relatedPanelProperties.margin.x, tempy - relatedPanelProperties.pos.y + relatedPanelProperties.yOffset + relatedPanelProperties.margin.y, scale, textColor);
+		yAlign = AlignVertically::BOTTOM;
+		xAlign = AlignHorizontally::LEFT;
+	}
+	else {
+		lastTextProperties = UIProperties();
+		relatedPanelProperties.yOffset += relatedPanelProperties.padding.y;
+	}
+
+	if (IsRelatedToPanel)
+		relatedPanelProperties.yOffset += height - lastTextProperties.size.y;
 	return returnResult;
 }
 
 void Doom::Gui::Panel(float x, float y, float width, float height, glm::vec4 color,Texture* texture)
 {
-	x *= ((float)Window::GetProps()[0] / WIDTH);
-	y *= ((float)Window::GetProps()[1] / HEIGHT);
-	glm::vec2 pos = glm::vec2(Window::GetCamera().GetRatio().x * x, Window::GetCamera().GetRatio().y * y);
 
-	double tempX = width * Window::GetCamera().GetRatio().x   * ((float)Window::GetProps()[0] / WIDTH);
-	double tempY = -height * Window::GetCamera().GetRatio().y * ((float)Window::GetProps()[1] / HEIGHT);
+	if (IsRelatedToPanel) {
+		relatedPanelProperties.pos = glm::vec2(x - width * 0.5f, y + height * 0.5f);
+		relatedPanelProperties.size = glm::vec2(width, height);
+	}
 
-	float vertecies[8] = {
-		-tempX * 0.5 + pos.x,(tempY * 0.5) + pos.y,
-		tempX * 0.5 + pos.x,(tempY * 0.5) + pos.y,
-		tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
-		-tempX * 0.5 + pos.x,(-tempY * 0.5) + pos.y,
-	};
+	float aRatio = Window::GetCamera().GetAspectRatio();
+	glm::vec2 pos = glm::vec2(aRatio * x, aRatio * y);
 
-	Batch::GetInstance()->Submit(vertecies, color,texture);
+	double tempX = width * aRatio * 0.5f;
+	double tempY = -height * aRatio * 0.5f;
+
+	currentPanelCoods[0] = -tempX + pos.x;  currentPanelCoods[1] =  tempY + pos.y;
+	currentPanelCoods[2] =  tempX + pos.x;  currentPanelCoods[3] =  tempY + pos.y;
+	currentPanelCoods[4] =  tempX + pos.x;  currentPanelCoods[5] = -tempY + pos.y;
+	currentPanelCoods[6] = -tempX + pos.x;  currentPanelCoods[7] = -tempY + pos.y;
+
+	float ratio = aRatio;
+	float _size = (HEIGHT * 2);
+	Batch::GetInstance()->Submit(currentPanelCoods, color, texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (edgeRadius / (_size)* ratio));
 }
 
 void Doom::Gui::Bar(float x, float y, float value, float maxValue, glm::vec4 color,glm::vec4 outColor, float width, float height)
 {
+	ApplyRelatedToPanelProperties(&x, &y);
+	x += width * 0.5f;
+	y -= height * 0.5f;
+
+	UIProperties temp = relatedPanelProperties;
+	float tempCoords[8];
+	for (size_t i = 0; i < 8; i++)
+		tempCoords[i] = currentPanelCoods[i];
 	Panel(x,y,width,height,outColor);
 	float _width = width * (value / maxValue);
 	float diff = width - _width;
-	Panel(x - diff / 2., y, _width, height, color);
+	Panel(x - diff * 0.5f, y, _width, height, color);
+	relatedPanelProperties = temp;
+	for (size_t i = 0; i < 8; i++)
+		currentPanelCoods[i] = tempCoords[i];
+	relatedPanelProperties.yOffset += height + relatedPanelProperties.padding.y;
+}
+
+bool Doom::Gui::CheckBox(std::string label, bool * value, float x, float y, float size, glm::vec4 textColor, glm::vec4 imageColor)
+{
+	Texture* texture = nullptr;
+	if (*value) {
+		imageColor = COLORS::Green;
+		texture = checkBoxTextureTrue;
+	}
+	else {
+		imageColor = COLORS::Red;
+		texture = checkBoxTextureFalse;
+	}
+
+	float tempradius = edgeRadius;
+	edgeRadius = 0.0f;
+
+	if (Button("", x, y, 24, size, size,imageColor, imageColor, COLORS::White, texture))
+		*value = !*value;
+
+	edgeRadius = tempradius;
+
+	relatedPanelProperties.yOffset -= (size + relatedPanelProperties.padding.y);
+	yAlign = AlignVertically::YCENTER;
+	xAlign = AlignHorizontally::LEFT;
+	Text(label, true, x + size, y - size * 0.5f, size * 0.5f, textColor);
+	yAlign = AlignVertically::TOP;
+	relatedPanelProperties.yOffset += (size - lastTextProperties.size.y);
+	return *value;
+}
+
+float Doom::Gui::SliderFloat(std::string label, float * value, float min, float max, float x, float y, float width, float height,glm::vec4 sliderColor, glm::vec4 panelColor)
+{
+	ApplyRelatedToPanelProperties(&x, &y);
+	x += width * 0.5f;
+	y -= height * 0.5f;
+	UIProperties temp = relatedPanelProperties;
+	float tempCoords[8];
+	for (size_t i = 0; i < 8; i++)
+		tempCoords[i] = currentPanelCoods[i];
+	Panel(x, y, width, height, panelColor);
+
+	if (*value < min || *value - min < 0.01 * max)
+		*value = min;
+	else if (*value > max || max - *value < 0.01 * max)
+		*value = max;
+
+	float _x = (width * *value) / max;
+
+	Panel(x + _x - width * 0.5f, y, 0.05f * width, 1.5f * height, sliderColor);
+
+	if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
+		glm::vec2 mPos = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
+		if (mPos.x < x + width * 0.5f && mPos.x > x - width * 0.5f && mPos.y < y + height * 0.5f && mPos.y > y - height * 0.5f) {
+			float _value = mPos.x - (x - width * 0.5f);
+			*value = (_value * max) / width;
+		}
+	}
+	relatedPanelProperties = temp;
+
+	yAlign = YCENTER;
+	xAlign = XCENTER;
+	Text("%f", true, width * 0.5f, -height * 0.5f, height * 0.5f, COLORS::White, 3, *value);
+	relatedPanelProperties.yOffset -= (height * 0.5f + relatedPanelProperties.padding.y);
+	xAlign = LEFT;
+	Text(label, true, width + 10, -height * 0.5f, height * 0.5f, COLORS::White);
+	yAlign = TOP;
+	relatedPanelProperties.yOffset += (height - lastTextProperties.size.y);
+
+	for (size_t i = 0; i < 8; i++)
+		currentPanelCoods[i] = tempCoords[i];
+	return 0.0f;
+}
+
+bool Doom::Gui::IsPanelHovered() {
+	glm::dvec2 mousePos = ViewPort::GetInstance()->GetStaticMousePosition();
+	return (mousePos.x > currentPanelCoods[0] && mousePos.x < currentPanelCoods[2] && mousePos.y > currentPanelCoods[1] && mousePos.y < currentPanelCoods[7]);
+}
+
+
+void Doom::Gui::RelateToPanel()
+{
+	relatedPanelProperties.pos = glm::vec2(0.0f);
+	relatedPanelProperties.size = glm::vec2(0.0f);
+	relatedPanelProperties.margin = glm::vec2(0.0f);
+	relatedPanelProperties.yOffset = 0.0f;
+	IsRelatedToPanel = true;
+}
+
+void Doom::Gui::UnRelateToPanel()
+{
+	IsRelatedToPanel = false;
+	relatedPanelProperties.pos = glm::vec2(0.0f);
+	relatedPanelProperties.size = glm::vec2(0.0f);
+	relatedPanelProperties.margin = glm::vec2(0.0f);
+	relatedPanelProperties.yOffset = 0.0f;
 }
 
 void Doom::Gui::LoadStandartFonts()
@@ -253,4 +391,20 @@ void Doom::Gui::LoadStandartFonts()
 	standartFonts.push_back(font);
 
 	FontBind(standartFonts.front());
+}
+
+void Doom::Gui::ApplyRelatedToPanelProperties(float * x, float * y)
+{
+	*x += relatedPanelProperties.pos.x + relatedPanelProperties.margin.x;
+	*y += relatedPanelProperties.pos.y - relatedPanelProperties.margin.y;
+	if (relatedPanelProperties.autoAllignment)
+		*y -= relatedPanelProperties.yOffset;
+}
+
+void Doom::Gui::ShutDown() {
+	for (size_t i = 0; i < standartFonts.size(); i++)
+	{
+		delete standartFonts[i];
+	}
+	standartFonts.clear();
 }
