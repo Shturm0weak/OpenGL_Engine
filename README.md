@@ -1,4 +1,4 @@
-Welcome to the 2D_OpenGL_Engine!
+Welcome to the OpenGL_Engine!
 
 I've been making this game engine for a (year * 0.8f).
 
