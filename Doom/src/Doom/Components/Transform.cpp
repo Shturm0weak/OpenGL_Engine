@@ -157,7 +157,7 @@ void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
 	if (col != nullptr)
 		col->UpdateCollision(position.x, position.y, sr->pos, sr->view, sr->scale);
 	//EventSystem::Instance()->SendEvent("OnScale",(Listener*)owner);
-	if (owner->Enable) {
+	//if (owner->Enable) {
 		unsigned int size = owner->GetChilds().size();
 		for (unsigned int i = 0; i < size; i++)
 		{
@@ -165,7 +165,7 @@ void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
 			if (go->Enable == true)
 				go->GetComponentManager()->GetComponent<Transform>()->Scale(scaleX, scaleY, scaleZ);
 		}
-	}
+	//}
 }
 
 void Transform::Translate(float x, float y,float z)

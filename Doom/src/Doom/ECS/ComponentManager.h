@@ -12,18 +12,21 @@
 #include "../Components/Transform.h"
 #include "../Components/Animator.h"
 #include "../Components/Collision.h"
+#include "../Core/ColoredOutput.h"
 
 namespace Doom {
 
 	class DOOM_API ComponentManager {
 		GameObject* owner = nullptr;
 		std::string owner_name;
-		const char** items = nullptr;
+		const char** namesOfMembers = nullptr;
 		std::vector <Component*> components;
+
+		friend class Component;
 
 	public:
 		~ComponentManager() { 
-			delete[] items;
+			delete[] namesOfMembers;
 			RemoveComponent<Collision>();
 			RemoveComponent<Transform>();
 			RemoveComponent<Animator>();
@@ -36,14 +39,14 @@ namespace Doom {
 		int GetAmountOfComponents() { return components.size(); }
 
 		const char** GetItems() {
-			if (items != nullptr)
-				delete[] items;
-			items = new const char*[components.size()];
+			if (namesOfMembers != nullptr)
+				delete[] namesOfMembers;
+			namesOfMembers = new const char*[components.size()];
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				items[i] = components[i]->GetComponentType();
+				namesOfMembers[i] = components[i]->GetComponentType();
 			}
-			return items;
+			return namesOfMembers;
 		}
 
 		template <class T >
@@ -67,16 +70,6 @@ namespace Doom {
 					components[i]->m_Id = i;;
 				}
 			}
-			Renderer::collision2d.erase(_id + Renderer::collision2d.begin());
-			Renderer::col_id--;
-			unsigned int size = Renderer::collision2d.size();
-			if (_id != size) {
-				for (unsigned int i = _id; i < size; i++)
-				{
-					Renderer::collision2d[i]->SetId(i);
-				}
-			}
-			GetComponent<Transform>()->col = nullptr;
 			delete col;
 			return;
 		}
@@ -147,6 +140,11 @@ namespace Doom {
 		}
 
 		template<>
+		Renderer3D* GetComponent() {
+			return static_cast<Renderer3D*>(GetComponent<Irenderer>());
+		}
+
+		template<>
 		Collision* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
@@ -154,7 +152,6 @@ namespace Doom {
 					return (Collision*)components[i];
 				}
 			}
-			//std::cout << yellow << "Warning:" << white << " there is no component of type <Collision> for gameobject: " << owner_name << std::endl;
 			return nullptr;
 		}
 
@@ -166,7 +163,6 @@ namespace Doom {
 					return (Irenderer*)components[i];
 				}
 			}
-			//std::cout << yellow << "Warning:" << white << " there is no component of type <Collision> for gameobject: " << owner_name << std::endl;
 			return nullptr;
 		}
 
@@ -178,7 +174,6 @@ namespace Doom {
 					return (Animator*)components[i];
 				}
 			}
-			//std::cout << yellow << "Warning:" << white << " there is no component of type <Collision> for gameobject: " << owner_name << std::endl;
 			return nullptr;
 		}
 
@@ -193,7 +188,6 @@ namespace Doom {
 					return (Transform*)comp;
 				}
 			}
-			//std::cout << yellow << "Warning:" << white << " there is no component of this type <Transform> for gameobject: " << owner_name << std::endl;
 			return nullptr;
 		}
 
@@ -209,6 +203,9 @@ namespace Doom {
 				object->owner = (this->owner);
 				object->m_Id = components.size();
 				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << "Added component of type <Collision> for gameobject: " << owner_name << std::endl;
+#endif
 				return object;
 			}
 			return nullptr;
@@ -221,6 +218,9 @@ namespace Doom {
 				object->owner = (this->owner);
 				object->m_Id = components.size();
 				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << "Added component of type <SpriteRenderer> for gameobject: " << owner_name << std::endl;
+#endif
 				return object;
 			}
 			return nullptr;
@@ -233,6 +233,9 @@ namespace Doom {
 				object->owner = (this->owner);
 				object->m_Id = components.size();
 				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << "Added component of type <Renderer3D> for gameobject: " << owner_name << std::endl;
+#endif
 				return object;
 			}
 			return nullptr;
@@ -245,6 +248,9 @@ namespace Doom {
 				animator->owner = owner;
 				animator->m_Id = components.size();
 				components.push_back(animator);
+#ifdef _DEBUG
+				std::cout << "Added component of type <Animator> for gameobject: " << owner_name << std::endl;
+#endif
 				return animator;
 			}
 			return nullptr;
@@ -258,6 +264,9 @@ namespace Doom {
 				object->init();
 				object->m_Id = components.size();
 				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << "Added component of type <Transform> for gameobject: " << owner_name << std::endl;
+#endif
 				return object;
 			}
 			return nullptr;

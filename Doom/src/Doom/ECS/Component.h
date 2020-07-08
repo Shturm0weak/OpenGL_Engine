@@ -13,14 +13,16 @@ namespace Doom {
 		const char* m_Type;
 	protected:
 		GameObject* owner = nullptr;
-
-		 void SetType(const char* type)  { m_Type = type; }
-		 int GetComponentId()  { return m_Id; }
-		 const char* GetComponentType()  { return m_Type; }
+		inline void SetType(const char* type)  { m_Type = type; }
+		inline int GetComponentId() const { return m_Id; }
+		inline const char* GetComponentType() const { return m_Type; }
 	public:
-		GameObject* GetOwnerOfComponent() { return owner; }
-		int GetComponentID() { return m_Id; }
+		inline GameObject* GetOwnerOfComponent() const { return owner; }
+		inline int GetComponentID() const { return m_Id; }
+		
 		friend class ComponentManager;
+
+		void RemoveComponent();
 
 		~Component() {}
 	};

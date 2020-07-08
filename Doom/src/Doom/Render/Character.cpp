@@ -37,8 +37,8 @@ Character::Character(Font* font,int ch,float posx,float posy,float scale)
 		mesh2D[14] = x / size;
 		mesh2D[15] = abs(y - size) / size;
 
-		double widthRatio = Window::GetCamera().GetAspectRatio() / Window::GetSize()[0];
-		double heightRatio = 1 / Window::GetSize()[1];
+		double widthRatio = Window::GetCamera().GetAspectRatio() / ViewPort::GetInstance()->GetSize()[0];
+		double heightRatio = 1 / ViewPort::GetInstance()->GetSize()[1];
 
 		mesh2D[0]  = 0;
 		mesh2D[1]  = 0;

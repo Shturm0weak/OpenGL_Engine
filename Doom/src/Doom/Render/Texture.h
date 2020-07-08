@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
+#include "../Core/ColoredOutput.h"
 
 namespace Doom {
 
@@ -28,7 +29,9 @@ namespace Doom {
 		static void ShutDown();
 		inline int GetWidth() const { return m_width; }
 		inline int GetHeight() const { return m_height; }
-		inline std::string GetFilePath() { return m_FilePath; }
+		inline std::string GetFilePath() const { return m_FilePath; }
+
+		static unsigned int LoadCubeMap(std::vector<std::string> faces);
 
 		friend class Editor;
 	};

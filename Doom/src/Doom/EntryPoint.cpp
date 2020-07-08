@@ -3,6 +3,8 @@
 #include "Render/Line.h"
 #include "Audio/SoundManager.h"
 #include "Core/Editor.h"
+#include "Objects2D/GridLayOut.h"
+#include "Render/SkyBox.h"
 
 using namespace Doom;
 
@@ -23,16 +25,18 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	EventSystem::GetInstance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
 	Shader::defaultShader = new Shader("src/Shaders/Basic.shader");
+	GridLayOut* grid = new GridLayOut(app);
 }
 
 void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
+	bool FirstFrame = true;
 	app->OnStart();
 
-	bool FirstFrame = true;
-
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
+		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
+
 		DeltaTime::calculateDeltaTime();
 
 		if (FirstFrame) {
@@ -54,8 +58,10 @@ void EntryPoint::Run()
 			isEditorEnable = !isEditorEnable;
 		}
 		
-		if(Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
-			Renderer::SelectObject();
+		if (app->type == TYPE_2D) {
+			if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
+				Renderer::SelectObject();
+		}
 
 		app->OnUpdate();
 
@@ -73,7 +79,7 @@ void EntryPoint::Run()
 
 		if (isEditorEnable)
 			Editor::Instance()->EditorUpdate();
-		
+
 		ImGui::EndFrame();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

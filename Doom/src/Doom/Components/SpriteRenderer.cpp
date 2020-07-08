@@ -71,8 +71,6 @@ void Doom::SpriteRenderer::Render()
 	Batch::GetInstance()->Submit(*this);
 }
 
-std::string SpriteRenderer::GetPathToTexture() { return this->pathToTexture; }
-
 void SpriteRenderer::ReverseUVs()
 {
 	float v1 = mesh2D[2];
@@ -129,17 +127,17 @@ void SpriteRenderer::SetUVs(float* uvs)
 	mesh2D[15] = uvs[7];
 }
 
-double Doom::SpriteRenderer::GetWidth()
+double Doom::SpriteRenderer::GetWidth() const
 {
 	return owner->scaleValues[0] * mesh2D[4] * 2;
 }
 
-double Doom::SpriteRenderer::GetHeight()
+double Doom::SpriteRenderer::GetHeight() const
 {
 	return owner->scaleValues[1] * mesh2D[9] * 2;
 }
 
-float * SpriteRenderer::GetUVs()
+float * SpriteRenderer::GetUVs() const
 {
 	float uvs[8];
 	uvs[0] = mesh2D[2];

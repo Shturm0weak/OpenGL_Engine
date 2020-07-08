@@ -11,7 +11,7 @@
 
 using namespace Doom;
 
-void Doom::Renderer::Clear() {
+void Doom::Renderer::Clear(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearDepth(1.0f);
 	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -290,6 +290,7 @@ void Renderer::Render() {
 	Render3DObjects();
 	RenderCollision();
 	RenderLines();
+	Editor::Instance()->gizmo->Render();
 	RenderText();
 }
 

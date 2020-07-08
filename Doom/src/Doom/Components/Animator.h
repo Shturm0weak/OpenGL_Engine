@@ -31,7 +31,7 @@ namespace Doom {
 
 		void SetAnimation(const std::string path);
 		void PlayAnim(std::vector<Texture*>& text);
-		int GetAmountOfAnimations();
+		inline int GetAmountOfAnimations() const { return amount; }
 	};
 
 }

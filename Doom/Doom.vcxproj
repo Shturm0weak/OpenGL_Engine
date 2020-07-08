@@ -117,10 +117,6 @@
     <ClInclude Include="src\Doom\FbxLoader\fbxnode.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="src\Doom\Application.h" />
     <ClInclude Include="src\Doom\Components\Animator.h" />
     <ClInclude Include="src\Doom\Components\Collision.h" />
@@ -142,7 +138,9 @@
     <ClInclude Include="src\Doom\ECS\Component.h" />
     <ClInclude Include="src\Doom\ECS\ComponentManager.h" />
     <ClInclude Include="src\Doom\EntryPoint.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h" />
     <ClInclude Include="src\Doom\Objects2D\GameObject.h" />
+    <ClInclude Include="src\Doom\Objects2D\GridLayOut.h" />
     <ClInclude Include="src\Doom\pch.h" />
     <ClInclude Include="src\Doom\Render\Batch.h" />
     <ClInclude Include="src\Doom\Render\Character.h" />
@@ -154,6 +152,7 @@
     <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
     <ClInclude Include="src\Doom\Render\Renderer.h" />
     <ClInclude Include="src\Doom\Render\Shader.h" />
+    <ClInclude Include="src\Doom\Render\SkyBox.h" />
     <ClInclude Include="src\Doom\Render\stb_image.h" />
     <ClInclude Include="src\Doom\Render\Gui.h" />
     <ClInclude Include="src\Doom\Render\Texture.h" />
@@ -171,15 +170,12 @@
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
+    <ClCompile Include="src\Doom\ECS\Component.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxnode.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImCurveEdit.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="src\Doom\Components\Animator.cpp" />
     <ClCompile Include="src\Doom\Components\Collision.cpp" />
     <ClCompile Include="src\Doom\Components\Transform.cpp" />
@@ -190,6 +186,7 @@
     <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Doom.cpp" />
     <ClCompile Include="src\Doom\EntryPoint.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp" />
     <ClCompile Include="src\Doom\Objects2D\GameObject.cpp" />
     <ClCompile Include="src\Doom\pch.cpp" />
     <ClCompile Include="src\Doom\Render\Batch.cpp" />
@@ -202,6 +199,7 @@
     <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
     <ClCompile Include="src\Doom\Render\Renderer.cpp" />
     <ClCompile Include="src\Doom\Render\Shader.cpp" />
+    <ClCompile Include="src\Doom\Render\SkyBox.cpp" />
     <ClCompile Include="src\Doom\Render\stb_image.cpp" />
     <ClCompile Include="src\Doom\Render\Gui.cpp" />
     <ClCompile Include="src\Doom\Render\Texture.cpp" />

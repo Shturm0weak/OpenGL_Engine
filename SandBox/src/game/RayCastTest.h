@@ -23,7 +23,7 @@ public:
 		for (unsigned int i = 0; i < 2000; i++)
 		{
 			rays.push_back(new Ray(glm::vec2(0, 0), glm::vec2(0, 1), 100));
-			lines.push_back(new Line(glm::vec2(0, 0), glm::vec2(1, 1)));
+			lines.push_back(new Line(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 			rays[i]->Rotate(angle);
 			lines[i]->SetEndPoint(rays[i]->end.x, rays[i]->end.y);
 			angle += 0.18f;

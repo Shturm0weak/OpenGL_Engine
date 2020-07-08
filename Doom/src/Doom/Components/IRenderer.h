@@ -25,7 +25,7 @@ namespace Doom {
 			this->color = color;
 		}
 
-		float* GetColor() {
+		float* GetColor() const {
 			float* color = new float[4];
 			for (unsigned int i = 0; i < 4; i++)
 			{

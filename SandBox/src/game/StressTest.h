@@ -16,8 +16,9 @@ public:
 	TextureAtlas* textureAtlas = nullptr;
 	StressTest(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_2D, width, height, Vsync) {}
 	void OnStart() {
+		gameobj = new GameObject();
+		gameobj->GetComponent<Collision>();
 		ImGui::SetCurrentContext(Window::imGuiContext);
-		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->ARIAL]);
 		textureAtlas = new TextureAtlas(128, 128, "src/GameRPG/Textures/RPGpack_sheet_2X.png");
 		std::unordered_map<char, glm::vec2> textures;
 		const char* map =
@@ -54,7 +55,7 @@ public:
 		glm::vec2 posInScreen = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
 		if(MoveWithMouse)
 			pos = posInScreen;
-
+		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->ARIAL]);
 		Gui::GetInstance()->RelateToPanel();
 		Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
 		Gui::GetInstance()->relatedPanelProperties.margin = glm::vec2(30);
@@ -72,6 +73,7 @@ public:
 		Gui::GetInstance()->Text("Panel coords.", true, 0, 0, 20);
 		Gui::GetInstance()->Text("X: %f Y: %f", true, 0, 0, 20, COLORS::White, 2, pos.x, pos.y);
 		Gui::GetInstance()->CheckBox("Check box", &value, 0, 0, 50, COLORS::White);
+		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PLAYBALL]);
 		Gui::GetInstance()->Button("Pointless", 0, 0, 20, 150, 50, COLORS::Silver, COLORS::Silver * 0.8f);
 		Gui::GetInstance()->Text("FPS: %f", true, 0, 0, 20, COLORS::White, 2, Window::GetFPS());
 		Gui::GetInstance()->Bar(0, 0, panelRadius, 100, COLORS::Yellow, COLORS::Silver, 150, 25);

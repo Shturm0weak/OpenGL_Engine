@@ -22,6 +22,7 @@ namespace Doom {
 		glm::vec3 prevPosition;
 
 		friend class ComponentManager;
+		friend class Collision;
 
 	public:
 		Transform();

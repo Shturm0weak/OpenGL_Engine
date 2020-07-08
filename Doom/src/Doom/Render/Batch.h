@@ -36,7 +36,7 @@ namespace Doom {
 	};
 
 	struct DOOM_API VertexLine {
-		glm::vec2 m_vertex;
+		glm::vec3 m_vertex;
 		glm::vec4 m_color;
 		glm::vec4 rotationMat0;
 		glm::vec4 rotationMat1;

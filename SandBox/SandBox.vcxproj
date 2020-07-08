@@ -150,12 +150,11 @@
     <None Include="src\Shaders\Basic.shader" />
     <None Include="src\Shaders\Basic3D.shader" />
     <None Include="src\Shaders\Batch.shader" />
-    <None Include="src\Shaders\Bloom.shader" />
     <None Include="src\Shaders\DepthBuffer.shader" />
-    <None Include="src\Shaders\guishader.shader" />
     <None Include="src\Shaders\Line.shader" />
     <None Include="src\Shaders\LineSimple.shader" />
     <None Include="src\Shaders\newshader.shader" />
+    <None Include="src\Shaders\SkyBox.shader" />
     <None Include="src\Shaders\Text.shader" />
   </ItemGroup>
   <ItemGroup>

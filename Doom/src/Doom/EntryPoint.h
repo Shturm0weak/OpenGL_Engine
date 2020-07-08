@@ -6,7 +6,6 @@
 #include <ImGui/examples/imgui_impl_glfw.h>
 #include <ImGui/examples/imgui_impl_opengl3.h>
 #include "Render/ViewPort.h"
-#include "ImGuizmo/ImGuizmo.h"
 #include "Application.h"
 
 namespace Doom {

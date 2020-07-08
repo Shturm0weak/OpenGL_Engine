@@ -27,7 +27,7 @@ namespace Doom {
 		Texture* texture = nullptr;
 		Shader* shader = nullptr;
 
-		std::string GetPathToTexture();
+		inline std::string GetPathToTexture() const { return this->pathToTexture; };
 		std::string pathToTexture = ("None");
 
 		void InitShader();
@@ -53,12 +53,12 @@ namespace Doom {
 
 		bool AlwaysDraw = false;
 
-		inline int GetTexture() { return texture->m_RendererID; }
-		inline Texture* GetTexturePointer() { return texture; }
-		double GetWidth();
-		double GetHeight();
+		inline int GetTexture() const { return texture->m_RendererID; }
+		inline Texture* GetTexturePointer() const { return texture; }
+		double GetWidth() const;
+		double GetHeight() const;
 
-		float* GetUVs();
+		float* GetUVs() const;
 		
 
 		//Only in int size from 0 to 1 !!!

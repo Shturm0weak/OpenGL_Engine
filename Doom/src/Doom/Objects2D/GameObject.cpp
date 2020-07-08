@@ -4,7 +4,7 @@
 
 using namespace Doom;
 
-GameObject::GameObject(const std::string name,float x, float y) {
+GameObject::GameObject(const std::string name,float x, float y,float z) {
 	this->name = name;
 	this->type = "GameObject";
 	layer = Renderer::objects2d.size();
@@ -12,9 +12,8 @@ GameObject::GameObject(const std::string name,float x, float y) {
 	Renderer::obj_id++;
 	component_manager = new ComponentManager(this, this->name);
 	component_manager->AddComponent<Transform>();
-	component_manager->GetComponent<Transform>()->position.x = position.x = x;
-	component_manager->GetComponent<Transform>()->position.y = position.y = y;
 	component_manager->AddComponent<SpriteRenderer>();
+	component_manager->GetComponent<Transform>()->Translate(x, y, z);
 	Renderer::objects2d.push_back(this);
 }
 
@@ -54,7 +53,7 @@ void GameObject::operator=(GameObject& go) {
 	}
 }
 
-glm::vec3 GameObject::GetPositions(){
+glm::vec3 GameObject::GetPositions() {
 	 Transform* tr = this->GetComponentManager()->GetComponent<Transform>();
 	 position.x = tr->position.x;
 	 position.y = tr->position.y;
@@ -71,6 +70,6 @@ void Doom::GameObject::RemoveChild(void * child)
 		}
 	}
 }
-glm::vec3 GameObject::GetScale() {	return scaleValues;}
+glm::vec3 GameObject::GetScale() const {	return scaleValues;}
 
-float GameObject::GetAngle() { return component_manager->GetComponent<Transform>()->angleRad; }
+float GameObject::GetAngle() const { return component_manager->GetComponent<Transform>()->angleRad; }

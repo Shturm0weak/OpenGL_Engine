@@ -34,6 +34,7 @@ namespace Doom {
 		UIProperties lastTextProperties;
 
 		glm::mat4 ViewProjecTionRelatedToCamera;
+
 		float edgeRadius = 0;
 		TextProperties textProps;
 		Font* font;
@@ -64,7 +65,7 @@ namespace Doom {
 		static Gui* GetInstance() { static Gui gui; return &gui; }
 
 		//x,y in pixels
-		void Text(std::string text, int m_static = 1, float x = 0, float y = 0, float scale = 12, glm::vec4 color = COLORS::White, int charsAfterComma = 0, ...);
+		void Text(std::string text, int m_static = 1, float x = 0, float y = 0, float fontScale = 20, glm::vec4 color = COLORS::White, int charsAfterComma = 0, ...);
 		
 		//x,y,width and height in pixels
 		bool Button(std::string label, float x = 0, float y = 0,float scale = 24, float width = 100,float height = 50,glm::vec4 btnColor = COLORS::Gray,glm::vec4 pressedBtnColor = COLORS::Gray * 0.5f, glm::vec4 textColor = COLORS::White,Texture* texture = nullptr);
@@ -79,13 +80,13 @@ namespace Doom {
 
 		void Image(float x = 0.0f, float y = 0.0f,float width = 100.0f,float height = 100.0f,Texture* texture = nullptr,glm::vec4 color = COLORS::White);
 
-		bool IsPanelHovered();
+		bool IsPanelHovered() const;
 
 		void RelateToPanel();
 		void UnRelateToPanel();
 
-		void Begin();
-		void End();
+		void Begin() const;
+		void End() const;
 
 		inline void FontBind(Font* font) {this->font = font;}
 		inline std::vector<Font*>& GetStandartFonts() {return standartFonts;}
@@ -108,7 +109,7 @@ namespace Doom {
 		std::string s;
 		std::vector<Font*> standartFonts;
 
-		inline Gui() {RecalculateProjectionMatrix();}
+		Gui() {RecalculateProjectionMatrix();}
 		~Gui() {}
 
 		bool IsRelatedToPanel = false;

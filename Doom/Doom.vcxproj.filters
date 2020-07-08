@@ -47,10 +47,6 @@
     <ClInclude Include="src\Doom\Render\TileMap.h" />
     <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
     <ClInclude Include="src\Doom\Render\ViewPort.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImCurveEdit.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImGradient.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\Render\Gui.h" />
     <ClInclude Include="src\Doom\Audio\Sound.h" />
@@ -65,6 +61,9 @@
     <ClInclude Include="src\Doom\Render\Mesh.h" />
     <ClInclude Include="src\Doom\Render\Camera.h" />
     <ClInclude Include="src\Doom\Components\Render3D.h" />
+    <ClInclude Include="src\Doom\Objects2D\GridLayOut.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h" />
+    <ClInclude Include="src\Doom\Render\SkyBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -93,10 +92,6 @@
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />
     <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImCurveEdit.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImGradient.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="src\Doom\Render\Gui.cpp" />
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
@@ -112,6 +107,9 @@
     <ClCompile Include="src\Doom\Application.cpp" />
     <ClCompile Include="src\Doom\Render\ViewPort.cpp" />
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
+    <ClCompile Include="src\Doom\ECS\Component.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp" />
+    <ClCompile Include="src\Doom\Render\SkyBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

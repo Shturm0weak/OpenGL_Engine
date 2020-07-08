@@ -2,7 +2,7 @@
 
 class DrawLines : public Application {
 
-	std::vector<glm::vec2> dots;
+	std::vector<glm::vec3> dots;
 	std::vector<GameObject*> dotsCircles;
 	float timer = 0.2f;
 	Texture* dotTexture = nullptr;
@@ -20,15 +20,15 @@ class DrawLines : public Application {
 	virtual void OnUpdate() override {
 
 		if (timer > 0.19f && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
-			glm::vec2 pos;
+			glm::vec3 pos;
 			if (Input::IsKeyPressed(Keycode::KEY_LEFT_CONTROL) && dotsCircles.size() == 2) {
-				pos = glm::vec2(dotsCircles[1]->GetPositions().x, dotsCircles[1]->GetPositions().y);
+				pos = glm::vec3(dotsCircles[1]->GetPositions().x, dotsCircles[1]->GetPositions().y,0);
 				dots.clear();
 				dots.push_back(pos);
 				GameObject* dot = new GameObject("Dot", pos.x, pos.y);
 				GenerateDot(*dot);
 			}
-			pos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+			pos = glm::vec3(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y,0);
 			dots.push_back(pos);
 			GameObject* dot = new GameObject("Dot", pos.x, pos.y);
 			GenerateDot(*dot);

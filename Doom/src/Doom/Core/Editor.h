@@ -5,6 +5,7 @@
 #include <ImGui/examples/imgui_impl_opengl3.h>
 #include "../Render/Renderer.h"
 #include <mutex>
+#include "../ImGuizmo/Gizmos.h"
 
 namespace Doom {
 
@@ -35,14 +36,13 @@ namespace Doom {
 		float uvsOffset[2];
 		Editor& operator=(const Editor& rhs) { return *this; }
 		Editor() {}
-		
 		void CreateTextureAtlas();
 
 		float TextColor[4] = {255,255,255,255};
 		float shadowOffset[2] = {0,0};
 
 	public:
-
+		Gizmos* gizmo = new Gizmos;
 		static std::vector<Texture*> textureVecTemp;
 		GameObject* go = nullptr;
 		bool isItemActive = false;
@@ -54,6 +54,5 @@ namespace Doom {
 		void Debug();
 		void TextProps();
 	};
-
 }
 #endif

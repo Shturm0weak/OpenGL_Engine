@@ -23,9 +23,9 @@ void Camera::RecalculateViewMatrix() {
 
 	float cosPitch = cos(pitch);
 
-	startDir.z = cos(yaw) * cosPitch;
-	startDir.x = sin(yaw) * cosPitch;
-	startDir.y = sin(pitch);
+	forwardV.z = cos(yaw) * cosPitch;
+	forwardV.x = sin(yaw) * cosPitch;
+	forwardV.y = sin(pitch);
 
 	m_ViewMatrix = glm::inverse(transform);
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
@@ -48,7 +48,7 @@ void Camera::WindowResize() {
 		if (props[0] == 0 || props[1] == 0)
 			return;
 		glViewport(0, 0, props[0], props[1]);
-		ratio = (float)props[0] / (float)props[1];
+		ratio = ViewPort::GetInstance()->GetSize().x / ViewPort::GetInstance()->GetSize().y;
 		switch (type)
 		{
 		case Doom::Camera::ORTHOGRAPHIC:
@@ -113,7 +113,7 @@ void Doom::Camera::SetOrthographic(float ratio)
 	type = ORTHOGRAPHIC;
 }
 
-glm::vec3 Doom::Camera::GetRotation()
+glm::vec3 Doom::Camera::GetRotation() const
 {
 	return glm::vec3(pitch, yaw, roll);
 }
@@ -138,19 +138,6 @@ void Camera::OnWindowResize(void * _props)
 {
 	props = static_cast<int*>(_props);
 	IsWindowResized = true;
-}
-
-void Doom::Camera::ChangeAspectRatio(float width, float height)
-{
-	aspectratio[0] = -width;
-	aspectratio[1] = width;
-	aspectratio[2] = height;
-	aspectratio[3] = -height;
-	if (type == ORTHOGRAPHIC)
-		m_ProjectionMatrix = glm::ortho(aspectratio[0] * zoomlevel, aspectratio[1] * zoomlevel, aspectratio[3] * zoomlevel, aspectratio[2] * zoomlevel, -1.0f, 1.0f);
-	else if (type == PERSPECTIVE)
-		m_ProjectionMatrix = glm::perspective(fovy, abs(aspectratio[0]) / abs(aspectratio[3]), znear, zfar);
-	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
 void Camera::Increase() {
@@ -202,15 +189,15 @@ void Camera::CameraMovement() {
 	else {
 		float speed = 2.f;
 		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
-			speed *= 3;
+			speed *= 10;
 
 		}
-		startDir *= speed * DeltaTime::deltatime;
+		forwardV *= speed * DeltaTime::deltatime;
 		if (Input::IsKeyDown(Keycode::KEY_W)) {
-			MovePosition(glm::vec3(-startDir.x, startDir.y, -startDir.z));
+			MovePosition(glm::vec3(-forwardV.x, forwardV.y, -forwardV.z));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_S)) {
-			MovePosition(glm::vec3(startDir.x, -startDir.y, startDir.z));
+			MovePosition(glm::vec3(forwardV.x, -forwardV.y, forwardV.z));
 
 		}
 		if (Input::IsKeyDown(Keycode::SPACE)) {
@@ -219,32 +206,20 @@ void Camera::CameraMovement() {
 		if (Input::IsKeyDown(Keycode::KEY_C)) {
 			MovePosition(glm::vec3(0, -5.0f * DeltaTime::deltatime, 0));
 		}
-		if (ViewPort::GetInstance()->IsActive) {
-			//glm::dvec2 mousepos;
-			//glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			//glfwGetCursorPos(Window::GetWindow(), &mousepos.x, &mousepos.y);
-			glm::dvec2 drag = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
-			drag *= 0.2;
-			SetRotation(glm::vec3((drag.y * (2 * 3.14159f) / 360.0f), (-drag.x * (2 * 3.14159f) / 360.0f), 0));
-			
-			//glm::ivec2 windowpos;
-			//glm::ivec2 windowSize;
-			
-			/*glfwGetWindowPos(Window::GetWindow(), &windowpos.x, &windowpos.y);
-			glfwGetWindowSize(Window::GetWindow(), &windowSize.x, &windowSize.y);
-			if (mousepos.x > windowpos.x + windowSize.x) {
-				SetCursorPos(windowpos.x,mousepos.y );
-				RecalculateViewMatrix();
-			}
-			else if (mousepos.x < windowpos.x) {
-				SetCursorPos(windowpos.x + windowSize.x, mousepos.y);
-				RecalculateViewMatrix();
-			}*/
+		if (ViewPort::GetInstance()->IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
+			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
+			delta *= 0.2;
+			SetRotation(glm::vec3((pitch + delta.y * (2 * 3.14159f) / 360.0f),(yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
+			if (yaw > glm::two_pi<float>() || yaw < -glm::two_pi<float>())
+				yaw = 0;
+			if (pitch > glm::two_pi<float>() || pitch < -glm::two_pi<float>())
+				pitch = 0;
 		}
 		else {
 			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
-		glm::vec2 rightVec = { -(startDir.z * 1) / startDir.x ,1 };
+		glm::vec2 rightVec = { -(forwardV.z * 1) / forwardV.x ,1 };
 		rightVec *= (1.f / sqrtf(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
 		rightVec *= DeltaTime::deltatime * speed;
 		double angle = (yaw * 360.0f) / (2 * 3.14159f);
@@ -273,8 +248,8 @@ void Camera::CameraMovement() {
 	SetOnStart();
 }
 
-float Camera::GetRationWH()
-{ return ((float)Window::GetSize()[0] / (float)Window::GetSize()[1]); }
-float Camera::GetRationHW()
-{ return ((float)Window::GetSize()[1] / (float)Window::GetSize()[0]); }
+float Camera::GetRationWH() const
+{ return ((float)ViewPort::GetInstance()->GetSize()[0] / (float)ViewPort::GetInstance()->GetSize()[1]); }
+float Camera::GetRationHW() const
+{ return ((float)ViewPort::GetInstance()->GetSize()[1] / (float)ViewPort::GetInstance()->GetSize()[0]); }
 

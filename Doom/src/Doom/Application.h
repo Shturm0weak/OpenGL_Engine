@@ -22,7 +22,7 @@ namespace Doom {
 
 		Application(std::string name = "SandBox", ApplicationType type = TYPE_2D, int width = 800, int height = 600, bool Vsync = false) 
 			: name(name), type(type), width(width), height(height), Vsync(Vsync) {}
-		void Init();
+		void Init() const;
 		virtual ~Application() {}
 
 		virtual void OnStart(){}

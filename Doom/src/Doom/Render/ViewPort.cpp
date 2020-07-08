@@ -36,6 +36,8 @@ void Doom::ViewPort::Update()
 	else
 		ViewPort::GetInstance()->viewportResized = false;
 
+	mouseDragDelta = GetMousePositionToScreenSpace() - prevMousePos;
+	prevMousePos = GetMousePositionToScreenSpace();
 	ImGui::GetWindowDrawList()->AddImage(tex, ImVec2(ViewPort::GetInstance()->GetViewPortPos().x,
 		ViewPort::GetInstance()->GetViewPortPos().y), ImVec2(ViewPort::GetInstance()->GetViewPortPos().x + ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetViewPortPos().y + ViewPort::GetInstance()->GetSize().y), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::End();

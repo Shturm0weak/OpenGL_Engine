@@ -12,7 +12,7 @@ namespace Doom {
 		FrameBuffer();
 		~FrameBuffer();
 
-		void Resize(float width,float height);
+		void Resize(float width, float height);
 		void Bind();
 		void UnBind();
 	};

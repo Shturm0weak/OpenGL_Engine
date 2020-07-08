@@ -19,11 +19,11 @@ namespace Doom {
 
 		float* GetSpriteUVs(float x, float y);
 
-		inline Texture* GetTexture() { return m_texture; }
+		inline Texture* GetTexture() const { return m_texture; }
 
-		inline unsigned int GetSpriteHeight() { return spriteHeight; }
+		inline unsigned int GetSpriteHeight() const { return spriteHeight; }
 
-		inline unsigned int GetSpriteWidth() { return spriteWidth; }
+		inline unsigned int GetSpriteWidth() const { return spriteWidth; }
 
 		static const char** GetTextureAtlases();
 

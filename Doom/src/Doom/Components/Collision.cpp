@@ -44,6 +44,19 @@ Collision::Collision(GameObject* owner,double x, double y){
 	}
 }
 
+Doom::Collision::~Collision()
+{
+	Renderer::collision2d.erase(GetId() + Renderer::collision2d.begin());
+	Renderer::col_id--;
+	unsigned int size = Renderer::collision2d.size();
+	if (GetId() != size) {
+		for (unsigned int i = GetId(); i < size; i++)
+		{
+			Renderer::collision2d[i]->SetId(i);
+		}
+	}
+	owner->GetComponent<Transform>()->col = nullptr;
+}
 void Collision::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,glm::mat4 scale)
 {
 	this->scale = scale;

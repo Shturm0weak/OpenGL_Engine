@@ -40,9 +40,10 @@ namespace Doom {
 		static GameObject* GetReference(int id) { return objects2d[id]; }
 		static const char** items;
 		static void ShutDown();
-
+		static void PopBack() { objects2d.pop_back(); }
 		static const char** GetItems();
-
+		static int obj_id;
+		static int col_id;
 		static GameObject* CreateGameObject();
 
 	private:
@@ -50,8 +51,6 @@ namespace Doom {
 		static std::vector<unsigned int> ObjectsWithNoOwner;
 		static std::vector<unsigned int> ObjectsWithOwner;
 		static std::vector <Collision*> collision2d;
-		static int obj_id;
-		static int col_id;
 		static std::vector <GameObject*> objects2d;
 		static std::vector <GameObject*> objects3d;
 		static std::mutex mtx;

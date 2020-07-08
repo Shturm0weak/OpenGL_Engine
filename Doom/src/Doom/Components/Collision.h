@@ -74,16 +74,16 @@ namespace Doom {
 	public:
 		void SetOwner(GameObject* _owner) { owner = _owner; }
 
-		glm::vec2 GetPositions(){
+		inline glm::vec2 GetPositions() const {
 			return position;
 		};
 
 		float* ScaledVerPos = new float[16];
 
 		Collision* collidedObject = nullptr;
-		std::string GetTag() { return tag; }
+		std::string GetTag() const { return tag; }
 		void SetId(int id) { this->id = id; }
-		int GetId() { return id; }
+		int GetId() const { return id; }
 
 		static bool IsVisible;
 		bool Enable = true;
@@ -91,9 +91,7 @@ namespace Doom {
 		bool IsTrigger = false;
 
 		Collision(GameObject* owner = nullptr,double x = 0, double y = 0);
-		~Collision() {
-			//std::cout << "Collision destroyed\n";
-		}
+		~Collision();
 
 		void SetTag(std::string tag) { this->tag = tag; }
 		void Scale(float x, float y);

@@ -5,6 +5,8 @@ namespace Doom {
 	class DOOM_API ViewPort {
 	private:
 
+		glm::dvec2 prevMousePos = glm::vec2(0, 0);
+		glm::dvec2 mouseDragDelta = glm::vec2(0,0);
 		glm::vec2 size = glm::vec2(0, 0);
 		glm::dvec2 staticMousePos = glm::vec2(0, 0);
 		glm::dvec2 mousePosW = glm::vec2(0, 0);
@@ -21,11 +23,11 @@ namespace Doom {
 
 		static ViewPort* ViewPort::GetInstance();
 
-		inline glm::vec2 GetSize() { return size; }
+		inline glm::vec2 GetSize() const { return size; }
 		inline void SetSize(float x, float y) { size.x = x; size.y = y; }
 		inline void SetSize(glm::vec2 _size) { size = _size; }
-
-		inline glm::vec2 GetViewPortPos() { return viewportPos; }
+		inline glm::dvec2 GetMouseDragDelta() { return mouseDragDelta; }
+		inline glm::vec2 GetViewPortPos() const { return viewportPos; }
 		inline void SetViewPortPos(float x, float y) { viewportPos.x = x; viewportPos.y = y; }
 		inline void SetViewPortPos(glm::vec2 _viewportPos) { viewportPos = _viewportPos; }
 
@@ -39,6 +41,7 @@ namespace Doom {
 
 	public:
 
+		inline float GetAspectRatio() {return size.x / size.y;}
 		inline glm::dvec2 GetMousePositionToScreenSpace() {return mousePosS;}
 		inline glm::dvec2 GetStaticMousePosition() { return staticMousePos; }
 		inline glm::dvec2 GetMousePositionToWorldSpace() { return mousePosW; }

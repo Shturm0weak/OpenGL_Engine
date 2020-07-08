@@ -42,10 +42,6 @@ void Doom::Animator::PlayAnim(std::vector<Texture*>& text) {
 		timer = 0;
 }
 
-int Doom::Animator::GetAmountOfAnimations() {
-	return amount;
-}
-
 const char** Doom::Animator::GetAnimations() {
 	if(items != nullptr)
 	delete[] items;

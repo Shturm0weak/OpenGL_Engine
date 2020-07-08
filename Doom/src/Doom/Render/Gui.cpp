@@ -360,7 +360,7 @@ void Doom::Gui::Image(float x, float y, float width, float height, Texture * tex
 	relatedPanelProperties.yOffset += height;
 }
 
-bool Doom::Gui::IsPanelHovered() {
+bool Doom::Gui::IsPanelHovered() const {
 	glm::dvec2 mousePos = ViewPort::GetInstance()->GetStaticMousePosition();
 	return (mousePos.x > currentPanelCoods[0] && mousePos.x < currentPanelCoods[2] && mousePos.y > currentPanelCoods[1] && mousePos.y < currentPanelCoods[7]);
 }
@@ -384,13 +384,13 @@ void Doom::Gui::UnRelateToPanel()
 	relatedPanelProperties.yOffset = 0.0f;
 }
 
-void Doom::Gui::Begin()
+void Doom::Gui::Begin() const
 {
 	Batch::GetInstance()->indexcount = 0;
 	Batch::GetInstance()->Begin();
 }
 
-void Doom::Gui::End()
+void Doom::Gui::End() const
 {
 	Batch::GetInstance()->End();
 }

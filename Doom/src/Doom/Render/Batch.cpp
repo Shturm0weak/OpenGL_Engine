@@ -214,7 +214,7 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 	buffer->size = size;
 	buffer->pos = pos;
 	buffer->raduis = radius;
-	buffer->viewportSize = glm::vec2(Window::GetSize()[0],Window::GetSize()[1]);
+	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
 	buffer++;
 
 	buffer->vertex = glm::vec2((mesh2D[2]), (mesh2D[3]));
@@ -258,7 +258,7 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 
 void Doom::Batch::Submit(Line & line)
 {
-	Lbuffer->m_vertex = glm::vec2(line.mesh2D[0], line.mesh2D[1]);
+	Lbuffer->m_vertex = glm::vec3(line.mesh2D[0], line.mesh2D[1], line.mesh2D[2]);
 	Lbuffer->m_color = line.color;
 	Lbuffer->MVPMat0 = line.MVP[0];
 	Lbuffer->MVPMat1 = line.MVP[1];
@@ -272,7 +272,7 @@ void Doom::Batch::Submit(Line & line)
 
 	Lbuffer++;
 
-	Lbuffer->m_vertex = glm::vec2(line.mesh2D[2], line.mesh2D[3]);
+	Lbuffer->m_vertex = glm::vec3(line.mesh2D[3], line.mesh2D[4],line.mesh2D[5]);
 	Lbuffer->m_color = line.color;
 	Lbuffer->MVPMat0 = line.MVP[0];
 	Lbuffer->MVPMat1 = line.MVP[1];
@@ -286,7 +286,7 @@ void Doom::Batch::Submit(Line & line)
 
 	Lbuffer++;
 
-	Lindexcount += 2;
+	Lindexcount += 3;
 }
 
 void Batch::Submit(SpriteRenderer & c)
@@ -734,7 +734,7 @@ void Doom::Batch::initLines()
 	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
 
 	glEnableVertexArrayAttrib(Lvao, 0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_vertex));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_vertex));
 
 	glEnableVertexArrayAttrib(Lvao, 1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_color));
@@ -771,12 +771,13 @@ void Doom::Batch::initLines()
 	unsigned int indices[RENDERER_INDICES_SIZE];
 
 	unsigned int offset = 0;
-	for (unsigned int i = 0; i < RENDERER_INDICES_SIZE; i += 2)
+	for (unsigned int i = 0; i < RENDERER_INDICES_SIZE; i += 3)
 	{
 		indices[i + 0] = offset + 0;
 		indices[i + 1] = offset + 1;
+		indices[i + 2] = offset + 2;
 
-		offset += 2;
+		offset += 3;
 	}
 
 	Libo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);

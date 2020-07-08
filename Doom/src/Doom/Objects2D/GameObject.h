@@ -33,7 +33,7 @@ namespace Doom {
 
 		glm::vec3 position;
 
-		uint32_t id = 0;
+		int id = 0;
 		int layer = 0;
 
 		glm::vec3 scaleValues = { 1,1,1 };
@@ -41,10 +41,10 @@ namespace Doom {
 		std::string type;
 		std::string name;
 
-		std::vector<void*> GetChilds() { return Childs; }
+		std::vector<void*> GetChilds() const { return Childs; }
 
-		float GetAngle();
-		void* GetOwner() { return Owner; }
+		float GetAngle() const ;
+		void* GetOwner() const { return Owner; }
 		void SetObjectType(std::string _type) { type = _type; }
 		void AddChild(void* child) { Childs.push_back(child); }
 		void SetOwner(void* owner) { this->Owner = owner; }
@@ -52,18 +52,23 @@ namespace Doom {
 		void operator=(GameObject& go);
 		void SetName(const char* _name);
 
+		template <typename T>
+		T* GetComponent() {
+			return component_manager->GetComponent<T>();
+		}
+
 		bool Enable = true;
 		bool isParticle = false;
 		bool Static = false;
 		
 		virtual ~GameObject();
-		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0);
+		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0,float z = 0);
 		
-		glm::vec3 GetScale();
+		glm::vec3 GetScale() const;
 		glm::vec3 GetPositions();
-		ComponentManager* GetComponentManager(){ return component_manager; };
+		ComponentManager* GetComponentManager() const { return component_manager; };
 		inline void SetId(int id) { this->id = id; }
-		inline int GetId() { return id; }
+		inline int GetId() const { return id; }
 		inline int& GetLayer() { return layer; }
 		
 	};

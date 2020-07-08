@@ -46,10 +46,10 @@ namespace Doom {
 		Character(Font* font, int ch, float x = 0, float y = 0, float scale = 1);
 		void Scale(float scale);
 		void Translate(float x, float y);
-		inline float GetRightBottomX() { return (mesh2D[8] + position.x); }
-		inline float GetLeftBottomX() { return (mesh2D[0] + position.x); }
-		inline float GetWidth() { return (abs(mesh2D[0]) + abs(mesh2D[4])); }
-		inline float GetXOffset() { return xoffset; }
+		inline float GetRightBottomX() const { return (mesh2D[8] + position.x); }
+		inline float GetLeftBottomX() const { return (mesh2D[0] + position.x); }
+		inline float GetWidth() const { return (abs(mesh2D[0]) + abs(mesh2D[4])); }
+		inline float GetXOffset() const { return xoffset; }
 	};
 
 	class DOOM_API Font {
@@ -78,4 +78,4 @@ namespace Doom {
 
 }
 
-#endif // !CHARACTER_H_
+#endif

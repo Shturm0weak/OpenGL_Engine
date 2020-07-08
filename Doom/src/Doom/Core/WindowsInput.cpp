@@ -15,7 +15,11 @@ void Doom::WindowsInput::Clearimp()
 
 bool WindowsInput::IsKeyPressedimp(int keycode)
 {
-	auto iter = pressedKeysButtons.find(keycode);
+	if (!ViewPort::GetInstance()->IsActive)
+		return GL_FALSE;
+	ImGui::SetCurrentContext(Window::imGuiContext);
+	return ImGui::IsKeyPressed(keycode);
+	/*auto iter = pressedKeysButtons.find(keycode);
 	if (iter != pressedKeysButtons.end()) {
 		return iter->second;
 	}
@@ -47,11 +51,22 @@ bool WindowsInput::IsKeyPressedimp(int keycode)
 	else {
 		pressedKeysButtons.insert(std::make_pair(keycode, false));
 		return false;
-	}
+	}*/
 }
 
-bool WindowsInput::IsMousePressedDownimp(int keycode) {
-	const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
+bool WindowsInput::IsMousePressedDownimp(int keycode)
+{
+	if (!ViewPort::GetInstance()->IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
+		return GLFW_FALSE;
+	}
+
+
+	if (ViewPort::GetInstance()->IsHovered) {
+		ImGui::SetCurrentContext(Window::imGuiContext);
+		return ImGui::IsMouseDown(keycode);
+	}
+	return false;
+	/*const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
 
 	if (!ViewPort::GetInstance()->IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
 		return GLFW_FALSE;
@@ -60,21 +75,33 @@ bool WindowsInput::IsMousePressedDownimp(int keycode) {
 	if (ViewPort::GetInstance()->IsHovered) {
 		auto state = glfwGetMouseButton(window, keycode);
 		return state == GLFW_PRESS;
-	}
+	}*/
 }
 
 bool Doom::WindowsInput::IsKeyPressedDownimp(int keycode)
 {
-	const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
+	if (!ViewPort::GetInstance()->IsActive)
+		return GL_FALSE;
+	ImGui::SetCurrentContext(Window::imGuiContext);
+	return ImGui::IsKeyDown(keycode);
+	/*const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
 	if (!ViewPort::GetInstance()->IsActive)
 		return GL_FALSE;
 	auto state = glfwGetKey(window, keycode);
-	return state == GLFW_PRESS;
+	return state == GLFW_PRESS;*/
 }
 
-bool WindowsInput::IsMousePressedimp(int keycode) {
-
-	auto iter = pressedMouseButtons.find(keycode);
+bool WindowsInput::IsMousePressedimp(int keycode)
+{
+	if (!ViewPort::GetInstance()->IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
+		return GLFW_FALSE;
+	}
+	if (ViewPort::GetInstance()->IsHovered) {
+		ImGui::SetCurrentContext(Window::imGuiContext);
+		return ImGui::IsMouseClicked(keycode);
+	}
+	return false;
+	/*auto iter = pressedMouseButtons.find(keycode);
 	if (iter != pressedMouseButtons.end()) {
 		return iter->second;
 	}
@@ -110,5 +137,5 @@ bool WindowsInput::IsMousePressedimp(int keycode) {
 			return false;
 			pressedMouseButtons.insert(std::make_pair(keycode, false));
 		}
-	}
+	}*/
 }

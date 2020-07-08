@@ -54,14 +54,11 @@ void Editor::EditorUpdate()
 		if (ImGui::MenuItem("Delete"))
 		{
 			if (go != nullptr) {
-				if (Renderer::objects2d.size() > 1) {
-					Renderer::DeleteObject(go->GetId());
-				}
-				else {
-					go->Enable = false;
-					std::cout << BOLDYELLOW << "Warning: you cannot delete the last object on the scene, create new one or current object will be set to disable\n" << RESET;
-				}
-				go = Renderer::objects2d[0];
+				Renderer::DeleteObject(go->GetId());
+				if(Renderer::objects2d.size() > 0)
+					go = Renderer::objects2d[Renderer::objects2d.size() - 1];
+				else
+					go = nullptr;
 			}
 			ImGui::EndPopup();
 			ImGui::End();
@@ -74,8 +71,12 @@ void Editor::EditorUpdate()
 	Renderer::CalculateObjectsVectors();
 
 	
-	if (go == nullptr) {
+	if (Renderer::objects2d.size() > 0 && go == nullptr) {
 		go = Renderer::objects2d[0];
+	}
+
+	if (go != nullptr) {
+		gizmo->obj = go;
 	}
 
 	if (ImGui::CollapsingHeader("Game Objects")) {
@@ -168,13 +169,13 @@ void Editor::EditorUpdate()
 						std::cout << "Error: layer out of range" << std::endl;
 						return;
 					}
-					static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>())->Setlayer(go->GetLayer());
+					go->GetComponent<SpriteRenderer>()->Setlayer(go->GetLayer());
 					Renderer::CalculateObjectsVectors();
 				}
 			}
 
 			if (ImGui::CollapsingHeader("Transform")) {
-				ImGui::Text("Position: x: %lf y: %lf", go->GetPositions().x, go->GetPositions().y);
+				ImGui::Text("Position");
 				ImGui::InputFloat2("Limits", changeSliderPos);
 				ImGui::SliderFloat("Position X", &(tr->position.x), changeSliderPos[0], changeSliderPos[1]);
 				ImGui::SliderFloat("Position Y", &(tr->position.y), changeSliderPos[0], changeSliderPos[1]);
@@ -188,12 +189,12 @@ void Editor::EditorUpdate()
 				tr->Translate(tr->position.x, tr->position.y,tr->position.z);
 				ImGui::Text("Rotate");
 				ImGui::SliderAngle("Pitch", &tr->rotation.x);
-				ImGui::SliderAngle("Yaw", &tr->rotation.y);
-				ImGui::SliderAngle("Roll", &tr->rotation.z);
+				ImGui::SliderAngle("Yaw",   &tr->rotation.y);
+				ImGui::SliderAngle("Roll",  &tr->rotation.z);
 				tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
 			}
 			if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D" && ImGui::CollapsingHeader("Render")) {
-				SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
+				SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
 				color = sr->GetColor();
 				ImGui::ColorEdit4("Color", color);
 				sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
@@ -379,7 +380,6 @@ void Editor::EditorUpdate()
 		
 	}
 
-
 	ImGui::End();
 }
 
@@ -501,6 +501,7 @@ void Doom::Editor::Debug()
 	ImGui::End();
 	ImGui::Begin("Debug");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::Text("Objects amount %d", Renderer::objects2d.size());
 	ImGui::Text("Draw calls %d", Renderer::DrawCalls);
 	ImGui::Text("Vertices %d", Renderer::Vertices);
 	ImGui::Text("VRAM used %lf",Texture::VRAMused);

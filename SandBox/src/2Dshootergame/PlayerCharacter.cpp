@@ -26,10 +26,10 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	SetObjectType("Player");
 	muzzleFlashObj->SetObjectType("MuzzleFlash");
 	rayfire = new Ray(glm::vec2(position.x,position.y),glm::vec2(1,0),15);
-	line = new Line(glm::vec2(0,0), glm::vec2(0, 0),15);
-	test1 = new Line(glm::vec2(0, 0), glm::vec2(0, 0), 15);
-	test2 = new Line(glm::vec2(0, 0), glm::vec2(0, 0), 15);
-	test3 = new Line(glm::vec2(0, 0), glm::vec2(0, 0), 15);
+	line = new Line(glm::vec3(0), glm::vec3(0),15);
+	test1 = new Line(glm::vec3(0), glm::vec3(0), 15);
+	test2 = new Line(glm::vec3(0), glm::vec3(0), 15);
+	test3 = new Line(glm::vec3(0), glm::vec3(0), 15);
 	line->width = 2.f;
 	checkGround = new Ray(glm::vec2(position.x, position.y), glm::vec2(0, -1), 100);
 }

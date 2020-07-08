@@ -58,7 +58,7 @@ public:
 		}
 		Window::GetCamera().MovePosition(glm::vec3(0, 0, 0));
 		Window::GetCamera().Zoom(25);
-		line = new Line(glm::vec2(-5, -5), glm::vec2(-5, 5));
+		line = new Line(glm::vec3(-5, -5, 0), glm::vec3(-5, 5, 0));
 		line->width = 5.f;
 		line->Enable = false;
 	}

@@ -10,7 +10,7 @@
 #include "src/SpaceFire/SpaceFire.h"
 
 int main() {
-	StressTest* app = new StressTest();
+	TestImGui* app = new TestImGui();
 	Doom::EntryPoint entrypoint(app);
 	entrypoint.Run();
 	return 0;
