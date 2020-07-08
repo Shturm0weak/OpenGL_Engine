@@ -1,4 +1,4 @@
-Welcome to the 2D_OpenGL_Engine!
+Welcome to the OpenGL_Engine!
 
 I've been making this game engine for a (year * 0.8f).
 
@@ -32,7 +32,7 @@ Ray casting
 
 Audio
 
-Custom UI(buttons,panels,text)
+Custom UI(buttons,panels,text,sliders,bars,checkboxes)
 
 
 No memory leak in runtime
