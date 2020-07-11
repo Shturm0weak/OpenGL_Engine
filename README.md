@@ -12,7 +12,9 @@ Transform component
 
 Component's manager
 
-Can draw lines and squares and 3d cubes
+Pour material component for 3D
+
+Can draw lines and squares and 3d meshes
 
 Batch and Forward renderer
 
@@ -28,7 +30,7 @@ Editor with ImGui
 
 2D textures and texture atlases
 
-Ray casting
+Ray casting in 2D and 3D
 
 Audio
 
