@@ -40,8 +40,17 @@ namespace Doom {
 
 		float TextColor[4] = {255,255,255,255};
 		float shadowOffset[2] = {0,0};
+		std::vector<Line*> normals;
+
+		void MaterialComponent();
+		void CubeCollider3DComponent();
+		void Renderer2DComponent();
+		void RectangleCollider2D(RectangleCollider2D* col);
+		void Animator2DComponent();
+		void TransformComponent(Transform* tr);
 
 	public:
+		bool drawNormals = false;
 		Gizmos* gizmo = new Gizmos;
 		static std::vector<Texture*> textureVecTemp;
 		GameObject* go = nullptr;
@@ -51,8 +60,10 @@ namespace Doom {
 		static void CheckTexturesFolderUnique(const std::string path);
 		static void CheckTexturesFolder(const std::string path);
 		friend class Doom::Renderer;
+		friend class Renderer3D;
 		void Debug();
 		void TextProps();
+		void UpdateNormals();
 	};
 }
 #endif

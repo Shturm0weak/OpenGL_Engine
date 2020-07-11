@@ -6,7 +6,7 @@ using namespace Doom;
 
 class Player : public GameObject {
 public:
-	Collision* col = nullptr;
+	RectangleCollider2D* col = nullptr;
 	Transform* tr = nullptr;
 	Animator* anim = nullptr;
 	double speedx = 20.;
@@ -23,7 +23,7 @@ public:
 		EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
 		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
 		EventSystem::GetInstance()->RegisterClient("OnMiss", (GameObject*)this);
-		col = GetComponentManager()->AddComponent<Collision>();
+		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		col->SetTag("Player");
 		tr = GetComponentManager()->GetComponent<Transform>();
 		type = "Player";
@@ -110,7 +110,7 @@ public:
 	}
 
 	virtual void OnCollision(void* _col) override {
-		Collision* tempcol = static_cast<Collision*>(_col);
+		RectangleCollider2D* tempcol = static_cast<RectangleCollider2D*>(_col);
 		if (tempcol->GetTag() == "Land") {
 			isLanded = true;
 			speedy = 0;

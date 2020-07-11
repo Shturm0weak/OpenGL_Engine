@@ -3,7 +3,7 @@
 #define RENDERER_H
 
 #include <mutex>
-#include "../Components/Collision.h"
+#include "../Components/RectangleCollider2D.h"
 
 namespace Doom {
 
@@ -50,7 +50,7 @@ namespace Doom {
 		static bool ObjectCollided(std::vector<glm::vec2>& p,int i);
 		static std::vector<unsigned int> ObjectsWithNoOwner;
 		static std::vector<unsigned int> ObjectsWithOwner;
-		static std::vector <Collision*> collision2d;
+		static std::vector <RectangleCollider2D*> collision2d;
 		static std::vector <GameObject*> objects2d;
 		static std::vector <GameObject*> objects3d;
 		static std::mutex mtx;
@@ -61,8 +61,8 @@ namespace Doom {
 		friend class SpriteRenderer;
 		friend class Editor;
 		friend class ComponentManager;
-		friend class Ray;
-		friend class Collision;
+		friend class Ray2D;
+		friend class RectangleCollider2D;
 
 		template<typename T>
 		static void LoadObj(bool enable,std::string name, std::string pathtotext, float angle, float color[4],
@@ -95,12 +95,12 @@ namespace Doom {
 					go->GetComponentManager()->GetComponent<Irenderer>()->textureAtlas = new TextureAtlas(spriteSize[0], spriteSize[1], pathtotext);
 			}
 			if (hascollision == 1) {
-				go->GetComponentManager()->AddComponent<Collision>();
-				go->GetComponentManager()->GetComponent<Collision>()->Translate(pos[0], pos[1]);
-				go->GetComponentManager()->GetComponent<Collision>()->Enable = true;
-				go->GetComponentManager()->GetComponent<Collision>()->SetOffset(offset[0], offset[1]);
-				go->GetComponentManager()->GetComponent<Collision>()->IsTrigger = istrigger;
-				go->GetComponentManager()->GetComponent<Collision>()->SetTag(tag);
+				go->GetComponentManager()->AddComponent<RectangleCollider2D>();
+				go->GetComponentManager()->GetComponent<RectangleCollider2D>()->Translate(pos[0], pos[1]);
+				go->GetComponentManager()->GetComponent<RectangleCollider2D>()->Enable = true;
+				go->GetComponentManager()->GetComponent<RectangleCollider2D>()->SetOffset(offset[0], offset[1]);
+				go->GetComponentManager()->GetComponent<RectangleCollider2D>()->IsTrigger = istrigger;
+				go->GetComponentManager()->GetComponent<RectangleCollider2D>()->SetTag(tag);
 				go->GetComponentManager()->GetComponent<Transform>()->Scale(scale[0], scale[1]);
 			}
 		}

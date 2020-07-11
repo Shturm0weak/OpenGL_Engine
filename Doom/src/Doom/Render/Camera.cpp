@@ -15,7 +15,7 @@ Camera::Camera(){
 }
 
 void Camera::RecalculateViewMatrix() {
-	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), roll, glm::vec3(0, 0, 1))
+	rot = glm::rotate(glm::mat4(1.0f), roll, glm::vec3(0, 0, 1))
 					* glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0))
 					* glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(1, 0, 0));
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f),m_Position)
@@ -116,6 +116,18 @@ void Doom::Camera::SetOrthographic(float ratio)
 glm::vec3 Doom::Camera::GetRotation() const
 {
 	return glm::vec3(pitch, yaw, roll);
+}
+
+glm::vec3 Doom::Camera::GetMouseDirVec()
+{
+	glm::vec2 pos;
+	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetCamera().GetAspectRatio() * HEIGHT);
+	pos.y = ViewPort::GetInstance()->GetStaticMousePosition().y / (HEIGHT);
+	glm::vec4 clipCoords = glm::vec4(pos.x, pos.y, -1.0f, 1.0f);
+	glm::vec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMatrix);
+	eyeCoords.z = -1.0f; eyeCoords.w = 0.0f;
+	glm::vec3 mouseRay = (glm::vec3)(glm::inverse(m_ViewMatrix) * eyeCoords);
+	return glm::vec3(glm::normalize(mouseRay));
 }
 
 void Doom::Camera::SetRotation(glm::vec3 rot)

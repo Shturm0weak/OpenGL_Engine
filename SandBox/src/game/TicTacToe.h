@@ -86,7 +86,7 @@ public:
 				offsetY += 3.f;
 				index = 0;
 			}
-			plates[i].plate->GetComponentManager()->AddComponent<Collision>();
+			plates[i].plate->GetComponentManager()->AddComponent<RectangleCollider2D>();
 			Transform* tr = plates[i].plate->GetComponentManager()->GetComponent<Transform>();
 			tr->Scale(2.9,2.9);
 			tr->Translate(offsetX,offsetY);
@@ -179,7 +179,7 @@ public:
 	Plate* isCollided(Plate* plates,int* selected) {
 		for (unsigned int i = 0; i < 9; i++)
 		{
-			Collision* col = plates[i].plate->GetComponentManager()->GetComponent<Collision>();
+			RectangleCollider2D* col = plates[i].plate->GetComponentManager()->GetComponent<RectangleCollider2D>();
 			if (col->ScaledVerPos[0] + col->GetPositions().x < mousePos.x && col->ScaledVerPos[4] + col->GetPositions().x > mousePos.x &&
 				col->ScaledVerPos[1] + col->GetPositions().y < mousePos.y && col->ScaledVerPos[9] + col->GetPositions().y > mousePos.y){
 				*selected = i;

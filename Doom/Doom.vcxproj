@@ -109,17 +109,19 @@
   <ItemGroup>
     <ClInclude Include="src\Doom\Audio\SoundManager.h" />
     <ClInclude Include="src\Doom\Audio\wavParser.h" />
+    <ClInclude Include="src\Doom\Components\CubeCollider.h" />
     <ClInclude Include="src\Doom\Components\IRenderer.h" />
     <ClInclude Include="src\Doom\Components\Render3D.h" />
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
+    <ClInclude Include="src\Doom\Core\Ray3D.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxnode.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
     <ClInclude Include="src\Doom\Application.h" />
     <ClInclude Include="src\Doom\Components\Animator.h" />
-    <ClInclude Include="src\Doom\Components\Collision.h" />
+    <ClInclude Include="src\Doom\Components\RectangleCollider2D.h" />
     <ClInclude Include="src\Doom\Components\Transform.h" />
     <ClInclude Include="src\Doom\Core\ColorsRGBA.h" />
     <ClInclude Include="src\Doom\Core\Core.h" />
@@ -130,7 +132,7 @@
     <ClInclude Include="src\Doom\Core\Input.h" />
     <ClInclude Include="src\Doom\Core\KeyCode.h" />
     <ClInclude Include="src\Doom\Core\Listener.h" />
-    <ClInclude Include="src\Doom\Core\Ray.h" />
+    <ClInclude Include="src\Doom\Core\Ray2D.h" />
     <ClInclude Include="src\Doom\Core\ThreadPool.h" />
     <ClInclude Include="src\Doom\Core\Timer.h" />
     <ClInclude Include="src\Doom\Core\Window.h" />
@@ -168,8 +170,10 @@
     <ClCompile Include="src\Doom\Application.cpp" />
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
+    <ClCompile Include="src\Doom\Components\CubeCollider.cpp" />
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
+    <ClCompile Include="src\Doom\Core\Ray3D.cpp" />
     <ClCompile Include="src\Doom\ECS\Component.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />
@@ -177,11 +181,11 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
     <ClCompile Include="src\Doom\Components\Animator.cpp" />
-    <ClCompile Include="src\Doom\Components\Collision.cpp" />
+    <ClCompile Include="src\Doom\Components\RectangleCollider2D.cpp" />
     <ClCompile Include="src\Doom\Components\Transform.cpp" />
     <ClCompile Include="src\Doom\Core\Editor.cpp" />
     <ClCompile Include="src\Doom\Core\EventSystem.cpp" />
-    <ClCompile Include="src\Doom\Core\Ray.cpp" />
+    <ClCompile Include="src\Doom\Core\Ray2D.cpp" />
     <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
     <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Doom.cpp" />

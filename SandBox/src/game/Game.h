@@ -2,7 +2,7 @@
 
 #include "Audio/SoundManager.h"
 #include "Application.h"
-#include "Components/Collision.h"
+#include "Components/RectangleCollider2D.h"
 #include "Components/Transform.h"
 #include "Player.h"
 #include "Coin.h"
@@ -11,7 +11,7 @@
 #include "Bomb.h"
 #include "Render/Character.h"
 #include "Render/Line.h"
-#include "Core/Ray.h"
+#include "Core/Ray2D.h"
 
 
 using namespace Doom;
@@ -29,7 +29,7 @@ class Game : public Doom::Application{
 	Bomb* bomb = nullptr;
 	double time = 0;
 	Line* line = nullptr;
-	Ray* ray = nullptr;
+	Ray2D* ray = nullptr;
 	double fireTimer = 0;
 	double timerFadeOut = 0;
 public:
@@ -48,7 +48,7 @@ public:
 		font->LoadFont("src/font.txt", "src/arial.png");
 		font->LoadCharacters();
 		go->HpBar = hp;
-		ray = new Ray(glm::vec2(0, 0), glm::vec2(3,3) , 10);
+		ray = new Ray2D(glm::vec2(0, 0), glm::vec2(3,3) , 10);
 		ray->ignoreMask.push_back("Player");
 		for (unsigned int i = 0; i < 5; i++)
 		{
@@ -105,7 +105,7 @@ public:
 				if (fireTimer > 2.99 && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 					Hit hit;
 					glm::vec2 direction = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x - go->GetPositions().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y - go->GetPositions().y);
-					Ray::Normilize(direction);
+					Ray2D::Normilize(direction);
 					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPositions().x, go->GetPositions().y), direction, ray->ignoreMask)) {
 						if (hit.Object->GetTag() == "Coin") {
 							Coin* coin = (Coin*)hit.Object->GetOwnerOfComponent();

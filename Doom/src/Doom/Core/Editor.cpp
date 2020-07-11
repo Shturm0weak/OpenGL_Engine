@@ -30,7 +30,6 @@ void Editor::EditorUpdate()
 	}
 	CreateTextureAtlas();
 
-	ImGui::Checkbox("Visible collisions", &Doom::Collision::IsVisible);
 	ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 100.f);
 	Window::GetCamera().Zoom(abs(Window::GetCamera().GetZoomLevel()));
 	ImGui::End();
@@ -151,7 +150,7 @@ void Editor::EditorUpdate()
 			if (go == nullptr)
 				return;
 			Doom::Transform* tr = go->component_manager->GetComponent<Doom::Transform>();
-			Doom::Collision* col = go->component_manager->GetComponent<Doom::Collision>();
+			Doom::RectangleCollider2D* col = go->component_manager->GetComponent<Doom::RectangleCollider2D>();
 			ImGui::Text("ID %d", go->GetId());
 			ImGui::Checkbox("Enable", &go->Enable);
 			ImGui::Checkbox("Static", &go->Static);
@@ -174,197 +173,17 @@ void Editor::EditorUpdate()
 				}
 			}
 
-			if (ImGui::CollapsingHeader("Transform")) {
-				ImGui::Text("Position");
-				ImGui::InputFloat2("Limits", changeSliderPos);
-				ImGui::SliderFloat("Position X", &(tr->position.x), changeSliderPos[0], changeSliderPos[1]);
-				ImGui::SliderFloat("Position Y", &(tr->position.y), changeSliderPos[0], changeSliderPos[1]);
-				ImGui::SliderFloat("Position Z", &(tr->position.z), changeSliderPos[0], changeSliderPos[1]);
-				ImGui::Text("Scale");
-				ImGui::InputFloat2("Limits", changeSliderScale);
-				ImGui::SliderFloat("Scale X", &(go->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
-				ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
-				ImGui::SliderFloat("Scale Z", &(go->scaleValues[2]), changeSliderScale[0], changeSliderScale[1]);
-				tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
-				tr->Translate(tr->position.x, tr->position.y,tr->position.z);
-				ImGui::Text("Rotate");
-				ImGui::SliderAngle("Pitch", &tr->rotation.x);
-				ImGui::SliderAngle("Yaw",   &tr->rotation.y);
-				ImGui::SliderAngle("Roll",  &tr->rotation.z);
-				tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
-			}
-			if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D" && ImGui::CollapsingHeader("Render")) {
-				SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
-				color = sr->GetColor();
-				ImGui::ColorEdit4("Color", color);
-				sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
-				delete[] color;
-				int counterImagesButtons = 0;
-				ImGui::Text("Textures");
-				for (unsigned int i = 0; i < texture.size(); i++)
-				{
-					void* my_tex_id = reinterpret_cast<void*>(texture[i]->m_RendererID);
-					int frame_padding = -1;
-					if (counterImagesButtons > 6) {
-						ImGui::NewLine();
-						counterImagesButtons = 0;
-					}
-
-					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
-						if (go != nullptr) {
-
-							sr->SetTexture(texture[i]);
-						}
-
-					}
-
-					ImGui::SameLine();
-					counterImagesButtons++;
-				}
-
-				ImGui::NewLine();
-				ImGui::InputFloat2("UVs Offset", uvsOffset);
-
-				if (ImGui::Button("Use these UVs")) {
-					if (go != nullptr && sr->textureAtlas != nullptr)
-						sr->SetUVs(sr->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
-				}
-				if (ImGui::Button("Original UVs")) {
-					if (go != nullptr)
-						sr->OriginalUvs();
-				}
-				if (ImGui::Button("No texture")) {
-					if (go != nullptr)
-						sr->SetTexture(nullptr);
-				}
-				ImGui::InputText("path", pathToTextureFolder, 64);
-				if (ImGui::Button("Refresh textures")) {
-					texturesPath.clear();
-					texture.clear();
-					CheckTexturesFolderUnique(pathToTextureFolder);
-				}
-				int prevselectedAtlas = selectedAtlas;
-				if (TextureAtlas::textureAtlases.size() > 0) {
-					ImGui::ListBox("Texture atlases", &selectedAtlas, TextureAtlas::GetTextureAtlases(), TextureAtlas::textureAtlases.size());
-				}
-				if (selectedAtlas != -1) {
-					if (selectedAtlas != prevselectedAtlas)
-						tool_active = true;
-					if (tool_active) {
-						ImGui::Begin("Texture Atlas", &tool_active);
-					
-						Texture* textureOfAtlas = TextureAtlas::textureAtlases[selectedAtlas]->GetTexture();
-						int frame_padding = -1;
-						unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteWidth());
-						unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteHeight());
-						for (unsigned int i = 0; i < amountOfSpritesY; i++)
-						{
-							for (unsigned int j = 0; j < amountOfSpritesX; j++)
-							{
-								float* uvs = TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteUVs(j, amountOfSpritesY - i);
-								ImGui::PushID((i * amountOfSpritesX) + j);
-								if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
-								{
-									if (go != nullptr) {
-										SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
-										sr->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
-										sr->SetTexture(textureOfAtlas);
-										sr->SetUVs(uvs);
-									}
-								}
-								ImGui::PopID();
-								ImGui::SameLine();
-							}
-							ImGui::NewLine();
-						}
-						ImGui::NewLine();
-						ImGui::InputFloat2("Sprite size", spriteSize);
-						if (ImGui::Button("Apply")) {
-							TextureAtlas::textureAtlases[selectedAtlas]->SetSpriteSize(spriteSize[0], spriteSize[1]);
-						}
-						ImGui::End();
-					}
-					else
-						selectedAtlas = -1;
-				}
-				
-			}
-			if (col != nullptr) {
-				if (ImGui::CollapsingHeader("Collision")) {
-					ImGui::Text("Collision");
-					ImGui::Text("ID %d", col->GetId());
-					ImGui::Text("Tag %s", col->GetTag().c_str());
-					ImGui::InputText("Tag", tag, sizeof(tag));
-					ImGui::SameLine();
-					if (ImGui::Button("Change tag")) {
-						col->SetTag(tag);
-					}
-					ImGui::Checkbox("Enable collision", &col->Enable);
-					ImGui::Checkbox("Trigger", &col->IsTrigger);
-					ImGui::InputFloat2("Set the borders of X and Y offset slider", changeSliderCollisionOffset);
-					ImGui::SliderFloat("Offset X", &col->offset.x, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-					ImGui::SliderFloat("Offset Y", &col->offset.y, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-					ImGui::InputFloat2("Offset", &(col->offset.x, col->offset.x));
-					col->SetOffset(col->offset.x, col->offset.y);
-					if (ImGui::Button("Remove collision")) {
-						go->component_manager->RemoveComponent<Doom::Collision>();
-						selectedcomponent = 0;
-					}
-				}
-			}
-			if (go->GetComponentManager()->GetComponent<Animator>() != nullptr) {
-				if (ImGui::CollapsingHeader("Animator")) {
-					Animator* anim = go->GetComponentManager()->GetComponent<Animator>();
-					ImGui::Text("Animator");
-					ImGui::Text("counter %d", anim->counter);
-					ImGui::ListBox("Animations", &selectedanimation, anim->GetAnimations(), anim->GetAmountOfAnimations());
-
-					int count = 0;
-					ImGui::SliderFloat("Animation speed slider", &anim->speed, 0, 100);
-					if (anim->GetAmountOfAnimations() > 0) {
-						auto iter = anim->animations.find(anim->GetAnimations()[selectedanimation]);
-						if (iter._Ptr == nullptr)
-							return;
-						for (unsigned int i = 0; i < iter->second.size(); i++) {
-							void* my_tex_id = reinterpret_cast<void*>((*iter).second[i]->m_RendererID);
-							int frame_padding = -1;
-							ImGui::Image(my_tex_id, ImVec2(42, 64), ImVec2(1, 1), ImVec2(0, 0), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-							if (count < 5) {
-								ImGui::SameLine();
-								count++;
-							}
-							else
-								count = 0;
-						}
-						anim->selectedanim = selectedanimation;
-					}
-					ImGui::NewLine();
-					ImGui::Checkbox("Play animation", &anim->isPlayingAnim);
-				}
-			}
-			if (go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "3D") {
-				if (ImGui::CollapsingHeader("Renderer 3D")) {
-					Renderer3D* r = static_cast<Renderer3D*>(go->GetComponentManager()->GetComponent<Irenderer>());
-					ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
-					if (ImGui::CollapsingHeader("Material")) {
-						ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
-						ImGui::SliderFloat("Specular", &r->mat.specular, 0, 1);
-						ImGui::Checkbox("NormalMap", &r->useNormalMap);
-						float* tempColor = r->GetColor();
-						ImGui::ColorPicker4("Color", tempColor);
-						r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
-					}
-					if (ImGui::CollapsingHeader("Mesh")) {
-						ImGui::Text("%s",r->mesh->name);
-					}
-					ImGui::Unindent();
-				}
-			}
+			TransformComponent(tr);
+			Renderer2DComponent();
+			Animator2DComponent();
+			CubeCollider3DComponent();
+			RectangleCollider2D(col);
+			MaterialComponent();
 			ImGui::NewLine();
 			ImGui::Indent(ImGui::GetWindowSize().x * 0.4);
 			if (col == nullptr) {
 				if (ImGui::Button("Add collision")) {
-					go->GetComponentManager()->AddComponent<Doom::Collision>();
+					go->GetComponentManager()->AddComponent<Doom::RectangleCollider2D>();
 				}
 			}
 			
@@ -419,6 +238,223 @@ void Editor::CreateTextureAtlas() {
 		TextureAtlas* textureAtlas = new TextureAtlas(spriteSize[0],spriteSize[1],textureForAtlas);
 	}
 	ImGui::End();
+}
+
+void Doom::Editor::MaterialComponent()
+{
+	if (go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "3D") {
+		if (ImGui::CollapsingHeader("Renderer 3D")) {
+			Renderer3D* r = static_cast<Renderer3D*>(go->GetComponentManager()->GetComponent<Irenderer>());
+			ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
+			if (ImGui::CollapsingHeader("Material")) {
+				ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
+				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 1);
+				ImGui::Checkbox("NormalMap", &r->useNormalMap);
+				float* tempColor = r->GetColor();
+				ImGui::ColorPicker4("Color", tempColor);
+				r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
+			}
+			if (ImGui::CollapsingHeader("Mesh")) {
+				ImGui::Text("%s", r->mesh->name);
+			}
+			ImGui::Unindent();
+		}
+	}
+}
+
+void Doom::Editor::CubeCollider3DComponent()
+{
+	if (go->GetComponentManager()->GetComponent<CubeCollider3D>() != nullptr) {
+		CubeCollider3D* c = go->GetComponentManager()->GetComponent<CubeCollider3D>();
+		if (ImGui::CollapsingHeader("CubeCollider3D")) {
+			ImGui::SliderFloat3("Position", &c->offset.x, -50, 50);
+			ImGui::SliderFloat3("Scale", &c->scale.x, 0, 100);
+		}
+	}
+}
+
+void Doom::Editor::Renderer2DComponent()
+{
+	if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D" && ImGui::CollapsingHeader("Render2D")) {
+		SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
+		color = sr->GetColor();
+		ImGui::ColorEdit4("Color", color);
+		sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
+		delete[] color;
+		int counterImagesButtons = 0;
+		ImGui::Text("Textures");
+		for (unsigned int i = 0; i < texture.size(); i++)
+		{
+			void* my_tex_id = reinterpret_cast<void*>(texture[i]->m_RendererID);
+			int frame_padding = -1;
+			if (counterImagesButtons > 6) {
+				ImGui::NewLine();
+				counterImagesButtons = 0;
+			}
+
+			if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
+				if (go != nullptr) {
+
+					sr->SetTexture(texture[i]);
+				}
+
+			}
+
+			ImGui::SameLine();
+			counterImagesButtons++;
+		}
+
+		ImGui::NewLine();
+		ImGui::InputFloat2("UVs Offset", uvsOffset);
+
+		if (ImGui::Button("Use these UVs")) {
+			if (go != nullptr && sr->textureAtlas != nullptr)
+				sr->SetUVs(sr->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
+		}
+		if (ImGui::Button("Original UVs")) {
+			if (go != nullptr)
+				sr->OriginalUvs();
+		}
+		if (ImGui::Button("No texture")) {
+			if (go != nullptr)
+				sr->SetTexture(nullptr);
+		}
+		ImGui::InputText("path", pathToTextureFolder, 64);
+		if (ImGui::Button("Refresh textures")) {
+			texturesPath.clear();
+			texture.clear();
+			CheckTexturesFolderUnique(pathToTextureFolder);
+		}
+		int prevselectedAtlas = selectedAtlas;
+		if (TextureAtlas::textureAtlases.size() > 0) {
+			ImGui::ListBox("Texture atlases", &selectedAtlas, TextureAtlas::GetTextureAtlases(), TextureAtlas::textureAtlases.size());
+		}
+		if (selectedAtlas != -1) {
+			if (selectedAtlas != prevselectedAtlas)
+				tool_active = true;
+			if (tool_active) {
+				ImGui::Begin("Texture Atlas", &tool_active);
+
+				Texture* textureOfAtlas = TextureAtlas::textureAtlases[selectedAtlas]->GetTexture();
+				int frame_padding = -1;
+				unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteWidth());
+				unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteHeight());
+				for (unsigned int i = 0; i < amountOfSpritesY; i++)
+				{
+					for (unsigned int j = 0; j < amountOfSpritesX; j++)
+					{
+						float* uvs = TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteUVs(j, amountOfSpritesY - i);
+						ImGui::PushID((i * amountOfSpritesX) + j);
+						if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
+						{
+							if (go != nullptr) {
+								SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
+								sr->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
+								sr->SetTexture(textureOfAtlas);
+								sr->SetUVs(uvs);
+							}
+						}
+						ImGui::PopID();
+						ImGui::SameLine();
+					}
+					ImGui::NewLine();
+				}
+				ImGui::NewLine();
+				ImGui::InputFloat2("Sprite size", spriteSize);
+				if (ImGui::Button("Apply")) {
+					TextureAtlas::textureAtlases[selectedAtlas]->SetSpriteSize(spriteSize[0], spriteSize[1]);
+				}
+				ImGui::End();
+			}
+			else
+				selectedAtlas = -1;
+		}
+
+	}
+}
+
+void Doom::Editor::RectangleCollider2D(Doom::RectangleCollider2D* col)
+{
+	if (col != nullptr) {
+		if (ImGui::CollapsingHeader("Rectangle collider2D")) {
+			ImGui::Text("Collision");
+			ImGui::Text("ID %d", col->GetId());
+			ImGui::Text("Tag %s", col->GetTag().c_str());
+			ImGui::InputText("Tag", tag, sizeof(tag));
+			ImGui::SameLine();
+			if (ImGui::Button("Change tag")) {
+				col->SetTag(tag);
+			}
+			ImGui::Checkbox("Enable collision", &col->Enable);
+			ImGui::Checkbox("Trigger", &col->IsTrigger);
+			ImGui::InputFloat2("Set the borders of X and Y offset slider", changeSliderCollisionOffset);
+			ImGui::SliderFloat("Offset X", &col->offset.x, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+			ImGui::SliderFloat("Offset Y", &col->offset.y, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+			ImGui::InputFloat2("Offset", &(col->offset.x, col->offset.x));
+			col->SetOffset(col->offset.x, col->offset.y);
+			if (ImGui::Button("Remove collider")) {
+				go->component_manager->RemoveComponent<Doom::RectangleCollider2D>();
+				selectedcomponent = 0;
+			}
+		}
+	}
+}
+
+void Doom::Editor::Animator2DComponent()
+{
+	if (go->GetComponentManager()->GetComponent<Animator>() != nullptr) {
+		if (ImGui::CollapsingHeader("Animator")) {
+			Animator* anim = go->GetComponentManager()->GetComponent<Animator>();
+			ImGui::Text("Animator");
+			ImGui::Text("counter %d", anim->counter);
+			ImGui::ListBox("Animations", &selectedanimation, anim->GetAnimations(), anim->GetAmountOfAnimations());
+
+			int count = 0;
+			ImGui::SliderFloat("Animation speed slider", &anim->speed, 0, 100);
+			if (anim->GetAmountOfAnimations() > 0) {
+				auto iter = anim->animations.find(anim->GetAnimations()[selectedanimation]);
+				if (iter._Ptr == nullptr)
+					return;
+				for (unsigned int i = 0; i < iter->second.size(); i++) {
+					void* my_tex_id = reinterpret_cast<void*>((*iter).second[i]->m_RendererID);
+					int frame_padding = -1;
+					ImGui::Image(my_tex_id, ImVec2(42, 64), ImVec2(1, 1), ImVec2(0, 0), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+					if (count < 5) {
+						ImGui::SameLine();
+						count++;
+					}
+					else
+						count = 0;
+				}
+				anim->selectedanim = selectedanimation;
+			}
+			ImGui::NewLine();
+			ImGui::Checkbox("Play animation", &anim->isPlayingAnim);
+		}
+	}
+}
+
+void Doom::Editor::TransformComponent(Transform* tr)
+{
+	if (ImGui::CollapsingHeader("Transform")) {
+		ImGui::Text("Position");
+		ImGui::InputFloat2("Limits", changeSliderPos);
+		ImGui::SliderFloat("Position X", &(tr->position.x), changeSliderPos[0], changeSliderPos[1]);
+		ImGui::SliderFloat("Position Y", &(tr->position.y), changeSliderPos[0], changeSliderPos[1]);
+		ImGui::SliderFloat("Position Z", &(tr->position.z), changeSliderPos[0], changeSliderPos[1]);
+		ImGui::Text("Scale");
+		ImGui::InputFloat2("Limits", changeSliderScale);
+		ImGui::SliderFloat("Scale X", &(go->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
+		ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
+		ImGui::SliderFloat("Scale Z", &(go->scaleValues[2]), changeSliderScale[0], changeSliderScale[1]);
+		ImGui::Text("Rotate");
+		ImGui::SliderAngle("Pitch", &tr->rotation.x);
+		ImGui::SliderAngle("Yaw", &tr->rotation.y);
+		ImGui::SliderAngle("Roll", &tr->rotation.z);
+		tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
+		tr->Translate(tr->position.x, tr->position.y, tr->position.z);
+		tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
+	}
 }
 
 void Editor::CheckTexturesFolderUnique(const std::string path)
@@ -508,6 +544,8 @@ void Doom::Editor::Debug()
 	ImGui::Text("Textures binded %d", Texture::bindedAmount);
 	ImGui::Text("Textures amount %d", Texture::texturesArray.size());
 	ImGui::Checkbox("Polygon mode",&Renderer::PolygonMode);
+	ImGui::Checkbox("Draw normals", &drawNormals);
+	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::IsVisible);
 	ImGui::End();
 	TextProps();
 }
@@ -525,6 +563,41 @@ void Doom::Editor::TextProps()
 	ImGui::SliderFloat2("Shaddow offset", shadowOffset,-0.01,0.01);
 	g->textProps.shadowOffset = glm::vec2(shadowOffset[0], shadowOffset[1]);
 	ImGui::End();
+}
+
+void Doom::Editor::UpdateNormals()
+{
+	if (drawNormals) {
+		uint32_t counter = 0;
+		size_t size = Renderer::objects2d.size();
+		for (size_t i = 0; i < size; i++)
+		{
+			Irenderer* iR = Renderer::objects2d[i]->GetComponent<Irenderer>();
+			if (iR->renderType == "3D") {
+				Renderer3D* r = static_cast<Renderer3D*>(iR);
+				Mesh* mesh = r->mesh;
+				size_t meshSize = r->mesh->meshSize;
+				for (size_t j = 0; j < meshSize; j += 14)
+				{
+					glm::vec3 pos = glm::vec3(mesh->mesh[j + 0], mesh->mesh[j + 1], mesh->mesh[j + 2]);
+					glm::vec3 normals = glm::vec3(mesh->mesh[j + 3], mesh->mesh[j + 4], mesh->mesh[j + 5]);
+					glm::mat4 scaleXview = r->scale * r->view;
+					glm::vec4 transformedPos = scaleXview * glm::vec4(pos.x, pos.y, pos.z, 0);
+					glm::vec4 transformedNor = scaleXview * glm::vec4(normals.x, normals.y, normals.z, 0);
+					this->normals[counter]->SetStartPoint(Renderer::objects2d[i]->position + (glm::vec3)transformedPos);
+					this->normals[counter]->SetEndPoint(Renderer::objects2d[i]->position + (glm::vec3)transformedPos + glm::vec3(transformedNor));
+					this->normals[counter]->Enable = true;
+					counter++;
+				}
+			}
+		}
+	}
+	else {
+		for each (Line* l in normals)
+		{
+			l->Enable = false;
+		}
+	}
 }
 
 Editor * Editor::Instance()

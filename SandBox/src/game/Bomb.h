@@ -6,7 +6,7 @@ using namespace Doom;
 class Bomb : public GameObject {
 
 	Sound* bombSound = new Sound("src/Sounds/Grenade.wav");
-	Collision* col = nullptr;
+	RectangleCollider2D* col = nullptr;
 	Transform* tr = nullptr;
 	Texture* whiteCircle = new Texture("src/Images/WhiteCircle.png");
 	ParticleSystem* particle = new ParticleSystem(0, 0, 100, 2.5, 10, 2, 1, 0.5, 0, 0.2,whiteCircle);
@@ -16,7 +16,7 @@ public:
 		SoundManager::CreateSoundAsset("grenade", bombSound);
 		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
 		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
-		col = GetComponentManager()->AddComponent<Collision>();
+		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		type = "GameObject";
 		tr->Scale(3, 3);
@@ -44,7 +44,7 @@ public:
 	}
 
 	void OnCollision(void* _col) {
-		Collision* col = static_cast<Collision*>(_col);
+		RectangleCollider2D* col = static_cast<RectangleCollider2D*>(_col);
 		if (col->GetTag() == "Player") {
 			SoundManager::Play(bombSound);
 			Enable = false;

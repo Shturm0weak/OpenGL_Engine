@@ -75,12 +75,12 @@ void Doom::Renderer::Save(const std::string filename) {
 				<< go->GetPositions().x << " " << go->GetPositions().y << " " << go->GetPositions().z << "\n"
 				<< go->GetAngle() << "\n"
 				<< Editor::Instance()->axes[0] << " " << Editor::Instance()->axes[1] << " " << Editor::Instance()->axes[2] << "\n";
-			if (static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<Collision>() != nullptr) {
+			if (static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<RectangleCollider2D>() != nullptr) {
 				out_file << 1 << "\n";
-				out_file << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offset.x
-					<< " " << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->offset.y << "\n"
-					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->IsTrigger << "\n"
-					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<Collision>()->GetTag() << "\n";
+				out_file << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->offset.x
+					<< " " << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->offset.y << "\n"
+					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->IsTrigger << "\n"
+					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->GetTag() << "\n";
 			}
 			else {
 				out_file << 0 << "\n";
@@ -350,60 +350,6 @@ void Doom::Renderer::Render3DObjects()
 	Renderer::objects3d.clear();
 }
 
-//void Doom::Renderer::CalculateMVPforAllObjects()
-//{
-//	
-//	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
-//	unsigned int size = GetAmountOfObjects() * 0.33333;
-//		for (unsigned int i = 0; i < size; i++)
-//		{
-//			GameObject* go = (GameObject*)(&Renderer::objects2d[i]);
-//			float * scaleVal = go->GetScale();
-//			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
-//			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
-//			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
-//			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
-//			//go->MVP = go->pos * go->view;
-//		}
-//		isReadyToRenderFirstThread = true;
-//		Renderer::condVar.notify_one();
-//	});
-//	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
-//		unsigned int size = GetAmountOfObjects() - GetAmountOfObjects() * 0.33333;
-//		unsigned int size1 = GetAmountOfObjects() * 0.33333 ;
-//		for (unsigned int i = size1; i < size; i++)
-//		{
-//			GameObject* go = (GameObject*)(&Renderer::objects2d[i]);
-//			float * scaleVal = go->GetScale();
-//			//go->MVP = go->pos * go->view;
-//			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
-//			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
-//			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
-//			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
-//			
-//		}
-//		isReadyToRenderSecondThread = true;
-//		Renderer::condVar.notify_one();
-//	});
-//	ThreadPool::Instance()->enqueue([] {std::unique_lock<std::mutex> lock(Renderer::mtx);
-//		unsigned int size = GetAmountOfObjects();
-//		unsigned int size1 = size - GetAmountOfObjects() * 0.33333;
-//		for (unsigned int i = size1; i < size; i++)
-//		{
-//			GameObject* go = (GameObject*)(&Renderer::objects2d[i]);
-//			float * scaleVal = go->GetScale();
-//			//go->MVP = go->pos * go->view;
-//			go->submitedVectors[0] = (glm::vec2(go->mesh2D[0] * scaleVal[0], go->mesh2D[1] * scaleVal[1]));
-//			go->submitedVectors[1] = (glm::vec2(go->mesh2D[4] * scaleVal[0], go->mesh2D[5] * scaleVal[1]));
-//			go->submitedVectors[2] = (glm::vec2(go->mesh2D[8] * scaleVal[0], go->mesh2D[9] * scaleVal[1]));
-//			go->submitedVectors[3] = (glm::vec2(go->mesh2D[12] * scaleVal[0], go->mesh2D[13] * scaleVal[1]));
-//			
-//		}
-//		Renderer::isReadyToRenderThirdThread = true; 
-//		Renderer::condVar.notify_one();
-//	});
-//}
-
 void Doom::Renderer::RenderLines()
 {
 	Batch::GetInstance()->Lindexcount = 0;
@@ -411,7 +357,7 @@ void Doom::Renderer::RenderLines()
 	unsigned int size = Line::lines.size();
 	for (unsigned int i = 0; i < size; i++)
 	{
-		if (Line::lines[i]->Enable) {
+		if (Line::lines[i]->Enable ) {
 			Batch::GetInstance()->Submit(*Line::lines[i]);
 		}
 	}
@@ -424,16 +370,22 @@ void Doom::Renderer::RenderText() {
 }
 
 void Doom::Renderer::RenderCollision(){
-	if (Collision::IsVisible == true && Renderer::collision2d.size() > 0) {
+	if (RectangleCollider2D::IsVisible == true) {
 		Batch::GetInstance()->Gindexcount = 0;
 		Batch::GetInstance()->BeginGameObjects();
 		for (unsigned int i = 0; i < Renderer::collision2d.size(); i++) {
-			Collision* col = Renderer::collision2d[i];
+			RectangleCollider2D* col = Renderer::collision2d[i];
 			if (col != nullptr && col->Enable == true) {
 				Batch::GetInstance()->Submit(*col);
 			}
 		}
 		Batch::GetInstance()->EndGameObjects();
 		Batch::GetInstance()->flushCollision(Batch::GetInstance()->CollisionShader);
+
+		size_t size = CubeCollider3D::colliders.size();
+		for (size_t i = 0; i < size; i++)
+		{
+			CubeCollider3D::colliders[i]->Render();
+		}
 	}
 }

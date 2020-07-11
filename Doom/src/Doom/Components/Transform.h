@@ -6,12 +6,12 @@
 namespace Doom {
 
 	class Irenderer;
-	class Collision;
+	class RectangleCollider2D;
 
 	class DOOM_API Transform : public Component {
 	private:
 		Irenderer* sr = nullptr;
-		Collision* col = nullptr;
+		RectangleCollider2D* col = nullptr;
 
 		void init();
 		void RealVertexPositions();
@@ -22,7 +22,7 @@ namespace Doom {
 		glm::vec3 prevPosition;
 
 		friend class ComponentManager;
-		friend class Collision;
+		friend class RectangleCollider2D;
 
 	public:
 		Transform();

@@ -1,8 +1,16 @@
 #include "../pch.h"
 #include "Render3D.h"
+#include "../Core/Editor.h"
 
 void Doom::Renderer3D::LoadMesh(Mesh * mesh)
 {
+	for (size_t i = 0; i < mesh->meshSize; i+=14)
+	{
+		Line* l = new Line(glm::vec3(0), glm::vec3(0));
+		l->Enable = false;
+		l->color = COLORS::Blue;
+		Editor::Instance()->normals.push_back(l);
+	}
 	this->mesh = mesh;
 	delete layout;
 	delete va;

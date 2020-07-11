@@ -1,11 +1,11 @@
-#include "Collision.h"
+#include "RectangleCollider2D.h"
 #include "../Render/Renderer.h"
 #include "../pch.h"
 
 
 using namespace Doom;
 
-Collision::Collision(GameObject* owner,double x, double y){
+RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 	SetType("Collision");
 	this->owner = owner;
 	id = Renderer::col_id;
@@ -44,7 +44,7 @@ Collision::Collision(GameObject* owner,double x, double y){
 	}
 }
 
-Doom::Collision::~Collision()
+Doom::RectangleCollider2D::~RectangleCollider2D()
 {
 	Renderer::collision2d.erase(GetId() + Renderer::collision2d.begin());
 	Renderer::col_id--;
@@ -57,7 +57,7 @@ Doom::Collision::~Collision()
 	}
 	owner->GetComponent<Transform>()->col = nullptr;
 }
-void Collision::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,glm::mat4 scale)
+void RectangleCollider2D::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,glm::mat4 scale)
 {
 	this->scale = scale;
 	this->view = view;
@@ -74,7 +74,7 @@ void Collision::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,
 	}
 }
 
-void Collision::RealVerPos() {
+void RectangleCollider2D::RealVerPos() {
 	float* pSource;
 	pSource = (float*)glm::value_ptr(this->scaleXview);
 	for (unsigned int i = 0; i < 4; i++) {
@@ -88,16 +88,16 @@ void Collision::RealVerPos() {
 	pSource = nullptr;
 }
 
-float* Collision::GetVertexPositions() {
+float* RectangleCollider2D::GetVertexPositions() {
 	return ScaledVerPos;
 }
 
-glm::vec2 Collision::NormalVector(glm::vec2 vec2)
+glm::vec2 RectangleCollider2D::NormalVector(glm::vec2 vec2)
 {
 	return glm::vec2(1,1 * (vec2.x * 1) / vec2.y);
 }
 
-void Collision::Scale(float x,float y) {
+void RectangleCollider2D::Scale(float x,float y) {
 	if (this == nullptr) 
 		return;
 	scaleValues[0] = x;
@@ -107,7 +107,7 @@ void Collision::Scale(float x,float y) {
 	UpdateCollision(position.x, position.y, pos, view, this->scale);
 }
 
-void Collision::Translate(float x, float y)
+void RectangleCollider2D::Translate(float x, float y)
 {
 	position.x = x;
 	position.y = y;
@@ -115,7 +115,7 @@ void Collision::Translate(float x, float y)
 	UpdateCollision(position.x, position.y, pos, view, this->scale);
 }
 
-void Collision::SetOffset(float x, float y) {
+void RectangleCollider2D::SetOffset(float x, float y) {
 	offset.x = x;
 	offset.y = y;
 }
@@ -196,7 +196,7 @@ void Collision::SetOffset(float x, float y) {
 	}
 }*/
 
-void Collision::IsCollidedSAT() {
+void RectangleCollider2D::IsCollidedSAT() {
 	isCollided = false;
 	if (this == nullptr) {
 		return;
@@ -234,7 +234,7 @@ void Collision::IsCollidedSAT() {
 	}
 }
 
-void Collision::IsCollidedDIAGS()
+void RectangleCollider2D::IsCollidedDIAGS()
 {
 	std::lock_guard<std::mutex> lock(mtx);
 	isCollided = false;
@@ -295,10 +295,10 @@ void Collision::IsCollidedDIAGS()
 	}
 }
 
-bool Collision::ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2)
+bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, RectangleCollider2D &r2)
 {
-	Collision *poly1 = &r1;
-	Collision *poly2 = &r2;
+	RectangleCollider2D *poly1 = &r1;
+	RectangleCollider2D *poly2 = &r2;
 
 	float overlap = INFINITY;
 
@@ -370,10 +370,10 @@ bool Collision::ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2)
 	return false;
 }
 
-bool Collision::ShapeOverlap_SAT(Collision &r1, Collision &r2)
+bool RectangleCollider2D::ShapeOverlap_SAT(RectangleCollider2D &r1, RectangleCollider2D &r2)
 {
-	Collision *poly1 = &r1;
-	Collision *poly2 = &r2;
+	RectangleCollider2D *poly1 = &r1;
+	RectangleCollider2D *poly2 = &r2;
 	
 	float overlap = INFINITY;
 

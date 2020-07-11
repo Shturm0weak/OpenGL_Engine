@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Render/SkyBox.h"
+#include "Core/Ray3D.h"
 
 class TestImGui : public Application {
 public:
 	std::vector<GameObject*> go;
 	double t = 0;
 	TestImGui(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
-
+	Ray3D::Hit hit;
 	virtual void OnStart() override {
 		ImGui::SetCurrentContext(Window::imGuiContext);
 		float xoffset = -10.f;
@@ -50,17 +51,28 @@ public:
 		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = new Texture("src/Images/Box1.png");
 		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = new Texture("src/Images/Box1normalmap.png");
 		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
-		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("cube1"));
+		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("skyboxCube"));
+		go[1]->GetComponentManager()->AddComponent<CubeCollider3D>();
+		go[0]->GetComponentManager()->AddComponent<CubeCollider3D>();
 	}
 
 	virtual void OnGuiRender() {
+		if (hit.Object != nullptr)
+			Gui::GetInstance()->Text("%s", true, 0, 0, 20, COLORS::Red, 0, hit.Object->GetOwnerOfComponent()->name);
+		else
+			Gui::GetInstance()->Text("Nullptr", true, 0, 0, 20, COLORS::Red);
 	}
 
 	virtual void OnUpdate() override {
-		go[0]->GetComponentManager()->GetComponent<Transform>()->Translate(sin(t) * 15, 0, cos(t) * 15);
-		go[0]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);
-		go[1]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);
-		t += DeltaTime::deltatime;
+		if (Input::IsKeyPressed(Keycode::KEY_G)) {
+			new Line(Window::GetCamera().GetPosition(),Window::GetCamera().GetPosition() + Window::GetCamera().GetMouseDirVec() * 100.0f);
+		}
+		glm::vec3 forward = glm::vec3(-Window::GetCamera().forwardV.x, Window::GetCamera().forwardV.y,-Window::GetCamera().forwardV.z);
+		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward,&hit,100);
+		//go[0]->GetComponentManager()->GetComponent<Transform>()->Translate(sin(t) * 15, 0, cos(t) * 15);
+		//go[0]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);
+		//go[1]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);
+		//t += DeltaTime::deltatime;
 
 		for (size_t i = 0; i < 1; i++)
 		{

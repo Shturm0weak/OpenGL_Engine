@@ -150,6 +150,7 @@
     <None Include="src\Shaders\Basic.shader" />
     <None Include="src\Shaders\Basic3D.shader" />
     <None Include="src\Shaders\Batch.shader" />
+    <None Include="src\Shaders\CubeCollider.shader" />
     <None Include="src\Shaders\DepthBuffer.shader" />
     <None Include="src\Shaders\Line.shader" />
     <None Include="src\Shaders\LineSimple.shader" />

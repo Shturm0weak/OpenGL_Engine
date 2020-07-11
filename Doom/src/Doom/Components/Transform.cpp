@@ -34,7 +34,7 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 	position.z += speedZ * DeltaTime::GetDeltaTime();
 	RealVertexPositions();
 	if (col == nullptr) {
-		col = owner->component_manager->GetComponent<Collision>();
+		col = owner->component_manager->GetComponent<RectangleCollider2D>();
 	}
 	if (col != nullptr) {
 		col->UpdateCollision(position.x, position.y, sr->pos, sr->view, sr->scale);
@@ -73,7 +73,7 @@ void Transform::RotateOnce(float x, float y, float z,bool isRad) {
 	sr->view = glm::rotate(sr->view, rotation.z, glm::vec3(0, 0, 1));
 	RealVertexPositions();
 	if (col == nullptr) {
-		col = owner->component_manager->GetComponent<Collision>();
+		col = owner->component_manager->GetComponent<RectangleCollider2D>();
 	}
 	if (col != nullptr)
 		col->UpdateCollision(position.x, position.y, sr->pos, sr->view, sr->scale);
@@ -103,7 +103,7 @@ void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 axis)
 	axis *= angleRad;
 	RealVertexPositions();
 	if (col == nullptr) {
-		col = owner->component_manager->GetComponent<Collision>();
+		col = owner->component_manager->GetComponent<RectangleCollider2D>();
 	}
 	if (col != nullptr)
 		col->UpdateCollision(position.x, position.y, sr->pos, sr->view, sr->scale);
@@ -129,7 +129,7 @@ void Transform::Rotate(float x, float y, float z) {
 	sr->view = glm::rotate(sr->view, rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
 	RealVertexPositions();
 	if (col == nullptr) {
-		col = owner->component_manager->GetComponent<Collision>();
+		col = owner->component_manager->GetComponent<RectangleCollider2D>();
 	}
 	if (col != nullptr)
 		col->UpdateCollision(position.x, position.y, sr->pos, sr->view, sr->scale);
@@ -152,7 +152,7 @@ void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
 	owner->scaleValues[0] = scaleX; owner->scaleValues[1] = scaleY; owner->scaleValues[2] = scaleZ;
 	RealVertexPositions();
 	if (col == nullptr) {
-		col = owner->component_manager->GetComponent<Collision>();
+		col = owner->component_manager->GetComponent<RectangleCollider2D>();
 	}
 	if (col != nullptr)
 		col->UpdateCollision(position.x, position.y, sr->pos, sr->view, sr->scale);
@@ -191,7 +191,7 @@ void Transform::Translate(float x, float y,float z)
 	sr->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, position.z));
 	RealVertexPositions();
 	if (col == nullptr) {
-		col = owner->component_manager->GetComponent<Collision>();
+		col = owner->component_manager->GetComponent<RectangleCollider2D>();
 	}
 	if (col != nullptr)
 		col->UpdateCollision(position.x, position.y, sr->pos, sr->view, sr->scale);

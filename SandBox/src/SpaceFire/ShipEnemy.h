@@ -31,7 +31,7 @@ public:
 	float hp = 100;
 
 	Transform* tr = nullptr;
-	Collision* col = nullptr;
+	RectangleCollider2D* col = nullptr;
 	SpriteRenderer* sr = nullptr;
 	Texture* texture = new Texture("src/SpaceFire/Images/SpaceShip.png");
 

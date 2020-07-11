@@ -13,7 +13,7 @@
 
 namespace Doom {
 
-	class DOOM_API Collision : public Component {
+	class DOOM_API RectangleCollider2D : public Component {
 	private:
 		std::mutex mtx;
 		const float positions[16] = {
@@ -25,7 +25,7 @@ namespace Doom {
 
 		int id = 0;
 		//void* Owner = nullptr;
-		Collision* col = nullptr;
+		RectangleCollider2D* col = nullptr;
 		Transform* trans = nullptr;
 		
 		glm::vec3 scaleValues = { 1,1,1 };
@@ -47,8 +47,8 @@ namespace Doom {
 
 		Shader* shader = nullptr;
 
-		bool ShapeOverlap_SAT_STATIC(Collision &r1, Collision &r2);
-		bool ShapeOverlap_SAT(Collision &r1, Collision &r2);
+		bool ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, RectangleCollider2D &r2);
+		bool ShapeOverlap_SAT(RectangleCollider2D &r1, RectangleCollider2D &r2);
 		void UpdateCollision(double x, double y, glm::mat4 pos, glm::mat4 view, glm::mat4 scale);
 		void RealVerPos();
 		float* GetVertexPositions();
@@ -59,7 +59,7 @@ namespace Doom {
 		friend class Editor;
 		friend class Renderer;
 		friend class Batch;
-		friend class Ray;
+		friend class Ray2D;
 
 		glm::vec2 displacement;
 		glm::vec2 offset = {0,0};
@@ -80,7 +80,7 @@ namespace Doom {
 
 		float* ScaledVerPos = new float[16];
 
-		Collision* collidedObject = nullptr;
+		RectangleCollider2D* collidedObject = nullptr;
 		std::string GetTag() const { return tag; }
 		void SetId(int id) { this->id = id; }
 		int GetId() const { return id; }
@@ -90,8 +90,8 @@ namespace Doom {
 		bool isCollided = false;
 		bool IsTrigger = false;
 
-		Collision(GameObject* owner = nullptr,double x = 0, double y = 0);
-		~Collision();
+		RectangleCollider2D(GameObject* owner = nullptr,double x = 0, double y = 0);
+		~RectangleCollider2D();
 
 		void SetTag(std::string tag) { this->tag = tag; }
 		void Scale(float x, float y);

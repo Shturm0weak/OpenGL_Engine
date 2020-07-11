@@ -6,7 +6,7 @@ using namespace Doom;
 
 class Coin: public GameObject{
 public:
-	Collision* col = nullptr;
+	RectangleCollider2D* col = nullptr;
 	Transform* tr = nullptr;
 	bool playanim = false;
 	bool secondphase = false;
@@ -17,7 +17,7 @@ public:
 		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
 		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
 		SoundManager::CreateSoundAsset("coin", coinSound);
-		col = GetComponentManager()->AddComponent<Collision>();
+		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		col->SetOwner(this);
 		type = "GameObject";
@@ -65,7 +65,7 @@ public:
 	}
 
 	virtual void OnCollision(void* _col)override {
-		Collision* col = static_cast<Collision*>(_col);
+		RectangleCollider2D* col = static_cast<RectangleCollider2D*>(_col);
 		if (col->GetTag() == "Player") {
 			SoundManager::Play(coinSound);
 			this->col->Enable = false;

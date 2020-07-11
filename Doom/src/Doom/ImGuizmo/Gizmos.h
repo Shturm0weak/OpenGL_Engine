@@ -5,6 +5,7 @@ namespace Doom {
 
 	class Gizmos : public GameObject {
 	private:
+		std::pair<float, GameObject*> Intersect(glm::vec3 dir);
 		std::vector<GameObject*> faces;
 		std::vector <Line*> axis;
 	public:

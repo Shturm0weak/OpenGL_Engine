@@ -2,7 +2,7 @@
 
 class RayCastTest : public Application {
 public:
-	std::vector<Ray*> rays;
+	std::vector<Ray2D*> rays;
 	std::vector<Line*> lines;
 	glm::vec2 pos = glm::vec2(0, 0);
 	GameObject* coin = nullptr;
@@ -14,7 +14,7 @@ public:
 		Renderer::Load("src/savedRayCastTest.txt");
 		Window::GetCamera().Zoom(2.9);
 		coin = new GameObject("Coin",5,5);
-		Collision* col = coin->GetComponentManager()->AddComponent<Collision>();
+		RectangleCollider2D* col = coin->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		static_cast<SpriteRenderer*>(coin->GetComponentManager()->GetComponent<Irenderer>())->SetTexture("src/Images/Bird.png");
 		coin->GetComponentManager()->GetComponent<Transform>()->Scale(3, 3);
 		col->SetTag("Coin");
@@ -22,7 +22,7 @@ public:
 		float angle = 0;
 		for (unsigned int i = 0; i < 2000; i++)
 		{
-			rays.push_back(new Ray(glm::vec2(0, 0), glm::vec2(0, 1), 100));
+			rays.push_back(new Ray2D(glm::vec2(0, 0), glm::vec2(0, 1), 100));
 			lines.push_back(new Line(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 			rays[i]->Rotate(angle);
 			lines[i]->SetEndPoint(rays[i]->end.x, rays[i]->end.y);

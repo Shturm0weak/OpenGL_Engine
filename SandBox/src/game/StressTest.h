@@ -17,7 +17,7 @@ public:
 	StressTest(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_2D, width, height, Vsync) {}
 	void OnStart() {
 		gameobj = new GameObject();
-		gameobj->GetComponent<Collision>();
+		gameobj->GetComponent<RectangleCollider2D>();
 		ImGui::SetCurrentContext(Window::imGuiContext);
 		textureAtlas = new TextureAtlas(128, 128, "src/GameRPG/Textures/RPGpack_sheet_2X.png");
 		std::unordered_map<char, glm::vec2> textures;

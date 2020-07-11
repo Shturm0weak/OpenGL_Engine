@@ -110,7 +110,8 @@ namespace Doom {
 		void Submit(float* mesh2D, glm::vec4 color,Texture* texture = nullptr,glm::vec2 size = glm::vec2(0), glm::vec2 pos = glm::vec2(0),float raduis = 0);
 		void Submit(SpriteRenderer& gameobject);
 		void Submit(Line& line);
-		void Submit(Collision& collision);
+		void Submit(glm::vec4 color, float* mesh);
+		void Submit(RectangleCollider2D& collision);
 		void flushGameObjects(Shader* shader);
 		void flushCollision(Shader* shader);
 		void flushText(Shader* shader);

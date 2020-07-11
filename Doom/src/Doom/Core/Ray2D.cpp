@@ -1,10 +1,10 @@
 #include "../pch.h"
 #include "../Render/Renderer.h"
-#include "Ray.h"
+#include "Ray2D.h"
 
 using namespace Doom;
 
-Ray::Ray(glm::vec2 start, glm::vec2 direction, float length)
+Ray2D::Ray2D(glm::vec2 start, glm::vec2 direction, float length)
 	: start(start),length(length)
 {
 	this->direction = direction;
@@ -12,21 +12,21 @@ Ray::Ray(glm::vec2 start, glm::vec2 direction, float length)
 	this->end = start + (direction * length);
 }
 
-bool Ray::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, std::vector<std::string> ignoreMask)
+bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, std::vector<std::string> ignoreMask)
 {
 	this->start = start;
 	this->direction = direction;
 	end = (this->direction * length) + start;
 	
 	std::vector<glm::vec2> corners;
-	std::multimap<Collision*,glm::vec2*> points;
+	std::multimap<RectangleCollider2D*,glm::vec2*> points;
 	unsigned int size = Renderer::collision2d.size();
 
 	bool ignoreFlag = false;
 
 	for (unsigned int i = 0; i < size; i++)
 	{
-		Collision* col = Renderer::collision2d[i];
+		RectangleCollider2D* col = Renderer::collision2d[i];
 
 		unsigned int ignoreMaskSize = ignoreMask.size();
 		for (unsigned int i = 0; i < ignoreMaskSize; i++)
@@ -72,7 +72,7 @@ bool Ray::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, st
 			
 			if (distance <= min) {
 				min = distance;
-				hit.point = *itr->second;
+				hit.point = glm::vec3(itr->second->x, itr->second->y,0);
 				hit.Object = itr->first;
 			}
 			delete itr->second;
@@ -84,7 +84,7 @@ bool Ray::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, st
 		return false;
 }
 
-glm::vec2* Doom::Ray::LineIntersect(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 g)
+glm::vec2* Doom::Ray2D::LineIntersect(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 g)
 {
 	glm::vec2 r = (b - a);
 	glm::vec2 s = (g - c);
@@ -98,17 +98,17 @@ glm::vec2* Doom::Ray::LineIntersect(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::
 	return nullptr;
 }
 
-float Doom::Ray::Distance(glm::vec2 start, glm::vec2 end)
+float Doom::Ray2D::Distance(glm::vec2 start, glm::vec2 end)
 {
 	return sqrt(pow((end.x - start.x),2) + pow((end.y - start.y),2));
 }
 
-void Doom::Ray::Normilize(glm::vec2 & vector)
+void Doom::Ray2D::Normilize(glm::vec2 & vector)
 {
 	vector = glm::vec2(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y)));
 }
 
-void Doom::Ray::Rotate(float angle)
+void Doom::Ray2D::Rotate(float angle)
 {
 	float theta = (-angle * (2 * 3.14159f) / 360.0f);
 	direction = glm::vec2(cos(theta) * direction.x - sin(theta) * direction.y,
@@ -116,11 +116,11 @@ void Doom::Ray::Rotate(float angle)
 	this->end = start + (direction * length);
 }
 
-void Ray::SetStart(glm::vec2 start) {
+void Ray2D::SetStart(glm::vec2 start) {
 	this->start = start;
 }
 
-void Ray::SetDirection(glm::vec2 direction) {
+void Ray2D::SetDirection(glm::vec2 direction) {
 	this->direction = direction;
 	Normilize(this->direction);
 }

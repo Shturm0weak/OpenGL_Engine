@@ -8,17 +8,18 @@
 #include "Render/ParticleSystem.h"
 #include "Audio/SoundManager.h"
 #include "Core/Editor.h"
-#include "Components/Collision.h"
+#include "Components/RectangleCollider2D.h"
 
 using namespace Doom;
 
+DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::colliders;
 //storage of all references to our objects in the scene
 DOOM_API GameObject* Renderer::Light = nullptr;
 DOOM_API std::vector <GameObject*> Renderer::objects2d; 
 //Warning: used only for rendering
 DOOM_API std::vector <GameObject*> Renderer::objects3d;
 //storage of all references to our object's collisions in the scene
-DOOM_API std::vector <Collision*> Renderer::collision2d;
+DOOM_API std::vector <RectangleCollider2D*> Renderer::collision2d;
 DOOM_API Batch* Batch::instance;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithOwner;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithNoOwner;
@@ -57,7 +58,7 @@ DOOM_API float DeltaTime::lasttime = (float)glfwGetTime();
 DOOM_API float DeltaTime::deltatime = 0.0000001;
 DOOM_API std::mutex DeltaTime::mtx;
 
-DOOM_API bool Collision::IsVisible;
+DOOM_API bool RectangleCollider2D::IsVisible;
 
 DOOM_API vec4 COLORS::Red(0.9, 0, 0, 1);
 DOOM_API vec4 COLORS::Yellow(1, 1, 0, 1);

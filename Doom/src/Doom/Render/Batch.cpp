@@ -258,31 +258,45 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 
 void Doom::Batch::Submit(Line & line)
 {
+
+	if (Lindexcount >= RENDERER_INDICES_SIZE) {
+		EndLines();
+		flushLines(LineShader);
+		BeginLines();
+		Lindexcount = 0;
+	}
+
 	Lbuffer->m_vertex = glm::vec3(line.mesh2D[0], line.mesh2D[1], line.mesh2D[2]);
-	Lbuffer->m_color = line.color;
-	Lbuffer->MVPMat0 = line.MVP[0];
-	Lbuffer->MVPMat1 = line.MVP[1];
-	Lbuffer->MVPMat2 = line.MVP[2];
-	Lbuffer->MVPMat3 = line.MVP[3];
-	Lbuffer->rotationMat0 = line.view[0];
-	Lbuffer->rotationMat1 = line.view[1];
-	Lbuffer->rotationMat2 = line.view[2];
-	Lbuffer->rotationMat3 = line.view[3];
 	Lbuffer->m_color = line.color;
 
 	Lbuffer++;
 
 	Lbuffer->m_vertex = glm::vec3(line.mesh2D[3], line.mesh2D[4],line.mesh2D[5]);
 	Lbuffer->m_color = line.color;
-	Lbuffer->MVPMat0 = line.MVP[0];
-	Lbuffer->MVPMat1 = line.MVP[1];
-	Lbuffer->MVPMat2 = line.MVP[2];
-	Lbuffer->MVPMat3 = line.MVP[3];
-	Lbuffer->rotationMat0 = line.view[0];
-	Lbuffer->rotationMat1 = line.view[1];
-	Lbuffer->rotationMat2 = line.view[2];
-	Lbuffer->rotationMat3 = line.view[3];
-	Lbuffer->m_color = line.color;
+
+	Lbuffer++;
+
+	Lindexcount += 2;
+}
+
+
+void Doom::Batch::Submit(glm::vec4 color, float* mesh2D)
+{
+
+	if (Lindexcount >= RENDERER_INDICES_SIZE) {
+		EndLines();
+		flushLines(LineShader);
+		BeginLines();
+		Lindexcount = 0;
+	}
+
+	Lbuffer->m_vertex = glm::vec3(mesh2D[0], mesh2D[1], mesh2D[2]);
+	Lbuffer->m_color = color;
+
+	Lbuffer++;
+
+	Lbuffer->m_vertex = glm::vec3(mesh2D[3], mesh2D[4], mesh2D[5]);
+	Lbuffer->m_color = color;
 
 	Lbuffer++;
 
@@ -378,7 +392,7 @@ void Batch::Submit(SpriteRenderer & c)
 	Gindexcount += 6;
 }
 
-void Batch::Submit(Collision& c) {
+void Batch::Submit(RectangleCollider2D& c) {
 	glm::mat4 mvp = c.owner->GetComponentManager()->GetComponent<Irenderer>()->pos * c.owner->GetComponentManager()->GetComponent<Irenderer>()->view;
 	if (GtextureSlotsIndex > maxTextureSlots - 1) {
 		EndGameObjects();
@@ -738,33 +752,6 @@ void Doom::Batch::initLines()
 
 	glEnableVertexArrayAttrib(Lvao, 1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_color));
-
-	glEnableVertexArrayAttrib(Lvao, 2);
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat0));
-
-	glEnableVertexArrayAttrib(Lvao, 3);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat1));
-
-	glEnableVertexArrayAttrib(Lvao, 4);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat2));
-
-	glEnableVertexArrayAttrib(Lvao, 5);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, rotationMat3));
-
-	glEnableVertexArrayAttrib(Lvao, 6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat0));
-
-	glEnableVertexArrayAttrib(Lvao, 7);
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat1));
-
-	glEnableVertexArrayAttrib(Lvao, 8);
-	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat2));
-
-	glEnableVertexArrayAttrib(Lvao, 9);
-	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, MVPMat3));
-
-	glEnableVertexArrayAttrib(Lvao, 10);
-	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_color));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

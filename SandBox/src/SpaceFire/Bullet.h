@@ -6,7 +6,7 @@ public:
 	double lifeTimer = 0;
 	double maxTimeToLive = 2;
 	Transform* tr = nullptr;
-	Collision* col = nullptr;
+	RectangleCollider2D* col = nullptr;
 	SpriteRenderer* sr = nullptr;
 	bool isActive = false;
 	glm::vec3 moveDir;
@@ -17,7 +17,7 @@ public:
 		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
 		EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
 		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
-		col = GetComponentManager()->AddComponent<Collision>();
+		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 		col->SetTag(tag);

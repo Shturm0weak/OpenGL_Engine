@@ -4,13 +4,13 @@ using namespace Doom;
 
 class PlayerCharacter : public GameObject{
 public:
-	Collision* col = nullptr;
+	RectangleCollider2D* col = nullptr;
 	Transform* tr = nullptr;
 	Animator* anim = nullptr;
 
 	std::mutex mtx;
 	int count = 0;
-	Ray* checkGround = nullptr;
+	Ray2D* checkGround = nullptr;
 	Line* test1 = nullptr;
 	Line* test2 = nullptr;
 	Line* test3 = nullptr;
@@ -22,7 +22,7 @@ public:
 	float jump = 0.f;
 	unsigned int turnSide = 0;
 
-	Ray* rayfire = nullptr;
+	Ray2D* rayfire = nullptr;
 	Line* line = nullptr;
 
 	bool isLanded = false;

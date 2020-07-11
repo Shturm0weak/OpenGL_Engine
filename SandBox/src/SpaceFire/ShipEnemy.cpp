@@ -6,7 +6,7 @@
 
 void ShipEnemy::OnCollision(void * _col)
 {
-	Collision* __col = static_cast<Collision*>(_col);
+	RectangleCollider2D* __col = static_cast<RectangleCollider2D*>(_col);
 	if (__col->GetTag() == "Bullet") {
 		Bullet* bullet = static_cast<Bullet*>(__col->GetOwnerOfComponent());
 		hp -= bullet->damage;
@@ -24,7 +24,7 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
-	col = GetComponentManager()->AddComponent<Collision>();
+	col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 	tr = GetComponentManager()->GetComponent<Transform>();
 	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 	tr->Scale(5, 5);
@@ -99,7 +99,7 @@ void ShipEnemy::Death()
 		Ammo* a = new Ammo("AmmoPickUp", position.x, position.y, ammo);
 		static_cast<SpriteRenderer*>(a->GetComponentManager()->GetComponent<Irenderer>())->SetTexture("src/SpaceFire/Images/Ammo.png");
 		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
-		Collision* col = a->GetComponentManager()->AddComponent<Collision>();
+		RectangleCollider2D* col = a->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		col->SetTag("Ammo");
 	}
 }

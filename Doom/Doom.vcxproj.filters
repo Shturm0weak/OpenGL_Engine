@@ -24,7 +24,6 @@
     <ClInclude Include="src\Doom\Core\Timer.h" />
     <ClInclude Include="src\Doom\Core\WindowsInput.h" />
     <ClInclude Include="src\Doom\Components\Animator.h" />
-    <ClInclude Include="src\Doom\Components\Collision.h" />
     <ClInclude Include="src\Doom\Components\Transform.h" />
     <ClInclude Include="src\Doom\ECS\Component.h" />
     <ClInclude Include="src\Doom\ECS\ComponentManager.h" />
@@ -42,7 +41,6 @@
     <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
     <ClInclude Include="src\Doom\EntryPoint.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
-    <ClInclude Include="src\Doom\Core\Ray.h" />
     <ClInclude Include="src\Doom\Render\TextureAtlas.h" />
     <ClInclude Include="src\Doom\Render\TileMap.h" />
     <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
@@ -64,6 +62,10 @@
     <ClInclude Include="src\Doom\Objects2D\GridLayOut.h" />
     <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h" />
     <ClInclude Include="src\Doom\Render\SkyBox.h" />
+    <ClInclude Include="src\Doom\Core\Ray2D.h" />
+    <ClInclude Include="src\Doom\Components\CubeCollider.h" />
+    <ClInclude Include="src\Doom\Components\RectangleCollider2D.h" />
+    <ClInclude Include="src\Doom\Core\Ray3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -73,7 +75,6 @@
     <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
     <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Components\Animator.cpp" />
-    <ClCompile Include="src\Doom\Components\Collision.cpp" />
     <ClCompile Include="src\Doom\Components\Transform.cpp" />
     <ClCompile Include="src\Doom\Objects2D\GameObject.cpp" />
     <ClCompile Include="src\Doom\Render\Batch.cpp" />
@@ -88,7 +89,6 @@
     <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
     <ClCompile Include="src\Doom\EntryPoint.cpp" />
     <ClCompile Include="src\Doom\Render\Line.cpp" />
-    <ClCompile Include="src\Doom\Core\Ray.cpp" />
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />
     <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
@@ -110,6 +110,10 @@
     <ClCompile Include="src\Doom\ECS\Component.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp" />
     <ClCompile Include="src\Doom\Render\SkyBox.cpp" />
+    <ClCompile Include="src\Doom\Core\Ray2D.cpp" />
+    <ClCompile Include="src\Doom\Components\RectangleCollider2D.cpp" />
+    <ClCompile Include="src\Doom\Core\Ray3D.cpp" />
+    <ClCompile Include="src\Doom\Components\CubeCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

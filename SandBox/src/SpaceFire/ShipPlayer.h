@@ -41,7 +41,7 @@ public:
 	glm::vec3 dir;
 	SpriteRenderer* sr = nullptr;
 	Transform* tr = nullptr;
-	Collision* col = nullptr;
+	RectangleCollider2D* col = nullptr;
 	Texture* texture = new Texture("src/SpaceFire/Images/SpaceShip.png");
 
 	ShipPlayer(std::string name = "ShipPlayer",float x = 0,float y = 0);

@@ -3,15 +3,15 @@
 namespace Doom {
 
 	struct Hit {
-		glm::vec2 point;
-		Collision* Object;
-
+		glm::vec3 point;
+		RectangleCollider2D* Object;
 	};
-	class DOOM_API Ray {
+
+	class DOOM_API Ray2D {
 	public:
 		std::vector<std::string> ignoreMask;
-		bool Doom::Ray::RayCastObjects(Hit & hit, glm::vec2 start, glm::vec2 direction);
-		Ray(glm::vec2 start, glm::vec2 direction, float length);
+		bool Doom::Ray2D::RayCastObjects(Hit & hit, glm::vec2 start, glm::vec2 direction);
+		Ray2D(glm::vec2 start, glm::vec2 direction, float length);
 		float length;
 		glm::vec2 direction;
 		glm::vec2 start;
@@ -26,5 +26,4 @@ namespace Doom {
 
 		void Rotate(float angle);
 	};
-
 }

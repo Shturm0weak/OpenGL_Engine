@@ -10,7 +10,7 @@
 #include "src/SpaceFire/SpaceFire.h"
 
 int main() {
-	TestImGui* app = new TestImGui();
+	TestImGui* app = new TestImGui("3D test",800,600,false);
 	Doom::EntryPoint entrypoint(app);
 	entrypoint.Run();
 	return 0;

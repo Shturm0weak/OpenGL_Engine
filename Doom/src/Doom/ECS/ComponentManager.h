@@ -11,7 +11,8 @@
 #include "../Components/Render3D.h"
 #include "../Components/Transform.h"
 #include "../Components/Animator.h"
-#include "../Components/Collision.h"
+#include "../Components/RectangleCollider2D.h"
+#include "../Components/CubeCollider.h"
 #include "../Core/ColoredOutput.h"
 
 namespace Doom {
@@ -27,7 +28,7 @@ namespace Doom {
 	public:
 		~ComponentManager() { 
 			delete[] namesOfMembers;
-			RemoveComponent<Collision>();
+			RemoveComponent<RectangleCollider2D>();
 			RemoveComponent<Transform>();
 			RemoveComponent<Animator>();
 		}
@@ -55,9 +56,9 @@ namespace Doom {
 		}
 
 		template <>
-		void RemoveComponent<Collision>() {
-			Collision* col = nullptr;
-			col = GetComponent<Collision>();
+		void RemoveComponent<RectangleCollider2D>() {
+			RectangleCollider2D* col = nullptr;
+			col = GetComponent<RectangleCollider2D>();
 			if (col == nullptr)
 				return;
 			int _id = col->GetId();
@@ -112,6 +113,24 @@ namespace Doom {
 		}
 
 		template <>
+		void RemoveComponent<CubeCollider3D>() {
+			CubeCollider3D* col = nullptr;
+			col = GetComponent<CubeCollider3D>();
+			if (col == nullptr)
+				return;
+			components.erase(components.begin() + col->m_Id);
+			unsigned int _size = components.size();
+			if (col->m_Id != _size) {
+				for (unsigned int i = col->m_Id; i < _size; i++)
+				{
+					components[i]->m_Id = i;;
+				}
+			}
+			delete col;
+			return;
+		}
+
+		template <>
 		void RemoveComponent<Irenderer>() {
 			Irenderer* col = nullptr;
 			col = GetComponent<Irenderer>();
@@ -145,11 +164,11 @@ namespace Doom {
 		}
 
 		template<>
-		Collision* GetComponent() {
+		RectangleCollider2D* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
 				if (components[i]->GetComponentType() == "Collision") {
-					return (Collision*)components[i];
+					return (RectangleCollider2D*)components[i];
 				}
 			}
 			return nullptr;
@@ -177,7 +196,16 @@ namespace Doom {
 			return nullptr;
 		}
 
-
+		template<>
+		CubeCollider3D* GetComponent() {
+			for (unsigned int i = 0; i < components.size(); i++)
+			{
+				if (components[i]->GetComponentType() == "CubeCollider3D") {
+					return (CubeCollider3D*)components[i];
+				}
+			}
+			return nullptr;
+		}
 
 		template<>
 		Transform* GetComponent() {
@@ -197,9 +225,9 @@ namespace Doom {
 		}
 
 		template <>
-		Collision* AddComponent<Collision>() {
-			if (GetComponent<Collision>() == nullptr) {
-				Collision* object = new Collision(owner);
+		RectangleCollider2D* AddComponent<RectangleCollider2D>() {
+			if (GetComponent<RectangleCollider2D>() == nullptr) {
+				RectangleCollider2D* object = new RectangleCollider2D(owner);
 				object->owner = (this->owner);
 				object->m_Id = components.size();
 				components.push_back(object);
@@ -266,6 +294,21 @@ namespace Doom {
 				components.push_back(object);
 #ifdef _DEBUG
 				std::cout << "Added component of type <Transform> for gameobject: " << owner_name << std::endl;
+#endif
+				return object;
+			}
+			return nullptr;
+		}
+
+		template <>
+		CubeCollider3D* AddComponent<CubeCollider3D>() {
+			if (GetComponent<CubeCollider3D>() == nullptr) {
+				CubeCollider3D* object = new CubeCollider3D();
+				object->owner = (this->owner);
+				object->m_Id = components.size();
+				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << "Added component of type <CubeCollider3D> for gameobject: " << owner_name << std::endl;
 #endif
 				return object;
 			}

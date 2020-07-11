@@ -42,9 +42,9 @@ void GameObject::operator=(GameObject& go) {
 	thisRenderer->SetColor(glm::vec4(goRenderer->color[0], goRenderer->color[1], goRenderer->color[2], goRenderer->color[3]));
 	thisRenderer->SetTexture(goRenderer->texture);
 	thisRenderer->SetUVs(goRenderer->GetUVs());
-	if (go.GetComponentManager()->GetComponent<Collision>() != nullptr) {
-		Collision* col = this->GetComponentManager()->AddComponent<Collision>();
-		Collision* gocol = (Collision*)go.GetComponentManager()->GetComponent<Collision>();
+	if (go.GetComponentManager()->GetComponent<RectangleCollider2D>() != nullptr) {
+		RectangleCollider2D* col = this->GetComponentManager()->AddComponent<RectangleCollider2D>();
+		RectangleCollider2D* gocol = (RectangleCollider2D*)go.GetComponentManager()->GetComponent<RectangleCollider2D>();
 		col->SetOffset(gocol->offset.x, gocol->offset.y);
 		col->Enable = gocol->Enable;
 		col->Translate(position.x, position.y);

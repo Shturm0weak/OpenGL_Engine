@@ -33,10 +33,9 @@ void EntryPoint::Run()
 	bool isEditorEnable = false;
 	bool FirstFrame = true;
 	app->OnStart();
-
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
 		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
-
+		ThreadPool::Instance()->enqueue([] {Editor::Instance()->UpdateNormals(); });
 		DeltaTime::calculateDeltaTime();
 
 		if (FirstFrame) {
@@ -64,7 +63,6 @@ void EntryPoint::Run()
 		}
 
 		app->OnUpdate();
-
 		Gui::GetInstance()->Begin();
 		app->OnGuiRender();
 		Gui::GetInstance()->End();

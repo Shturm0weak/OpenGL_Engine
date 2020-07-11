@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Render/Line.h"
-#include "Core/Ray.h"
+#include "Core/Ray2D.h"
 #include "PlayerCharacter.h"
 #include "Audio/Sound.h"
 
@@ -9,7 +9,7 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
-	col = GetComponentManager()->AddComponent<Collision>();
+	col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 	col->SetTag("Player");
 	tr = GetComponentManager()->GetComponent<Transform>();
 	type = "Player";
@@ -25,13 +25,13 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Scale(0.4f, 0.4f);
 	SetObjectType("Player");
 	muzzleFlashObj->SetObjectType("MuzzleFlash");
-	rayfire = new Ray(glm::vec2(position.x,position.y),glm::vec2(1,0),15);
+	rayfire = new Ray2D(glm::vec2(position.x,position.y),glm::vec2(1,0),15);
 	line = new Line(glm::vec3(0), glm::vec3(0),15);
 	test1 = new Line(glm::vec3(0), glm::vec3(0), 15);
 	test2 = new Line(glm::vec3(0), glm::vec3(0), 15);
 	test3 = new Line(glm::vec3(0), glm::vec3(0), 15);
 	line->width = 2.f;
-	checkGround = new Ray(glm::vec2(position.x, position.y), glm::vec2(0, -1), 100);
+	checkGround = new Ray2D(glm::vec2(position.x, position.y), glm::vec2(0, -1), 100);
 }
 
 PlayerCharacter::~PlayerCharacter()

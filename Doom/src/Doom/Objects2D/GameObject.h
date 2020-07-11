@@ -21,13 +21,13 @@ namespace Doom {
 		ComponentManager* component_manager;
 
 		friend class Doom::Transform;
-		friend class Doom::Collision;
+		friend class Doom::RectangleCollider2D;
 		friend class Doom::ComponentManager;
 		friend class Doom::Editor;
 		friend class Doom::Animator;
 		friend class Doom::Batch;
 		friend class Doom::Renderer;
-		friend class Doom::Ray;
+		friend class Doom::Ray2D;
 
 	public:
 

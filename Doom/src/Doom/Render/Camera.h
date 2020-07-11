@@ -23,6 +23,7 @@ namespace Doom {
 		~Camera() {}
 
 		glm::vec3 GetRotation() const ;
+		glm::vec3 GetMouseDirVec();
 
 		inline glm::vec3 GetPosition() const { return glm::vec3(m_Position.x, m_Position.y, m_Position.z); }
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
@@ -59,6 +60,7 @@ namespace Doom {
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewMatrix;
 		glm::mat4 m_ViewProjectionMatrix;
+		glm::mat4 rot;
 		float roll = 0.0f;
 		float pitch = 0.0f;
 		float yaw = 0.0f;
