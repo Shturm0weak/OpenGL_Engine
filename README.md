@@ -14,7 +14,7 @@ Component's manager
 
 Can draw lines and squares and 3d cubes
 
-Batch and Simple renderer
+Batch and Forward renderer
 
 Text rendering
 
