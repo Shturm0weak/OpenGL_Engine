@@ -9,7 +9,7 @@ namespace Doom {
 		inline static bool IsMousePressed(int keycode) { return s_Instance->IsMousePressedimp(keycode); }
 		inline static bool IsMouseDown(int keycode) { return s_Instance->IsMousePressedDownimp(keycode); }
 		inline static bool IsKeyDown(int keycode) { return s_Instance->IsKeyPressedDownimp(keycode); }
-		
+		inline static bool IsMouseReleased(int keycode) { return ImGui::IsMouseReleased(keycode); }
 		//Clear vector of pressed buttons for one frame
 		//So it needs to not check every time if is 
 		//button pressed, it just goes through vector

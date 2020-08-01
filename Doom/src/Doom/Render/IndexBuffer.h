@@ -7,7 +7,7 @@ namespace Doom {
 		unsigned int m_RendererID;
 		unsigned int m_count;
 	public:
-		IndexBuffer(const unsigned int* data, unsigned int count);
+		IndexBuffer(const uint32_t* data, uint32_t count);
 		~IndexBuffer();
 
 		void Bind() const;

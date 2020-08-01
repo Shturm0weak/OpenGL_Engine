@@ -44,7 +44,7 @@ public:
 		previndexcount = 0;
 		hp = new HP(-14, 6);
 		font = new Font();
-		texturecoin = new Texture("src/Images/coin.png");
+		texturecoin = Texture::Create("src/Images/coin.png");
 		font->LoadFont("src/font.txt", "src/arial.png");
 		font->LoadCharacters();
 		go->HpBar = hp;

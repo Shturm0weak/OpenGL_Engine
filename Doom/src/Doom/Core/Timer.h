@@ -1,5 +1,6 @@
 #pragma once
 #include <chrono>
+#include <iomanip>
 
 namespace Doom {
 
@@ -35,6 +36,7 @@ namespace Doom {
 
 			double ms = duration * 0.001;
 
+			std::setprecision(6);
 			std::cout << duration << "us (" << ms << "ms)\n";
 		}
 	};

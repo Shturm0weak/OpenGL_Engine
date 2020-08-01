@@ -40,8 +40,7 @@ DOOM_API std::vector<Texture*> Editor::textureVecTemp;
 DOOM_API int Texture::bindedAmount = 0;
 DOOM_API Texture* Texture::WhiteTexture;
 DOOM_API double Texture::VRAMused = 0;
-DOOM_API std::vector<Texture*> Texture::texturesArray;
-DOOM_API std::map<unsigned int, unsigned int> Texture::Texturesused;
+DOOM_API std::map<std::string, Texture*> Texture::textures;
 //Timer
 DOOM_API double Timer::start;
 //ThreadPool
@@ -71,7 +70,6 @@ DOOM_API vec4 COLORS::Gray(0.86, 0.86, 0.86, 1);
 DOOM_API vec4 COLORS::Silver(0.75, 0.75, 0.75, 1);
 DOOM_API vec4 COLORS::DarkGray(0.4, 0.4, 0.4, 1);
 
-
 DOOM_API bool Renderer::isReadyToRenderFirstThread = false;
 DOOM_API bool Renderer::isReadyToRenderSecondThread = false;
 DOOM_API bool Renderer::isReadyToRenderThirdThread = false;
@@ -81,8 +79,7 @@ DOOM_API float Line::width = 1.0f;
 DOOM_API std::vector<TextureAtlas*> TextureAtlas::textureAtlases;
 DOOM_API const char** TextureAtlas::items;
 
-DOOM_API Shader* Shader::defaultShader = nullptr;
-DOOM_API std::vector<Shader*> Shader::shaders;
+DOOM_API std::map<std::string,Shader*> Shader::shaders;
 
 DOOM_API std::vector<Particle*> Particle::particles;
 
@@ -91,5 +88,6 @@ DOOM_API ALCcontext* SoundManager::alcContext = nullptr;
 DOOM_API std::map<std::string,Sound*> SoundManager::sounds;
 
 DOOM_API std::map<std::string, Mesh*> MeshManager::Meshes;
-
+DOOM_API std::multimap<std::string, void*> MeshManager::meshQueue;
+DOOM_API bool MeshManager::dispatch = false;
 DOOM_API Shader* Font::shader = nullptr;

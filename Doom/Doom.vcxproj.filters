@@ -66,6 +66,8 @@
     <ClInclude Include="src\Doom\Components\CubeCollider.h" />
     <ClInclude Include="src\Doom\Components\RectangleCollider2D.h" />
     <ClInclude Include="src\Doom\Core\Ray3D.h" />
+    <ClInclude Include="src\Doom\Render\MeshManager.h" />
+    <ClInclude Include="src\Doom\Render\Instancing.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -102,7 +104,6 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxnode.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
-    <ClCompile Include="src\Doom\Render\Mesh.cpp" />
     <ClCompile Include="src\Doom\Render\Camera.cpp" />
     <ClCompile Include="src\Doom\Application.cpp" />
     <ClCompile Include="src\Doom\Render\ViewPort.cpp" />
@@ -114,6 +115,9 @@
     <ClCompile Include="src\Doom\Components\RectangleCollider2D.cpp" />
     <ClCompile Include="src\Doom\Core\Ray3D.cpp" />
     <ClCompile Include="src\Doom\Components\CubeCollider.cpp" />
+    <ClCompile Include="src\Doom\Render\MeshManager.cpp" />
+    <ClCompile Include="src\Doom\Render\Instancing.cpp" />
+    <ClCompile Include="src\Doom\Render\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

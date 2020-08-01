@@ -87,7 +87,7 @@ Doom::Font::~Font()
 
 void Doom::Font::LoadFont(std::string filename, std::string pathToTexture)
 {
-	fontAtlas = new Texture(pathToTexture);
+	fontAtlas = Texture::Create(pathToTexture);
 	std::ifstream in_file;
 	in_file.open(filename);
 	if (in_file.is_open()) {

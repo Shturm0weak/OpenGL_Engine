@@ -24,6 +24,8 @@ void ThreadPool::Infinite_loop_function()
 				while (true) {
 					if (main == std::this_thread::get_id())
 						return;
+					auto iter = isThreadBusy.find(std::this_thread::get_id());
+					
 					Task task;
 					{
 						std::unique_lock <std::mutex> umutex(m_mutex);
@@ -34,11 +36,17 @@ void ThreadPool::Infinite_loop_function()
 
 						task = std::move(m_Tasks.front());
 						m_Tasks.pop(); 
+
+						if (iter != isThreadBusy.end())
+							iter->second = true;
 						//std::cout << std::this_thread::get_id() << std::endl;
 					}
    					task();
+					if (iter != isThreadBusy.end())
+						iter->second = false;
 				}
-		}); 
+		});
+		isThreadBusy.insert(std::make_pair(m_Threads.back().get_id(),false));
 	}
 }
 void ThreadPool::Shutdown() noexcept

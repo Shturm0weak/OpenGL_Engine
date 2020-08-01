@@ -97,7 +97,7 @@ void ShipEnemy::Death()
 	int ammo = distribution1(e2);
 	if (chance <= 1) {
 		Ammo* a = new Ammo("AmmoPickUp", position.x, position.y, ammo);
-		static_cast<SpriteRenderer*>(a->GetComponentManager()->GetComponent<Irenderer>())->SetTexture("src/SpaceFire/Images/Ammo.png");
+		static_cast<SpriteRenderer*>(a->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(Texture::Create("src/SpaceFire/Images/Ammo.png"));
 		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
 		RectangleCollider2D* col = a->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		col->SetTag("Ammo");

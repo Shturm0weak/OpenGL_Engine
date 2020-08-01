@@ -11,6 +11,7 @@ namespace Doom {
 
 	class DOOM_API Editor {
 	private:
+		std::mutex mtx_updateNormals;
 		float campos[2] = { 0,0 };
 		bool IsActiveTextureAtlasCreation = false;
 		bool IsActiveEditor = false;
@@ -61,6 +62,7 @@ namespace Doom {
 		static void CheckTexturesFolder(const std::string path);
 		friend class Doom::Renderer;
 		friend class Renderer3D;
+		void Threads();
 		void Debug();
 		void TextProps();
 		void UpdateNormals();

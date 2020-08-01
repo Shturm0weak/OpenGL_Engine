@@ -12,7 +12,7 @@ class DOOM_API FBXDocument
 {
 public:
 
-	Mesh* LoadMesh(std::string* name,std::string filepath);
+	Doom::Mesh* LoadMesh(std::string name,std::string filepath);
 
     FBXDocument();
     void read(std::ifstream &input);

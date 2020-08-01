@@ -11,7 +11,7 @@ public:
 	bool isActive = false;
 	glm::vec3 moveDir;
 	float speed = 40.f;
-	Texture* texture = new Texture("src/SpaceFire/Images/WhiteCircle.png");
+	Texture* texture = Texture::Create("src/SpaceFire/Images/WhiteCircle.png");
 
 	Bullet(std::string tag,glm::vec3 moveDir,std::string name = "Bullet", float x = 0, float y = 0) : GameObject(name, x, y) {
 		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);

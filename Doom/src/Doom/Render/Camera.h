@@ -25,7 +25,7 @@ namespace Doom {
 		glm::vec3 GetRotation() const ;
 		glm::vec3 GetMouseDirVec();
 
-		inline glm::vec3 GetPosition() const { return glm::vec3(m_Position.x, m_Position.y, m_Position.z); }
+		inline glm::vec3 GetPosition() const { return m_Position; }
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
@@ -67,6 +67,9 @@ namespace Doom {
 		float aspectratio[4]; 
 		int* props = nullptr;
 		bool IsWindowResized = false;
+
+		std::mutex mtx;
+
 		public:
 			glm::vec3 forwardV = { 0,0,-1 };
 

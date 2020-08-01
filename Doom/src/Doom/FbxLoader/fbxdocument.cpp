@@ -10,13 +10,15 @@ using std::ofstream;
 using std::uint32_t;
 using std::uint8_t;
 
+using namespace Doom;
+
 namespace fbx {
-	Mesh * FBXDocument::LoadMesh(std::string* name,std::string filepath)
+	Mesh * FBXDocument::LoadMesh(std::string name,std::string filepath)
 	{
 		try
 		{
 			read(filepath);
-			Mesh* mesh = new Mesh(*name);
+			Mesh* mesh = new Mesh(name);
 			size_t size = nodes.size();
 			for (size_t i = 0; i < size; i++)
 			{

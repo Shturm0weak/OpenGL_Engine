@@ -5,12 +5,6 @@
 
 using namespace Doom;
 
-void SpriteRenderer::SetTexture(const std::string& path) {
-	texture = nullptr;
-	pathToTexture = path;
-	texture = new Texture(path);
-}
-
 void SpriteRenderer::SetTexture(Texture* texture) {
 	if (texture == nullptr) {
 		pathToTexture = "None";
@@ -24,12 +18,12 @@ void SpriteRenderer::SetTexture(Texture* texture) {
 }
 
 void SpriteRenderer::InitShader() {
-	shader = Shader::defaultShader;
+	shader = Shader::Get("Default2D");
 }
 
 Doom::SpriteRenderer::SpriteRenderer(GameObject* _owner)
 {
-	SetType("Renderer");
+	SetType(ComponentTypes::RENDER);
 	this->owner = _owner;
 	tr = owner->GetComponentManager()->GetComponent<Transform>();
 	this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, 0));
@@ -42,28 +36,30 @@ Doom::SpriteRenderer::~SpriteRenderer()
 
 void Doom::SpriteRenderer::Update(glm::vec3 pos)
 {
-	this->pos = translate(glm::mat4(1.f), pos);
-	float WorldVerPos[16];
-	glm::mat4 scaleXview = view * scale;
-	float* pSource;
-	pSource = (float*)glm::value_ptr(scaleXview);
-	for (unsigned int i = 0; i < 4; i++) {
-		for (unsigned int j = 0; j < 4; j++) {
-			WorldVerPos[i * 4 + j] = 0;
-			for (unsigned int k = 0; k < 4; k++) {
-				WorldVerPos[i * 4 + j] += mesh2D[i * 4 + k] * pSource[k * 4 + j];
+	ThreadPool::Instance()->enqueue([=]{
+		this->pos = translate(glm::mat4(1.f), pos);
+		float WorldVerPos[16];
+		glm::mat4 scaleXview = view * scale;
+		float* pSource;
+		pSource = (float*)glm::value_ptr(scaleXview);
+		for (unsigned int i = 0; i < 4; i++) {
+			for (unsigned int j = 0; j < 4; j++) {
+				WorldVerPos[i * 4 + j] = 0;
+				for (unsigned int k = 0; k < 4; k++) {
+					WorldVerPos[i * 4 + j] += mesh2D[i * 4 + k] * pSource[k * 4 + j];
+				}
 			}
 		}
-	}
-	WorldVertexPositions[0] = WorldVerPos[0];
-	WorldVertexPositions[1] = WorldVerPos[1];
-	WorldVertexPositions[2] = WorldVerPos[4];
-	WorldVertexPositions[3] = WorldVerPos[5];
-	WorldVertexPositions[4] = WorldVerPos[8];
-	WorldVertexPositions[5] = WorldVerPos[9];
-	WorldVertexPositions[6] = WorldVerPos[12];
-	WorldVertexPositions[7] = WorldVerPos[13];
-	pSource = nullptr;
+		WorldVertexPositions[0] = WorldVerPos[0];
+		WorldVertexPositions[1] = WorldVerPos[1];
+		WorldVertexPositions[2] = WorldVerPos[4];
+		WorldVertexPositions[3] = WorldVerPos[5];
+		WorldVertexPositions[4] = WorldVerPos[8];
+		WorldVertexPositions[5] = WorldVerPos[9];
+		WorldVertexPositions[6] = WorldVerPos[12];
+		WorldVertexPositions[7] = WorldVerPos[13];
+		pSource = nullptr;
+});
 }
 
 void Doom::SpriteRenderer::Render()

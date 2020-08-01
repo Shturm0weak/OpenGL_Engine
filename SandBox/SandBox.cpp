@@ -8,9 +8,10 @@
 #include "src/game/StressTest.h"
 #include "src/game/TestImGui.h"
 #include "src/SpaceFire/SpaceFire.h"
+#include "src/Minecraft/Minecraft.h"
 
 int main() {
-	TestImGui* app = new TestImGui("3D test",800,600,false);
+	Minecraft* app = new Minecraft("3D test",800,600,false);
 	Doom::EntryPoint entrypoint(app);
 	entrypoint.Run();
 	return 0;

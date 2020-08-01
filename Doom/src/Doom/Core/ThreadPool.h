@@ -14,6 +14,7 @@ namespace Doom {
 	private:
 		static ThreadPool* thread_pool;
 		std::vector<std::thread> m_Threads;
+		std::map <std::thread::id,bool> isThreadBusy;
 		std::mutex m_mutex;
 		std::thread::id main = std::this_thread::get_id();
 		std::condition_variable m_condition_var;
@@ -30,5 +31,7 @@ namespace Doom {
 		static ThreadPool* Instance() { return thread_pool; }
 		void enqueue(Task task);
 		static void Init();
+
+		friend class Editor;
 	};
 }

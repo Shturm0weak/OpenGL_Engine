@@ -1,54 +1,53 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <vector>
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "IndexBuffer.h"
 #include <iostream>
 #include "../Core/Core.h"
-#include <map>
 
-struct DOOM_API Mesh {
-public:
-	std::string name;
-	float* verteces = nullptr;
-	uint32_t vertecesSize = 0;
-	float* vertecesForNormals = nullptr;
-	uint32_t vertecesSizeForNormals = 0;
-	uint32_t* indicesForNormals = nullptr;
-	uint32_t indicesSizeForNormals = 0;
-	uint32_t* indices = nullptr;
-	uint32_t indicesSize = 0;
-	float* normals = nullptr;
-	uint32_t normalsSize = 0;
-	uint32_t meshSize = 0;
-	float* mesh = nullptr;
-	uint32_t uvSize = 0;
-	float* uv;
-	uint32_t uvSizeForVert = 0;
-	float* uvForVert;
-	uint32_t uvIndexSize = 0;
-	uint32_t* uvIndex;
-	float* btangent;
-	float* tangent;
+namespace Doom {
 
-	Mesh(std::string name) : name(name){}
+	class DOOM_API Mesh {
+	public:
 
-	~Mesh() {
-		delete[] mesh;
-	}
-};
+		std::string name;
+		uint32_t meshSize = 0;
+		float* mesh = nullptr;
+		uint32_t indicesSize = 0;
+		uint32_t* indicesForNormals = nullptr;
 
-class DOOM_API MeshManager {
-private:
-	static std::map<std::string, Mesh*> Meshes;
-public:
-	static void LoadMesh(std::string name, std::string filepath);
+		float* verteces = nullptr;
+		uint32_t vertecesSize = 0;
+		float* vertecesForNormals = nullptr;
+		uint32_t vertecesSizeForNormals = 0;
+		uint32_t indicesSizeForNormals = 0;
+		uint32_t* indices = nullptr;
+		float* normals = nullptr;
+		uint32_t normalsSize = 0;
+		uint32_t uvSize = 0;
+		float* uv;
+		uint32_t uvSizeForVert = 0;
+		float* uvForVert;
+		uint32_t uvIndexSize = 0;
+		uint32_t* uvIndex;
+		float* btangent;
+		float* tangent;
 
-	static Mesh* GetMesh(std::string name);
+		void Init();
 
-	static void DeleteMesh(std::string name);
+		VertexBuffer* vb = nullptr;
+		VertexArray* va = nullptr;
+		IndexBuffer* ib = nullptr;
+		VertexBufferLayout* layout = nullptr;
 
-	static void DeleteMesh(Mesh* mesh);
+		Mesh(std::string name) : name(name) {}
 
-	static void ShutDown();
-};
+		~Mesh();
+	};
 
+}
 #endif // MESH_H

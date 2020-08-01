@@ -2,7 +2,7 @@
 
 Doom::TextureAtlas::TextureAtlas(float spriteWidth, float spriteHeight,std::string texturePath) : spriteHeight(spriteHeight),spriteWidth(spriteWidth)
 {
-	m_texture = new Texture(texturePath);
+	m_texture = Texture::Create(texturePath);
 	textureAtlases.push_back(this);
 }
 

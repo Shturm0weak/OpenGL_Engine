@@ -14,8 +14,8 @@ namespace Doom {
 
 		void Bind() const;
 		void UnBind() const;
-
-		void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
+		inline unsigned int GetVertexArray() { return m_RendererID; }
+		void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout, const GLuint offsetOfGlVertexAttribArray = 0,const GLuint devisor = 0);
 	};
 
 }

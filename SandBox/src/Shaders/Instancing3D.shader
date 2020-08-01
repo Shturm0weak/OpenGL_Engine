@@ -6,12 +6,19 @@ layout(location = 1) in vec3 normals;
 layout(location = 2) in vec2 textCoords;
 layout(location = 3) in vec3 tangent;
 layout(location = 4) in vec3 btangent;
-//layout(location = 5) in vec3 v;
-//vec4 v1 = { v.x,0,0,0 };
-//vec4 v2 = { 0,v.y,0,0 };
-//vec4 v3 = { 0,0,v.z,0 };
-//vec4 v4 = {0,0,0,0}
-//mat4 model = { v1,v2,v3,4 };
+layout(location = 5) in vec3 v;
+layout(location = 6) in vec3 s;
+layout(location = 7) in vec4 m_color;
+layout(location = 8) in vec2 mat;
+layout(location = 9) in mat4 u_View;
+mat4 u_Model = mat4(1.0, 0.0, 0.0, 0.0,
+					0.0, 1.0, 0.0, 0.0,
+					0.0, 0.0, 1.0, 0.0,
+					v.x, v.y, v.z, 1.0);
+mat4 u_Scale = mat4(s.x, 0.0, 0.0, 0.0,
+					0.0, s.y, 0.0, 0.0,
+					0.0, 0.0, s.z, 0.0,
+					0.0, 0.0, 0.0, 1.0);
 out mat3 TBN;
 out vec2 v_textcoords;
 out float ambient;
@@ -22,16 +29,10 @@ out vec3 CameraPos;
 out vec3 FragPos;
 out vec3 Normal;
 out vec4 out_color;
-uniform mat4 u_Model;
-uniform mat4 u_View;
-uniform mat4 u_Scale;
 uniform mat4 u_ViewProjection;
-uniform vec4 m_color;
 uniform vec3 u_LightPos;
 uniform vec3 u_LightColor;
 uniform vec3 u_CameraPos;
-uniform float u_Ambient;
-uniform float u_Specular;
 
 void main() {
 	FragPos =  vec3(u_Model * u_Scale * vec4(positions, 1.0));
@@ -39,8 +40,8 @@ void main() {
 	CameraPos =  u_CameraPos;
 	out_color = m_color;
 	LightColor = (u_LightColor);
-	ambient = u_Ambient;
-	specular = u_Specular;
+	ambient = mat.x;
+	specular = mat.y;
 	v_textcoords = textCoords;
 	mat3 modelVector = transpose(inverse(mat3(u_Model * u_View * u_Scale)));
 	Normal = normalize(modelVector * normals);

@@ -40,4 +40,5 @@
 #include "Render/Texture.h"
 #include "Objects2D/GameObject.h"
 #include <Windows.h>
+#include "Core/Timer.h"
 #endif // !PCH_H

@@ -33,7 +33,7 @@ public:
 	Transform* tr = nullptr;
 	RectangleCollider2D* col = nullptr;
 	SpriteRenderer* sr = nullptr;
-	Texture* texture = new Texture("src/SpaceFire/Images/SpaceShip.png");
+	Texture* texture = Texture::Create("src/SpaceFire/Images/SpaceShip.png");
 
 	void OnCollision(void* _col);
 	void OnUpdate();

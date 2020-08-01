@@ -7,7 +7,7 @@ class HP : public Listener{
 public:
 	unsigned int count = 3;
 	std::vector <GameObject*> hearts;
-	Texture* texture = new Texture("src/Images/Heart.png",1);
+	Texture* texture = Texture::Create("src/Images/Heart.png",1);
 	float prevYPos = 0;
 	bool isShake = false;
 	bool firstphase[3] = { false,false,false };

@@ -6,7 +6,7 @@
 using namespace Doom;
 
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
-	SetType("Collision");
+	SetType(ComponentTypes::COLLISION);
 	this->owner = owner;
 	id = Renderer::col_id;
 	Renderer::col_id++;
@@ -22,14 +22,6 @@ RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 	this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
 	RealVerPos();
 	float theta = (-owner->GetAngle() * (2 * 3.14159f) / 360.0f);
-	/*glm::vec2 p1 = glm::vec2(cos(theta) * (ScaledVerPos[0] + position.x)- sin(theta) * (ScaledVerPos[1] + position.y),
-		sin(theta) * (ScaledVerPos[0] + position.x) + cos(theta) * (ScaledVerPos[1] + position.y));
-	glm::vec2 p2 = glm::vec2(cos(theta) * (ScaledVerPos[4] + position.x) - sin(theta) * (ScaledVerPos[5] + position.y),
-		sin(theta) * (ScaledVerPos[4] + position.x) + cos(theta) * (ScaledVerPos[5] + position.y));
-	glm::vec2 p3 = glm::vec2(cos(theta) * (ScaledVerPos[8] + position.x) - sin(theta) * (ScaledVerPos[9] + position.y),
-		sin(theta) * (ScaledVerPos[8] + position.x) + cos(theta) * (ScaledVerPos[9] + position.y));
-	glm::vec2 p4 = glm::vec2(cos(theta) * (ScaledVerPos[12] + position.x) - sin(theta) * (ScaledVerPos[13] + position.y),
-		sin(theta) * (ScaledVerPos[12] + position.x) + cos(theta) * (ScaledVerPos[13] + position.y));*/
 	glm::vec2 p1 = glm::vec2(ScaledVerPos[0] + position.x, ScaledVerPos[1] + position.y);
 	glm::vec2 p2 = glm::vec2(ScaledVerPos[4] + position.x, ScaledVerPos[5] + position.y);
 	glm::vec2 p3 = glm::vec2(ScaledVerPos[8] + position.x, ScaledVerPos[9] + position.y);

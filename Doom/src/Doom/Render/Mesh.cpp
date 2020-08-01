@@ -1,45 +1,30 @@
+#include "../pch.h"
 #include "Mesh.h"
-#include "../FbxLoader/fbxdocument.h"
 
-void MeshManager::LoadMesh(std::string name, std::string filepath)
+using namespace Doom;
+
+void Mesh::Init()
 {
-	fbx::FBXDocument doc;
-	Meshes.insert(std::make_pair(name, doc.LoadMesh(&name, filepath)));
+	layout = new VertexBufferLayout();
+	vb = new VertexBuffer(mesh, meshSize * sizeof(float));
+	va = new VertexArray();
+	ib = new IndexBuffer(indicesForNormals, indicesSize);
+	layout->Push<float>(3);
+	layout->Push<float>(3);
+	layout->Push<float>(2);
+	layout->Push<float>(3);
+	layout->Push<float>(3);
+	va->AddBuffer(*this->vb, *this->layout);
+	va->UnBind();
+	vb->UnBind();
+	ib->UnBind();
 }
 
-Mesh * MeshManager::GetMesh(std::string name)
+Mesh::~Mesh()
 {
-	auto iter = Meshes.find(name);
-	if (iter != Meshes.end()) {
-		return iter->second;
-	}
-	else {
-		std::cout << "No such mesh\n";
-		return nullptr;
-	}
-}
-
-void MeshManager::DeleteMesh(std::string name)
-{
-	auto iter = Meshes.find(name);
-	if (iter != Meshes.end()) {
-		Mesh* mesh = iter->second;
-		Meshes.erase(iter);
-		delete mesh;
-	}
-}
-
-void MeshManager::DeleteMesh(Mesh * mesh)
-{
-	DeleteMesh(mesh->name);
-}
-
-void MeshManager::ShutDown()
-{
-	for (auto i = Meshes.begin(); i != Meshes.end(); i++)
-	{
-		Mesh* mesh = i->second;
-		delete mesh;
-	}
-	Meshes.clear();
+	delete[] mesh;
+	delete layout;
+	delete vb;
+	delete va;
+	delete ib;
 }

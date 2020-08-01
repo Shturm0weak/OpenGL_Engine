@@ -15,6 +15,8 @@ namespace Doom {
 	class DOOM_API SpriteRenderer : public Irenderer {
 	private:
 
+		std::mutex updateLock;
+
 		unsigned int indeces2D[6] = { 0,1,2,3,2,0 };
 		float mesh2D[16] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
@@ -66,7 +68,6 @@ namespace Doom {
 		void OriginalUvs();
 		void ReverseUVs();
 		void SetUVs(float* uvs);
-		void SetTexture(const std::string& path);
 		void SetTexture(Texture* texture);
 		void Setlayer(int layer);
 

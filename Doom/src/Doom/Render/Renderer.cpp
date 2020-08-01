@@ -7,7 +7,7 @@
 #include "ViewPort.h"
 #include "ParticleSystem.h"
 #include "../Core/Editor.h"
-
+#include "Instancing.h"
 
 using namespace Doom;
 
@@ -296,17 +296,11 @@ void Renderer::Render() {
 
 void Doom::Renderer::Render2DObjects()
 {
-	//std::unique_lock<std::mutex> lock(Renderer::mtx);
 	{
-		//condVar.wait(lock, [] { return(isReadyToRenderFirstThread && isReadyToRenderSecondThread && isReadyToRenderThirdThread); });
-		//isReadyToRenderFirstThread = false;
-		//isReadyToRenderSecondThread = false;
-		//isReadyToRenderThirdThread = false;
 		size_t size = Renderer::objects2d.size();
 		if (size > 0)
 		{
 			Batch* batch = Batch::GetInstance();
-			batch->Gindexcount = 0;
 			batch->BeginGameObjects();
 			for (size_t i = 0; i < size;i++) {
 				GameObject* go = Renderer::objects2d[i];
@@ -339,26 +333,44 @@ void Doom::Renderer::Render3DObjects()
 {
 	if(PolygonMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	for (auto object : Renderer::objects3d) {
-		GameObject* go = object;
+	
+	//each 3D object in one drawcall
+	for each (GameObject* go in Renderer::objects3d)
+	{
 		if (go->Enable == true)
 		{
 			go->GetComponentManager()->GetComponent<Irenderer>()->Render();
 		}
 	}
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//All 3D objects with one mesh in one drawcall
+	InstancingRenderer();
+	if (PolygonMode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	Renderer::objects3d.clear();
+}
+
+void Doom::Renderer::InstancingRenderer() {
+	//for (auto iter = Instancing::Instance()->instancedObjects.begin(); iter != Instancing::Instance()->instancedObjects.end(); iter++)
+	//	std::cout << iter->first->name << "	" << iter->second.size() << std::endl;
+	Instancing::Instance()->Render();
 }
 
 void Doom::Renderer::RenderLines()
 {
-	Batch::GetInstance()->Lindexcount = 0;
 	Batch::GetInstance()->BeginLines();
-	unsigned int size = Line::lines.size();
-	for (unsigned int i = 0; i < size; i++)
+	uint32_t size = Line::lines.size();
+	for (uint32_t i = 0; i < size; i++)
 	{
-		if (Line::lines[i]->Enable ) {
+		if (Line::lines[i]->Enable) {
 			Batch::GetInstance()->Submit(*Line::lines[i]);
+		}
+	}
+	if (Editor::Instance()->drawNormals) {
+		size = Editor::Instance()->normals.size();
+		for (uint32_t i = 0; i < size; i++)
+		{
+			Batch::GetInstance()->Submit(*Editor::Instance()->normals[i]);
 		}
 	}
 	Batch::GetInstance()->EndLines();
@@ -371,7 +383,6 @@ void Doom::Renderer::RenderText() {
 
 void Doom::Renderer::RenderCollision(){
 	if (RectangleCollider2D::IsVisible == true) {
-		Batch::GetInstance()->Gindexcount = 0;
 		Batch::GetInstance()->BeginGameObjects();
 		for (unsigned int i = 0; i < Renderer::collision2d.size(); i++) {
 			RectangleCollider2D* col = Renderer::collision2d[i];

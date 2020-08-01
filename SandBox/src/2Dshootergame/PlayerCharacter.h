@@ -33,7 +33,7 @@ public:
 	unsigned int animIndex = 0;
 	unsigned int currentAnimIndex = 0;
 
-	Texture* muzzleFlash = new Texture("src/Images/MuzzleFlash.png");
+	Texture* muzzleFlash = Texture::Create("src/Images/MuzzleFlash.png");
 
 	GameObject* muzzleFlashObj = nullptr;
 	glm::vec2 flashOffset = glm::vec2(1.1f,-0.1f);

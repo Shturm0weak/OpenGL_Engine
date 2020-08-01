@@ -10,6 +10,16 @@ namespace Doom {
 
 	class DOOM_API Transform : public Component {
 	private:
+
+
+		std::mutex mtx_move;
+		std::mutex mtx_rotateOnce;
+		std::mutex mtx_rotateOnceDir;
+		std::mutex mtx_rotate;
+		std::mutex mtx_translate;
+		std::mutex mtx_scale;
+
+
 		Irenderer* sr = nullptr;
 		RectangleCollider2D* col = nullptr;
 

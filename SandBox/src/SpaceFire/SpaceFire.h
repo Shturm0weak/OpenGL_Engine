@@ -31,8 +31,8 @@ public:
 		SoundManager::Loop(backSound);
 		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PEAK]);
 		ImGui::SetCurrentContext(Window::imGuiContext);
-		ammoTexture = new Texture("src/SpaceFire/Images/Ammo.png");
-		backgroundTexture = new Texture("src/SpaceFire/Images/SpaceBack.png");
+		ammoTexture = Texture::Create("src/SpaceFire/Images/Ammo.png");
+		backgroundTexture = Texture::Create("src/SpaceFire/Images/SpaceBack.png");
 		background1 = new GameObject("BackGround1");
 		background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
 		static_cast<SpriteRenderer*>(background1->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(backgroundTexture);

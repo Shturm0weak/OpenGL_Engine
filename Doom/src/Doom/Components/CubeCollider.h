@@ -47,7 +47,7 @@ namespace Doom {
 		uint32_t indeces[36];
 		glm::vec4 color = COLORS::Green;
 
-		Shader* shader = new Shader("src/Shaders/CubeCollider.shader");
+		Shader* shader = Shader::Create("CubeCollider","src/Shaders/CubeCollider.shader");
 
 		VertexBufferLayout* layout = nullptr;
 		VertexBuffer* vb = nullptr;

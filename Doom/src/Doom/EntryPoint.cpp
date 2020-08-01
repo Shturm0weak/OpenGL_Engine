@@ -5,6 +5,7 @@
 #include "Core/Editor.h"
 #include "Objects2D/GridLayOut.h"
 #include "Render/SkyBox.h"
+#include "Render/MeshManager.h"
 
 using namespace Doom;
 
@@ -17,14 +18,18 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	app->Init();
 	MainThread::Init();
 	ThreadPool::Init();
-	Texture::WhiteTexture = new Texture();
+	Texture::WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
+	Texture::ColoredTexture("InvalidTexture", 0x8D329Fff);
+	Shader::Create("Font", "src/Shaders/Text.shader");
+	Shader::Create("Default2D", "src/Shaders/Basic.shader");
+	Shader::Create("Default3D", "src/Shaders/Basic3D.shader");
+	Shader::Create("Instancing3D", "src/Shaders/Instancing3D.shader");
 	Batch::Init();
 	SoundManager::Init();
-	Font::shader = new Shader("src/Shaders/Text.shader");
+	Font::shader = Shader::Get("Font");
 	Gui::GetInstance()->LoadStandartFonts();
 	EventSystem::GetInstance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBuffer = new FrameBuffer();
-	Shader::defaultShader = new Shader("src/Shaders/Basic.shader");
 	GridLayOut* grid = new GridLayOut(app);
 }
 
@@ -42,8 +47,7 @@ void EntryPoint::Run()
 			DeltaTime::deltatime = 0.000001;
 			FirstFrame = false;
 		}
- 		Renderer::DrawCalls = 0;
-		Renderer::Vertices = 0;
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -51,6 +55,7 @@ void EntryPoint::Run()
 
 		Window::GetCamera().WindowResize();
 		Window::GetCamera().CameraMovement();
+		MeshManager::DispatchLoadedMeshes();
 		SoundManager::UpdateSourceState();
 
 		if (Input::IsKeyPressed(Keycode::KEY_E)) {
@@ -63,9 +68,19 @@ void EntryPoint::Run()
 		}
 
 		app->OnUpdate();
+
 		Gui::GetInstance()->Begin();
 		app->OnGuiRender();
 		Gui::GetInstance()->End();
+
+		if (isEditorEnable)
+			Editor::Instance()->EditorUpdate();
+
+		EventSystem::GetInstance()->ProcessEvents();
+		Input::Clear();
+
+		Renderer::DrawCalls = 0;
+		Renderer::Vertices = 0;
 
 		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().frameBuffer->fbo);
 		Renderer::Clear();
@@ -75,18 +90,14 @@ void EntryPoint::Run()
 
 		ViewPort::GetInstance()->Update();
 
-		if (isEditorEnable)
-			Editor::Instance()->EditorUpdate();
+		if (ViewPort::GetInstance()->viewportResized) {
+			Window::GetCamera().frameBuffer->Resize(ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y);
+		}
 
 		ImGui::EndFrame();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		if (ViewPort::GetInstance()->viewportResized) {
-			Window::GetCamera().frameBuffer->Resize(ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y);
-		}
-		EventSystem::GetInstance()->ProcessEvents();
-		Input::Clear();
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}

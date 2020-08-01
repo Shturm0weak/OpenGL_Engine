@@ -63,7 +63,8 @@ namespace Doom {
 		float textureIndex = 0;
 
 		//for text
-		Vertex* buffer;
+		Vertex* buffer = nullptr;
+		Vertex* bufferPtr = nullptr;
 		GLuint vao;
 		GLuint vbo;
 		IndexBuffer* ibo;
@@ -74,13 +75,15 @@ namespace Doom {
 		float GtextureIndex = 0;
 
 		//for object
-		Vertex* Gbuffer;
+		Vertex* Gbuffer = nullptr;
+		Vertex* GbufferPtr = nullptr;
 		GLuint Gvao;
 		GLuint Gvbo;
 		IndexBuffer* Gibo;
 
 		//for line
-		VertexLine* Lbuffer;
+		VertexLine* Lbuffer = nullptr;
+		VertexLine* LbufferPtr = nullptr;
 		GLuint Lvao;
 		GLuint Lvbo;
 		IndexBuffer* Libo;
@@ -99,10 +102,10 @@ namespace Doom {
 		GLsizei Lindexcount = 0;
 
 		inline static Batch* GetInstance() { return instance; }
-		Shader* TextShader = new Shader("src/Shaders/Text.shader");
-		Shader* BasicShader = new Shader("src/Shaders/Basic.shader");
-		Shader* CollisionShader = new Shader("src/Shaders/newshader.shader");
-		Shader* LineShader = new Shader("src/Shaders/Line.shader");
+		Shader* TextShader = Shader::Get("Font");
+		Shader* BasicShader = Shader::Get("Default2D");
+		Shader* CollisionShader = Shader::Create("Collision2D","src/Shaders/newshader.shader");
+		Shader* LineShader = Shader::Create("LineShader","src/Shaders/Line.shader");
 		Batch();
 		~Batch();
 		void Submit(Character* character);
@@ -124,6 +127,8 @@ namespace Doom {
 		void EndGameObjects();
 		void BeginLines();
 		void EndLines();
+
+		friend class Gizmos;
 	};
 
 }

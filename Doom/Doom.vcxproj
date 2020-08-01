@@ -148,9 +148,11 @@
     <ClInclude Include="src\Doom\Render\Character.h" />
     <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
     <ClInclude Include="src\Doom\Render\IndexBuffer.h" />
+    <ClInclude Include="src\Doom\Render\Instancing.h" />
     <ClInclude Include="src\Doom\Render\Line.h" />
     <ClInclude Include="src\Doom\Render\Mesh.h" />
     <ClInclude Include="src\Doom\Render\Camera.h" />
+    <ClInclude Include="src\Doom\Render\MeshManager.h" />
     <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
     <ClInclude Include="src\Doom\Render\Renderer.h" />
     <ClInclude Include="src\Doom\Render\Shader.h" />
@@ -197,8 +199,10 @@
     <ClCompile Include="src\Doom\Render\Character.cpp" />
     <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
     <ClCompile Include="src\Doom\Render\IndexBuffer.cpp" />
+    <ClCompile Include="src\Doom\Render\Instancing.cpp" />
     <ClCompile Include="src\Doom\Render\Line.cpp" />
     <ClCompile Include="src\Doom\Render\Mesh.cpp" />
+    <ClCompile Include="src\Doom\Render\MeshManager.cpp" />
     <ClCompile Include="src\Doom\Render\Camera.cpp" />
     <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
     <ClCompile Include="src\Doom\Render\Renderer.cpp" />

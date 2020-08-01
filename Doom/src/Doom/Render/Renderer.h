@@ -28,6 +28,7 @@ namespace Doom {
 		static void RenderLines();
 		static void RenderText();
 		static void RenderCollision();
+		static void InstancingRenderer();
 		static void Clear();
 		static void Save(const std::string filename);
 		static void Load(const std::string filename);
@@ -83,7 +84,7 @@ namespace Doom {
 			sr->mesh2D[15] = uvs[7];
 			go->GetComponentManager()->GetComponent<Irenderer>()->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
 			if(pathtotext != "None")
-				sr->SetTexture(pathtotext);
+				sr->SetTexture(Texture::Create(pathtotext));
 			if (isSprite) {
 				for (unsigned int i = 0; i < TextureAtlas::textureAtlases.size(); i++)
 				{

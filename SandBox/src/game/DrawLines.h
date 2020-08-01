@@ -14,7 +14,7 @@ class DrawLines : public Application {
 	virtual void OnStart() override {
 		for (size_t i = 0; i < 4; i++)
 			color[i] = 255.f;
-		dotTexture = new Texture("src/Images/WhiteCircle.png");
+		dotTexture = Texture::Create("src/Images/WhiteCircle.png");
 	}
 
 	virtual void OnUpdate() override {

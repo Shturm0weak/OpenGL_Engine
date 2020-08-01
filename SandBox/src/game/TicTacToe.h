@@ -70,8 +70,8 @@ public:
 		float offsetY = -3.f;
 		unsigned int index = 0;
 
-		crossLinesTexture = new Texture("src/Images/CrossLines.png");
-		circleTexture = new Texture("src/Images/Circle.png");
+		crossLinesTexture = Texture::Create("src/Images/CrossLines.png");
+		circleTexture = Texture::Create("src/Images/Circle.png");
 
 		background = new GameObject("BackGround", 0, 0);
 		background->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);

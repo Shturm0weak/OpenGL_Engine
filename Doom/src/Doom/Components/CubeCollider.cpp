@@ -17,14 +17,14 @@ CubeCollider3D::CubeCollider3D() {
 	vb->UnBind();
 	ib->UnBind();
 	colliders.push_back(this);
-	SetType("CubeCollider3D");
+	SetType(ComponentTypes::CUBECOLLIDER3D);
 }
 
 void Doom::CubeCollider3D::Render()
 {
 	Renderer3D* r = owner->GetComponent<Renderer3D>();
 	this->shader->Bind();
-	this->shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	this->shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 	this->shader->SetUniformMat4f("u_Model", glm::translate(r->pos,offset));
 	this->shader->SetUniformMat4f("u_Scale", glm::scale(r->scale,scale));
 	this->shader->SetUniform4fv("u_Color", color);

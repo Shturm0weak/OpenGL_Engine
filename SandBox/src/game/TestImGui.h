@@ -22,7 +22,7 @@ public:
 				"src/SkyBox/right.png",
 		};
 		MeshManager::LoadMesh("skyboxCube", "src/Mesh/cube.fbx");
-		SkyBox* skybox = new SkyBox(faces, MeshManager::GetMesh("skyboxCube"));
+		SkyBox* skybox = new SkyBox(faces,MeshManager::GetMesh("skyboxCube"));
 		for (size_t i = 0; i < 2; i++)
 		{
 			go.push_back(new GameObject());
@@ -32,7 +32,7 @@ public:
 			xoffset += 10;
 		}
 
-		MeshManager::LoadMesh("man", "src/Mesh/man.fbx");
+		
 		MeshManager::LoadMesh("cube1", "src/Mesh/box1.fbx");
 		MeshManager::LoadMesh("sphere", "src/Mesh/sphere.fbx");
 
@@ -43,17 +43,20 @@ public:
 		Renderer::Light->GetComponentManager()->AddComponent<Renderer3D>();
 		static_cast<Renderer3D*>(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
 		static_cast<Renderer3D*>(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("skyboxCube"));
-		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
-		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("man"));
-		go[0]->GetComponentManager()->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1); 
-		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = new Texture("src/Images/man.png");
-		static_cast<Renderer3D*>(go[0]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = new Texture("src/Images/normalMap.png");
-		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = new Texture("src/Images/Box1.png");
-		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = new Texture("src/Images/Box1normalmap.png");
-		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
-		static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("skyboxCube"));
-		go[1]->GetComponentManager()->AddComponent<CubeCollider3D>();
-		go[0]->GetComponentManager()->AddComponent<CubeCollider3D>();
+		for (int i = 0; i < 2; i++)
+		{
+			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
+			MeshManager::GetMeshWhenLoaded("man", static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>()));
+			go[i]->GetComponentManager()->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
+			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = Texture::Create("src/Images/man.png");
+			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = Texture::Create("src/Images/normalMap.png");
+		}
+		//static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = new Texture("src/Images/Box1.png");
+		//static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = new Texture("src/Images/Box1normalmap.png");
+		//static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
+		//static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("skyboxCube"));
+		//go[1]->GetComponentManager()->AddComponent<CubeCollider3D>();
+		//go[0]->GetComponentManager()->AddComponent<CubeCollider3D>();
 	}
 
 	virtual void OnGuiRender() {
@@ -65,7 +68,8 @@ public:
 
 	virtual void OnUpdate() override {
 		if (Input::IsKeyPressed(Keycode::KEY_G)) {
-			new Line(Window::GetCamera().GetPosition(),Window::GetCamera().GetPosition() + Window::GetCamera().GetMouseDirVec() * 100.0f);
+			//new Line(Window::GetCamera().GetPosition(),Window::GetCamera().GetPosition() + Window::GetCamera().GetMouseDirVec() * 100.0f);
+			MeshManager::AsyncLoadMesh("man", "src/Mesh/man.fbx");
 		}
 		glm::vec3 forward = glm::vec3(-Window::GetCamera().forwardV.x, Window::GetCamera().forwardV.y,-Window::GetCamera().forwardV.z);
 		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward,&hit,100);
@@ -74,7 +78,7 @@ public:
 		//go[1]->GetComponentManager()->GetComponent<Transform>()->Rotate(30, 30, 30);
 		//t += DeltaTime::deltatime;
 
-		for (size_t i = 0; i < 1; i++)
+		for (size_t i = 0; i < 2; i++)
 		{
 			//go[i]->GetComponentManager()->GetComponent<Transform>()->Rotate(1,1,1);
 		}

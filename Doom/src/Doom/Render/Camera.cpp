@@ -15,6 +15,8 @@ Camera::Camera(){
 }
 
 void Camera::RecalculateViewMatrix() {
+	ThreadPool::Instance()->enqueue([=] {
+	std::lock_guard<std::mutex> lock(mtx);
 	rot = glm::rotate(glm::mat4(1.0f), roll, glm::vec3(0, 0, 1))
 					* glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0))
 					* glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(1, 0, 0));
@@ -29,6 +31,7 @@ void Camera::RecalculateViewMatrix() {
 
 	m_ViewMatrix = glm::inverse(transform);
 	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	});
 }
 
 void Doom::Camera::MovePosition(const glm::vec3 position)
@@ -38,6 +41,7 @@ void Doom::Camera::MovePosition(const glm::vec3 position)
 	m_Position.z += position.z;
 
 	RecalculateViewMatrix();
+	
 	//std::cout << "x " << m_Position.x << " y " << m_Position.y << " z " << m_Position.z << std::endl;
 }
 
@@ -202,7 +206,6 @@ void Camera::CameraMovement() {
 		float speed = 2.f;
 		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
 			speed *= 10;
-
 		}
 		forwardV *= speed * DeltaTime::deltatime;
 		if (Input::IsKeyDown(Keycode::KEY_W)) {
@@ -210,7 +213,6 @@ void Camera::CameraMovement() {
 		}
 		if (Input::IsKeyDown(Keycode::KEY_S)) {
 			MovePosition(glm::vec3(forwardV.x, -forwardV.y, forwardV.z));
-
 		}
 		if (Input::IsKeyDown(Keycode::SPACE)) {
 			MovePosition(glm::vec3(0, 5.0f * DeltaTime::deltatime, 0));
@@ -222,7 +224,7 @@ void Camera::CameraMovement() {
 			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
 			delta *= 0.2;
-			SetRotation(glm::vec3((pitch + delta.y * (2 * 3.14159f) / 360.0f),(yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
+			SetRotation(glm::vec3((pitch + delta.y * (2 * 3.14159f) / 360.0f), (yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
 			if (yaw > glm::two_pi<float>() || yaw < -glm::two_pi<float>())
 				yaw = 0;
 			if (pitch > glm::two_pi<float>() || pitch < -glm::two_pi<float>())

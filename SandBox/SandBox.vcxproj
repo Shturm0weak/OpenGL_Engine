@@ -128,6 +128,7 @@
     <ClInclude Include="src\game\StressTest.h" />
     <ClInclude Include="src\game\TestImGui.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
+    <ClInclude Include="src\Minecraft\Minecraft.h" />
     <ClInclude Include="src\SpaceFire\Ammo.h" />
     <ClInclude Include="src\SpaceFire\Bullet.h" />
     <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
@@ -152,6 +153,7 @@
     <None Include="src\Shaders\Batch.shader" />
     <None Include="src\Shaders\CubeCollider.shader" />
     <None Include="src\Shaders\DepthBuffer.shader" />
+    <None Include="src\Shaders\Instancing3D.shader" />
     <None Include="src\Shaders\Line.shader" />
     <None Include="src\Shaders\LineSimple.shader" />
     <None Include="src\Shaders\newshader.shader" />

@@ -256,14 +256,14 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 	indexcount += 6;
 }
 
+#include "../Core/Editor.h"
+
 void Doom::Batch::Submit(Line & line)
 {
-
-	if (Lindexcount >= RENDERER_INDICES_SIZE) {
+	if (Lindexcount >= RENDERER_MAX_SPRITES) {
 		EndLines();
 		flushLines(LineShader);
 		BeginLines();
-		Lindexcount = 0;
 	}
 
 	Lbuffer->m_vertex = glm::vec3(line.mesh2D[0], line.mesh2D[1], line.mesh2D[2]);
@@ -472,8 +472,8 @@ void Batch::flushGameObjects(Shader * shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->UploadUnifromMat4("u_Projection", Gui::GetInstance()->ViewProjecTionRelatedToCamera);
-	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniformMat4f("u_Projection", Gui::GetInstance()->ViewProjecTionRelatedToCamera);
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 
 	glDrawElements(GL_TRIANGLES, Gindexcount, GL_UNSIGNED_INT, NULL);
 	Renderer::DrawCalls++;
@@ -493,7 +493,7 @@ void Batch::flushCollision(Shader * shader)
 	glBindVertexArray(Gvao);
 	Gibo->Bind();
 	shader->Bind();
-	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 	shader->SetUniform4fv("U_Color", COLORS::Green);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(3.0f);
@@ -507,40 +507,40 @@ void Batch::flushCollision(Shader * shader)
 }
 
 void Batch::Begin() {
-	Batch::GetInstance()->indexcount = 0;
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	buffer = (Vertex*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+	buffer = bufferPtr;
+	indexcount = 0;
 }
 
 void Batch::End() {
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	uint32_t dataSize = (uint8_t*)buffer - (uint8_t*)bufferPtr;
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, bufferPtr);
 }
 
 void Batch::BeginGameObjects()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, Gvbo);
-	Gbuffer = (Vertex*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
-	isBegan = true;
+	Gbuffer = GbufferPtr;
+	Gindexcount = 0;
 }
 
 void Batch::EndGameObjects()
 {
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	isBegan = false;
+	uint32_t dataSize = (uint8_t*)Gbuffer - (uint8_t*)GbufferPtr;
+	glBindBuffer(GL_ARRAY_BUFFER, Gvbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, GbufferPtr);
 }
 
 void Doom::Batch::BeginLines()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, Lvbo);
-	Lbuffer = (VertexLine*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+	Lbuffer = LbufferPtr;
+	Lindexcount = 0;
 }
 
 void Doom::Batch::EndLines()
 {
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	uint32_t dataSize = (uint8_t*)Lbuffer - (uint8_t*)LbufferPtr;
+	glBindBuffer(GL_ARRAY_BUFFER, Lvbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, LbufferPtr);
 }
 
 void Batch::flushText(Shader* shader)
@@ -559,9 +559,9 @@ void Batch::flushText(Shader* shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->UploadUnifromMat4("u_Projection", Gui::GetInstance()->ViewProjecTionRelatedToCamera);
-	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-	shader->SetUniformVec2("u_offset", Gui::GetInstance()->textProps.shadowOffset);
+	shader->SetUniformMat4f("u_Projection", Gui::GetInstance()->ViewProjecTionRelatedToCamera);
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniform2fv("u_offset", Gui::GetInstance()->textProps.shadowOffset);
 	shader->SetUniform1f("u_width", Gui::GetInstance()->textProps.width);
 	shader->SetUniform1f("u_edge", Gui::GetInstance()->textProps.edge);
 	shader->SetUniform1f("u_borderwidth", Gui::GetInstance()->textProps.borderwidth);
@@ -586,7 +586,7 @@ void Doom::Batch::flushLines(Shader * shader)
 	glBindVertexArray(Lvao);
 	Libo->Bind();
 	shader->Bind();
-	shader->UploadUnifromMat4("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 	glLineWidth(Line::width);
 	glDrawElements(GL_LINES, Lindexcount, GL_UNSIGNED_INT, nullptr);
 	glLineWidth(1.0f);
@@ -652,6 +652,7 @@ void Batch::initText()
 		offset += 4;
 	}
 
+	bufferPtr = new Vertex[RENDERER_MAX_SPRITES];
 	ibo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
 	glBindVertexArray(0);
 
@@ -728,6 +729,7 @@ void Batch::initGameObjects()
 		offset += 4;
 	}
 
+	GbufferPtr = new Vertex[RENDERER_MAX_SPRITES];
 	Gibo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
 	glBindVertexArray(0);
 
@@ -758,15 +760,15 @@ void Doom::Batch::initLines()
 	unsigned int indices[RENDERER_INDICES_SIZE];
 
 	unsigned int offset = 0;
-	for (unsigned int i = 0; i < RENDERER_INDICES_SIZE; i += 3)
+	for (unsigned int i = 0; i < RENDERER_INDICES_SIZE; i += 2)
 	{
 		indices[i + 0] = offset + 0;
 		indices[i + 1] = offset + 1;
-		indices[i + 2] = offset + 2;
 
-		offset += 3;
+		offset += 2;
 	}
 
 	Libo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
+	LbufferPtr = new VertexLine[RENDERER_MAX_SPRITES];
 	glBindVertexArray(0);
 }

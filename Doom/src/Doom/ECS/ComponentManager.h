@@ -17,6 +17,14 @@
 
 namespace Doom {
 
+	enum class ComponentTypes {
+		TRANSFORM,
+		RENDER,
+		CUBECOLLIDER3D,
+		COLLISION,
+		ANIMATOR
+	};
+
 	class DOOM_API ComponentManager {
 		GameObject* owner = nullptr;
 		std::string owner_name;
@@ -45,7 +53,7 @@ namespace Doom {
 			namesOfMembers = new const char*[components.size()];
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				namesOfMembers[i] = components[i]->GetComponentType();
+				namesOfMembers[i] = std::to_string((int)components[i]->GetComponentType()).c_str();
 			}
 			return namesOfMembers;
 		}
@@ -167,7 +175,7 @@ namespace Doom {
 		RectangleCollider2D* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == "Collision") {
+				if (components[i]->GetComponentType() == ComponentTypes::COLLISION) {
 					return (RectangleCollider2D*)components[i];
 				}
 			}
@@ -178,7 +186,7 @@ namespace Doom {
 		Irenderer* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == "Renderer") {
+				if (components[i]->GetComponentType() == ComponentTypes::RENDER) {
 					return (Irenderer*)components[i];
 				}
 			}
@@ -189,7 +197,7 @@ namespace Doom {
 		Animator* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == "Animator") {
+				if (components[i]->GetComponentType() == ComponentTypes::ANIMATOR) {
 					return (Animator*)components[i];
 				}
 			}
@@ -200,7 +208,7 @@ namespace Doom {
 		CubeCollider3D* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == "CubeCollider3D") {
+				if (components[i]->GetComponentType() == ComponentTypes::CUBECOLLIDER3D) {
 					return (CubeCollider3D*)components[i];
 				}
 			}
@@ -212,7 +220,7 @@ namespace Doom {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
 				Component* comp = components[i];
-				if (comp->GetComponentType() == "Transform") {
+				if (comp->GetComponentType() == ComponentTypes::TRANSFORM) {
 					return (Transform*)comp;
 				}
 			}

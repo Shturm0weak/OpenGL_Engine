@@ -15,7 +15,7 @@ public:
 		Window::GetCamera().Zoom(2.9);
 		coin = new GameObject("Coin",5,5);
 		RectangleCollider2D* col = coin->GetComponentManager()->AddComponent<RectangleCollider2D>();
-		static_cast<SpriteRenderer*>(coin->GetComponentManager()->GetComponent<Irenderer>())->SetTexture("src/Images/Bird.png");
+		static_cast<SpriteRenderer*>(coin->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(Texture::Create("src/Images/Bird.png"));
 		coin->GetComponentManager()->GetComponent<Transform>()->Scale(3, 3);
 		col->SetTag("Coin");
 		

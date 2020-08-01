@@ -8,7 +8,7 @@ class Bomb : public GameObject {
 	Sound* bombSound = new Sound("src/Sounds/Grenade.wav");
 	RectangleCollider2D* col = nullptr;
 	Transform* tr = nullptr;
-	Texture* whiteCircle = new Texture("src/Images/WhiteCircle.png");
+	Texture* whiteCircle = Texture::Create("src/Images/WhiteCircle.png");
 	ParticleSystem* particle = new ParticleSystem(0, 0, 100, 2.5, 10, 2, 1, 0.5, 0, 0.2,whiteCircle);
 	bool particlePlay = false;
 public:
@@ -23,7 +23,7 @@ public:
 		col->IsTrigger = true;
 		col->SetTag("Bomb");
 		Randomize();
-		GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture("src/Images/bomb.png");
+		GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(Texture::Create("src/Images/bomb.png"));
 		particle->ChangeOpacity(0.2f);
 		particle->gravity = 2.f;
 	}

@@ -97,8 +97,8 @@ namespace Doom {
 
 	private:
 		
-		Texture* checkBoxTextureTrue = new Texture("src/UIimages/CheckMarkTrue.png");
-		Texture* checkBoxTextureFalse = new Texture("src/UIimages/CheckMarkFalse.png");
+		Texture* checkBoxTextureTrue = Texture::Create("src/UIimages/CheckMarkTrue.png");
+		Texture* checkBoxTextureFalse = Texture::Create("src/UIimages/CheckMarkFalse.png");
 
 		void LoadStandartFonts();
 

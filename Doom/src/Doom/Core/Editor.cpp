@@ -12,6 +12,8 @@ void Editor::EditorUpdate()
 {
 	Debug();
 
+	Threads();
+
 	ImGui::Begin("Console");
 
 	if (ImGui::Button("Save")) {
@@ -215,9 +217,9 @@ void Editor::CreateTextureAtlas() {
 
 	int counterImagesButtons = 0;
 	ImGui::Text("Textures");
-	for (unsigned int i = 0; i < Texture::texturesArray.size(); i++)
+	for (auto i = Texture::textures.begin(); i != Texture::textures.end();i++)
 	{
-		void* my_tex_id = reinterpret_cast<void*>(Texture::texturesArray[i]->m_RendererID);
+		void* my_tex_id = reinterpret_cast<void*>(i->second->m_RendererID);
 		int frame_padding = -1;
 		if (counterImagesButtons > 6) {
 			ImGui::NewLine();
@@ -225,7 +227,7 @@ void Editor::CreateTextureAtlas() {
 		}
 
 		if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
-			textureForAtlas = Texture::texturesArray[i];
+			textureForAtlas = i->second;
 		}
 
 		ImGui::SameLine();
@@ -251,7 +253,7 @@ void Doom::Editor::MaterialComponent()
 				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 1);
 				ImGui::Checkbox("NormalMap", &r->useNormalMap);
 				float* tempColor = r->GetColor();
-				ImGui::ColorPicker4("Color", tempColor);
+				ImGui::ColorEdit4("Color", tempColor);
 				r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
 			}
 			if (ImGui::CollapsingHeader("Mesh")) {
@@ -457,7 +459,7 @@ void Doom::Editor::TransformComponent(Transform* tr)
 	}
 }
 
-void Editor::CheckTexturesFolderUnique(const std::string path)
+void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 {
 	auto f = std::bind([](std::string path) {
 		try
@@ -469,7 +471,8 @@ void Editor::CheckTexturesFolderUnique(const std::string path)
 					size_t index = 0;
 					index = texturesPath.back().find("\\", index);
 					texturesPath.back().replace(index, 1, "/");
-					texture.push_back(new Texture(texturesPath.back(),true));
+					Texture::LoadTextureInRAM(texturesPath.back(), true);
+					texture.push_back(Texture::Get(texturesPath.back()));
 				}
 			}
 		}
@@ -480,7 +483,7 @@ void Editor::CheckTexturesFolderUnique(const std::string path)
 		
 		for (unsigned int i = 0; i < texture.size(); i++)
 		{
-			std::function<void()> f2 = std::bind(&Texture::GenTexture,texture[i]);
+			std::function<void()> f2 = [=] {Texture::LoadTextureInVRAM(texture[i]->GetFilePath()); };
 			std::function<void()>* f1 = new std::function<void()>(f2);
 			EventSystem::GetInstance()->SendEvent("OnMainThreadProcess",nullptr,f1);
 		}
@@ -490,7 +493,7 @@ void Editor::CheckTexturesFolderUnique(const std::string path)
 	ThreadPool::Instance()->enqueue(f);
 }
 
-void Editor::CheckTexturesFolder(const std::string path)
+void Doom::Editor::CheckTexturesFolder(const std::string path)
 {
 	auto f = std::bind([](std::string path) {
 		try
@@ -501,7 +504,8 @@ void Editor::CheckTexturesFolder(const std::string path)
 					size_t index = 0;
 					index = pathToTexture.find("\\", index);
 					pathToTexture.replace(index, 1, "/");
-					Texture* text = new Texture(pathToTexture, true);
+					Texture::LoadTextureInRAM(pathToTexture, true);
+					Texture* text = Texture::Get(pathToTexture);
 					textureVecTemp.push_back(text);
 				}
 			}
@@ -513,7 +517,7 @@ void Editor::CheckTexturesFolder(const std::string path)
 
 		for (unsigned int i = 0; i < textureVecTemp.size(); i++)
 		{
-			std::function<void()> f2 = std::bind(&Texture::GenTexture, textureVecTemp[i]);
+			std::function<void()> f2 = [=] {Texture::LoadTextureInVRAM(textureVecTemp[i]->GetFilePath()); };
 			std::function<void()>* f1 = new std::function<void()>(f2);
 			EventSystem::GetInstance()->SendEvent("OnMainThreadProcess", nullptr, f1);
 		}
@@ -542,12 +546,21 @@ void Doom::Editor::Debug()
 	ImGui::Text("Vertices %d", Renderer::Vertices);
 	ImGui::Text("VRAM used %lf",Texture::VRAMused);
 	ImGui::Text("Textures binded %d", Texture::bindedAmount);
-	ImGui::Text("Textures amount %d", Texture::texturesArray.size());
+	ImGui::Text("Textures amount %d", Texture::textures.size());
 	ImGui::Checkbox("Polygon mode",&Renderer::PolygonMode);
 	ImGui::Checkbox("Draw normals", &drawNormals);
 	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::IsVisible);
 	ImGui::End();
 	TextProps();
+}
+
+void Doom::Editor::Threads() {
+	ImGui::Begin("Threads");
+	for (auto i = ThreadPool::Instance()->isThreadBusy.begin(); i != ThreadPool::Instance()->isThreadBusy.end(); i++)
+	{
+		ImGui::Text("ID: %d task: %d",i->first,i->second);
+	}
+	ImGui::End();
 }
 
 void Doom::Editor::TextProps()
@@ -567,6 +580,7 @@ void Doom::Editor::TextProps()
 
 void Doom::Editor::UpdateNormals()
 {
+	std::lock_guard<std::mutex> lock(mtx_updateNormals);
 	if (drawNormals) {
 		uint32_t counter = 0;
 		size_t size = Renderer::objects2d.size();
@@ -592,15 +606,9 @@ void Doom::Editor::UpdateNormals()
 			}
 		}
 	}
-	else {
-		for each (Line* l in normals)
-		{
-			l->Enable = false;
-		}
-	}
 }
 
-Editor * Editor::Instance()
+Editor *  Doom::Editor::Instance()
 {
 	static Editor instance;
 	return &instance;

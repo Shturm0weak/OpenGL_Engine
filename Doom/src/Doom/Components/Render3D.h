@@ -7,18 +7,24 @@
 #include "../Render/VertexBuffer.h"
 #include "../Render/VertexBufferLayout.h"
 #include "../Render/IndexBuffer.h"
-#include "../Render/Mesh.h"
+#include "../Render/MeshManager.h"
 
 namespace Doom {
 
 	class DOOM_API Renderer3D : public Irenderer {
 	public:
 
+		enum class RenderTechnic {
+			Forward,
+			Instancing
+		};
+
 		struct Material {
 			float ambient = 0.2f;
 			float specular = 0.2f;
 		};
 
+		void ChangeRenderTechnic(RenderTechnic rt);
 		bool useNormalMap = false;
 		Texture* diffuseTexture = Texture::WhiteTexture;
 		Texture* normalMapTexture = nullptr;
@@ -38,13 +44,17 @@ namespace Doom {
 		virtual void Render() override;
 
 	private:
-		VertexBufferLayout* layout = nullptr;
-		VertexBuffer* vb = nullptr;
-		VertexArray* va = nullptr;
-		IndexBuffer* ib = nullptr;
 
+		bool isSkyBox = false;
+
+		void ForwardRender();
+
+		RenderTechnic renderTechnic = RenderTechnic::Forward;
+
+		friend class EntryPoint;
+		friend class SkyBox;
 	};
 
 }
 
-#endif // !RENDERER3D_H
+#endif

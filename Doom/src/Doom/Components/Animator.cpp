@@ -17,7 +17,7 @@ void Doom::Animator::SetAnimation(const std::string path)
 				index = texturesPath.back().find("\\", index);
 				texturesPath.back().replace(index, 1, "/");	
 			}
-			text.push_back(new Texture(texturesPath.back(), 1));
+			text.push_back(Texture::Create(texturesPath.back(), 1));
 		}
 		amount++;
 		animations.insert(std::make_pair(_entry.path().string(),text));
@@ -55,5 +55,5 @@ const char** Doom::Animator::GetAnimations() {
 }
 
 Doom::Animator::Animator() {
-	SetType("Animator");
+	SetType(ComponentTypes::ANIMATOR);
 }
