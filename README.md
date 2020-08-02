@@ -12,11 +12,11 @@ Transform component
 
 Component's manager
 
-Pour material component for 3D
+Poor material component for 3D (Ambient and Specular, Normal maps)
 
 Can draw lines and squares and 3d meshes
 
-Batch and Forward renderer
+Forward,Instancing and Batch renderers
 
 Text rendering
 
