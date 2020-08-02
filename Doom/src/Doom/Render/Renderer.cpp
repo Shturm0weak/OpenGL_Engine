@@ -314,14 +314,16 @@ void Doom::Renderer::Render2DObjects()
 				}
 			}
 			size_t particleSize = Particle::particles.size();
-			for (size_t i = 0; i < particleSize; i++)
-			{
-				Particle* p = Particle::particles[i];
-				if (p->Enable)
-					Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX, p->scaleY), p->texture);
+			if (particleSize > 0) {
+
+				for (size_t i = 0; i < particleSize; i++)
+				{
+					Particle* p = Particle::particles[i];
+					if (p->Enable)
+						Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX, p->scaleY), p->texture);
+				}
 			}
 			batch->EndGameObjects();
-
 		}
 		
 	}
@@ -344,16 +346,10 @@ void Doom::Renderer::Render3DObjects()
 	}
 
 	//All 3D objects with one mesh in one drawcall
-	InstancingRenderer();
+	Instancing::Instance()->Render();
 	if (PolygonMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	Renderer::objects3d.clear();
-}
-
-void Doom::Renderer::InstancingRenderer() {
-	//for (auto iter = Instancing::Instance()->instancedObjects.begin(); iter != Instancing::Instance()->instancedObjects.end(); iter++)
-	//	std::cout << iter->first->name << "	" << iter->second.size() << std::endl;
-	Instancing::Instance()->Render();
 }
 
 void Doom::Renderer::RenderLines()

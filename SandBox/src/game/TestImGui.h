@@ -12,7 +12,6 @@ public:
 	virtual void OnStart() override {
 		ImGui::SetCurrentContext(Window::imGuiContext);
 		float xoffset = -10.f;
-		Renderer::Light = new GameObject("Light",0,20);
 		std::vector<std::string> faces = {
 				"src/SkyBox/back.png",
 				"src/SkyBox/front.png",
@@ -36,13 +35,6 @@ public:
 		MeshManager::LoadMesh("cube1", "src/Mesh/box1.fbx");
 		MeshManager::LoadMesh("sphere", "src/Mesh/sphere.fbx");
 
-
-		Renderer::Light->GetComponentManager()->GetComponent<Transform>()->Translate(0, 5, 0);
-		Renderer::Light->GetComponentManager()->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
-		Renderer::Light->GetComponentManager()->RemoveComponent<Irenderer>();
-		Renderer::Light->GetComponentManager()->AddComponent<Renderer3D>();
-		static_cast<Renderer3D*>(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
-		static_cast<Renderer3D*>(Renderer::Light->GetComponentManager()->GetComponent<Irenderer>())->LoadMesh(MeshManager::GetMesh("skyboxCube"));
 		for (int i = 0; i < 2; i++)
 		{
 			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);

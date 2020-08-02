@@ -9,10 +9,6 @@ namespace Doom {
 
 	class DOOM_API Renderer {
 	public:
-
-		//
-		static GameObject* Light;
-		//
 		static int Vertices;
 		static bool PolygonMode;
 		static int DrawCalls;
@@ -24,11 +20,9 @@ namespace Doom {
 		static void Render2DObjects();
 		static void Render3DObjects();
 		static void Render();
-		static void CalculateMVPforAllObjects();
 		static void RenderLines();
 		static void RenderText();
 		static void RenderCollision();
-		static void InstancingRenderer();
 		static void Clear();
 		static void Save(const std::string filename);
 		static void Load(const std::string filename);

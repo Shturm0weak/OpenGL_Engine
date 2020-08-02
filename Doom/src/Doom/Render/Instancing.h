@@ -17,7 +17,7 @@ namespace Doom {
 		};
 
 		float* pos = nullptr;
-
+		Shader* shader = nullptr;
 		uint32_t prev3DObjectsSize = 0;
 		std::map<Mesh*, glBuffers> buffers;
 	public:

@@ -68,6 +68,8 @@
     <ClInclude Include="src\Doom\Core\Ray3D.h" />
     <ClInclude Include="src\Doom\Render\MeshManager.h" />
     <ClInclude Include="src\Doom\Render\Instancing.h" />
+    <ClInclude Include="src\Doom\Components\PointLight.h" />
+    <ClInclude Include="src\Doom\Components\DirectionalLight.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -118,6 +120,8 @@
     <ClCompile Include="src\Doom\Render\MeshManager.cpp" />
     <ClCompile Include="src\Doom\Render\Instancing.cpp" />
     <ClCompile Include="src\Doom\Render\Mesh.cpp" />
+    <ClCompile Include="src\Doom\Components\PointLight.cpp" />
+    <ClCompile Include="src\Doom\Components\DirectionalLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

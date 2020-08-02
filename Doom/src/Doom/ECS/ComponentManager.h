@@ -14,6 +14,8 @@
 #include "../Components/RectangleCollider2D.h"
 #include "../Components/CubeCollider.h"
 #include "../Core/ColoredOutput.h"
+#include "../Components/PointLight.h"
+#include "../Components/DirectionalLight.h"
 
 namespace Doom {
 
@@ -22,7 +24,9 @@ namespace Doom {
 		RENDER,
 		CUBECOLLIDER3D,
 		COLLISION,
-		ANIMATOR
+		ANIMATOR,
+		POINTLIGHT,
+		DIRECTIONALLIGHT,
 	};
 
 	class DOOM_API ComponentManager {
@@ -98,6 +102,42 @@ namespace Doom {
 				}
 			}
 			col->col = nullptr;
+			delete col;
+			return;
+		}
+
+		template <>
+		void RemoveComponent<PointLight>() {
+			PointLight* col = nullptr;
+			col = GetComponent<PointLight>();
+			if (col == nullptr)
+				return;
+			components.erase(components.begin() + col->m_Id);
+			unsigned int _size = components.size();
+			if (col->m_Id != _size) {
+				for (unsigned int i = col->m_Id; i < _size; i++)
+				{
+					components[i]->m_Id = i;;
+				}
+			}
+			delete col;
+			return;
+		}
+
+		template <>
+		void RemoveComponent<DirectionalLight>() {
+			DirectionalLight* col = nullptr;
+			col = GetComponent<DirectionalLight>();
+			if (col == nullptr)
+				return;
+			components.erase(components.begin() + col->m_Id);
+			unsigned int _size = components.size();
+			if (col->m_Id != _size) {
+				for (unsigned int i = col->m_Id; i < _size; i++)
+				{
+					components[i]->m_Id = i;;
+				}
+			}
 			delete col;
 			return;
 		}
@@ -194,6 +234,28 @@ namespace Doom {
 		}
 
 		template<>
+		DirectionalLight* GetComponent() {
+			for (unsigned int i = 0; i < components.size(); i++)
+			{
+				if (components[i]->GetComponentType() == ComponentTypes::DIRECTIONALLIGHT) {
+					return (DirectionalLight*)components[i];
+				}
+			}
+			return nullptr;
+		}
+
+		template<>
+		PointLight* GetComponent() {
+			for (unsigned int i = 0; i < components.size(); i++)
+			{
+				if (components[i]->GetComponentType() == ComponentTypes::POINTLIGHT) {
+					return (PointLight*)components[i];
+				}
+			}
+			return nullptr;
+		}
+
+		template<>
 		Animator* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
@@ -236,6 +298,36 @@ namespace Doom {
 		RectangleCollider2D* AddComponent<RectangleCollider2D>() {
 			if (GetComponent<RectangleCollider2D>() == nullptr) {
 				RectangleCollider2D* object = new RectangleCollider2D(owner);
+				object->owner = (this->owner);
+				object->m_Id = components.size();
+				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << "Added component of type <Collision> for gameobject: " << owner_name << std::endl;
+#endif
+				return object;
+			}
+			return nullptr;
+		}
+
+		template <>
+		PointLight* AddComponent<PointLight>() {
+			if (GetComponent<PointLight>() == nullptr) {
+				PointLight* object = new PointLight();
+				object->owner = (this->owner);
+				object->m_Id = components.size();
+				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << "Added component of type <Collision> for gameobject: " << owner_name << std::endl;
+#endif
+				return object;
+			}
+			return nullptr;
+		}
+
+		template <>
+		DirectionalLight* AddComponent<DirectionalLight>() {
+			if (GetComponent<DirectionalLight>() == nullptr) {
+				DirectionalLight* object = new DirectionalLight();
 				object->owner = (this->owner);
 				object->m_Id = components.size();
 				components.push_back(object);

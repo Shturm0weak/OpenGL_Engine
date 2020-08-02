@@ -110,7 +110,9 @@
     <ClInclude Include="src\Doom\Audio\SoundManager.h" />
     <ClInclude Include="src\Doom\Audio\wavParser.h" />
     <ClInclude Include="src\Doom\Components\CubeCollider.h" />
+    <ClInclude Include="src\Doom\Components\DirectionalLight.h" />
     <ClInclude Include="src\Doom\Components\IRenderer.h" />
+    <ClInclude Include="src\Doom\Components\PointLight.h" />
     <ClInclude Include="src\Doom\Components\Render3D.h" />
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
@@ -173,6 +175,8 @@
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
     <ClCompile Include="src\Doom\Components\CubeCollider.cpp" />
+    <ClCompile Include="src\Doom\Components\DirectionalLight.cpp" />
+    <ClCompile Include="src\Doom\Components\PointLight.cpp" />
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
     <ClCompile Include="src\Doom\Core\Ray3D.cpp" />

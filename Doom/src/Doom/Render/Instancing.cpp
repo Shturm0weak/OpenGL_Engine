@@ -12,12 +12,15 @@ void Doom::Instancing::Create(Mesh* mesh)
 	buf.vbo = mesh->vb;
 	buf.vao = mesh->va;
 	buf.ibo = mesh->ib;
+	buf.layoutDynamic = new VertexBufferLayout();
 	buffers.insert(std::make_pair(mesh, buf));
 }
 
 void Doom::Instancing::Render()
 {
-	Shader* shader = Shader::Get("Instancing3D");
+	if(shader == nullptr)
+		shader = Shader::Get("Instancing3D");
+
 	for (auto iter = instancedObjects.begin(); iter != instancedObjects.end(); iter++)
 	{
 		auto gliter = buffers.find(iter->first);
@@ -27,7 +30,7 @@ void Doom::Instancing::Render()
 		uint32_t objsSize = iter->second.size();
 		if (objsSize == 0)
 			continue;
-		uint32_t sizeOfAttribs = 12 + 16;//pos, color,scale,(ambient,specular) 
+		uint32_t sizeOfAttribs = 12 + 16;//pos, color,scale,(ambient,specular) + mat4 rotation
 		pos = new float[objsSize * sizeOfAttribs];
 		for (size_t i = 0; i < objsSize; i++)
 		{
@@ -50,7 +53,7 @@ void Doom::Instancing::Render()
 		}
 		
 		gliter->second.vboDynamic = new VertexBuffer(pos, sizeof(float) * sizeOfAttribs * objsSize);
-		gliter->second.layoutDynamic = new VertexBufferLayout();
+		gliter->second.layoutDynamic->Clear();
 		gliter->second.vao->Bind();
 		gliter->second.vboDynamic->Bind();
 		gliter->second.layoutDynamic->Push<float>(3);
@@ -66,9 +69,39 @@ void Doom::Instancing::Render()
 		shader->Bind();
 		glBindTextureUnit(0, iter->second[0]->diffuseTexture->m_RendererID);
 		shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-		shader->SetUniform3f("u_LightPos", Renderer::Light->GetPositions().x, Renderer::Light->GetPositions().y, Renderer::Light->GetPositions().z);
-		shader->SetUniform3fv("u_LightColor", Renderer::Light->GetComponentManager()->GetComponent<Irenderer>()->color);
 		shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
+
+		int dlightSize = DirectionalLight::dirLights.size();
+		shader->SetUniform1i("dLightSize", dlightSize);
+		for (int i = 0; i < dlightSize; i++)
+		{
+			char buffer[64];
+			DirectionalLight* dl = DirectionalLight::dirLights[i];
+			dl->dir = dl->GetOwnerOfComponent()->GetComponent<Irenderer>()->view * glm::vec4(0,0,-1,1);
+			sprintf(buffer, "dirLights[%i].dir", i);
+			shader->SetUniform3fv(buffer, dl->dir);
+			sprintf(buffer, "dirLights[%i].color", i);
+			shader->SetUniform3fv(buffer, dl->color);
+		}
+
+		int plightSize = PointLight::pLights.size();
+		shader->SetUniform1i("pLightSize", plightSize);
+		char buffer[64];
+		for (int i = 0; i < plightSize; i++)
+		{
+			PointLight* pl = PointLight::pLights[i];
+			sprintf(buffer, "pointLights[%i].position", i);
+			shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->position);
+			sprintf(buffer, "pointLights[%i].color", i);
+			shader->SetUniform3fv(buffer, pl->color);
+			sprintf(buffer, "pointLights[%i].constant", i);
+			shader->SetUniform1f(buffer, pl->constant);
+			sprintf(buffer, "pointLights[%i]._linear", i);
+			shader->SetUniform1f(buffer, pl->linear);
+			sprintf(buffer, "pointLights[%i].quadratic", i);
+			shader->SetUniform1f(buffer, pl->quadratic);
+		}
+
 		shader->SetUniform1i("u_DiffuseTexture", 0);
 		if (iter->second[0]->useNormalMap) {
 			glBindTextureUnit(1, iter->second[0]->normalMapTexture->m_RendererID);
@@ -77,14 +110,18 @@ void Doom::Instancing::Render()
 		shader->SetUniform1i("u_isNormalMapping", iter->second[0]->useNormalMap);
 		Renderer::Vertices += gliter->first->meshSize;
 		Renderer::DrawCalls++;
-		shader->Bind();
+
 		gliter->second.vao->Bind();
 		gliter->second.ibo->Bind();
 		gliter->second.vbo->Bind();
-		Renderer::DrawCalls++;
+
 		glDrawElementsInstanced(GL_TRIANGLES, gliter->second.ibo->GetCount(), GL_UNSIGNED_INT,0,iter->second.size());
+
 		shader->UnBind();
 		gliter->second.ibo->UnBind();
+		gliter->second.vao->UnBind();
+		gliter->second.vbo->UnBind();
+
 		delete[] pos;
 		delete gliter->second.vboDynamic;
 	}

@@ -23,23 +23,17 @@ out mat3 TBN;
 out vec2 v_textcoords;
 out float ambient;
 out float specular;
-out vec3 LightColor;
-out vec3 LightPos;
 out vec3 CameraPos;
 out vec3 FragPos;
 out vec3 Normal;
 out vec4 out_color;
 uniform mat4 u_ViewProjection;
-uniform vec3 u_LightPos;
-uniform vec3 u_LightColor;
 uniform vec3 u_CameraPos;
 
 void main() {
 	FragPos =  vec3(u_Model * u_Scale * vec4(positions, 1.0));
-	LightPos =  (u_LightPos);
 	CameraPos =  u_CameraPos;
 	out_color = m_color;
-	LightColor = (u_LightColor);
 	ambient = mat.x;
 	specular = mat.y;
 	v_textcoords = textCoords;
@@ -60,8 +54,6 @@ void main() {
 layout(location = 0) out vec4 gl_FragColor;
 in vec2 v_textcoords;
 in vec3 CameraPos;
-in vec3 LightColor;
-in vec3 LightPos;
 in vec3 FragPos;
 in vec3 Normal;
 in vec4 out_color;
@@ -69,25 +61,36 @@ in float ambient;
 in float specular;
 in mat3 TBN;
 
+struct PointLight {
+	vec3 position;
+	vec3 color;
+	float constant;
+	float _linear;
+	float quadratic;
+};
+
+struct DirectionalLight {
+	vec3 dir;
+	vec3 color;
+};
+
+
+#define MAX_LIGHT 64
+uniform int pLightSize;
+uniform PointLight pointLights[MAX_LIGHT];
+uniform int dLightSize;
+uniform DirectionalLight dirLights[MAX_LIGHT];
+
 uniform sampler2D u_DiffuseTexture;
 uniform sampler2D u_NormalMapTexture;
 uniform bool u_isNormalMapping;
 
-void main() {
-
-	vec3 normal = (Normal);
-
-	if (u_isNormalMapping) {
-		normal = texture(u_NormalMapTexture, v_textcoords).rgb;
-		normal *= normal * 2.0 - 1.0;
-		normal = normalize(TBN *  normal);
-	}
-
+vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
 	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
 	float ambientStrength = ambient;
 	vec3 ambient = ambientStrength * diffuseTexColor;
 
-	vec3 LightDir = normalize(LightPos - FragPos);
+	vec3 LightDir = normalize(light.dir);
 	float diffuseStrength = max(dot(normal, LightDir), 0.0);
 	vec3 diffuse = diffuseTexColor * diffuseStrength;
 
@@ -97,7 +100,53 @@ void main() {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 	vec3 specular = specularStrength * spec * diffuseTexColor;
 
-	vec3 result = (ambient + diffuse + specular);
+	return (ambient + diffuse + specular) * light.color;
+}
 
-	gl_FragColor = vec4(result, 1.0) * out_color * vec4(LightColor,1.0);
+vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
+	float ambientStrength = ambient;
+	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
+
+	vec3 LightDir = normalize(light.position - FragPos);
+	float diffuseStrength = max(dot(normal, LightDir), 0.0);
+	vec3 diffuse = diffuseTexColor * diffuseStrength;
+
+	float specularStrength = specular;
+	vec3 viewDir = normalize(CameraPos - FragPos);
+	vec3 reflectDir = reflect(-LightDir, normal);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec3 specular = specularStrength * spec * diffuseTexColor;
+
+	float distance = length(light.position - FragPos);
+	float attenuation = 1.0 / (light.constant + light._linear * distance +
+		light.quadratic * (distance * distance));
+
+	ambient *= attenuation;
+	specular *= attenuation;
+	diffuse *= attenuation;
+
+	return (ambient + diffuse + specular) * light.color;
+}
+
+void main() {
+
+	vec3 normal = (Normal);
+	vec3 result = vec3(0,0,0);
+	if (u_isNormalMapping) {
+		normal = texture(u_NormalMapTexture, v_textcoords).rgb;
+		normal *= normal * 2.0 - 1.0;
+		normal = normalize(TBN *  normal);
+	}
+
+	for (int i = 0; i < dLightSize; i++)
+	{
+		result += DirLightsCompute(dirLights[i], normal, FragPos, CameraPos);
+	}
+
+	for (int i = 0; i < pLightSize; i++){
+		result += PointLightsCompute(pointLights[i], normal, FragPos, CameraPos);
+	}
+
+	gl_FragColor = vec4(result, 1.0) * out_color;
 };

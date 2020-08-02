@@ -2,6 +2,7 @@
 #include "Render3D.h"
 #include "../Core/Editor.h"
 #include "../Render/Instancing.h"
+#include "../Components/PointLight.h"
 
 void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 {
@@ -63,8 +64,38 @@ void Doom::Renderer3D::ForwardRender()
 			shader->SetUniformMat4f("u_View", view);
 			shader->SetUniformMat4f("u_Scale", scale);
 			shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
-			shader->SetUniform3f("u_LightPos", Renderer::Light->GetPositions().x, Renderer::Light->GetPositions().y, Renderer::Light->GetPositions().z);
-			shader->SetUniform3fv("u_LightColor", Renderer::Light->GetComponentManager()->GetComponent<Irenderer>()->color);
+
+			int dlightSize = DirectionalLight::dirLights.size();
+			shader->SetUniform1i("dLightSize", dlightSize);
+			for (int i = 0; i < dlightSize; i++)
+			{
+				char buffer[64];
+				DirectionalLight* dl = DirectionalLight::dirLights[i];
+				dl->dir = dl->GetOwnerOfComponent()->GetComponent<Irenderer>()->view * glm::vec4(0, 0, -1, 1);
+				sprintf(buffer, "dirLights[%i].dir", i);
+				shader->SetUniform3fv(buffer, dl->dir);
+				sprintf(buffer, "dirLights[%i].color", i);
+				shader->SetUniform3fv(buffer, dl->color);
+			}
+
+			int plightSize = PointLight::pLights.size();
+			shader->SetUniform1i("pLightSize", plightSize);
+			char buffer[64];
+			for (int i = 0; i < plightSize; i++)
+			{
+				PointLight* pl = PointLight::pLights[i];
+				sprintf(buffer, "pointLights[%i].position", i);
+				shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->position);
+				sprintf(buffer, "pointLights[%i].color", i);
+				shader->SetUniform3fv(buffer, pl->color);
+				sprintf(buffer, "pointLights[%i].constant", i);
+				shader->SetUniform1f(buffer, pl->constant);
+				sprintf(buffer, "pointLights[%i]._linear", i);
+				shader->SetUniform1f(buffer, pl->linear);
+				sprintf(buffer, "pointLights[%i].quadratic", i);
+				shader->SetUniform1f(buffer, pl->quadratic);
+			}
+
 			shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
 			shader->SetUniform1f("u_Ambient", mat.ambient);
 			shader->SetUniform1f("u_Specular", mat.specular);

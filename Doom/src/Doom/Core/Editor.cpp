@@ -180,6 +180,8 @@ void Editor::EditorUpdate()
 			Animator2DComponent();
 			CubeCollider3DComponent();
 			RectangleCollider2D(col);
+			LightPointComponent();
+			DirPointComponent();
 			MaterialComponent();
 			ImGui::NewLine();
 			ImGui::Indent(ImGui::GetWindowSize().x * 0.4);
@@ -250,7 +252,7 @@ void Doom::Editor::MaterialComponent()
 			ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
 			if (ImGui::CollapsingHeader("Material")) {
 				ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
-				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 1);
+				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 50);
 				ImGui::Checkbox("NormalMap", &r->useNormalMap);
 				float* tempColor = r->GetColor();
 				ImGui::ColorEdit4("Color", tempColor);
@@ -456,6 +458,29 @@ void Doom::Editor::TransformComponent(Transform* tr)
 		tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
 		tr->Translate(tr->position.x, tr->position.y, tr->position.z);
 		tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
+	}
+}
+
+void Doom::Editor::LightPointComponent()
+{
+	PointLight* pl = go->GetComponentManager()->GetComponent<PointLight>();
+	if (pl == nullptr)
+		return;
+	if (ImGui::CollapsingHeader("Point light")) {
+		ImGui::SliderFloat("Constant",&pl->constant,0,1);
+		ImGui::SliderFloat("Linear", &pl->linear,0,0.100f);
+		ImGui::SliderFloat("Quadratic", &pl->quadratic,0,0.100);
+		ImGui::ColorPicker3("Color", &pl->color[0]);
+	}
+}
+
+void Doom::Editor::DirPointComponent()
+{
+	DirectionalLight* pl = go->GetComponentManager()->GetComponent<DirectionalLight>();
+	if (pl == nullptr)
+		return;
+	if (ImGui::CollapsingHeader("Directional light")) {
+		ImGui::ColorPicker3("Color", &pl->color[0]);
 	}
 }
 

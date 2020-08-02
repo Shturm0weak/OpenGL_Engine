@@ -9,12 +9,12 @@
 #include "Audio/SoundManager.h"
 #include "Core/Editor.h"
 #include "Components/RectangleCollider2D.h"
+#include "Components/PointLight.h"
 
 using namespace Doom;
 
 DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::colliders;
 //storage of all references to our objects in the scene
-DOOM_API GameObject* Renderer::Light = nullptr;
 DOOM_API std::vector <GameObject*> Renderer::objects2d; 
 //Warning: used only for rendering
 DOOM_API std::vector <GameObject*> Renderer::objects3d;
@@ -91,3 +91,6 @@ DOOM_API std::map<std::string, Mesh*> MeshManager::Meshes;
 DOOM_API std::multimap<std::string, void*> MeshManager::meshQueue;
 DOOM_API bool MeshManager::dispatch = false;
 DOOM_API Shader* Font::shader = nullptr;
+
+DOOM_API std::vector<PointLight*> PointLight::pLights;
+DOOM_API std::vector<DirectionalLight*> DirectionalLight::dirLights;

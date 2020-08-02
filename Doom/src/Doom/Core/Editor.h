@@ -49,6 +49,8 @@ namespace Doom {
 		void RectangleCollider2D(RectangleCollider2D* col);
 		void Animator2DComponent();
 		void TransformComponent(Transform* tr);
+		void LightPointComponent();
+		void DirPointComponent();
 
 	public:
 		bool drawNormals = false;
