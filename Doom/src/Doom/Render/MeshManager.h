@@ -9,13 +9,18 @@ namespace Doom {
 	class DOOM_API MeshManager {
 	private:
 		static std::map<std::string, Mesh*> Meshes;
+		static std::vector <Mesh*> needToInitMeshes;
 		static std::multimap<std::string, void*> meshQueue;
-		static bool dispatch;
+		static const char** listOfMeshes;
 	public:
 		static void LoadMesh(std::string name, std::string filepath);
 		static void AsyncLoadMesh(std::string name, std::string filepath);
 
 		static Mesh* GetMesh(std::string name);
+
+		static const char** GetListOfMeshes();
+
+		inline static int GetAmountOfMeshes() { return Meshes.size(); }
 
 		static void GetMeshWhenLoaded(std::string name, void* r);
 
@@ -28,7 +33,7 @@ namespace Doom {
 		static void DispatchLoadedMeshes();
 
 		friend class Renderer;
-
+		friend class Editor;
 	};
 
 }

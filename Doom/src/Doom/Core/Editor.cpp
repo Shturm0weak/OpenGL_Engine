@@ -4,6 +4,8 @@
 #include <filesystem>
 #include "ColoredOutput.h"
 #include "../Render/Gui.h"
+#include "../Core/World.h"
+#include "../Render/Instancing.h"
 namespace fs = std::filesystem;
 
 using namespace Doom;
@@ -30,6 +32,13 @@ void Editor::EditorUpdate()
 	if (ImGui::Button("Create Atlas")) {
 		IsActiveTextureAtlasCreation = !IsActiveTextureAtlasCreation;
 	}
+
+	if (ImGui::Button("Shaders")) {
+		IsActiveShaderMenu = true;
+	}
+
+	ImGui::SliderFloat("DrawShadows", &Instancing::Instance()->drawShadows, 0, 1);
+
 	CreateTextureAtlas();
 
 	ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 100.f);
@@ -43,7 +52,7 @@ void Editor::EditorUpdate()
 		{
 			Renderer::CreateGameObject();
 			Renderer::CalculateObjectsVectors().size();
-			go = Renderer::objects2d.back();
+			go = World::objects.back();
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
@@ -56,8 +65,8 @@ void Editor::EditorUpdate()
 		{
 			if (go != nullptr) {
 				Renderer::DeleteObject(go->GetId());
-				if(Renderer::objects2d.size() > 0)
-					go = Renderer::objects2d[Renderer::objects2d.size() - 1];
+				if(World::objects.size() > 0)
+					go = World::objects[World::objects.size() - 1];
 				else
 					go = nullptr;
 			}
@@ -72,75 +81,15 @@ void Editor::EditorUpdate()
 	Renderer::CalculateObjectsVectors();
 
 	
-	if (Renderer::objects2d.size() > 0 && go == nullptr) {
-		go = Renderer::objects2d[0];
+	if (World::objects.size() > 0 && go == nullptr) {
+		go = World::objects[0];
 	}
 
-	if (go != nullptr) {
+	if (gizmo != nullptr && go != nullptr) {
 		gizmo->obj = go;
 	}
 
-	if (ImGui::CollapsingHeader("Game Objects")) {
-		unsigned int amount = Renderer::GetAmountOfObjects();
-		for (unsigned int i = 0; i < amount; i++)
-		{
-			GameObject* go = Renderer::objects2d[i];
-			if (go->GetOwner() != nullptr) {
-				continue;
-			}
-			ImGui::PushID(go->GetId());
-			if (this->go == go && ImGui::IsItemVisible()) {
-				ImVec2 sp = ImGui::GetCursorScreenPos();
-				ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
-			}
-			if (ImGui::TreeNode(go->name.c_str())) {
-				if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
-					this->go = go;
-				unsigned int childsAmount = go->GetChilds().size();
-				if (childsAmount > 0) {
-					for (unsigned int j = 0; j < childsAmount; j++)
-					{
-						GameObject* child = static_cast<GameObject*>(go->GetChilds()[j]);
-						ImGui::Indent();
-						ImGui::PushID(child->GetId());
-						if (this->go == child && ImGui::IsItemVisible()) {
-							ImVec2 sp = ImGui::GetCursorScreenPos();
-							ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
-						}
-						if (ImGui::TreeNode(child->name.c_str())) {
-							if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
-								this->go = child;
-							unsigned int childsAmount = child->GetChilds().size();
-							if (childsAmount > 0) {
-								for (unsigned int j = 0; j < childsAmount; j++)
-								{
-									GameObject* child1 = static_cast<GameObject*>(child->GetChilds()[j]);
-									ImGui::PushID(child1->GetId());
-									ImGui::Indent();
-									if (this->go == child1 && ImGui::IsItemVisible()) {
-										ImVec2 sp = ImGui::GetCursorScreenPos();
-										ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
-									}
-									if (ImGui::TreeNode(child1->name.c_str())) {
-										if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
-											this->go = child1;
-										ImGui::TreePop();
-									}
-									ImGui::PopID();
-									ImGui::Unindent();
-								}
-							}
-							ImGui::TreePop();
-						}
-						ImGui::PopID();
-						ImGui::Unindent();
-					}
-				}
-				ImGui::TreePop();
-			}
-			ImGui::PopID();
-		}
-	}
+	SceneHierarchy();
 
 	ImGui::NewLine();
 	ImGui::End();
@@ -183,6 +132,9 @@ void Editor::EditorUpdate()
 			LightPointComponent();
 			DirPointComponent();
 			MaterialComponent();
+			MeshPicker();
+			TexturePicker();
+			ShaderMenu();
 			ImGui::NewLine();
 			ImGui::Indent(ImGui::GetWindowSize().x * 0.4);
 			if (col == nullptr) {
@@ -250,16 +202,39 @@ void Doom::Editor::MaterialComponent()
 		if (ImGui::CollapsingHeader("Renderer 3D")) {
 			Renderer3D* r = static_cast<Renderer3D*>(go->GetComponentManager()->GetComponent<Irenderer>());
 			ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
+			if (ImGui::CollapsingHeader("Shader")) {
+				Shader* shader = go->GetComponentManager()->GetComponent<Irenderer>()->shader;
+				ImGui::Text("%s", shader->m_Name);
+				if (ImGui::Button("Reload")) {
+					shader->Reload();
+				}
+			}
 			if (ImGui::CollapsingHeader("Material")) {
 				ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
 				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 50);
+				void* my_tex_id = reinterpret_cast<void*>(r->diffuseTexture->m_RendererID);
+				if (ImGui::ImageButton(my_tex_id, { 64,64 })) {
+					IsActiveTexturePicker = true;
+					texturePickerId = 1;
+				}
+				if (r->normalMapTexture == nullptr)
+					my_tex_id = reinterpret_cast<void*>(-12345);
+				else
+					my_tex_id = reinterpret_cast<void*>(r->normalMapTexture->m_RendererID);
+				if (ImGui::ImageButton(my_tex_id, { 64,64 })) {
+					IsActiveTexturePicker = true;
+					texturePickerId = 2;
+				}
 				ImGui::Checkbox("NormalMap", &r->useNormalMap);
 				float* tempColor = r->GetColor();
 				ImGui::ColorEdit4("Color", tempColor);
 				r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
 			}
 			if (ImGui::CollapsingHeader("Mesh")) {
-				ImGui::Text("%s", r->mesh->name);
+				ImGui::Text("Name: %s", r->mesh->name);
+				if (ImGui::Button("Meshes")) {
+					IsActiveMeshPicker = true;
+				}
 			}
 			ImGui::Unindent();
 		}
@@ -481,7 +456,197 @@ void Doom::Editor::DirPointComponent()
 		return;
 	if (ImGui::CollapsingHeader("Directional light")) {
 		ImGui::ColorPicker3("Color", &pl->color[0]);
+		ImGui::SliderFloat("Intensity", &pl->intensity, 1, 10);
 	}
+}
+
+void Doom::Editor::MeshPicker()
+{
+	if (!IsActiveMeshPicker)
+		return;
+	ImGui::Begin("Meshes",&IsActiveMeshPicker);
+	ImGui::ListBox("Meshes",&selectedMesh, MeshManager::GetListOfMeshes(), MeshManager::GetAmountOfMeshes());
+	if (ImGui::Button("Ok")) {
+		auto mesh = MeshManager::Meshes.begin();
+		if (selectedMesh > -1) {
+			for (int i = 0; i < selectedMesh; i++)
+			{
+				mesh++;
+			}
+		}
+		std::cout << "Mesh " << mesh->first << "is applied\n";
+		go->GetComponent<Renderer3D>()->LoadMesh(mesh->second);
+	}
+	ImGui::InputText("Path to mesh",mesh,128);
+	ImGui::InputText("Mesh name", name, 128);
+	if (ImGui::Button("Load")) {
+		MeshManager::AsyncLoadMesh(name, mesh);
+	}
+	ImGui::End();
+}
+
+void Doom::Editor::TexturePicker()
+{
+	if (!IsActiveTexturePicker)
+		return;
+	ImGui::Begin("Textures", &IsActiveTexturePicker);
+	int width = 0;
+	int imageSize = 64;
+	for (auto texture : Texture::textures)
+	{
+		void* my_tex_id = reinterpret_cast<void*>(texture.second->m_RendererID);
+		ImVec2 windowWidth = ImGui::GetWindowSize();
+		if (ImGui::ImageButton(my_tex_id, ImVec2(64, 64), ImVec2(1, 1), ImVec2(0, 0), 3, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
+			switch (texturePickerId)
+			{
+			case 0:
+				go->GetComponent<SpriteRenderer>()->SetTexture(texture.second);
+				break;
+			case 1:
+				go->GetComponent<Renderer3D>()->diffuseTexture = (texture.second);
+				break;
+			case 2:
+				go->GetComponent<Renderer3D>()->normalMapTexture = (texture.second);
+				break;
+			default:
+				break;
+			}
+			 
+		}
+		width += imageSize;
+		ImGui::SameLine();
+		if (width + imageSize * 2.5 > windowWidth.x) {
+			width = 0;
+			ImGui::NewLine();
+		}
+		
+	}
+	ImGui::End();
+}
+
+//void Doom::Editor::SceneHierarchy()
+//{
+//	if (ImGui::CollapsingHeader("Game Objects")) {
+//		unsigned int amount = Renderer::GetAmountOfObjects();
+//		for (unsigned int i = 0; i < amount; i++)
+//		{
+//			GameObject* go = Renderer::objects[i];
+//			if (go->GetOwner() != nullptr) {
+//				continue;
+//			}
+//			ImGui::PushID(go->GetId());
+//			if (this->go == go && ImGui::IsItemVisible()) {
+//				ImVec2 sp = ImGui::GetCursorScreenPos();
+//				ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
+//			}
+//			if (ImGui::TreeNodeEx(go->name.c_str())) {
+//				if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
+//					this->go = go;
+//				unsigned int childsAmount = go->GetChilds().size();
+//				if (childsAmount > 0) {
+//					for (unsigned int j = 0; j < childsAmount; j++)
+//					{
+//						GameObject* child = static_cast<GameObject*>(go->GetChilds()[j]);
+//						ImGui::Indent();
+//						ImGui::PushID(child->GetId());
+//						if (this->go == child && ImGui::IsItemVisible()) {
+//							ImVec2 sp = ImGui::GetCursorScreenPos();
+//							ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
+//						}
+//						if (ImGui::TreeNodeEx(child->name.c_str())) {
+//							if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
+//								this->go = child;
+//							unsigned int childsAmount = child->GetChilds().size();
+//							if (childsAmount > 0) {
+//								for (unsigned int j = 0; j < childsAmount; j++)
+//								{
+//									GameObject* child1 = static_cast<GameObject*>(child->GetChilds()[j]);
+//									ImGui::PushID(child1->GetId());
+//									ImGui::Indent();
+//									if (this->go == child1 && ImGui::IsItemVisible()) {
+//										ImVec2 sp = ImGui::GetCursorScreenPos();
+//										ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
+//									}
+//									if (ImGui::TreeNodeEx(child1->name.c_str())) {
+//										if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
+//											this->go = child1;
+//										ImGui::TreePop();
+//									}
+//									ImGui::PopID();
+//									ImGui::Unindent();
+//								}
+//							}
+//							ImGui::TreePop();
+//						}
+//						ImGui::PopID();
+//						ImGui::Unindent();
+//					}
+//				}
+//				ImGui::TreePop();
+//			}
+//			ImGui::PopID();
+//		}
+//	}
+//}
+
+void Doom::Editor::SceneHierarchy()
+{
+	if (ImGui::CollapsingHeader("Game Objects")) {
+		uint32_t amount = Renderer::GetAmountOfObjects();
+		for (uint32_t i = 0; i < amount; i++)
+		{
+			GameObject* go = World::objects[i];
+			if (go->GetOwner() != nullptr) {
+				continue;
+			}
+			ImGuiTreeNodeFlags flags = ((this->go == go)) ? ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Selected : 0;
+			DrawNode(go, flags);
+		}
+	}
+}
+
+void Doom::Editor::DrawNode(GameObject* go, ImGuiTreeNodeFlags flags)
+{
+	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)go, flags, go->name.c_str());
+	if (ImGui::IsItemClicked()) {
+		this->go = go;
+	}
+
+	if (opened) {
+		ImGui::TreePop();
+		DrawChilds(go);
+	}
+}
+
+void Doom::Editor::DrawChilds(GameObject * go)
+{
+	for (uint32_t i = 0; i < go->Childs.size(); i++)
+	{
+		GameObject* child = static_cast<GameObject*>(go->Childs[i]);
+		ImGuiTreeNodeFlags flags = ((this->go == child)) ? ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Selected : 0;
+		ImGui::Indent();
+		DrawNode(child, flags);
+		ImGui::Unindent();
+	}
+}
+
+void Doom::Editor::ShaderMenu()
+{
+	if (!IsActiveShaderMenu)
+		return;
+	ImGui::Begin("Shaders", &IsActiveShaderMenu);
+	ImGui::ListBox("Meshes", &selectedShader, Shader::GetListOfShaders(), Shader::shaders.size());
+	if (ImGui::Button("Reload")) {
+		auto shader = Shader::shaders.begin();
+		if (selectedShader > -1) {
+			for (int i = 0; i < selectedShader; i++)
+			{
+				shader++;
+			}
+		}
+		shader->second->Reload();
+	}
+	ImGui::End();
 }
 
 void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
@@ -562,11 +727,15 @@ void Doom::Editor::Debug()
 		ImGui::SliderAngle("fov", &Window::GetCamera().fovy, 60, 180);
 		Window::GetCamera().SetFov(Window::GetCamera().fovy);
 	}
+	ImGui::Text("Position");
+	ImGui::Text("x: %f y: %f z: %f", Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y, Window::GetCamera().GetPosition().z);
+	ImGui::Text("Forward vector");
+	ImGui::Text("x: %f y: %f z: %f", Window::GetCamera().forwardV.x, Window::GetCamera().forwardV.y, Window::GetCamera().forwardV.z);
 	Window::GetCamera().SetRotation(glm::vec3(Window::GetCamera().pitch, Window::GetCamera().yaw, Window::GetCamera().roll));
 	ImGui::End();
 	ImGui::Begin("Debug");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::Text("Objects amount %d", Renderer::objects2d.size());
+	ImGui::Text("Objects amount %d", World::objects.size());
 	ImGui::Text("Draw calls %d", Renderer::DrawCalls);
 	ImGui::Text("Vertices %d", Renderer::Vertices);
 	ImGui::Text("VRAM used %lf",Texture::VRAMused);
@@ -608,10 +777,10 @@ void Doom::Editor::UpdateNormals()
 	std::lock_guard<std::mutex> lock(mtx_updateNormals);
 	if (drawNormals) {
 		uint32_t counter = 0;
-		size_t size = Renderer::objects2d.size();
+		size_t size = World::objects.size();
 		for (size_t i = 0; i < size; i++)
 		{
-			Irenderer* iR = Renderer::objects2d[i]->GetComponent<Irenderer>();
+			Irenderer* iR = World::objects[i]->GetComponent<Irenderer>();
 			if (iR->renderType == "3D") {
 				Renderer3D* r = static_cast<Renderer3D*>(iR);
 				Mesh* mesh = r->mesh;
@@ -623,8 +792,8 @@ void Doom::Editor::UpdateNormals()
 					glm::mat4 scaleXview = r->scale * r->view;
 					glm::vec4 transformedPos = scaleXview * glm::vec4(pos.x, pos.y, pos.z, 0);
 					glm::vec4 transformedNor = scaleXview * glm::vec4(normals.x, normals.y, normals.z, 0);
-					this->normals[counter]->SetStartPoint(Renderer::objects2d[i]->position + (glm::vec3)transformedPos);
-					this->normals[counter]->SetEndPoint(Renderer::objects2d[i]->position + (glm::vec3)transformedPos + glm::vec3(transformedNor));
+					this->normals[counter]->SetStartPoint(World::objects[i]->position + (glm::vec3)transformedPos);
+					this->normals[counter]->SetEndPoint(World::objects[i]->position + (glm::vec3)transformedPos + glm::vec3(transformedNor));
 					this->normals[counter]->Enable = true;
 					counter++;
 				}
@@ -637,4 +806,61 @@ Editor *  Doom::Editor::Instance()
 {
 	static Editor instance;
 	return &instance;
+}
+
+void Doom::Editor::EditorUpdateMyGui()
+{
+	Gui* g = Gui::GetInstance();
+	DirectionalLight* dirlight = DirectionalLight::dirLights[0];
+	GameObject* go = dirlight->GetOwnerOfComponent();
+	Transform* tr = go->GetComponent<Transform>();
+	if (go != nullptr) {
+		g->xAlign = Gui::AlignHorizontally::XCENTER;
+		g->Text("FPS: %f", true, 900, 500, 40, COLORS::White, 0, Window::GetFPS());
+
+		g->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->ARIAL]);
+		g->RelateToPanel();
+		g->relatedPanelProperties.autoAllignment = true;
+		g->Panel("Directional light", -1080 + 200 + 5, 0, 400, 1080, glm::vec4(0.3, 0.3, 0.3, 0.8));
+		g->xAlign = g->LEFT;
+		g->Text("ID %d", true, 0, 0, 20, COLORS::White, 0, go->GetId());
+		g->CheckBox("Enable", &go->Enable, 0, 0, 20);
+		if (g->CollapsingHeader("Transform", 0, 0, COLORS::DarkGray * 0.7f)) {
+			g->Text("Position");
+			g->SliderFloat("X pos", &(tr->position.x), -50, 50, 0, 0, 200, 25);
+			g->SliderFloat("Y pos", &(tr->position.y), -50, 50, 0, 0, 200, 25);
+			g->SliderFloat("Z pos", &(tr->position.z), -50, 50, 0, 0, 200, 25);
+			g->Text("Scale");
+			g->SliderFloat("X scale", &go->scaleValues[0], -20, 50, 0, 0, 200, 25);
+			g->SliderFloat("Y scale", &go->scaleValues[1], -20, 50, 0, 0, 200, 25);
+			g->SliderFloat("Z scale", &go->scaleValues[2], -20, 50, 0, 0, 200, 25);
+			g->Text("Rotation");
+			g->SliderFloat("Pitch", &tr->rotation[0], -6.28, 6.28, 0, 0, 200, 25);
+			g->SliderFloat("Yaw", &tr->rotation[1], -6.28, 6.28, 0, 0, 200, 25);
+			g->SliderFloat("Roll", &tr->rotation[2], -6.28, 6.28, 0, 0, 200, 25);
+			if (g->Button("Reset", 0, 0, 20, 100, 20, glm::vec4(0.5, 0.5, 0.5, 1))) {
+				tr->rotation = glm::vec3(0, 0, 0);
+				go->scaleValues = glm::vec3(1, 1, 1);
+				tr->position = glm::vec3(0, 0, 0);
+			}
+			tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
+			tr->Translate(tr->position.x, tr->position.y, tr->position.z);
+			tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
+		}
+		if (g->CollapsingHeader("Light Component", 0, 0, COLORS::DarkGray * 0.7f)) {
+			g->SliderFloat("Intensity", &dirlight->intensity, 0, 10, 0, 0, 200, 25);
+			g->Bar(0, 0, dirlight->intensity, 10,COLORS::Red,COLORS::White,200,25);
+		}
+		if (g->CollapsingHeader("Shadow map", 0, 0, COLORS::DarkGray * 0.7f)) {
+			Texture* shadowMap = new Texture;
+			shadowMap->m_RendererID = Window::GetCamera().frameBufferShadowMap->texture;
+			glm::vec2 size{256,256};
+			g->Image(size.x / 2, -size.y / 2, size.x, size.y, shadowMap);
+			g->SliderFloat("Znear", &Window::GetCamera().znears, -500, 500, 0, 0, 200, 25);
+			g->SliderFloat("Zfar", &Window::GetCamera().zfars, 0, 500, 0, 0, 200, 25);
+			g->SliderFloat("Projection", &Window::GetCamera().rationprojections, 0, 1000, 0, 0, 200, 25);
+			g->SliderFloat("DrawShadows", &Instancing::Instance()->drawShadows, 0, 1, 0, 0, 200, 25);
+		}
+		g->UnRelateToPanel();
+	}
 }

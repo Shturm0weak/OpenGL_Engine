@@ -8,7 +8,7 @@ SkyBox::SkyBox(std::vector<std::string> faces,Mesh* mesh) {
 	GetComponentManager()->RemoveComponent<Irenderer>();
 	Renderer3D* r = GetComponentManager()->AddComponent<Renderer3D>();
 	r->isSkyBox = true;
-	r->LoadMesh(mesh);
+	r->mesh = mesh;
 	m_RendererID = Texture::LoadCubeMap(faces);
 	Texture* texture = new Texture();
 	texture->m_RendererID = m_RendererID;

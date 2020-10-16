@@ -70,6 +70,8 @@
     <ClInclude Include="src\Doom\Render\Instancing.h" />
     <ClInclude Include="src\Doom\Components\PointLight.h" />
     <ClInclude Include="src\Doom\Components\DirectionalLight.h" />
+    <ClInclude Include="src\Doom\Core\World.h" />
+    <ClInclude Include="src\Doom\STLloader\STLloader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -122,6 +124,8 @@
     <ClCompile Include="src\Doom\Render\Mesh.cpp" />
     <ClCompile Include="src\Doom\Components\PointLight.cpp" />
     <ClCompile Include="src\Doom\Components\DirectionalLight.cpp" />
+    <ClCompile Include="src\Doom\Core\World.cpp" />
+    <ClCompile Include="src\Doom\STLloader\STLloader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

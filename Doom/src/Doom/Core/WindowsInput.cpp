@@ -60,10 +60,10 @@ bool WindowsInput::IsMousePressedDownimp(int keycode)
 		return GLFW_FALSE;
 	}
 
-
+	const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
 	if (ViewPort::GetInstance()->IsHovered) {
-		ImGui::SetCurrentContext(Window::imGuiContext);
-		return ImGui::IsMouseDown(keycode);
+		auto state = glfwGetMouseButton(window, keycode);
+		return state == GLFW_PRESS;
 	}
 	return false;
 	/*const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());

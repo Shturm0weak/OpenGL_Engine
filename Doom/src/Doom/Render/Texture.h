@@ -34,12 +34,12 @@ namespace Doom {
 		static void UnloadFromRAM(std::string filePath);
 		static void UnloadFromVRAM(std::string filePath);
 		static Texture* ColoredTexture(std::string name, uint32_t color);
-		static Texture* Create(std::string filePath, bool flip = false);
+		static Texture* Create(std::string filePath, bool flip = true);
 		static void LoadTextureInRAM(std::string filePath, bool flip = false);
 		static void LoadTextureInVRAM(std::string filePath, bool unloadFromRam = true);
 		static unsigned int LoadCubeMap(std::vector<std::string> faces);
 
-		
+		friend class Editor;
 	};
 
 }

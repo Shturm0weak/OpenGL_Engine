@@ -4,6 +4,8 @@
 
 #include <mutex>
 #include "../Components/RectangleCollider2D.h"
+#include "../Components/SpriteRenderer.h"
+#include "../Components/Render3D.h"
 
 namespace Doom {
 
@@ -12,13 +14,12 @@ namespace Doom {
 		static int Vertices;
 		static bool PolygonMode;
 		static int DrawCalls;
-		static bool isReadyToRenderFirstThread;
-		static bool isReadyToRenderSecondThread;
-		static bool isReadyToRenderThirdThread;
 		static void DeleteObject(int id);
 		static void DeleteAll();
 		static void Render2DObjects();
 		static void Render3DObjects();
+		static void BakeShadows();
+		static void UpdateLightSpaceMatrices();
 		static void Render();
 		static void RenderLines();
 		static void RenderText();
@@ -30,12 +31,11 @@ namespace Doom {
 		static std::vector<unsigned int> CalculateObjectsVectors();
 		inline static std::vector<unsigned int> GetObjectsWithNoOwnerReference() { return ObjectsWithNoOwner; }
 		inline static std::vector<unsigned int> GetObjectsWithOwnerReference() { return ObjectsWithOwner; }
-		inline static unsigned int GetAmountOfObjects() { return objects2d.size(); }
 		inline static unsigned int GetAmountOfCollisions() { return collision2d.size(); }
-		static GameObject* GetReference(int id) { return objects2d[id]; }
 		static const char** items;
 		static void ShutDown();
-		static void PopBack() { objects2d.pop_back(); }
+		static void PopBack();
+		static unsigned int GetAmountOfObjects();
 		static const char** GetItems();
 		static int obj_id;
 		static int col_id;
@@ -46,8 +46,8 @@ namespace Doom {
 		static std::vector<unsigned int> ObjectsWithNoOwner;
 		static std::vector<unsigned int> ObjectsWithOwner;
 		static std::vector <RectangleCollider2D*> collision2d;
-		static std::vector <GameObject*> objects2d;
-		static std::vector <GameObject*> objects3d;
+		static std::vector <SpriteRenderer*> objects2d;
+		static std::vector <Renderer3D*> objects3d;
 		static std::mutex mtx;
 		static std::condition_variable condVar;
 
@@ -58,6 +58,7 @@ namespace Doom {
 		friend class ComponentManager;
 		friend class Ray2D;
 		friend class RectangleCollider2D;
+		friend class Renderer3D;
 
 		template<typename T>
 		static void LoadObj(bool enable,std::string name, std::string pathtotext, float angle, float color[4],

@@ -12,6 +12,7 @@ public:
 	bool isShake = false;
 	bool firstphase[3] = { false,false,false };
 	bool secondtphase[3] = { false,false,false };
+	float y = 0;
 	HP(float x, float y){
 		prevYPos = y;
 		EventSystem::GetInstance()->RegisterClient("OnUpdate", this);
@@ -21,8 +22,9 @@ public:
 			SpriteRenderer* sr = static_cast<SpriteRenderer*>(hearts[i]->GetComponentManager()->GetComponent<Irenderer>());
 			hearts[i]->SetName("HP");
 			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Scale(2,2);
-			hearts[i]->Static = true;
-			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Translate(x + i * (sr->GetWidth() + 0.25),y);
+			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Translate(x + (i * (sr->GetWidth() + 1)),y);
+			sr->Setlayer(i);
+			this->y = y;
 			sr->SetTexture(texture);
 		}
 	}
@@ -59,8 +61,6 @@ public:
 					firstphase[i] = false;
 					secondtphase[i] = true;
 				}
-
-
 			}
 		}
 	}

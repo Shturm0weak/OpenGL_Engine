@@ -23,3 +23,8 @@ void VertexBuffer::Bind() const {
 void VertexBuffer::UnBind() const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+void Doom::VertexBuffer::Invalidate()
+{
+	glInvalidateBufferData(m_RendererID);
+}

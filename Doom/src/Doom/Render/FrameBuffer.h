@@ -9,7 +9,9 @@ namespace Doom {
 		unsigned int fbo = 0;
 		unsigned int texture = 0;
 
-		FrameBuffer();
+		glm::vec2 size;
+
+		FrameBuffer(int width, int height, int TextureParameterinternalFormat, int TextureParametertextureType, bool TextureParameterClampBorder, int FrameBufferAttachment, bool NeedRBO, bool ReadBuffer, bool DrawBuffer);
 		~FrameBuffer();
 
 		void Resize(float width, float height);

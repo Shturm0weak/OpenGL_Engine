@@ -88,6 +88,27 @@ void Shader::SetUniformMat4f(const std::string name, const glm::mat4& matrix) {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 }
 
+void Doom::Shader::Reload()
+{
+	glDeleteProgram(m_RendererID);
+	ShaderProgramSource source = Parseshader(m_FilePath);
+	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+	std::cout << "Shader: " << m_Name << " has been updated\n";
+}
+
+const char ** Doom::Shader::GetListOfShaders()
+{
+	if (listOfShaders != nullptr)
+		delete[] listOfShaders;
+	listOfShaders = new const char*[shaders.size()];
+	uint32_t i = 0;
+	for (auto mesh = shaders.begin(); mesh != shaders.end(); mesh++) {
+		listOfShaders[i] = mesh->first.c_str();
+		i++;
+	}
+	return listOfShaders;
+}
+
 void Shader::SetUniform2fv(const std::string name, const glm::vec2& vec2) {
 	float vec[2] = { vec2[0],vec2[1] };
 	glUniform2fv(GetUniformLocation(name),1,vec);
@@ -152,6 +173,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 		glGetShaderInfoLog(id, length, &length, message);
 		printf("Failed to compile shader!\n");
 		std::cout << message << std::endl;
+		delete[] message;
 		glDeleteShader(id);
 		return 0;
 	}

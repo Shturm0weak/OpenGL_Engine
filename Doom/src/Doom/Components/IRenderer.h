@@ -33,6 +33,9 @@ namespace Doom {
 			}
 			return color;
 		}
+
+		Shader* shader = nullptr;
+
 		virtual void Update(glm::vec3 pos) {}
 	};
 

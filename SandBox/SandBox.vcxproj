@@ -60,15 +60,16 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_WIN64;_WIN32;GLEW_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Doom\src\Doom;$(SolutionDir)vendor;$(SolutionDir)SandBox;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Doom\src\Doom;$(SolutionDir)vendor;$(SolutionDir)SandBox;$(SolutionDir)vendor\bullet3-master\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>zlib.lib;opengl32.lib;glfw3.lib;glew32s.lib;ImGui.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;opengl32.lib;glfw3.lib;glew32s.lib;ImGui.lib;winmm.lib;Bullet3Collision_vs2010_x64_release.lib;Bullet3Common_vs2010_x64_release.lib;Bullet3Dynamics_vs2010_x64_release.lib;Bullet3Geometry_vs2010_x64_release.lib;Bullet3OpenCL_clew_vs2010_x64_release.lib;BulletCollision_vs2010_x64_release.lib;BulletDynamics_vs2010_x64_release.lib;BulletExampleBrowserLib_vs2010_x64_release.lib;BulletInverseDynamics_vs2010_x64_release.lib;BulletInverseDynamicsUtils_vs2010_x64_release.lib;BulletSoftBody_vs2010_x64_release.lib;BussIK_vs2010_x64_release.lib;gwen_vs2010_x64_release.lib;LinearMath_vs2010_x64_release.lib;OpenGL_Window_vs2010_x64_release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -77,7 +78,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <PreprocessorDefinitions>_WIN64;_WIN32;GLEW_STATIC;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Doom\src\Doom;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Doom\src\Doom;$(SolutionDir)vendor;$(SolutionDir)vendor\bullet3-master\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -89,13 +90,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <OmitFramePointers>false</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>zlib.lib;opengl32.lib;glfw3.lib;glew32s.lib;ImGui.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;opengl32.lib;glfw3.lib;glew32s.lib;ImGui.lib;winmm.lib;Bullet3Collision_vs2010_x64_release.lib;Bullet3Common_vs2010_x64_release.lib;Bullet3Dynamics_vs2010_x64_release.lib;Bullet3Geometry_vs2010_x64_release.lib;Bullet3OpenCL_clew_vs2010_x64_release.lib;BulletCollision_vs2010_x64_release.lib;BulletDynamics_vs2010_x64_release.lib;BulletExampleBrowserLib_vs2010_x64_release.lib;BulletInverseDynamics_vs2010_x64_release.lib;BulletInverseDynamicsUtils_vs2010_x64_release.lib;BulletSoftBody_vs2010_x64_release.lib;BussIK_vs2010_x64_release.lib;gwen_vs2010_x64_release.lib;LinearMath_vs2010_x64_release.lib;OpenGL_Window_vs2010_x64_release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -148,6 +149,8 @@
     <None Include="src\Mesh\Stone.fbx" />
     <None Include="src\Mesh\Stonefbx.fbx" />
     <None Include="src\Mesh\Tree.fbx" />
+    <None Include="src\Shaders\BakeShadows.shader" />
+    <None Include="src\Shaders\BakeShadowsInstancing.shader" />
     <None Include="src\Shaders\Basic.shader" />
     <None Include="src\Shaders\Basic3D.shader" />
     <None Include="src\Shaders\Batch.shader" />

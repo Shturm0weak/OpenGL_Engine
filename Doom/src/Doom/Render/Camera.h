@@ -17,7 +17,8 @@ namespace Doom {
 
 		CameraTypes type = ORTHOGRAPHIC;
 
-		FrameBuffer* frameBuffer = nullptr;
+		FrameBuffer* frameBufferColor = nullptr;
+		FrameBuffer* frameBufferShadowMap = nullptr;
 
 		Camera();
 		~Camera() {}
@@ -72,6 +73,9 @@ namespace Doom {
 
 		public:
 			glm::vec3 forwardV = { 0,0,-1 };
+			float znears = -100.0f;
+			float zfars = 100.0f;
+			float rationprojections = 100.0f;
 
 	};
 

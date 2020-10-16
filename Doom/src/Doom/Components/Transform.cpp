@@ -169,8 +169,8 @@ void Transform::Rotate(float x, float y, float z) {
 
 void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
 	sr = owner->GetComponentManager()->GetComponent<Irenderer>();
-	ThreadPool::Instance()->enqueue([=] {
-		std::lock_guard<std::mutex> lockScale(mtx_scale);
+	//ThreadPool::Instance()->enqueue([=] {
+		//std::lock_guard<std::mutex> lockScale(mtx_scale);
 		if (sr == NULL)
 			return;
 		sr->scale = glm::scale(glm::mat4(1.f), glm::vec3(scaleX, scaleY, scaleZ));
@@ -191,7 +191,7 @@ void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
 				go->GetComponentManager()->GetComponent<Transform>()->Scale(scaleX, scaleY, scaleZ);
 		}
 		//}
-	});
+	//});
 }
 
 void Transform::Translate(float x, float y,float z)

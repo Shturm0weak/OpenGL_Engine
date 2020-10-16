@@ -61,7 +61,7 @@ public:
 		Gui::GetInstance()->relatedPanelProperties.margin = glm::vec2(30);
 		Gui::GetInstance()->relatedPanelProperties.padding.y = 15;
 		Gui::GetInstance()->edgeRadius = panelRadius;
-		Gui::GetInstance()->Panel(pos.x, pos.y, 1000, 700, glm::vec4(0.3, 0.3, 0.3, 0.8));
+		Gui::GetInstance()->Panel("Properties", pos.x, pos.y, 1000, 700, glm::vec4(0.3, 0.3, 0.3, 0.8));
 		Gui::GetInstance()->edgeRadius = radius;
 		//Gui::GetInstance()->edgeRadius = 0.0f;
 		if (Gui::GetInstance()->Button("Exit", 0, 0, 20, 100, 50, COLORS::Silver, COLORS::Silver * 0.8f)) {

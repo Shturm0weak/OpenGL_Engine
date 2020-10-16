@@ -64,6 +64,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -81,7 +82,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <PreprocessorDefinitions>GLEW_STATIC;DOOM_ENGINE;WIN32;VORBIS_FPU_CONTROL;_CRT_SECURE_NO_WARNINGS;_WIN64;_USE_MATH_DEFINES;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)vendor;$(SolutionDir)vendor\bullet3-master\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -117,6 +118,7 @@
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\Core\Ray3D.h" />
+    <ClInclude Include="src\Doom\Core\World.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxnode.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
@@ -169,6 +171,7 @@
     <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
     <ClInclude Include="src\Doom\Render\ViewPort.h" />
     <ClInclude Include="src\Doom\Audio\Sound.h" />
+    <ClInclude Include="src\Doom\STLloader\STLloader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -180,6 +183,7 @@
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
     <ClCompile Include="src\Doom\Core\Ray3D.cpp" />
+    <ClCompile Include="src\Doom\Core\World.cpp" />
     <ClCompile Include="src\Doom\ECS\Component.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />
@@ -221,6 +225,7 @@
     <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
     <ClCompile Include="src\Doom\Audio\vorbis.h" />
     <ClCompile Include="src\Doom\Render\ViewPort.cpp" />
+    <ClCompile Include="src\Doom\STLloader\STLloader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\vendor\ImGui\ImGui.vcxproj">

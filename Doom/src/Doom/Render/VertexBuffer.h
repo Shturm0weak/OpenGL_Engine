@@ -11,6 +11,7 @@ namespace Doom {
 
 		void Bind()const;
 		void UnBind()const;
+		void Invalidate();
 		unsigned int& GetVertexBuffer() { return m_RendererID; }
 	};
 

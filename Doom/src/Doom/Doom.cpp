@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Core/World.h"
 #include "Core/Core.h"
 #include "Render/Renderer.h"
 #include "Render/Character.h"
@@ -14,10 +15,9 @@
 using namespace Doom;
 
 DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::colliders;
-//storage of all references to our objects in the scene
-DOOM_API std::vector <GameObject*> Renderer::objects2d; 
 //Warning: used only for rendering
-DOOM_API std::vector <GameObject*> Renderer::objects3d;
+DOOM_API std::vector <SpriteRenderer*> Renderer::objects2d;
+DOOM_API std::vector <Renderer3D*> Renderer::objects3d;
 //storage of all references to our object's collisions in the scene
 DOOM_API std::vector <RectangleCollider2D*> Renderer::collision2d;
 DOOM_API Batch* Batch::instance;
@@ -50,6 +50,7 @@ DOOM_API bool ThreadPool::initialized;
 DOOM_API GLFWwindow* Window::m_window = nullptr;
 DOOM_API ImGuiIO* Window::io = nullptr;
 DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
+DOOM_API float Window::scrollYOffset = 0;
 DOOM_API Camera* Window::m_camera = new Camera();
 
 DOOM_API float DeltaTime::time;
@@ -70,9 +71,6 @@ DOOM_API vec4 COLORS::Gray(0.86, 0.86, 0.86, 1);
 DOOM_API vec4 COLORS::Silver(0.75, 0.75, 0.75, 1);
 DOOM_API vec4 COLORS::DarkGray(0.4, 0.4, 0.4, 1);
 
-DOOM_API bool Renderer::isReadyToRenderFirstThread = false;
-DOOM_API bool Renderer::isReadyToRenderSecondThread = false;
-DOOM_API bool Renderer::isReadyToRenderThirdThread = false;
 DOOM_API std::vector<Line*> Line::lines;
 DOOM_API float Line::width = 1.0f;
 
@@ -89,8 +87,13 @@ DOOM_API std::map<std::string,Sound*> SoundManager::sounds;
 
 DOOM_API std::map<std::string, Mesh*> MeshManager::Meshes;
 DOOM_API std::multimap<std::string, void*> MeshManager::meshQueue;
-DOOM_API bool MeshManager::dispatch = false;
+DOOM_API std::vector <Mesh*> MeshManager::needToInitMeshes;
+DOOM_API const char** MeshManager::listOfMeshes;
 DOOM_API Shader* Font::shader = nullptr;
+DOOM_API const char** Shader::listOfShaders;
 
 DOOM_API std::vector<PointLight*> PointLight::pLights;
 DOOM_API std::vector<DirectionalLight*> DirectionalLight::dirLights;
+
+//storage of all references to our objects in the scene
+DOOM_API std::vector <GameObject*> World::objects;

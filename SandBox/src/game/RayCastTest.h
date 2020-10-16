@@ -12,7 +12,7 @@ public:
 
 	virtual void OnStart() override {
 		Renderer::Load("src/savedRayCastTest.txt");
-		Window::GetCamera().Zoom(2.9);
+		Window::GetCamera().Zoom(28);
 		coin = new GameObject("Coin",5,5);
 		RectangleCollider2D* col = coin->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		static_cast<SpriteRenderer*>(coin->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(Texture::Create("src/Images/Bird.png"));

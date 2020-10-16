@@ -1,8 +1,14 @@
 #include "../pch.h"
 #include "Instancing.h"
+#include "../Core/ThreadPool.h"
 
 Doom::Instancing::Instancing()
 {
+	ready = new std::atomic<bool>[nThreads];
+	for (size_t i = 0; i < nThreads; i++)
+	{
+		ready[i] = true;
+	}
 }
 
 void Doom::Instancing::Create(Mesh* mesh)
@@ -12,6 +18,7 @@ void Doom::Instancing::Create(Mesh* mesh)
 	buf.vbo = mesh->vb;
 	buf.vao = mesh->va;
 	buf.ibo = mesh->ib;
+	buf.vboDynamic = new VertexBuffer(nullptr, 1,false);
 	buf.layoutDynamic = new VertexBufferLayout();
 	buffers.insert(std::make_pair(mesh, buf));
 }
@@ -30,42 +37,7 @@ void Doom::Instancing::Render()
 		uint32_t objsSize = iter->second.size();
 		if (objsSize == 0)
 			continue;
-		uint32_t sizeOfAttribs = 12 + 16;//pos, color,scale,(ambient,specular) + mat4 rotation
-		pos = new float[objsSize * sizeOfAttribs];
-		for (size_t i = 0; i < objsSize; i++)
-		{
-			Renderer3D* r = iter->second[i];
-			pos[i * sizeOfAttribs + 0] = r->GetOwnerOfComponent()->position.x;
-			pos[i * sizeOfAttribs + 1] = r->GetOwnerOfComponent()->position.y;
-			pos[i * sizeOfAttribs + 2] = r->GetOwnerOfComponent()->position.z;
-			pos[i * sizeOfAttribs + 3] = r->GetOwnerOfComponent()->scaleValues.x;
-			pos[i * sizeOfAttribs + 4] = r->GetOwnerOfComponent()->scaleValues.y;
-			pos[i * sizeOfAttribs + 5] = r->GetOwnerOfComponent()->scaleValues.z;
-			pos[i * sizeOfAttribs + 6] = r->color[0];
-			pos[i * sizeOfAttribs + 7] = r->color[1];
-			pos[i * sizeOfAttribs + 8] = r->color[2];
-			pos[i * sizeOfAttribs + 9] = r->color[3];
-			pos[i * sizeOfAttribs + 10] = r->mat.ambient;
-			pos[i * sizeOfAttribs + 11] = r->mat.specular;
-
-			float* view = glm::value_ptr(r->view);
-			memcpy(&pos[i * sizeOfAttribs + 12], view, 16 * sizeof(float));
-		}
 		
-		gliter->second.vboDynamic = new VertexBuffer(pos, sizeof(float) * sizeOfAttribs * objsSize);
-		gliter->second.layoutDynamic->Clear();
-		gliter->second.vao->Bind();
-		gliter->second.vboDynamic->Bind();
-		gliter->second.layoutDynamic->Push<float>(3);
-		gliter->second.layoutDynamic->Push<float>(3);
-		gliter->second.layoutDynamic->Push<float>(4);
-		gliter->second.layoutDynamic->Push<float>(2);
-		gliter->second.layoutDynamic->Push<float>(4);
-		gliter->second.layoutDynamic->Push<float>(4);
-		gliter->second.layoutDynamic->Push<float>(4);
-		gliter->second.layoutDynamic->Push<float>(4);
-		gliter->second.vao->AddBuffer(*gliter->second.vboDynamic,*gliter->second.layoutDynamic,5,1);
-
 		shader->Bind();
 		glBindTextureUnit(0, iter->second[0]->diffuseTexture->m_RendererID);
 		shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
@@ -73,20 +45,21 @@ void Doom::Instancing::Render()
 
 		int dlightSize = DirectionalLight::dirLights.size();
 		shader->SetUniform1i("dLightSize", dlightSize);
+		char buffer[64];
 		for (int i = 0; i < dlightSize; i++)
-		{
-			char buffer[64];
+		{	
 			DirectionalLight* dl = DirectionalLight::dirLights[i];
-			dl->dir = dl->GetOwnerOfComponent()->GetComponent<Irenderer>()->view * glm::vec4(0,0,-1,1);
+			dl->dir = dl->GetOwnerOfComponent()->GetComponent<Irenderer>()->view * glm::vec4(0, 0, -1, 1);
 			sprintf(buffer, "dirLights[%i].dir", i);
 			shader->SetUniform3fv(buffer, dl->dir);
 			sprintf(buffer, "dirLights[%i].color", i);
 			shader->SetUniform3fv(buffer, dl->color);
+			sprintf(buffer, "dirLights[%i].intensity", i);
+			shader->SetUniform1f(buffer, dl->intensity);
 		}
 
 		int plightSize = PointLight::pLights.size();
 		shader->SetUniform1i("pLightSize", plightSize);
-		char buffer[64];
 		for (int i = 0; i < plightSize; i++)
 		{
 			PointLight* pl = PointLight::pLights[i];
@@ -108,21 +81,200 @@ void Doom::Instancing::Render()
 			shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
 		shader->SetUniform1i("u_isNormalMapping", iter->second[0]->useNormalMap);
-		Renderer::Vertices += gliter->first->meshSize;
+
+		shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
+		shader->SetUniform1f("u_DrawShadows", drawShadows);
+		glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
+		shader->SetUniform1i("u_ShadowMap", 2);
+
+		Renderer::Vertices += gliter->first->meshSize * objsSize;
 		Renderer::DrawCalls++;
 
 		gliter->second.vao->Bind();
 		gliter->second.ibo->Bind();
 		gliter->second.vbo->Bind();
 
-		glDrawElementsInstanced(GL_TRIANGLES, gliter->second.ibo->GetCount(), GL_UNSIGNED_INT,0,iter->second.size());
+		//std::unique_lock<std::mutex> lk(m);
+		//cv.wait(lk, [=] {
+		//	for (uint32_t i = 0; i < nThreads; i++)
+		//	{
+		//		if (ready[i] == false) {
+		//			return false;
+		//		}
+		//	}
+		//	return true;
+		//});
+
+		gliter->second.vboDynamic->Bind();
+		gliter->second.vboDynamic->Invalidate();
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeOfAttribs * objsSize, gliter->second.pos, GL_DYNAMIC_DRAW);
+		gliter->second.layoutDynamic->Clear();
+		gliter->second.vao->Bind();
+		gliter->second.layoutDynamic->Push<float>(3);
+		gliter->second.layoutDynamic->Push<float>(3);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(2);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.vao->AddBuffer(*gliter->second.vboDynamic, *gliter->second.layoutDynamic, 5, 1);
+
+		glDrawElementsInstanced(GL_TRIANGLES, gliter->second.ibo->GetCount(), GL_UNSIGNED_INT, 0, iter->second.size());
 
 		shader->UnBind();
 		gliter->second.ibo->UnBind();
 		gliter->second.vao->UnBind();
 		gliter->second.vbo->UnBind();
+	}
+}
 
-		delete[] pos;
-		delete gliter->second.vboDynamic;
+void Doom::Instancing::BakeShadows()
+{
+	shader = Shader::Get("Instancing3DBakeShadows");
+
+	for (auto iter = instancedObjects.begin(); iter != instancedObjects.end(); iter++)
+	{
+		auto gliter = buffers.find(iter->first);
+		if (gliter == buffers.end())
+			continue;
+
+		uint32_t objsSize = iter->second.size();
+		if (objsSize == 0)
+			continue;
+
+		shader->Bind();
+
+		shader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
+
+		gliter->second.vao->Bind();
+		gliter->second.ibo->Bind();
+		gliter->second.vbo->Bind();
+
+		std::unique_lock<std::mutex> lk(m);
+		cv.wait(lk, [=] {
+			for (uint32_t i = 0; i < nThreads; i++)
+			{
+				if (ready[i] == false) {
+					return false;
+				}
+			}
+			return true;
+		});
+
+		gliter->second.vboDynamic->Bind();
+		gliter->second.vboDynamic->Invalidate();
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeOfAttribs * objsSize, gliter->second.pos, GL_DYNAMIC_DRAW);
+		gliter->second.layoutDynamic->Clear();
+		gliter->second.vao->Bind();
+		gliter->second.layoutDynamic->Push<float>(3);
+		gliter->second.layoutDynamic->Push<float>(3);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(2);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.layoutDynamic->Push<float>(4);
+		gliter->second.vao->AddBuffer(*gliter->second.vboDynamic, *gliter->second.layoutDynamic, 5, 1);
+
+		glDrawElementsInstanced(GL_TRIANGLES, gliter->second.ibo->GetCount(), GL_UNSIGNED_INT, 0, iter->second.size());
+
+		shader->UnBind();
+		gliter->second.ibo->UnBind();
+		gliter->second.vao->UnBind();
+		gliter->second.vbo->UnBind();
+	}
+	shader = nullptr;
+}
+
+void Doom::Instancing::PrepareVertexAtrrib()
+{
+	for (auto iter = instancedObjects.begin(); iter != instancedObjects.end(); iter++)
+	{
+		auto gliter = buffers.find(iter->first);
+		if (gliter == buffers.end())
+			continue;
+
+		uint32_t objsSize = iter->second.size();
+		if (objsSize == 0)
+			continue;
+
+		if (gliter->second.prevObjectSize != objsSize && gliter->second.pos == nullptr) {
+			delete[] gliter->second.pos;
+			gliter->second.pos = nullptr;
+			gliter->second.pos = new float[objsSize * sizeOfAttribs];
+		}
+
+		gliter->second.prevObjectSize = objsSize;
+
+		uint32_t dif = objsSize / nThreads;
+		for (size_t k = 0; k < nThreads - 1; k++)
+		{
+			/*glm::vec4 color;
+			if (k == 0)
+				color = COLORS::Red;
+			else if (k == 1)
+				color = COLORS::Green;
+			else if (k == 2)
+				color = COLORS::Yellow;
+			else if (k == 3)
+				color = COLORS::Brown;
+			else if (k == 4)
+				color = COLORS::Silver;
+			else if (k == 5)
+				color = COLORS::DarkGray;
+			else if (k == 6)
+				color = COLORS::Orange;*/
+		ThreadPool::Instance()->enqueue([=] {
+			{
+				std::lock_guard lg(m);
+				this->ready[k] = false;
+			}
+			for (uint32_t i = k * dif; i < k * dif + dif; i++)
+			{
+				Renderer3D* r = iter->second[i];
+				float* posPtr = &gliter->second.pos[i * sizeOfAttribs];
+				GameObject* owner = r->GetOwnerOfComponent();
+				memcpy(posPtr, &owner->position[0], 12);
+				memcpy(&posPtr[3], &owner->scaleValues[0], 12);
+				//r->color = color;
+				memcpy(&posPtr[6], &r->color[0], 16);
+				posPtr[10] = r->mat.ambient;
+				posPtr[11] = r->mat.specular;
+				float* view = glm::value_ptr(r->view);
+				memcpy(&posPtr[12], view, 64);
+			}
+			{
+				std::lock_guard lg(m);
+				this->ready[k] = true;
+				cv.notify_all();
+			}
+		});
+		}
+		ThreadPool::Instance()->enqueue([=] {
+			{
+				std::lock_guard lg(m);
+				this->ready[nThreads - 1] = false;
+			}
+			for (uint32_t i = (nThreads - 1) * dif; i < objsSize; i++)
+			{
+				Renderer3D* r = iter->second[i];
+				float* posPtr = &gliter->second.pos[i * sizeOfAttribs];
+				GameObject* owner = r->GetOwnerOfComponent();
+				memcpy(posPtr, &owner->position[0], 12);
+				memcpy(&posPtr[3], &owner->scaleValues[0], 12);
+				//r->color = COLORS::Blue;
+				memcpy(&posPtr[6], &r->color[0], 16);
+				posPtr[10] = r->mat.ambient;
+				posPtr[11] = r->mat.specular;
+				float* view = glm::value_ptr(r->view);
+				memcpy(&posPtr[12], view, 64);
+			}
+			{
+				std::lock_guard lg(m);
+				this->ready[nThreads - 1] = true;
+				cv.notify_all();
+			}
+		});
 	}
 }

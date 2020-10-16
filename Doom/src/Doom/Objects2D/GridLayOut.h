@@ -8,13 +8,10 @@ namespace Doom {
 		int32_t linesSize = 51;
 		float length = 50;
 	public:
-		GridLayOut(Application* app) {
+		GridLayOut() {
 			this->name = "Grid";
 			this->Enable = false;
 
-			if (app->type == TYPE_2D) {
-				return;
-			}
 			Line::width = 3;
 			glm::vec4 color = glm::vec4(0.5, 0.5, 0.5, 0.2);
 

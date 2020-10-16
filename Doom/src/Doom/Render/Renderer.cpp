@@ -8,40 +8,41 @@
 #include "ParticleSystem.h"
 #include "../Core/Editor.h"
 #include "Instancing.h"
+#include "../Core/World.h"
 
 using namespace Doom;
 
 void Doom::Renderer::Clear(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearDepth(1.0f);
-	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 }
 
 void Doom::Renderer::DeleteAll() {
-	for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
+	for (unsigned int i = 0; i < World::objects.size(); i++)
 	{
-		delete(Renderer::objects2d[i]);
+		delete(World::objects[i]);
 	}
 	for (unsigned int i = 0; i < Renderer::collision2d.size(); i++)
 	{
 		delete(Renderer::collision2d[i]);
 	}
 	Renderer::collision2d.clear();
-	Renderer::objects2d.clear();
+	World::objects.clear();
 	Renderer::col_id = 0;
 	Renderer::obj_id = 0;
 }
 
 void Doom::Renderer::DeleteObject(int id) {
-	GameObject* go = Renderer::objects2d[id];
-	Renderer::objects2d.erase(Renderer::objects2d.begin() + id);	
+	GameObject* go = World::objects[id];
+	World::objects.erase(World::objects.begin() + id);
 	Renderer::obj_id--;
-	unsigned int size = Renderer::objects2d.size();
+	unsigned int size = World::objects.size();
 	if (id != size) {
 		for (unsigned int i = 0; i < size; i++)
 		{
-			Renderer::objects2d[i]->SetId(i);
-			Renderer::objects2d[i]->GetLayer() = i;
+			World::objects[i]->SetId(i);
+			World::objects[i]->GetLayer() = i;
 		}
 	}
 	unsigned int childsAmount = go->GetChilds().size();
@@ -54,6 +55,9 @@ void Doom::Renderer::DeleteObject(int id) {
 		GameObject* owner = static_cast<GameObject*>(go->GetOwner());
 		owner->RemoveChild(go);
 	}
+	if (go->GetComponent<Irenderer>()->renderType == "3D") {
+		go->GetComponent<Renderer3D>()->EraseFromInstancing();
+	}
 	delete go;
 }
 
@@ -61,11 +65,11 @@ void Doom::Renderer::Save(const std::string filename) {
 	std::ofstream out_file;
 	out_file.open(filename, std::ofstream::trunc);
 	if (out_file.is_open()) {
-		for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
+		for (unsigned int i = 0; i < World::objects.size(); i++)
 		{
-			GameObject* go = (GameObject*)Renderer::objects2d[i];
+			GameObject* go = (GameObject*)World::objects[i];
 			SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
-			if (Renderer::objects2d[i]->type.c_str() == "GameObject")
+			if (World::objects[i]->type.c_str() == "GameObject")
 				continue;
 			float* color = sr->GetColor();
 			glm::vec3 scale = go->GetScale();
@@ -75,7 +79,7 @@ void Doom::Renderer::Save(const std::string filename) {
 				<< go->GetPositions().x << " " << go->GetPositions().y << " " << go->GetPositions().z << "\n"
 				<< go->GetAngle() << "\n"
 				<< Editor::Instance()->axes[0] << " " << Editor::Instance()->axes[1] << " " << Editor::Instance()->axes[2] << "\n";
-			if (static_cast<ComponentManager*>(Renderer::objects2d[i]->GetComponentManager())->GetComponent<RectangleCollider2D>() != nullptr) {
+			if (static_cast<ComponentManager*>(World::objects[i]->GetComponentManager())->GetComponent<RectangleCollider2D>() != nullptr) {
 				out_file << 1 << "\n";
 				out_file << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->offset.x
 					<< " " << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->offset.y << "\n"
@@ -88,7 +92,7 @@ void Doom::Renderer::Save(const std::string filename) {
 				out_file << 0 << "\n";
 				out_file << "NONE" << "\n";
 			}
-			if (Renderer::objects2d[i]->GetComponentManager()->GetComponent<Irenderer>() != nullptr && Renderer::objects2d[i]->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D")
+			if (World::objects[i]->GetComponentManager()->GetComponent<Irenderer>() != nullptr && World::objects[i]->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D")
 				out_file << sr->GetPathToTexture() << "\n";
 			else
 				out_file << "None" << "\n";
@@ -105,7 +109,7 @@ void Doom::Renderer::Save(const std::string filename) {
 				out_file << 1 << "\n";
 				out_file << sr->textureAtlas->spriteWidth << " " << sr->textureAtlas->spriteHeight;
 			}
-			if (i + 1 != Renderer::objects2d.size())
+			if (i + 1 != World::objects.size())
 				out_file << "\n";
 			delete color;
 
@@ -186,7 +190,7 @@ GameObject* Doom::Renderer::SelectObject()
 	std::vector < glm::vec2> p;
 	for (unsigned int i = 0; i < GetAmountOfObjects(); i++)
 	{
-		GameObject* go = static_cast<GameObject*>(Renderer::objects2d[i]);
+		GameObject* go = static_cast<GameObject*>(World::objects[i]);
 		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
 		p.clear();
 		p.push_back(glm::vec2(sr->WorldVertexPositions[0] + go->GetPositions().x, sr->WorldVertexPositions[1] + go->GetPositions().y));
@@ -209,13 +213,13 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 {
 	ObjectsWithNoOwner.clear();
 	ObjectsWithOwner.clear();
-	for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
+	for (unsigned int i = 0; i < World::objects.size(); i++)
 	{
-		if (Renderer::objects2d[i]->GetOwner() == nullptr) {
-			ObjectsWithNoOwner.push_back(Renderer::objects2d[i]->GetId());
+		if (World::objects[i]->GetOwner() == nullptr) {
+			ObjectsWithNoOwner.push_back(World::objects[i]->GetId());
 		}
 		else {
-			ObjectsWithOwner.push_back(Renderer::objects2d[i]->GetId());
+			ObjectsWithOwner.push_back(World::objects[i]->GetId());
 		}
 	}
 	return ObjectsWithNoOwner;
@@ -223,12 +227,22 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 
 void Doom::Renderer::ShutDown()
 {
-	size_t sizeO = objects2d.size();
+	size_t sizeO = World::objects.size();
 	for (size_t i = 0; i < sizeO; i++)
 	{
-		delete objects2d[i];
+		delete World::objects[i];
 	}
-	objects2d.clear();
+	World::objects.clear();
+}
+
+void Doom::Renderer::PopBack()
+{
+	World::objects.pop_back();
+}
+
+unsigned int Doom::Renderer::GetAmountOfObjects()
+{
+	return World::objects.size();
 }
 
 const char ** Doom::Renderer::GetItems()
@@ -238,7 +252,7 @@ const char ** Doom::Renderer::GetItems()
 	for (unsigned int i = 0; i < GetObjectsWithNoOwnerReference().size(); i++)
 	{
 		int id = GetObjectsWithNoOwnerReference()[i];
-		items[i] = objects2d[id]->name.c_str();
+		items[i] = World::objects[id]->name.c_str();
 
 	}
 	return items;
@@ -286,12 +300,38 @@ bool Doom::Renderer::ObjectCollided(std::vector<glm::vec2>& p,int i)
 }
 
 void Renderer::Render() {
+	if (Window::GetCamera().type == Camera::CameraTypes::ORTHOGRAPHIC) {
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+		Render2DObjects();
+		RenderCollision();
+		RenderLines();
+		RenderText();
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		return;
+	}			
+	
 	Render2DObjects();
-	Render3DObjects();
 	RenderCollision();
-	RenderLines();
+	Render3DObjects();
 	Editor::Instance()->gizmo->Render();
+	RenderLines();
+	size_t size = CubeCollider3D::colliders.size();
+	if (size > 0) {
+		for (size_t i = 0; i < size; i++)
+		{
+			if(RectangleCollider2D::IsVisible)
+				CubeCollider3D::colliders[i]->Render();
+		}
+	}
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
 	RenderText();
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 }
 
 void Doom::Renderer::Render2DObjects()
@@ -303,14 +343,10 @@ void Doom::Renderer::Render2DObjects()
 			Batch* batch = Batch::GetInstance();
 			batch->BeginGameObjects();
 			for (size_t i = 0; i < size;i++) {
-				GameObject* go = Renderer::objects2d[i];
-				if (go->Enable == true)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
+				SpriteRenderer* r = Renderer::objects2d[i];
+				if (r->GetOwnerOfComponent()->Enable == true)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
-					void* renderer = go->GetComponentManager()->GetComponent<Irenderer>();
-					if (renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "2D")
-						static_cast<Irenderer*>(renderer)->Render();
-					else if (renderer != nullptr && static_cast<Irenderer*>(renderer)->renderType == "3D")
-						objects3d.push_back(go);
+					r->Render();
 				}
 			}
 			size_t particleSize = Particle::particles.size();
@@ -337,19 +373,44 @@ void Doom::Renderer::Render3DObjects()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
 	//each 3D object in one drawcall
-	for each (GameObject* go in Renderer::objects3d)
+	
+	for each (Renderer3D* r in Renderer::objects3d)
 	{
-		if (go->Enable == true)
+		if (r->GetOwnerOfComponent()->Enable == true)
 		{
-			go->GetComponentManager()->GetComponent<Irenderer>()->Render();
+			r->Render();
 		}
 	}
 
 	//All 3D objects with one mesh in one drawcall
+
 	Instancing::Instance()->Render();
+
 	if (PolygonMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	Renderer::objects3d.clear();
+}
+
+void Doom::Renderer::BakeShadows()
+{
+	for each (Renderer3D* r in Renderer::objects3d)
+	{
+		if (r->GetOwnerOfComponent()->Enable == true)
+		{
+			r->BakeShadows();
+		}
+	}
+
+	//All 3D objects with one mesh in one drawcall
+
+	//Instancing::Instance()->Render();
+}
+
+void Doom::Renderer::UpdateLightSpaceMatrices()
+{
+	for (DirectionalLight* light : DirectionalLight::dirLights)
+	{
+		light->UpdateLightMatrix();
+	}
 }
 
 void Doom::Renderer::RenderLines()
@@ -388,11 +449,5 @@ void Doom::Renderer::RenderCollision(){
 		}
 		Batch::GetInstance()->EndGameObjects();
 		Batch::GetInstance()->flushCollision(Batch::GetInstance()->CollisionShader);
-
-		size_t size = CubeCollider3D::colliders.size();
-		for (size_t i = 0; i < size; i++)
-		{
-			CubeCollider3D::colliders[i]->Render();
-		}
 	}
 }

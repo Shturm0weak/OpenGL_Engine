@@ -13,6 +13,7 @@ namespace Doom {
 	class DOOM_API Shader {
 	private:
 		static std::map<std::string,Shader*> shaders;
+		static const char** listOfShaders;
 		std::string m_FilePath;
 		unsigned int m_RendererID;
 		std::string m_Name;
@@ -46,6 +47,11 @@ namespace Doom {
 
 		void SetUniformMat4f(const std::string name,const glm::mat4& matrix);
 	
+		void Reload();
+
+		static const char** GetListOfShaders();
+
+		friend class Editor;
 	};
 
 }

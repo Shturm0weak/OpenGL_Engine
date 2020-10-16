@@ -11,6 +11,9 @@ layout(location = 6) in vec2 size;
 layout(location = 7) in vec2 pos;
 layout(location = 8) in float radius;
 layout(location = 9) in vec2 windowSize;
+layout(location = 10) in vec2 panelSize;
+layout(location = 11) in vec2 panelPos;
+layout(location = 12) in int relatedToPanel;
 
 out float edgeRadius;
 out vec2 uisize;
@@ -20,6 +23,9 @@ out float flagIsGui;
 out vec4 out_color;
 out vec2 v_textcoords;
 out vec2 viewportsize;
+out vec2 out_panelSize;
+out vec2 out_panelPos;
+out int out_relatedToPanel;
 
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Projection;
@@ -41,6 +47,9 @@ void main() {
 	uipos = vec2(u_ViewProjection * vec4(pos,0,0));
 	edgeRadius = radius;
 	viewportsize = windowSize;
+	out_panelSize = panelSize;
+	out_panelPos = panelPos;
+	out_relatedToPanel = relatedToPanel;
 };
 
 #shader fragment
@@ -58,6 +67,9 @@ in float edgeRadius;
 in vec4 gl_FragCoord;
 in vec2 gl_PointCoord;
 in vec2 viewportsize;
+in vec2 out_panelSize;
+in vec2 out_panelPos;
+in int out_relatedToPanel;
 
 uniform vec4 u_outlineColor;
 uniform float u_width;

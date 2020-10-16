@@ -13,7 +13,7 @@ namespace Doom {
 	private:
 		static GLFWwindow* m_window;
 		static Camera* m_camera;
-
+		static float scrollYOffset;
 		Window() {}
 
 	public:
@@ -31,6 +31,8 @@ namespace Doom {
 		static void Exit() {
 			glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
 		}
+
+		static float& GetScrollYOffset() { return scrollYOffset; }
 
 		static int Init(const char* Label,float width, float height,bool vsync) {
 			if (!glfwInit())
@@ -54,6 +56,10 @@ namespace Doom {
 			std::cout << BOLDGREEN << "Initialized window" << RESET << std::endl;
 
 			glfwSwapInterval(vsync); // Enable vsync
+
+			glfwSetScrollCallback(Window::GetWindow(), [](GLFWwindow* window, double xoffset, double yoffset) {
+				Window::GetScrollYOffset() = yoffset;
+			});
 
 			glfwSetWindowSizeCallback(Window::GetWindow(), [](GLFWwindow* window, int width, int height) {
 				int* props = Window::GetSize();

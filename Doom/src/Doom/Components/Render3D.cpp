@@ -10,25 +10,37 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 	if (renderTechnic == RenderTechnic::Instancing) {
 		for (auto i = Instancing::Instance()->instancedObjects.begin(); i != Instancing::Instance()->instancedObjects.end(); i++)
 		{
-			if (i->first == mesh)
+			if (i->first == mesh) {
 				i->second.push_back(this);
+				auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), this);
+				if (iter != Renderer::objects3d.end())
+					Renderer::objects3d.erase(iter);
+			}
 		}
 	}
 }
 
 void Doom::Renderer3D::LoadMesh(Mesh * _mesh)
 {
-	if (_mesh == nullptr)
-		return;
-	/*for (size_t i = 0; i < mesh->meshSize; i+=14)
-	{
-		Line* l = new Line(glm::vec3(0), glm::vec3(0));
-		l->Enable = false;
-		l->color = COLORS::Blue;
-		Editor::Instance()->normals.push_back(l);
-		Line::lines.pop_back();
-	}*/
+	EraseFromInstancing();
 	mesh = _mesh;
+	ChangeRenderTechnic(renderTechnic);
+}
+
+void Doom::Renderer3D::EraseFromInstancing()
+{
+	if (renderTechnic == RenderTechnic::Instancing) {
+		for (auto i = Instancing::Instance()->instancedObjects.begin(); i != Instancing::Instance()->instancedObjects.end(); i++)
+		{
+			if (mesh != nullptr) {
+				auto iter = std::find(i->second.begin(), i->second.end(), this);
+				if (iter != i->second.end()) {
+					i->second.erase(iter);
+					mesh = nullptr;
+				}
+			}
+		}
+	}
 }
 
 Doom::Renderer3D::Renderer3D(GameObject* _owner)
@@ -39,6 +51,7 @@ Doom::Renderer3D::Renderer3D(GameObject* _owner)
 	shader = Shader::Get("Default3D");
 	tr = owner->GetComponentManager()->GetComponent<Transform>();
 	pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
+	Renderer::objects3d.push_back(this);
 }
 
 Doom::Renderer3D::~Renderer3D()
@@ -46,6 +59,31 @@ Doom::Renderer3D::~Renderer3D()
 }
 
 #include "../Core/Timer.h"
+#include "DirectionalLight.h"
+
+void Doom::Renderer3D::BakeShadows()
+{
+	if (mesh != nullptr) {
+		if (!isSkyBox) {
+			Shader* bakeShader = Shader::Get("BakeShadows");
+			bakeShader->Bind();
+			glBindTextureUnit(0, diffuseTexture->m_RendererID);
+			bakeShader->SetUniformMat4f("u_Model", pos);
+			bakeShader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
+			bakeShader->SetUniformMat4f("u_Scale", scale);
+			bakeShader->SetUniformMat4f("u_View", view);
+			bakeShader->Bind();
+			mesh->va->Bind();
+			mesh->ib->Bind();
+			mesh->vb->Bind();
+			Renderer::Vertices += mesh->meshSize * 0.5f;
+			Renderer::DrawCalls++;
+			glDrawElements(GL_TRIANGLES, mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+			bakeShader->UnBind();
+			mesh->ib->UnBind();
+		}
+	}
+}
 
 void Doom::Renderer3D::Render()
 {
@@ -95,11 +133,14 @@ void Doom::Renderer3D::ForwardRender()
 				sprintf(buffer, "pointLights[%i].quadratic", i);
 				shader->SetUniform1f(buffer, pl->quadratic);
 			}
-
 			shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
 			shader->SetUniform1f("u_Ambient", mat.ambient);
 			shader->SetUniform1f("u_Specular", mat.specular);
+			shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
 			shader->SetUniform1i("u_DiffuseTexture", 0);
+			glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
+			shader->SetUniform1i("u_ShadowTexture", 2);
+			shader->SetUniform1f("u_DrawShadows", Instancing::Instance()->drawShadows);
 			if (useNormalMap) {
 				glBindTextureUnit(1, normalMapTexture->m_RendererID);
 				shader->SetUniform1i("u_NormalMapTexture", 1);
@@ -114,8 +155,10 @@ void Doom::Renderer3D::ForwardRender()
 			glDrawElements(GL_TRIANGLES, mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 			shader->UnBind();
 			mesh->ib->UnBind();
+			glBindTextureUnit(0, 0);
 		}
 		else {
+			//shader = Shader::Get("SkyBoxShader");
 			glDepthFunc(GL_LEQUAL);
 			glActiveTexture(GL_TEXTURE0);
 			glDisable(GL_CULL_FACE);

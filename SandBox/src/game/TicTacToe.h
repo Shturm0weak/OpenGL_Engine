@@ -37,16 +37,17 @@ public:
 	}
 };
 
-class TicTacToe : public Application {
+class TicTacToe : public Application{
 public:
+	TicTacToe(): Application("Tic Tac Toe", TYPE_2D, 800, 600, false){
+
+	}
 	AI* ai = nullptr;
 	Sound* backSound = new Sound("src/Sounds/Place.wav");
 	Texture* crossLinesTexture = nullptr;
 	Texture* circleTexture = nullptr;
 
 	Plate* plates = nullptr;
-
-	GameObject* background = nullptr;
 
 	double timer = 1.0;
 
@@ -72,12 +73,6 @@ public:
 
 		crossLinesTexture = Texture::Create("src/Images/CrossLines.png");
 		circleTexture = Texture::Create("src/Images/Circle.png");
-
-		background = new GameObject("BackGround", 0, 0);
-		background->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		background->GetComponentManager()->GetComponent<SpriteRenderer>()->SetColor(COLORS::Silver);
-		background->GetComponentManager()->GetComponent<SpriteRenderer>()->Setlayer(0);
-		background->GetComponentManager()->GetComponent<SpriteRenderer>()->AlwaysDraw = true;
 
 		for (unsigned int i = 0; i < 9; i++)
 		{

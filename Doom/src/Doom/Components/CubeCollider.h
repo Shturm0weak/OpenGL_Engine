@@ -57,6 +57,7 @@ namespace Doom {
 		glm::vec3 offset = {0,0,0};
 		glm::vec3 scale = {1,1,1};
 		static std::vector<CubeCollider3D*> colliders;
+		~CubeCollider3D();
 		CubeCollider3D();
 		void Render();
 	};

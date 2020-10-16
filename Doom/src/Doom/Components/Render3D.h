@@ -25,21 +25,23 @@ namespace Doom {
 		};
 
 		void ChangeRenderTechnic(RenderTechnic rt);
+		void LoadMesh(Mesh* mesh);
 		bool useNormalMap = false;
 		Texture* diffuseTexture = Texture::WhiteTexture;
 		Texture* normalMapTexture = nullptr;
 
+		void EraseFromInstancing();
+
 		Transform* tr = nullptr;
 
-		void LoadMesh(Mesh* mesh);
-
-		Shader* shader = nullptr;
 		Mesh* mesh = nullptr;
 
 		Renderer3D(GameObject* _owner);
 		~Renderer3D();
 
 		Material mat;
+
+		void BakeShadows();
 
 		virtual void Render() override;
 
@@ -53,6 +55,7 @@ namespace Doom {
 
 		friend class EntryPoint;
 		friend class SkyBox;
+		friend class MeshManager;
 	};
 
 }

@@ -42,29 +42,31 @@ public:
 		bomb = new Bomb();
 		pause = false;
 		previndexcount = 0;
-		hp = new HP(-14, 6);
+		hp = new HP(-20,15);
 		font = new Font();
 		texturecoin = Texture::Create("src/Images/coin.png");
 		font->LoadFont("src/font.txt", "src/arial.png");
 		font->LoadCharacters();
 		go->HpBar = hp;
 		ray = new Ray2D(glm::vec2(0, 0), glm::vec2(3,3) , 10);
+		Sound* coinSound = new Sound("src/Sounds/Coin.wav");
+		SoundManager::CreateSoundAsset("coin", coinSound);
 		ray->ignoreMask.push_back("Player");
 		for (unsigned int i = 0; i < 5; i++)
 		{
 			coins.push_back(new Coin());
 			coins[i]->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(texturecoin);
 			coins[i]->Randomize();
+			coins[i]->coinSound = coinSound;
 		}
-		Window::GetCamera().MovePosition(glm::vec3(0, 0, 0));
-		Window::GetCamera().Zoom(25);
+		Window::GetCamera().MovePosition(glm::vec3(0, 5.5, 0));
+		Window::GetCamera().Zoom(15.8);
 		line = new Line(glm::vec3(-5, -5, 0), glm::vec3(-5, 5, 0));
 		line->width = 5.f;
 		line->Enable = false;
 	}
 
 	virtual void OnUpdate() override {
-		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
 		EventSystem::GetInstance()->StopProcessEvents(pause);
 		Window::GetCamera().CameraMovement();
 		time += DeltaTime::deltatime;
@@ -151,29 +153,29 @@ public:
 	}
 
 	void OnGuiRender() {
-		if (go->isDead) {
+		/*if (go->isDead) {
 			Gui::GetInstance()->xAlign = Gui::GetInstance()->XCENTER;
 			Gui::GetInstance()->Text("Press Enter to restart", true, -0, 0, 76);
 			Gui::GetInstance()->xAlign = Gui::GetInstance()->LEFT;
-		}
+		}*/
 
 		if (!pause) {
 			Gui::GetInstance()->RelateToPanel();
 			Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
-			Gui::GetInstance()->Panel(500, 400, 450, 200, COLORS::DarkGray * 0.0f);
-			Gui::GetInstance()->Text("FPS : %f", true, 0, 0, 20, COLORS::Red, 0, fps);
-			Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 0, 0, 20, COLORS::Red, 2, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
-			Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 0, 0, 20, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
-			Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 0, 0, 20, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
-			Gui::GetInstance()->Text("Textures: %d", true, 0, 0, 20, COLORS::Red, 0, Texture::bindedAmount);
-			Gui::GetInstance()->Text("Collisions: %d", true, 0, 0, 20, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
-			Gui::GetInstance()->Text("VRAM used: %f MB", true, 0, 0, 20, COLORS::Red, 3, Texture::VRAMused);
-			Gui::GetInstance()->Text("Time since start: %f", true, 0, 0, 20, COLORS::Red, 3, time);
+			Gui::GetInstance()->Panel("",500, 400, 450, 200, COLORS::DarkGray * 0.0f);
+			Gui::GetInstance()->Text("FPS : %f", true, 0, 0, 25, COLORS::Red, 0, fps);
+			Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+			Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
+			Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
+			Gui::GetInstance()->Text("Textures: %d", true, 0, 0, 25, COLORS::Red, 0, Texture::bindedAmount);
+			Gui::GetInstance()->Text("Collisions: %d", true, 0, 0, 25, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
+			Gui::GetInstance()->Text("VRAM used: %f MB", true, 0, 0, 25, COLORS::Red, 3, Texture::VRAMused);
+			Gui::GetInstance()->Text("Time since start: %f", true, 0, 0, 25, COLORS::Red, 3, time);
 			Gui::GetInstance()->UnRelateToPanel();
 
 			Gui::GetInstance()->RelateToPanel();
 			Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
-			Gui::GetInstance()->Panel(600, -450, 450, 200, COLORS::DarkGray * 0.0f);
+			Gui::GetInstance()->Panel("",600, -450, 450, 200, COLORS::DarkGray * 0.0f);
 			Gui::GetInstance()->Text("Score: %d", true, 0, 0, 40, COLORS::White, 0, go->scores);
 			Gui::GetInstance()->Text("Missed: %d", true, 0, 0, 40, COLORS::White, 0, go->missed);
 			Gui::GetInstance()->Text("Fire Reload: %f", true, 0, 0, 40, COLORS::White, 3, fireTimer);
@@ -182,7 +184,7 @@ public:
 		else {
 			double x = 0;
 			double y = 0;
-			Gui::GetInstance()->Panel(x, y, 700, 400, COLORS::DarkGray * 0.8f);
+			Gui::GetInstance()->Panel("",x, y, 700, 400, COLORS::DarkGray * 0.8f);
 			if (Gui::GetInstance()->Button("Exit", x - 250, y - 50 - 10 + 50, 40, 500, 100, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 				Window::Exit();
 			}

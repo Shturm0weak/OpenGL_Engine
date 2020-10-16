@@ -11,12 +11,11 @@ public:
 	bool playanim = false;
 	bool secondphase = false;
 	float prevscale[2];
-	Sound* coinSound = new Sound("src/Sounds/Coin.wav");
+	Sound* coinSound = nullptr;
 
 	Coin(const std::string name = "Coin", float x = 0, float y = 15) :GameObject(name, x, y) {
 		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
 		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
-		SoundManager::CreateSoundAsset("coin", coinSound);
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		col->SetOwner(this);
@@ -49,7 +48,7 @@ public:
 				rand();
 				playanim = false;
 				secondphase = false;
-				tr->Scale(prevscale[0],prevscale[1]);
+				tr->Scale(3,3);
 			}
 		}
 		col->IsCollidedDIAGS();
@@ -91,5 +90,6 @@ public:
 		std::uniform_real_distribution<float> distribution1(0.f, 5.f);
 		float y = distribution1(e2);
 		tr->Translate(x, 30 + y);
+		tr->Scale(3, 3);
 	}
 };

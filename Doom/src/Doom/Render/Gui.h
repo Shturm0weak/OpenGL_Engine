@@ -8,14 +8,23 @@ namespace Doom {
 	class DOOM_API Gui {
 	public:
 
+		struct PanelStruct {
+		public:
+			bool isHovered = false;
+			float yScrollOffset = 0;
+		};
+
 		struct UIProperties {
 		public:
 			glm::vec2 pos = glm::vec2(0.0f);
 			glm::vec2 size = glm::vec2(0.0f);
 			float yOffset = 0.0f;
-			glm::vec2 margin = glm::vec2(0.0f);
-			glm::vec2 padding = glm::vec2(0.0f);
+			glm::vec2 margin = glm::vec2(10.0f);
+			glm::vec2 padding = glm::vec2(10.0f);
 			bool autoAllignment = false;
+
+			glm::vec2 panelPosForShader;
+			glm::vec2 panelSizeForShader;
 		};
 
 		struct TextProperties {
@@ -35,6 +44,11 @@ namespace Doom {
 
 		glm::mat4 ViewProjecTionRelatedToCamera;
 
+		std::map <std::string, bool> interactables;
+		std::map <std::string, PanelStruct> panels;
+
+		bool isInteracting = false;
+		bool isAnyPanelHovered = false;
 		float edgeRadius = 0;
 		TextProperties textProps;
 		Font* font;
@@ -70,7 +84,7 @@ namespace Doom {
 		//x,y,width and height in pixels
 		bool Button(std::string label, float x = 0, float y = 0,float scale = 24, float width = 100,float height = 50,glm::vec4 btnColor = COLORS::Gray,glm::vec4 pressedBtnColor = COLORS::Gray * 0.5f, glm::vec4 textColor = COLORS::White,Texture* texture = nullptr);
 
-		void Panel(float x = 0, float y = 0, float width = 400, float height = 400,glm::vec4 color = COLORS::Gray,bool changeColorWhenHovered = false,Texture* texture = nullptr);
+		void Panel(std::string label, float x = 0, float y = 0, float width = 400, float height = 400,glm::vec4 color = COLORS::Gray,bool changeColorWhenHovered = false,Texture* texture = nullptr);
 
 		void Bar(float x, float y, float value, float maxValue, glm::vec4 color, glm::vec4 outColor, float width, float height);
 
@@ -80,7 +94,9 @@ namespace Doom {
 
 		void Image(float x = 0.0f, float y = 0.0f,float width = 100.0f,float height = 100.0f,Texture* texture = nullptr,glm::vec4 color = COLORS::White);
 
-		bool IsPanelHovered() const;
+		bool CollapsingHeader(std::string label,float x,float y,vec4 color);
+
+		bool IsPanelHovered();
 
 		void RelateToPanel();
 		void UnRelateToPanel();
@@ -99,6 +115,8 @@ namespace Doom {
 		
 		Texture* checkBoxTextureTrue = Texture::Create("src/UIimages/CheckMarkTrue.png");
 		Texture* checkBoxTextureFalse = Texture::Create("src/UIimages/CheckMarkFalse.png");
+		Texture* triangleRightTexture = Texture::Create("src/UIimages/triangleRight.png");
+		Texture* triangleDownTexture = Texture::Create("src/UIimages/triangleDown.png");
 
 		void LoadStandartFonts();
 
@@ -120,6 +138,7 @@ namespace Doom {
 		Character* character = nullptr;
 
 		friend class EntryPoint;
+		friend class Batch;
 	};
 
 }

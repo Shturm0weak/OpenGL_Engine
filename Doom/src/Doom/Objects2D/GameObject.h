@@ -68,7 +68,7 @@ namespace Doom {
 		glm::vec3 GetPositions();
 		ComponentManager* GetComponentManager() const { return component_manager; };
 		inline void SetId(int id) { this->id = id; }
-		inline int GetId() const { return id; }
+		inline int GetId() { return id; }
 		inline int& GetLayer() { return layer; }
 		
 	};

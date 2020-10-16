@@ -1,20 +1,21 @@
 #include "../pch.h"
 #include "../Render/Renderer.h"
 #include "GameObject.h"
+#include "../Core/World.h"
 
 using namespace Doom;
 
 GameObject::GameObject(const std::string name,float x, float y,float z) {
 	this->name = name;
 	this->type = "GameObject";
-	layer = Renderer::objects2d.size();
+	layer = World::objects.size();
 	id = Renderer::obj_id;
 	Renderer::obj_id++;
 	component_manager = new ComponentManager(this, this->name);
 	component_manager->AddComponent<Transform>();
 	component_manager->AddComponent<SpriteRenderer>();
 	component_manager->GetComponent<Transform>()->Translate(x, y, z);
-	Renderer::objects2d.push_back(this);
+	World::objects.push_back(this);
 }
 
 void GameObject::SetName(const char * _name)
@@ -24,7 +25,9 @@ void GameObject::SetName(const char * _name)
 
 Doom::GameObject::~GameObject()
 {
-	//std::cout << "GameObject destroyed\n";
+#ifdef _DEBUG
+	std::cout << "GameObject " << name << " is destroyed\n";
+#endif
 	EventSystem::GetInstance()->UnregisterAll(this);
 	delete component_manager;
 }

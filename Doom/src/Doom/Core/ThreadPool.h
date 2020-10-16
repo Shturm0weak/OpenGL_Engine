@@ -25,6 +25,7 @@ namespace Doom {
 		static bool initialized;
 	public:
 
+		uint32_t GetAmountOfThreads() { return m_Threads.size(); }
 		ThreadPool(int n);
 		~ThreadPool();
 		void Shutdown()noexcept;

@@ -233,12 +233,15 @@ void Camera::CameraMovement() {
 		else {
 			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
-		glm::vec2 rightVec = { -(forwardV.z * 1) / forwardV.x ,1 };
-		rightVec *= (1.f / sqrtf(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
+		glm::vec2 rightVec;
+		rightVec = { -(forwardV.z * 1) / (forwardV.x) ,1 };
+		if (isinf(rightVec.x))
+			rightVec = {1,0};
+		rightVec *= (1.f / sqrt(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
 		rightVec *= DeltaTime::deltatime * speed;
 		double angle = (yaw * 360.0f) / (2 * 3.14159f);
 		if (Input::IsKeyDown(Keycode::KEY_D)) {
-			if (angle >= 0 && angle < 180)
+			if (angle > 0 && angle < 180)
 				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
 			else if (angle >= 180)
 				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
@@ -249,7 +252,7 @@ void Camera::CameraMovement() {
 
 		}
 		if (Input::IsKeyDown(Keycode::KEY_A)) {
-			if (angle >= 0 && angle < 180)
+			if (angle > 0 && angle < 180)
 				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
 			else if (angle >= 180)
 				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));

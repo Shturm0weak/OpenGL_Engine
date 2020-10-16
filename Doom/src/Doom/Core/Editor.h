@@ -16,9 +16,15 @@ namespace Doom {
 		bool IsActiveTextureAtlasCreation = false;
 		bool IsActiveEditor = false;
 		bool tool_active = true;
+		bool IsActiveMeshPicker = false;
+		bool IsActiveTexturePicker = false;
+		bool IsActiveShaderMenu = false;
+		int selectedShader = -1;
 		int selectedAtlas = -1;
 		int selectedanimation = 0;
 		int selectedchild = -1;
+		int selectedMesh = -1;
+		int texturePickerId = -1;
 		//int selected = 0;
 		int selectedcomponent = 0;
 		float* color;
@@ -30,6 +36,7 @@ namespace Doom {
 		float changeSliderCollisionOffset[2] = { -10,10 };
 		char name[128];
 		char tag[128];
+		char mesh[128];
 		char pathToTextureFolder[64];
 		float colOffset[2] = { 0,0 };
 		static std::vector<Texture*> texture;
@@ -51,14 +58,21 @@ namespace Doom {
 		void TransformComponent(Transform* tr);
 		void LightPointComponent();
 		void DirPointComponent();
+		void MeshPicker();
+		void TexturePicker();
+		void SceneHierarchy();
+		void DrawNode(GameObject* go, ImGuiTreeNodeFlags flags);
+		void DrawChilds(GameObject* go);
+		void ShaderMenu();
 
 	public:
 		bool drawNormals = false;
-		Gizmos* gizmo = new Gizmos;
+		Gizmos* gizmo = nullptr;
 		static std::vector<Texture*> textureVecTemp;
 		GameObject* go = nullptr;
 		bool isItemActive = false;
 		static Editor* Instance();
+		void EditorUpdateMyGui();
 		void EditorUpdate();
 		static void CheckTexturesFolderUnique(const std::string path);
 		static void CheckTexturesFolder(const std::string path);

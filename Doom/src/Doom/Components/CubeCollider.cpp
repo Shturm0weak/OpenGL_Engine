@@ -3,6 +3,17 @@
 
 using namespace Doom;
 
+Doom::CubeCollider3D::~CubeCollider3D()
+{
+	delete vb;
+	delete ib;
+	delete va;
+	auto iter = std::find(colliders.begin(), colliders.end(), this);
+	if (iter != colliders.end()) {
+		colliders.erase(iter);
+	}
+}
+
 CubeCollider3D::CubeCollider3D() {
 	layout = new VertexBufferLayout();
 	vb = new VertexBuffer(vertices, 36 * 3 * sizeof(float));

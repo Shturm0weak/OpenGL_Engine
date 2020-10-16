@@ -2,6 +2,7 @@
 #include "../pch.h"
 #include "SpriteRenderer.h"
 #include "../Render/Batch.h"
+#include "../Core/World.h"
 
 using namespace Doom;
 
@@ -28,6 +29,7 @@ Doom::SpriteRenderer::SpriteRenderer(GameObject* _owner)
 	tr = owner->GetComponentManager()->GetComponent<Transform>();
 	this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, 0));
 	InitShader();
+	Renderer::objects2d.push_back(this);
 }
 
 Doom::SpriteRenderer::~SpriteRenderer()
@@ -149,16 +151,16 @@ float * SpriteRenderer::GetUVs() const
 
 void SpriteRenderer::Setlayer(int layer)
 {
-	unsigned int size = Renderer::objects2d.size();
+	unsigned int size = World::objects.size();
 #ifdef _DEBUG
 	std::cout << owner->name << " is set from layer " << owner->GetId() << " to " << layer << std::endl;
 #endif
-	Renderer::objects2d.erase(Renderer::objects2d.begin() + owner->GetId());
-	Renderer::objects2d.insert(Renderer::objects2d.begin() + layer, owner);
-	for (unsigned int i = 0; i < Renderer::objects2d.size(); i++)
+	World::objects.erase(World::objects.begin() + owner->GetId());
+	World::objects.insert(World::objects.begin() + layer, owner);
+	for (unsigned int i = 0; i < World::objects.size(); i++)
 	{
-		Renderer::objects2d[i]->SetId(i);
-		Renderer::objects2d[i]->GetLayer() = i;
+		World::objects[i]->SetId(i);
+		World::objects[i]->GetLayer() = i;
 	}
 	return;
 }

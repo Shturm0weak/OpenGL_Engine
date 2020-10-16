@@ -27,7 +27,6 @@ namespace Doom {
 
 		Transform* tr = nullptr;
 		Texture* texture = nullptr;
-		Shader* shader = nullptr;
 
 		inline std::string GetPathToTexture() const { return this->pathToTexture; };
 		std::string pathToTexture = ("None");

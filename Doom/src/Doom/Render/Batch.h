@@ -33,6 +33,9 @@ namespace Doom {
 		glm::vec2 size;
 		glm::vec2 viewportSize;
 		float raduis;
+		glm::vec2 panelSize;
+		glm::vec2 panelPos;
+		int relatedToPanel;
 	};
 
 	struct DOOM_API VertexLine {

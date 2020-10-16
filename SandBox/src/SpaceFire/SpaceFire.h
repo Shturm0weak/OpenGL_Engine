@@ -61,7 +61,7 @@ public:
 		Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
 		Gui::GetInstance()->relatedPanelProperties.padding.y = 20;
 		Gui::GetInstance()->relatedPanelProperties.margin = glm::vec2(50,40);
-		Gui::GetInstance()->Panel(x, y, 450, 200, COLORS::DarkGray * 0.8f);
+		Gui::GetInstance()->Panel("",x, y, 450, 200, COLORS::DarkGray * 0.8f);
 		if (Gui::GetInstance()->Button("Exit", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			Window::Exit();
 		}
@@ -108,8 +108,6 @@ public:
 	}
 
 	void OnUpdate() {
-		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
-		EventSystem::GetInstance()->ProcessEvents();
 		EventSystem::GetInstance()->StopProcessEvents(pause);
 		if (background1->GetPositions().y <= -100)
 			background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
@@ -141,7 +139,7 @@ public:
 		Gui::GetInstance()->RelateToPanel();
 		Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
 		Gui::GetInstance()->relatedPanelProperties.padding.y = 10;
-		Gui::GetInstance()->Panel(WIDTH * 0.5, HEIGHT / Window::GetCamera().GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
+		Gui::GetInstance()->Panel("",WIDTH * 0.5, HEIGHT / Window::GetCamera().GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
 		Gui::GetInstance()->Text("FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
 		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
 		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);

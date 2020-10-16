@@ -43,6 +43,8 @@ namespace Doom {
 			RemoveComponent<RectangleCollider2D>();
 			RemoveComponent<Transform>();
 			RemoveComponent<Animator>();
+			RemoveComponent<Irenderer>();
+			RemoveComponent<CubeCollider3D>();
 		}
 		ComponentManager(GameObject* owner, std::string& owner_name) {
 			this->owner = owner;
@@ -192,6 +194,21 @@ namespace Doom {
 					components[i]->m_Id = i;;
 				}
 			}
+
+			if(col->renderType == "2D"){
+				auto iter = std::find(Renderer::objects2d.begin(), Renderer::objects2d.end(), col);
+				if (iter != Renderer::objects2d.end()) {
+					Renderer::objects2d.erase(iter);
+				}
+			}
+			else if (col->renderType == "3D") {
+				auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), col);
+				if (iter != Renderer::objects3d.end()) {
+					Renderer::objects3d.erase(iter);
+				}
+			}
+			
+
 			delete col;
 			return;
 		}
@@ -317,7 +334,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <Collision> for gameobject: " << owner_name << std::endl;
+				std::cout << "Added component of type <PointLight> for gameobject: " << owner_name << std::endl;
 #endif
 				return object;
 			}
@@ -332,7 +349,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <Collision> for gameobject: " << owner_name << std::endl;
+				std::cout << "Added component of type <DirectionalLight> for gameobject: " << owner_name << std::endl;
 #endif
 				return object;
 			}

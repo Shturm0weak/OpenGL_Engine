@@ -54,6 +54,9 @@ void Batch::Submit(Character* c)
 	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	buffer->vertex = glm::vec2((c->mesh2D[4] * c->_scale.x + c->position.x), ((c->mesh2D[5]) * c->_scale.y + c->position.y));
@@ -62,6 +65,9 @@ void Batch::Submit(Character* c)
 	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	buffer->vertex = glm::vec2((c->mesh2D[8] * c->_scale.x + c->position.x), ((c->mesh2D[9])* c->_scale.y + c->position.y));
@@ -70,6 +76,9 @@ void Batch::Submit(Character* c)
 	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	buffer->vertex = glm::vec2((c->mesh2D[12] * c->_scale.x + c->position.x), ((c->mesh2D[13]) * c->_scale.y + c->position.y));
@@ -78,6 +87,9 @@ void Batch::Submit(Character* c)
 	buffer->m_color = c->color;
 	buffer->isGui = 0.;
 	buffer->texIndex = textureIndex;
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	indexcount += 6;
@@ -215,6 +227,9 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 	buffer->pos = pos;
 	buffer->raduis = radius;
 	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	buffer->vertex = glm::vec2((mesh2D[2]), (mesh2D[3]));
@@ -227,6 +242,9 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 	buffer->pos = pos;
 	buffer->raduis = radius;
 	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	buffer->vertex = glm::vec2((mesh2D[4]), (mesh2D[5]));
@@ -239,6 +257,9 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 	buffer->pos = pos;
 	buffer->raduis = radius;
 	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	buffer->vertex = glm::vec2((mesh2D[6]), ((mesh2D[7])));
@@ -251,6 +272,9 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 	buffer->pos = pos;
 	buffer->raduis = radius;
 	buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
+	buffer->relatedToPanel = Gui::GetInstance()->IsRelatedToPanel;
+	buffer->panelPos = Gui::GetInstance()->relatedPanelProperties.panelPosForShader;
+	buffer->panelSize = Gui::GetInstance()->relatedPanelProperties.panelSizeForShader;
 	buffer++;
 
 	indexcount += 6;
@@ -634,6 +658,15 @@ void Batch::initText()
 
 	glEnableVertexArrayAttrib(vao, 9);
 	glVertexAttribPointer(9, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, viewportSize));
+
+	glEnableVertexArrayAttrib(vao, 10);
+	glVertexAttribPointer(10, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, panelSize));
+
+	glEnableVertexArrayAttrib(vao, 11);
+	glVertexAttribPointer(11, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
+
+	glEnableVertexArrayAttrib(vao, 12);
+	glVertexAttribPointer(12, 1, GL_INT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, relatedToPanel));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

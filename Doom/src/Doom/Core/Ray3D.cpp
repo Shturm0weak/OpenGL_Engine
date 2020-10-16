@@ -58,10 +58,12 @@ void Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length
 	if (iter != d.end()) {
 		hit->Object = iter->second;
 		hit->point = dir * iter->first;
+		hit->distance = iter->first;
 	}
 	else {
 		hit->Object = nullptr;
 		hit->point = glm::vec3(0.0f);
+		hit->distance = 0;
 	}
 
 }
