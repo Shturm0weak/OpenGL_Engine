@@ -511,6 +511,11 @@ void Doom::Gui::End() const
 	Batch::GetInstance()->End();
 }
 
+inline void Doom::Gui::FontBind(Font * font)
+{
+	this->font = font;
+}
+
 void Doom::Gui::LoadStandartFonts()
 {
 	

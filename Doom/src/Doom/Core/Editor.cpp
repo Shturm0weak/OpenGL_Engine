@@ -278,11 +278,11 @@ void Doom::Editor::MaterialComponent()
 
 void Doom::Editor::CubeCollider3DComponent()
 {
-	if (go->GetComponentManager()->GetComponent<CubeCollider3D>() != nullptr) {
-		CubeCollider3D* c = go->GetComponentManager()->GetComponent<CubeCollider3D>();
+	CubeCollider3D* cc = go->GetComponentManager()->GetComponent<CubeCollider3D>();
+	if (cc != nullptr && cc->isBoundingBox == false) {
 		if (ImGui::CollapsingHeader("CubeCollider3D")) {
-			ImGui::SliderFloat3("Position", &c->offset.x, -50, 50);
-			ImGui::SliderFloat3("Scale", &c->scale.x, 0, 100);
+			ImGui::SliderFloat3("Position", &cc->offset.x, -50, 50);
+			ImGui::SliderFloat3("Scale", &cc->scale.x, 0, 100);
 		}
 	}
 }

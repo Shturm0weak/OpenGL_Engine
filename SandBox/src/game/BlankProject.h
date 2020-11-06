@@ -55,7 +55,6 @@ public:
 				"src/SkyBox/left.png",
 				"src/SkyBox/right.png",
 	};
-	Line* mouseRay = nullptr;
 	virtual void OnStart() {
 		ImGui::SetCurrentContext(Window::imGuiContext);
 		shader = Shader::Get("Tron");
@@ -66,12 +65,21 @@ public:
 		MeshManager::GetMeshWhenLoaded("cube",(void*)(skybox->GetComponentManager()->GetComponent<Renderer3D>()));
 		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::StandartFonts::ARIAL]);
 		go = new Obj();
-		go = new Obj();
-		mouseRay = new Line(glm::vec3(1), glm::vec3(1));
+		Texture::GetAsync(go,[=] {
+			Texture* t = Texture::Get("src/Images/coin.png");
+			if (t != nullptr)
+				go->GetComponentManager()->GetComponent<Renderer3D>()->diffuseTexture = t;
+			return t;
+		});
 	}
 
 	virtual void OnUpdate() {
-		
+		if (Input::IsKeyPressed(Keycode::KEY_G)) {
+			Texture::Create("src/Images/coin.png");
+		}
+		if (Input::IsKeyPressed(Keycode::KEY_V)) {
+			Gui::GetInstance()->GetStandartFonts()[Gui::StandartFonts::ARIAL]->fontAtlas = Texture::Get("src/fonts/coin.png");
+		}
 	}
 
 	virtual void OnGuiRender() {

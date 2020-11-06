@@ -23,6 +23,7 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	ThreadPool::Init();
 	Texture::WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
 	Texture::ColoredTexture("InvalidTexture", 0xFF00AC);
+	CubeCollider3D::InitMesh();
 
 #ifndef LOADFROMFILE
 	Utils::LoadShadersFromFolder("src/Shaders");
@@ -30,16 +31,15 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Utils::LoadMeshesFromFolder("src/Mesh");
 #endif
 
+	Gui::GetInstance()->LoadStandartFonts();
 	Batch::Init();
 	SoundManager::Init();
-	Gui::GetInstance()->LoadStandartFonts();
 	Window::GetCamera().frameBufferColor = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB,GL_UNSIGNED_BYTE,false, GL_COLOR_ATTACHMENT0,true,true,true);
 	Window::GetCamera().frameBufferShadowMap = new FrameBuffer(4096, 4096, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
 	if (app->type == TYPE_3D) {
 		GridLayOut* grid = new GridLayOut();
 		Editor::Instance()->gizmo = new Gizmos;
 	}
-	
 }
 
 void EntryPoint::Run()
@@ -77,11 +77,6 @@ void EntryPoint::Run()
 
 		if (Input::IsKeyPressed(Keycode::KEY_E)) {
 			isEditorEnable = !isEditorEnable;
-		}
-		
-		if (app->type == TYPE_2D) {
-			//if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
-			//	Renderer::SelectObject();
 		}
 
 		Renderer::UpdateLightSpaceMatrices();
@@ -147,13 +142,13 @@ void EntryPoint::Run()
 		glfwPollEvents();
 	}
 	app->OnClose();
-	MeshManager::ShutDown();
-	Renderer::ShutDown();
 	delete app;
 	
 }
 
 EntryPoint::~EntryPoint() {
+	MeshManager::ShutDown();
+	Renderer::ShutDown();
 	Gui::GetInstance()->ShutDown();
 	EventSystem::GetInstance()->Shutdown();
 	ThreadPool::Instance()->Shutdown();

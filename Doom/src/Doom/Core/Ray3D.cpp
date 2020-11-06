@@ -1,7 +1,7 @@
 #include "../pch.h"
 #include "Ray3D.h"
 
-void Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length)
+std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length)
 {
 	std::map<float, CubeCollider3D*> d;
 	size_t size = CubeCollider3D::colliders.size();
@@ -54,6 +54,8 @@ void Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length
 			min = i->first;
 	}
 
+	Doom::Ray3D::sortMap(d);
+
 	auto iter = d.find(min);
 	if (iter != d.end()) {
 		hit->Object = iter->second;
@@ -66,9 +68,54 @@ void Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length
 		hit->distance = 0;
 	}
 
+	return d;
+}
+
+bool Doom::Ray3D::IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, glm::vec3& a, glm::vec3& b, glm::vec3& c, glm::vec3& planeNorm)
+{
+	glm::vec3 end = dir * length; 
+	glm::vec3 rayDelta = end - start;
+	glm::vec3 rayToPlaneDelta = a - start;
+	float ratio = glm::dot(rayToPlaneDelta,planeNorm);
+	glm::vec3 proj = planeNorm * ratio;
+	float vp = glm::dot(rayDelta,planeNorm);
+	if (vp >= -0.0001 && vp <= 0.0001) {
+		return false;
+	}
+	float wp = glm::dot(rayToPlaneDelta, planeNorm);
+	float t = wp / vp;
+	glm::vec3 iPos = rayDelta * t + start;
+	hit->point = iPos;
+
+	glm::vec3 edge0 = b - a;
+	glm::vec3 edge1 = c - b;
+	glm::vec3 edge2 = a - c;
+	glm::vec3 c0 = iPos - a;
+	glm::vec3 c1 = iPos - b;
+	glm::vec3 c2 = iPos - c;
+	
+	if (glm::dot(planeNorm, glm::cross(edge0, c0)) > 0 &&
+		glm::dot(planeNorm, glm::cross(edge1, c1)) > 0 &&
+		glm::dot(planeNorm, glm::cross(edge2, c2)) > 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void Doom::Ray3D::Normilize(glm::vec3 & vector)
 {
 		vector = glm::vec3(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)));
+}
+
+void Doom::Ray3D::sortMap(std::map<float, CubeCollider3D*>& M)
+{
+	std::vector<std::pair<float, CubeCollider3D*> > A;
+
+	for (auto& it : M) {
+		A.push_back(it);
+	}
+	sort(A.begin(), A.end(), [](pair<float, CubeCollider3D*>& a,
+		pair<float, CubeCollider3D*>& b) {return a.first < b.first; });
 }

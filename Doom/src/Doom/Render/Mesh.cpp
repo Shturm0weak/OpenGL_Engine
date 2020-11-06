@@ -23,6 +23,7 @@ void Mesh::Init()
 Mesh::~Mesh()
 {
 	delete[] mesh;
+	delete[] indicesForNormals;
 	delete layout;
 	delete vb;
 	delete va;

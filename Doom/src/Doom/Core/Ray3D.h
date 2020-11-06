@@ -11,7 +11,9 @@ namespace Doom {
 			float distance = 0;
 		};
 
-		static void RayCast(glm::vec3 start, glm::vec3 dir,Hit* hit,float length);
+		static void sortMap(std::map<float, CubeCollider3D*>& M);
+		static std::map<float, CubeCollider3D*> RayCast(glm::vec3 start, glm::vec3 dir,Hit* hit,float length);
+		static bool IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit* hit, float length, glm::vec3& a, glm::vec3& b, glm::vec3& c, glm::vec3& planeNorm);
 		static void Normilize(glm::vec3& vector);
 	};
 

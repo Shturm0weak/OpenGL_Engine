@@ -36,7 +36,7 @@ void Batch::Submit(Character* c)
 	//std::cout << "Batch " << c.position.x << "	" << c.position.y << std::endl;
 	for (unsigned int i = 0; i < maxTextureSlots; i++)
 	{
-		if (textureSlots[i] == c->texture->m_RendererID) {
+		if (textureSlots[i] == c->font->fontAtlas->m_RendererID) {
 			textureIndex = (float)i;
 			break;
 		}
@@ -44,7 +44,7 @@ void Batch::Submit(Character* c)
 
 	if (textureIndex == 0.0f) {
 		textureIndex = (float)textureSlotsIndex;
-		textureSlots[textureSlotsIndex] = c->texture->m_RendererID;
+		textureSlots[textureSlotsIndex] = c->font->fontAtlas->m_RendererID;
 		textureSlotsIndex++;
 	}
 

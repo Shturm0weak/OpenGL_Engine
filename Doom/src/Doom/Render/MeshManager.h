@@ -21,6 +21,8 @@ namespace Doom {
 
 		static const char** GetListOfMeshes();
 
+		static void AddMesh(Mesh* mesh);
+
 		inline static int GetAmountOfMeshes() { return Meshes.size(); }
 
 		static void GetMeshWhenLoaded(std::string name, void* r);

@@ -6,45 +6,7 @@ namespace Doom {
 
 	class DOOM_API CubeCollider3D : public Component {
 		
-		float vertices[36 * 3] = {
-			-1.0f,-1.0f,-1.0f,
-			-1.0f,-1.0f, 1.0f,
-			-1.0f, 1.0f, 1.0f,
-			 1.0f, 1.0f,-1.0f,
-			-1.0f,-1.0f,-1.0f,
-			-1.0f, 1.0f,-1.0f,
-			 1.0f,-1.0f, 1.0f,
-			-1.0f,-1.0f,-1.0f,
-			 1.0f,-1.0f,-1.0f,
-			 1.0f, 1.0f,-1.0f,
-			 1.0f,-1.0f,-1.0f,
-			-1.0f,-1.0f,-1.0f,
-			-1.0f,-1.0f,-1.0f,
-			-1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f,-1.0f,
-			 1.0f,-1.0f, 1.0f,
-			-1.0f,-1.0f, 1.0f,
-			-1.0f,-1.0f,-1.0f,
-			-1.0f, 1.0f, 1.0f,
-			-1.0f,-1.0f, 1.0f,
-			 1.0f,-1.0f, 1.0f,
-			 1.0f, 1.0f, 1.0f,
-			 1.0f,-1.0f,-1.0f,
-			 1.0f, 1.0f,-1.0f,
-			 1.0f,-1.0f,-1.0f,
-			 1.0f, 1.0f, 1.0f,
-			 1.0f,-1.0f, 1.0f,
-			 1.0f, 1.0f, 1.0f,
-			 1.0f, 1.0f,-1.0f,
-			-1.0f, 1.0f,-1.0f,
-			 1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f,-1.0f,
-			-1.0f, 1.0f, 1.0f,
-			 1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f, 1.0f,
-			 1.0f,-1.0f, 1.0f
-		};
-		uint32_t indices[36];
+		Mesh* mesh = nullptr;
 		glm::vec4 color = COLORS::Green;
 
 		Shader* shader = Shader::Get("CubeCollider");
@@ -58,6 +20,7 @@ namespace Doom {
 		glm::vec3 scale = {1,1,1};
 		bool isBoundingBox = false;
 		static std::vector<CubeCollider3D*> colliders;
+		static void InitMesh();
 		~CubeCollider3D();
 		CubeCollider3D();
 		void Render();

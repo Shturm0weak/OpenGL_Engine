@@ -123,12 +123,30 @@ void Doom::Renderer::SelectObject3D()
 	if (!Editor::Instance()->gizmo->isHovered && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 		Ray3D::Hit hit;
 		glm::vec3 forward = Window::GetCamera().GetMouseDirVec();
-		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward, &hit, 100);
-		if (hit.Object != nullptr) {
-			GameObject* go = hit.Object->GetOwnerOfComponent();
-			if (go != Editor::Instance()->gizmo->obj) {
-				Editor::Instance()->gizmo->blockFrame = true;
-				Editor::Instance()->gizmo->obj = go;
+		glm::vec3 pos = Window::GetCamera().GetPosition();
+		std::map<float, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 1000);
+		for (auto i = d.begin(); i != d.end(); i++)
+		{
+			if (i->second != nullptr) {
+				GameObject* go = i->second->GetOwnerOfComponent();
+				glm::vec3 goPos = go->GetPositions();
+				glm::vec3 goScale = go->GetScale();
+				Ray3D::Hit hit1;
+				Mesh* mesh = go->GetComponentManager()->GetComponent<Renderer3D>()->mesh;
+				for (uint32_t i = 0; i < mesh->meshSize - 14; i += (14 * 3))
+				{
+					glm::vec3 a = goPos + goScale * glm::vec3(mesh->mesh[i + 0], mesh->mesh[i + 1], mesh->mesh[i + 2]);
+					glm::vec3 b = goPos + goScale * glm::vec3(mesh->mesh[i + 14 + 0], mesh->mesh[i + 14 + 1], mesh->mesh[i + 14 + 2]);
+					glm::vec3 c = goPos + goScale * glm::vec3(mesh->mesh[i + 28 + 0], mesh->mesh[i + 28 + 1], mesh->mesh[i + 28 + 2]);
+					glm::vec3 n = glm::vec3(mesh->mesh[i + 3], mesh->mesh[i + 4], mesh->mesh[i + 5]);
+					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 1000, a, b, c, n)) {
+						if (go != Editor::Instance()->gizmo->obj) {
+							Editor::Instance()->gizmo->blockFrame = true;
+							Editor::Instance()->gizmo->obj = go;
+						}
+						return;
+					}
+				}
 			}
 		}
 	}

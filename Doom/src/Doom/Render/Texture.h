@@ -9,6 +9,8 @@ namespace Doom {
 	class DOOM_API Texture {
 	private:
 		static std::map<std::string, Texture*> textures;
+		static bool textureAdded;
+
 		std::string m_FilePath;
 		std::string m_Name;
 		unsigned char* m_LocalBuffer = nullptr;
@@ -19,7 +21,9 @@ namespace Doom {
 		friend class SkyBox;
 		friend class Editor;
 		friend class EntryPoint;
+
 	public:
+		static std::map<void*, std::function<Texture*()>> waitingForTextures;
 		static std::mutex lockTextureLoading;
 		static std::vector<Texture*> loadedTextures;
 		~Texture();
@@ -34,9 +38,10 @@ namespace Doom {
 		inline int GetWidth() const { return m_width; }
 		inline int GetHeight() const { return m_height; }
 		inline std::string GetFilePath() const { return m_FilePath; }
-
 		static void AsyncLoadTexture(const std::string& filePath);
 		static Texture* Get(const std::string filePath, bool showErrors = true);
+		static void GetAsync(void* ptr, std::function<Texture*()> f);
+		static void RemoveFromGetAsync(void* ptr);
 		static void UnloadFromRAM(const std::string& filePath);
 		static void UnloadFromVRAM(const std::string& filePath);
 		static Texture* ColoredTexture(const std::string& name, uint32_t color);

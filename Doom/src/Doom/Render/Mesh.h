@@ -29,13 +29,13 @@ namespace Doom {
 		float* normals = nullptr;
 		uint32_t normalsSize = 0;
 		uint32_t uvSize = 0;
-		float* uv;
+		float* uv = nullptr;
 		uint32_t uvSizeForVert = 0;
-		float* uvForVert;
+		float* uvForVert = nullptr;
 		uint32_t uvIndexSize = 0;
 		uint32_t* uvIndex;
-		float* btangent;
-		float* tangent;
+		float* btangent = nullptr;
+		float* tangent = nullptr;
 
 		void Init();
 

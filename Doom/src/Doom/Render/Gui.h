@@ -104,7 +104,7 @@ namespace Doom {
 		void Begin() const;
 		void End() const;
 
-		inline void FontBind(Font* font) {this->font = font;}
+		inline void FontBind(Font* font);
 		inline std::vector<Font*>& GetStandartFonts() {return standartFonts;}
 
 		void RecalculateProjectionMatrix();

@@ -29,13 +29,14 @@ namespace Doom {
 
 	private:
 		glm::vec4 color = COLORS::White;
-		Texture* texture = nullptr;
+	
 		Shader* shader = nullptr;
 		glm::vec2 position;
 		glm::vec2 _scale;
 
 		friend class Gui;
 		friend class Doom::Batch;
+		friend class Font;
 	public:
 		int isRelatedToCam = 0;
 		char ch;

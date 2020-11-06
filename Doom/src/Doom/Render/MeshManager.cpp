@@ -83,6 +83,13 @@ const char ** Doom::MeshManager::GetListOfMeshes()
 	return listOfMeshes;
 }
 
+void Doom::MeshManager::AddMesh(Mesh * mesh)
+{
+	if (mesh != nullptr) {
+		Meshes.insert(std::make_pair(mesh->name, mesh));
+	}
+}
+
 void MeshManager::GetMeshWhenLoaded(std::string name, void* r)
 {
 	//auto iter = Meshes.find(name);

@@ -26,7 +26,7 @@ namespace Doom {
 		};
 
 		Transform* tr = nullptr;
-		Texture* texture = nullptr;
+
 
 		inline std::string GetPathToTexture() const { return this->pathToTexture; };
 		std::string pathToTexture = ("None");
@@ -39,6 +39,7 @@ namespace Doom {
 		friend class Renderer;
 	
 	public:
+		Texture* texture = nullptr;
 		SpriteRenderer(GameObject* owner);
 		~SpriteRenderer();
 
@@ -54,8 +55,8 @@ namespace Doom {
 
 		bool AlwaysDraw = false;
 
-		inline int GetTexture() const { return texture->m_RendererID; }
-		inline Texture* GetTexturePointer() const { return texture; }
+		inline int GetTexture() { return texture->m_RendererID; }
+		inline Texture* GetTexturePointer() { return texture; }
 		double GetWidth() const;
 		double GetHeight() const;
 

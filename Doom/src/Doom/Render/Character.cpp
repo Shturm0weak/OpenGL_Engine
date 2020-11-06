@@ -12,7 +12,6 @@ Character::Character(Font* font,int ch,float posx,float posy,float scale)
 	this->font = font;
 	position.x = posx;
 	position.y = posy;
-	texture = font->fontAtlas;
 	{
 		int i = ch;
 		this->ch = font->id[i];
@@ -87,7 +86,8 @@ Doom::Font::~Font()
 
 void Doom::Font::LoadFont(const std::string& filename, const std::string& pathToTexture)
 {
-	fontAtlas = Texture::Create(pathToTexture);
+	this->fontAtlas = Texture::Create(pathToTexture);
+	
 	std::ifstream in_file;
 	in_file.open(filename);
 	if (in_file.is_open()) {

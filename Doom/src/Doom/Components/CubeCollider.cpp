@@ -3,6 +3,55 @@
 
 using namespace Doom;
 
+void Doom::CubeCollider3D::InitMesh()
+{
+	float* vertices = new float[36 * 3]{
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		 1.0f, 1.0f,-1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f,-1.0f,
+		 1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+		 1.0f,-1.0f,-1.0f,
+		 1.0f, 1.0f,-1.0f,
+		 1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f,-1.0f,
+		 1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f, 1.0f,
+		-1.0f,-1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f,-1.0f, 1.0f,
+		 1.0f,-1.0f, 1.0f,
+		 1.0f, 1.0f, 1.0f,
+		 1.0f,-1.0f,-1.0f,
+		 1.0f, 1.0f,-1.0f,
+		 1.0f,-1.0f,-1.0f,
+		 1.0f, 1.0f, 1.0f,
+		 1.0f,-1.0f, 1.0f,
+		 1.0f, 1.0f, 1.0f,
+		 1.0f, 1.0f,-1.0f,
+		-1.0f, 1.0f,-1.0f,
+		 1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f,-1.0f,
+		-1.0f, 1.0f, 1.0f,
+		 1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		 1.0f,-1.0f, 1.0f
+	};
+	uint32_t* indices = new uint32_t[36];
+	for (size_t i = 0; i < 36; i++)
+		indices[i] = i;
+	Mesh* mesh = new Mesh("CubeCollider");
+	mesh->mesh = vertices;
+	mesh->indicesForNormals = indices;
+	MeshManager::AddMesh(mesh);
+}
+
 Doom::CubeCollider3D::~CubeCollider3D()
 {
 	delete vb;
@@ -15,12 +64,11 @@ Doom::CubeCollider3D::~CubeCollider3D()
 }
 
 CubeCollider3D::CubeCollider3D() {
+	mesh = MeshManager::GetMesh("CubeCollider");
 	layout = new VertexBufferLayout();
-	vb = new VertexBuffer(vertices, 36 * 3 * sizeof(float));
+	vb = new VertexBuffer(mesh->mesh, 36 * 3 * sizeof(float));
 	va = new VertexArray();
-	for (size_t i = 0; i < 36; i++)
-		indices[i] = i;
-	ib = new IndexBuffer(indices, 36);
+	ib = new IndexBuffer(mesh->indicesForNormals, 36);
 	layout->Push<float>(3);
 	va->AddBuffer(*this->vb, *this->layout);
 	va->UnBind();
