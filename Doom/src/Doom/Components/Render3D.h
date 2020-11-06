@@ -14,6 +14,8 @@ namespace Doom {
 	class DOOM_API Renderer3D : public Irenderer {
 	public:
 
+		std::map<std::string, float*> floatUniforms;
+
 		enum class RenderTechnic {
 			Forward,
 			Instancing
@@ -28,7 +30,7 @@ namespace Doom {
 		void LoadMesh(Mesh* mesh);
 		bool useNormalMap = false;
 		Texture* diffuseTexture = Texture::WhiteTexture;
-		Texture* normalMapTexture = nullptr;
+		Texture* normalMapTexture = Texture::Get("InvalidTexture");
 
 		void EraseFromInstancing();
 
@@ -50,6 +52,7 @@ namespace Doom {
 		bool isSkyBox = false;
 
 		void ForwardRender();
+		void AdditionalUniformsLoad();
 
 		RenderTechnic renderTechnic = RenderTechnic::Forward;
 

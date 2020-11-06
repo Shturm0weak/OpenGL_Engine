@@ -107,8 +107,8 @@ namespace Doom {
 		inline static Batch* GetInstance() { return instance; }
 		Shader* TextShader = Shader::Get("Font");
 		Shader* BasicShader = Shader::Get("Default2D");
-		Shader* CollisionShader = Shader::Create("Collision2D","src/Shaders/newshader.shader");
-		Shader* LineShader = Shader::Create("LineShader","src/Shaders/Line.shader");
+		Shader* CollisionShader = Shader::Get("Collision2D");
+		Shader* LineShader = Shader::Get("Line");
 		Batch();
 		~Batch();
 		void Submit(Character* character);

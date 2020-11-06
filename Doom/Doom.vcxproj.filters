@@ -72,6 +72,7 @@
     <ClInclude Include="src\Doom\Components\DirectionalLight.h" />
     <ClInclude Include="src\Doom\Core\World.h" />
     <ClInclude Include="src\Doom\STLloader\STLloader.h" />
+    <ClInclude Include="src\Doom\Core\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Doom.cpp" />
@@ -126,6 +127,7 @@
     <ClCompile Include="src\Doom\Components\DirectionalLight.cpp" />
     <ClCompile Include="src\Doom\Core\World.cpp" />
     <ClCompile Include="src\Doom\STLloader\STLloader.cpp" />
+    <ClCompile Include="src\Doom\Core\Listener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Doom\Shaders\Line.shader" />

@@ -8,9 +8,10 @@
 #include "src/game/TestImGui.h"
 #include "src/SpaceFire/SpaceFire.h"
 #include "src/Minecraft/Minecraft.h"
+#include "src/game/BlankProject.h"
 
 int main(){
-	Minecraft* app = new Minecraft("Cross section area",800,600,true);
+	BlankProject* app = new BlankProject();
 	Doom::EntryPoint entrypoint(app);
 	entrypoint.Run();
 	return 0;

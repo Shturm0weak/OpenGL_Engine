@@ -11,6 +11,7 @@ namespace Doom {
 		GridLayOut() {
 			this->name = "Grid";
 			this->Enable = false;
+			GetComponentManager()->RemoveComponent<Irenderer>();
 
 			Line::width = 3;
 			glm::vec4 color = glm::vec4(0.5, 0.5, 0.5, 0.2);

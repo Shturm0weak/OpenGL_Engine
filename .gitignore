@@ -1,8 +1,8 @@
 #Directories
 .vs/
-bin/
 bin-int/
 junk/
 x64/
 .gitignore/
 *.fbx
+*.stl

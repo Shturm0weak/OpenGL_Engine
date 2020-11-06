@@ -65,7 +65,7 @@ namespace Doom {
 				int* props = Window::GetSize();
 				props[0] = width;
 				props[1] = height;
-				EventSystem::GetInstance()->SendEvent("OnWindowResize", nullptr, props);
+				EventSystem::GetInstance()->SendEvent(EventType::ONWINDOWRESIZE, nullptr, props);
 			});
 			imGuiContext = ImGui::CreateContext();
 			io = &ImGui::GetIO();

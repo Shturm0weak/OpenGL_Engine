@@ -5,7 +5,6 @@ class ShooterGame : public Application {
 	PlayerCharacter* pl = nullptr;
 	double timer = 1;
 	virtual void OnStart() override {
-		Renderer::Load("C:/Users/Alexandr/Desktop/ShooterGameSave.txt");
 		pl = new PlayerCharacter("Player",0,15);
 	}
 
@@ -16,7 +15,7 @@ class ShooterGame : public Application {
 		}
 		timer += DeltaTime::deltatime;
 
-		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
+		EventSystem::GetInstance()->SendEvent(EventType::ONUPDATE, nullptr);
 		EventSystem::GetInstance()->ProcessEvents();
 		Window::GetCamera().SetPosition(glm::vec3(pl->GetPositions().x,pl->GetPositions().y,0));
 	}

@@ -14,8 +14,8 @@ class Bomb : public GameObject {
 public:
 	Bomb(const std::string name = "Bomb", float x = 0, float y = 0) :GameObject(name, x, y) {
 		SoundManager::CreateSoundAsset("grenade", bombSound);
-		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
-		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		type = "GameObject";
@@ -31,7 +31,7 @@ public:
 	void OnUpdate() {
 		col->IsCollidedDIAGS();
 		if (col->isCollided) {
-			EventSystem::GetInstance()->SendEvent("OnCollision", this, col->collidedObject);
+			EventSystem::GetInstance()->SendEvent(EventType::ONCOLLSION, this, col->collidedObject);
 		}
 		tr->Move(0, -5, 0);
 		tr->Rotate(0,0,1);

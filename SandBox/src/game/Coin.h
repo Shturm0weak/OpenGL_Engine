@@ -14,8 +14,8 @@ public:
 	Sound* coinSound = nullptr;
 
 	Coin(const std::string name = "Coin", float x = 0, float y = 15) :GameObject(name, x, y) {
-		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
-		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		col->SetOwner(this);
@@ -53,12 +53,12 @@ public:
 		}
 		col->IsCollidedDIAGS();
 		if (col->isCollided) {
-			EventSystem::GetInstance()->SendEvent("OnCollision", this, col->collidedObject);
+			EventSystem::GetInstance()->SendEvent(EventType::ONCOLLSION, this, col->collidedObject);
 		}
 		tr->Move(0,-5,0);
 		if (tr->position.y <= -18) {
 			Randomize();
-			EventSystem::GetInstance()->SendEvent("OnMiss", nullptr);
+			EventSystem::GetInstance()->SendEvent(EventType::ONMISS, nullptr);
 		}
 		
 	}

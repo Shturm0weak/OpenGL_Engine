@@ -6,9 +6,9 @@
 
 PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :GameObject(name, x, y)
 {
-	EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
-	EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
-	EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
 	col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 	col->SetTag("Player");
 	tr = GetComponentManager()->GetComponent<Transform>();

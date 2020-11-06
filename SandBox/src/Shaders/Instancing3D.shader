@@ -33,8 +33,9 @@ uniform vec3 u_CameraPos;
 uniform mat4 u_LightSpaceMatrix;
 
 void main() {
-	FragPos =  vec3(u_Model * u_Scale * vec4(positions, 1.0));
-	FragPosLightSpace = u_LightSpaceMatrix * u_Model * u_View * u_Scale * vec4(positions, 1.0);
+	vec4 tempFragPos = u_Model * u_View * u_Scale * vec4(positions, 1.0);
+	FragPos = vec3(tempFragPos);
+	FragPosLightSpace = u_LightSpaceMatrix * tempFragPos;
 	CameraPos =  u_CameraPos;
 	out_color = m_color;
 	ambient = mat.x;
@@ -48,7 +49,7 @@ void main() {
 
 	TBN = (mat3(T, B, N));
 
-	gl_Position = u_ViewProjection * u_Model * u_View * u_Scale * vec4(positions, 1);
+	gl_Position = u_ViewProjection * tempFragPos;
 };
 
 #shader fragment
@@ -140,13 +141,9 @@ vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 Camera
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
-	// perform perspective divide
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-	// transform to [0,1] range
 	projCoords = projCoords * 0.5 + 0.5;
-	// get depth of current fragment from light's perspective
 	float currentDepth = projCoords.z;
-	// check whether current frag pos is in shadow
 	float bias = 0.005;
 
 	vec2 texelSize = 1.0 / textureSize(u_ShadowMap, 0);

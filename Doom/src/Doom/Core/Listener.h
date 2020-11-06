@@ -4,7 +4,6 @@
 #include <iostream>
 #include "Event.h"
 #include <string>
-#include "ThreadPool.h"
 #include "Core.h"
 
 namespace Doom {
@@ -20,32 +19,11 @@ namespace Doom {
 		virtual void OnWindowResize(void* props) {}
 		virtual void OnMiss() {}
 		virtual void OnMainThreadProcess(void* task) {}
+		virtual void OnTranslate() {}
 
 	public:
 
-		void HandleEvent(Event* e) {
-			std::string s = e->EventId();
-			if (s == "OnUpdate")
-				OnUpdate();
-			else if (s == "OnStart")
-				OnStart();
-			else if (s == "OnCollision") {
-				int i = 1;
-				e->Sender()->OnCollision(e->Parameter());
-			}
-			else if (s == "OnMove")
-				e->Sender()->OnMove();
-			else if (s == "OnRotate")
-				e->Sender()->OnRotate();
-			else if (s == "OnScale")
-				e->Sender()->OnScale();
-			else if (s == "OnWindowResize")
-				OnWindowResize(e->Parameter());
-			else if (s == "OnMiss")
-				OnMiss();
-			else if (s == "OnMainThreadProcess")
-				OnMainThreadProcess(e->Parameter());
-		}
+		void HandleEvent(Event* e);
 	};
 
 }

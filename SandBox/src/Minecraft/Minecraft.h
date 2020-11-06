@@ -1,6 +1,6 @@
 #pragma once
 #include <btBulletDynamicsCommon.h>
-
+#include <unordered_map>
 #define E 0.01
 
 void PerlinNoise2D(int nWidth, int nHeight, float *fSeed, int nOctaves, float fBias, float *fOutput)
@@ -55,7 +55,10 @@ public:
 	double time = 0.0;
 	Ray3D::Hit hit;
 	Texture* dirtImg = nullptr;
-	std::vector <glm::vec3> dots;
+	std::vector <glm::vec3> dots1;
+	std::vector <glm::vec3> dots2;
+	std::unordered_multimap<uint32_t,uint32_t> lines;
+	std::map<uint32_t, glm::vec3> lD;
 	virtual void OnStart() override {
 
 		MeshManager::LoadMesh("kompas", "src/Mesh/model.stl");
@@ -82,7 +85,7 @@ public:
 		};
 		MeshManager::LoadMesh("skyboxCube", "src/Mesh/cube.fbx");
 		MeshManager::AsyncLoadMesh("cube", "src/Minecraft/Models/cube.fbx");
-		MeshManager::LoadMesh("gladiator", "src/Mesh/model.stl");
+		MeshManager::LoadMesh("gladiator", "src/Mesh/Try.stl");
 		SkyBox* skybox = new SkyBox(faces, MeshManager::GetMesh("skyboxCube"));
 		/*for (size_t i = 0; i < width; i++)
 		{
@@ -94,23 +97,106 @@ public:
 		}*/
 		for (uint32_t i = 0; i < 2; i++)
 		{
-			lights.push_back(new GameObject(std::string("light " + std::to_string(i)), i * 10, 10, i * 10));
+			lights.push_back(new GameObject(std::string("light " + std::to_string(i)), i * 10, 0, i * 10));
 			lights.back()->GetComponentManager()->AddComponent<PointLight>();
 			lights.back()->GetComponentManager()->GetComponent<PointLight>()->color = glm::vec3(i * 0.1, 0, i * 0.1);
 		}
 		lights.back()->GetComponentManager()->RemoveComponent<PointLight>();
 		lights.back()->GetComponentManager()->AddComponent<DirectionalLight>();
 		lights.back()->GetComponent<Transform>()->RotateOnce(-110,0,0);
-		gladiator = new GameObject("gladiator", 0, 0, 0);
+		gladiator = new GameObject("gladiator", 0, 5, 0);
 		gladiator->GetComponentManager()->RemoveComponent<Irenderer>();
-		gladiator->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("gladiator"));
-		gladiator->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
+		gladiator->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+		//gladiator->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
+		gladiator->GetComponent<Transform>()->Translate(0, 10, 0);
 		glm::vec2 a(0, 0);
-		glm::vec2 b(100, 0);
-		CrossSection(a,b);
+		glm::vec2 b(0, 100);
+		CrossSection(dots1,a,b);
 		glm::vec2 c(0, 0);
-		glm::vec2 d(0, 0.1);
-		CrossSection(c, d);
+		glm::vec2 d(0.1, 0);
+		CrossSection(dots2,c, d);
+
+		uint32_t index = 0;
+		uint32_t counter = 0;
+
+		for (uint32_t i = 0; i < dots1.size(); i++)
+		{
+			//std::cout << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << std::endl;
+			for (auto iter = lD.begin(); iter != lD.end(); iter++)
+			{
+				if (IsVec3Equal(dots1[i], iter->second)) {
+					counter++;
+				}
+				else {
+					//std::cout << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << " / " << iter->second.x << "	" << iter->second.y << "	" << iter->second.z << std::endl;
+				}
+			}
+			if (counter == 0) {
+				//std::cout << "insert " << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << std::endl;
+				lD.insert(std::make_pair(index, dots1[i]));
+				index++;
+			}
+			counter = 0;
+		}
+		int size = lD.size();
+
+		for (uint32_t i = 0; i < dots1.size(); i+=2)
+		{
+			int32_t a1 = -1;
+			int32_t b1 = -1;
+			for (auto iter = lD.begin(); iter != lD.end(); iter++)
+			{
+				if (IsVec3Equal(dots1[i], iter->second)) {
+					a1 = iter->first;
+				}
+			}
+			for (auto iter = lD.begin(); iter != lD.end(); iter++)
+			{
+				if (IsVec3Equal(dots1[i + 1], iter->second)) {
+					b1 = iter->first;
+				}
+			}
+			if (a1 < 0 || b1 < 0)
+				std::cout << "No such pair of verteces\n";
+			else {
+				lines.insert(std::make_pair(a1, b1));
+				
+			}
+		}
+
+		//!!!!!
+		// Loop is closed if each edge has in and out it looks like this
+		// ([x,..] and [...,x]) or ([..,x] and [...,x]) and is not if [x,x] or ([x,..] and [..,x])
+		// TO DO!!!!!
+		//!!!!!
+
+		for (auto i = lines.begin(); i != lines.end();)
+		{
+			if (i->first == i->second) {
+				lines.erase(i++);
+			}
+			else {
+				++i;
+			}
+		}
+
+		int con = 0;
+		for (auto iter = lines.begin(); iter != lines.end(); iter++)
+		{
+			Line* l = new Line(lD.find(iter->first)->second, lD.find(iter->second)->second);
+			if(con % 2 == 0)
+				l->color = COLORS::Green;
+			else
+				l->color = COLORS::Yellow;
+			con++;
+		}
+
+	}
+
+	bool IsVec3Equal(glm::vec3 a, glm::vec3 b) {
+		return (fabs(a.x - b.x) < E &&
+			fabs(a.y - b.y) < E &&
+			fabs(a.z - b.z) < E);
 	}
 
 	float Interpolate(float x0, float x1, float xN, float y0, float y1) {
@@ -137,7 +223,7 @@ public:
 		return y0 + (((y1 - y0) / (x1 - x0)) * (xN - x0));
 	}
 
-	void Intersect(glm::vec3& pos, glm::vec3& scale, glm::vec2& a, glm::vec2& b, Mesh* m, uint32_t s, uint32_t e) {
+	void Intersect(std::vector<glm::vec3>& dots, glm::vec3& pos, glm::vec3& scale, glm::vec2& a, glm::vec2& b, Mesh* m, uint32_t s, uint32_t e) {
 		glm::vec3 start(m->mesh[s + 0], m->mesh[s + 1], m->mesh[s + 2]);
 		glm::vec3 end(m->mesh[e + 0], m->mesh[e + 1], m->mesh[e + 2]);
 		start = start * scale + pos;
@@ -153,70 +239,30 @@ public:
 			float max = std::fmax(start.y, end.y);
 			if (average > max)
 				average = max;
-			uint32_t count = 0;
-			for (uint32_t i = 0; i < dots.size(); i++)
-			{
-				glm::vec3 x = dots[i];
-				glm::vec3 v(p->x - x.x, average - x.y, p->y - x.z);
-
-				if (v.x < E && -v.x < E && v.y < E && -v.y < E && v.z < E && -v.z < E)
-					count++;
-			}
-			//if (count <= 0) {
-			//	new Line(start, end);
-				glm::vec3 result = glm::vec3(p->x, average, p->y);
-				//if (result.x < 0)
-				//	result.x = 0;
-				dots.push_back(result);
-				std::cout << start.y << "	" << average << "	" << end.y << std::endl;
-				std::cout << x0 << "	" << xN << "	" << x1 << std::endl << std::endl;
-			//}
+			glm::vec3 result = glm::vec3(p->x, average, p->y);
+			dots.push_back(result);
 			delete p;
 		}
 	}
 
-	void CrossSection(glm::vec2 a,glm::vec2 b) {
+	void CrossSection(std::vector<glm::vec3>& dots, glm::vec2 a,glm::vec2 b) {
 		Mesh* m = gladiator->GetComponent<Renderer3D>()->mesh;
 		glm::vec3 pos = gladiator->GetPositions();
 		glm::vec3 scale = gladiator->GetScale();
 		uint32_t counter = 0;
 		for (uint32_t i = 0; i < m->meshSize - 14; i += (14 * 3))
 		{
-			Intersect(pos, scale, a, b, m, i, i + 14);
-			Intersect(pos, scale, a, b, m, i + 14, i + 2 * 14);
-			Intersect(pos, scale, a, b, m, i + 2 * 14, i);
+			Intersect(dots,pos, scale, a, b, m, i, i + 14);
+			Intersect(dots,pos, scale, a, b, m, i + 14, i + 2 * 14);
+			Intersect(dots,pos, scale, a, b, m, i + 2 * 14, i);
 			if (dots.size() % 2 == 1) {
-				std::cout << "FUCK\n";
+				//std::cout << "FUCK\n";
 				dots.push_back(dots.back());
 			}
 		}
-		//auto iter = std::find_if(dots.begin(), dots.end(), [=](glm::vec3 a) {return a.y == pos.y; });
-		//if (iter != dots.end()) {
-		//	dots.push_back(glm::vec3(0,pos.y,0));
-		//}
-		std::cout << dots.size() << std::endl;
-		//for (uint32_t i = 0; i < dots.size(); i++)
-		//{
-		//	GameObject* go = new GameObject(std::to_string(i), dots[i].x, dots[i].y, dots[i].z);
-		//	go->GetComponent<SpriteRenderer>()->color = COLORS::Blue;
-		//	go->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
-		//	go->GetComponent<Transform>()->RotateOnce(0,90,0);
-		//}
-		for (uint32_t i = 0; i < dots.size(); i += 2)
-		{
-			Line* l = new Line(dots[i], dots[i + 1]);
-			l->color = COLORS::Green;
-		}
 	}
 
-	uint32_t index = 0;
-
 	virtual void OnUpdate() override {
-		//if (Input::IsKeyPressed(Keycode::KEY_L)) {
-		//	Line* l = new Line(dots[index], dots[index + 1]);
-		//	l->color = COLORS::Green;
-		//	index += 2;
-		//}
 		time += DeltaTime::deltatime;
 		glm::vec3 forward = glm::vec3(-Window::GetCamera().forwardV.x, Window::GetCamera().forwardV.y, -Window::GetCamera().forwardV.z);
 		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward, &hit, 100);
@@ -265,6 +311,7 @@ public:
 			}
 		}
 	}
+
 	float hp = 100.0f;
 	bool isHovered = false;
 	bool MoveWithMouse = true;
@@ -276,11 +323,7 @@ public:
 	glm::vec3 rotation;
 
 	virtual void OnGuiRender() {
-		Gui* g = Gui::GetInstance();
-		ImGui::Begin("Props test");
-		ImGui::SliderFloat2("margin", &g->relatedPanelProperties.margin[0], 0, 100);
-		ImGui::SliderFloat2("padding", &g->relatedPanelProperties.padding[0], 0, 100);
-		ImGui::End();
+		
 	}
 	
 	void CreateCube(int i ,int j) {

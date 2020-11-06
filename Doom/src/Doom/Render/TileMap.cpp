@@ -12,7 +12,7 @@ bool TileMap::LoadMap(unsigned int width, unsigned int height, const char* map, 
 			if (map[index] != ' ') {
 				std::string name = "Tile:" + std::to_string(j) + " " + std::to_string(i);
 				GameObject* go = new GameObject(name, j, height - i - 1);
-				SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
+				SpriteRenderer* sr = go->GetComponentManager()->AddComponent<SpriteRenderer>();
 				auto textureItr = uvs.find(map[index]);
 				if (textureItr != uvs.end()) {
 					sr->SetTexture(textureAtlas->GetTexture());

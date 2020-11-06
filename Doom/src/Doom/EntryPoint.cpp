@@ -8,6 +8,7 @@
 #include "Render/SkyBox.h"
 #include "Render/MeshManager.h"
 #include "Render/Instancing.h"
+#include "Core/Utils.h"
 
 using namespace Doom;
 
@@ -21,18 +22,17 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	MainThread::Init();
 	ThreadPool::Init();
 	Texture::WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
-	Texture::ColoredTexture("InvalidTexture", 0x8D329Fff);
-	Shader::Create("Font", "src/Shaders/Text.shader");
-	Shader::Create("Default2D", "src/Shaders/Basic.shader");
-	Shader::Create("Default3D", "src/Shaders/Basic3D.shader");
-	Shader::Create("Instancing3D", "src/Shaders/Instancing3D.shader");
-	Shader::Create("BakeShadows", "src/Shaders/BakeShadows.shader"); 
-	Shader::Create("Instancing3DBakeShadows", "src/Shaders/BakeShadowsInstancing.shader");
+	Texture::ColoredTexture("InvalidTexture", 0xFF00AC);
+
+#ifndef LOADFROMFILE
+	Utils::LoadShadersFromFolder("src/Shaders");
+	Utils::LoadTexturesFromFolder("src/Images");
+	Utils::LoadMeshesFromFolder("src/Mesh");
+#endif
+
 	Batch::Init();
 	SoundManager::Init();
-	Font::shader = Shader::Get("Font");
 	Gui::GetInstance()->LoadStandartFonts();
-	EventSystem::GetInstance()->SendEvent("OnStart", nullptr);
 	Window::GetCamera().frameBufferColor = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB,GL_UNSIGNED_BYTE,false, GL_COLOR_ATTACHMENT0,true,true,true);
 	Window::GetCamera().frameBufferShadowMap = new FrameBuffer(4096, 4096, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
 	if (app->type == TYPE_3D) {
@@ -46,11 +46,13 @@ void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
 	bool FirstFrame = true;
+
 	app->OnStart();
+	EventSystem::GetInstance()->SendEvent(EventType::ONSTART, nullptr);
 
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
 		Gui::GetInstance()->isAnyPanelHovered = false;
-		EventSystem::GetInstance()->SendEvent("OnUpdate", nullptr);
+		EventSystem::GetInstance()->SendEvent(EventType::ONUPDATE, nullptr);
 		ThreadPool::Instance()->enqueue([] {Editor::Instance()->UpdateNormals(); });
 		DeltaTime::calculateDeltaTime();
 
@@ -67,17 +69,19 @@ void EntryPoint::Run()
 		Window::GetCamera().WindowResize();
 		Window::GetCamera().CameraMovement();
 		MeshManager::DispatchLoadedMeshes();
+		Texture::DispatchLoadedTextures();
 		SoundManager::UpdateSourceState();
 
 		EventSystem::GetInstance()->ProcessEvents();
+		Renderer::SelectObject3D();
 
 		if (Input::IsKeyPressed(Keycode::KEY_E)) {
 			isEditorEnable = !isEditorEnable;
 		}
 		
 		if (app->type == TYPE_2D) {
-			if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
-				Renderer::SelectObject();
+			//if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
+			//	Renderer::SelectObject();
 		}
 
 		Renderer::UpdateLightSpaceMatrices();
@@ -90,9 +94,9 @@ void EntryPoint::Run()
 			Editor::Instance()->EditorUpdate();
 		}
 		else {
-			Gui::GetInstance()->Begin();
-			Editor::Instance()->EditorUpdateMyGui();
-			Gui::GetInstance()->End();
+			//Gui::GetInstance()->Begin();
+			//Editor::Instance()->EditorUpdateMyGui();
+			//Gui::GetInstance()->End();
 		}
 		
 		Input::Clear();
@@ -100,7 +104,7 @@ void EntryPoint::Run()
 		Renderer::DrawCalls = 0;
 		Renderer::Vertices = 0;
 
-		if (Instancing::Instance()->drawShadows) {
+		if (Instancing::Instance()->drawShadows > 0.5f) {
 			FrameBuffer* shadowMap = Window::GetCamera().frameBufferShadowMap;
 			glfwGetWindowSize(Window::GetWindow(), &size[0], &size[1]);
 			glViewport(0, 0, shadowMap->size.x, shadowMap->size.y);
@@ -109,16 +113,16 @@ void EntryPoint::Run()
 			Renderer::BakeShadows();
 			Instancing::Instance()->BakeShadows();
 			shadowMap->UnBind();
-		}
 
-		//void* my_tex_id = reinterpret_cast<void*>(shadowMap->texture);
-		//ImGui::Begin("FrameBuffer");
-		//ImGui::Image(my_tex_id,ImVec2(512,512),ImVec2(0,1),ImVec2(1,0));
-		//ImGui::SliderFloat("Znear", &Window::GetCamera().znears, -500, 500);
-		//ImGui::SliderFloat("Zfar", &Window::GetCamera().zfars, 0, 500);
-		//ImGui::SliderFloat("Projection", &Window::GetCamera().rationprojections, 0, 1000);
-		//ImGui::SliderFloat("DrawShadows", &Instancing::Instance()->drawShadows, 0, 1);
-		//ImGui::End();
+			/*void* my_tex_id = reinterpret_cast<void*>(shadowMap->texture);
+			ImGui::Begin("FrameBuffer");
+			ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::SliderFloat("Znear", &Window::GetCamera().znears, -500, 500);
+			ImGui::SliderFloat("Zfar", &Window::GetCamera().zfars, 0, 500);
+			ImGui::SliderFloat("Projection", &Window::GetCamera().rationprojections, 0, 1000);
+			ImGui::SliderFloat("DrawShadows", &Instancing::Instance()->drawShadows, 0, 1);
+			ImGui::End();*/
+		}
 
 		glViewport(0, 0, size[0], size[1]);
 		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().frameBufferColor->fbo);

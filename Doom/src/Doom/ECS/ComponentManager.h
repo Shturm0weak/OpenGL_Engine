@@ -19,7 +19,7 @@
 
 namespace Doom {
 
-	enum class ComponentTypes {
+	enum class ComponentType {
 		TRANSFORM,
 		RENDER,
 		CUBECOLLIDER3D,
@@ -45,6 +45,8 @@ namespace Doom {
 			RemoveComponent<Animator>();
 			RemoveComponent<Irenderer>();
 			RemoveComponent<CubeCollider3D>();
+			RemoveComponent<PointLight>();
+			RemoveComponent<DirectionalLight>();
 		}
 		ComponentManager(GameObject* owner, std::string& owner_name) {
 			this->owner = owner;
@@ -82,7 +84,7 @@ namespace Doom {
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;;
+					components[i]->m_Id = i;
 				}
 			}
 			delete col;
@@ -100,7 +102,7 @@ namespace Doom {
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;;
+					components[i]->m_Id = i;
 				}
 			}
 			col->col = nullptr;
@@ -119,7 +121,7 @@ namespace Doom {
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;;
+					components[i]->m_Id = i;
 				}
 			}
 			delete col;
@@ -137,7 +139,7 @@ namespace Doom {
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;;
+					components[i]->m_Id = i;
 				}
 			}
 			delete col;
@@ -155,7 +157,7 @@ namespace Doom {
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;;
+					components[i]->m_Id = i;
 				}
 			}
 			delete col;
@@ -173,7 +175,7 @@ namespace Doom {
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;;
+					components[i]->m_Id = i;
 				}
 			}
 			delete col;
@@ -191,17 +193,17 @@ namespace Doom {
 			if (col->m_Id != _size) {
 				for (unsigned int i = col->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;;
+					components[i]->m_Id = i;
 				}
 			}
 
-			if(col->renderType == "2D"){
+			if(col->renderType == TYPE_2D){
 				auto iter = std::find(Renderer::objects2d.begin(), Renderer::objects2d.end(), col);
 				if (iter != Renderer::objects2d.end()) {
 					Renderer::objects2d.erase(iter);
 				}
 			}
-			else if (col->renderType == "3D") {
+			else if (col->renderType == TYPE_3D) {
 				auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), col);
 				if (iter != Renderer::objects3d.end()) {
 					Renderer::objects3d.erase(iter);
@@ -232,7 +234,7 @@ namespace Doom {
 		RectangleCollider2D* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == ComponentTypes::COLLISION) {
+				if (components[i]->GetComponentType() == ComponentType::COLLISION) {
 					return (RectangleCollider2D*)components[i];
 				}
 			}
@@ -243,7 +245,7 @@ namespace Doom {
 		Irenderer* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == ComponentTypes::RENDER) {
+				if (components[i]->GetComponentType() == ComponentType::RENDER) {
 					return (Irenderer*)components[i];
 				}
 			}
@@ -254,7 +256,7 @@ namespace Doom {
 		DirectionalLight* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == ComponentTypes::DIRECTIONALLIGHT) {
+				if (components[i]->GetComponentType() == ComponentType::DIRECTIONALLIGHT) {
 					return (DirectionalLight*)components[i];
 				}
 			}
@@ -265,7 +267,7 @@ namespace Doom {
 		PointLight* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == ComponentTypes::POINTLIGHT) {
+				if (components[i]->GetComponentType() == ComponentType::POINTLIGHT) {
 					return (PointLight*)components[i];
 				}
 			}
@@ -276,7 +278,7 @@ namespace Doom {
 		Animator* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == ComponentTypes::ANIMATOR) {
+				if (components[i]->GetComponentType() == ComponentType::ANIMATOR) {
 					return (Animator*)components[i];
 				}
 			}
@@ -287,7 +289,7 @@ namespace Doom {
 		CubeCollider3D* GetComponent() {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
-				if (components[i]->GetComponentType() == ComponentTypes::CUBECOLLIDER3D) {
+				if (components[i]->GetComponentType() == ComponentType::CUBECOLLIDER3D) {
 					return (CubeCollider3D*)components[i];
 				}
 			}
@@ -299,7 +301,7 @@ namespace Doom {
 			for (unsigned int i = 0; i < components.size(); i++)
 			{
 				Component* comp = components[i];
-				if (comp->GetComponentType() == ComponentTypes::TRANSFORM) {
+				if (comp->GetComponentType() == ComponentType::TRANSFORM) {
 					return (Transform*)comp;
 				}
 			}
@@ -319,7 +321,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <Collision> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "Collision" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}
@@ -334,7 +336,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <PointLight> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "PointLight" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}
@@ -349,7 +351,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <DirectionalLight> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "DirectionalLight" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}
@@ -364,7 +366,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <SpriteRenderer> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "SpriteRenderer" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}
@@ -379,7 +381,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <Renderer3D> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "Renderer3D" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}
@@ -394,7 +396,7 @@ namespace Doom {
 				animator->m_Id = components.size();
 				components.push_back(animator);
 #ifdef _DEBUG
-				std::cout << "Added component of type <Animator> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "Animator" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return animator;
 			}
@@ -410,7 +412,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <Transform> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "Transform" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}
@@ -425,7 +427,7 @@ namespace Doom {
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG
-				std::cout << "Added component of type <CubeCollider3D> for gameobject: " << owner_name << std::endl;
+				std::cout << NAMECOLOR << "CubeCollider3D" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}
@@ -433,4 +435,4 @@ namespace Doom {
 		}
 	};
 }
-#endif // !1
+#endif

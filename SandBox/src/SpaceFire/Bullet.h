@@ -14,12 +14,12 @@ public:
 	Texture* texture = Texture::Create("src/SpaceFire/Images/WhiteCircle.png");
 
 	Bullet(std::string tag,glm::vec3 moveDir,std::string name = "Bullet", float x = 0, float y = 0) : GameObject(name, x, y) {
-		EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
-		EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
-		EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (GameObject*)this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
-		sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
+		sr = static_cast<SpriteRenderer*>(GetComponentManager()->AddComponent<SpriteRenderer>());
 		col->SetTag(tag);
 		this->moveDir = glm::vec3(moveDir * (1.f / sqrtf(moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z)));
 		sr->SetTexture(texture);

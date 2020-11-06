@@ -13,7 +13,6 @@ GameObject::GameObject(const std::string name,float x, float y,float z) {
 	Renderer::obj_id++;
 	component_manager = new ComponentManager(this, this->name);
 	component_manager->AddComponent<Transform>();
-	component_manager->AddComponent<SpriteRenderer>();
 	component_manager->GetComponent<Transform>()->Translate(x, y, z);
 	World::objects.push_back(this);
 }
@@ -26,7 +25,7 @@ void GameObject::SetName(const char * _name)
 Doom::GameObject::~GameObject()
 {
 #ifdef _DEBUG
-	std::cout << "GameObject " << name << " is destroyed\n";
+	std::cout << "GameObject: <" << NAMECOLOR << name << RESET << "> has been destroyed\n";
 #endif
 	EventSystem::GetInstance()->UnregisterAll(this);
 	delete component_manager;
@@ -40,11 +39,6 @@ void GameObject::operator=(GameObject& go) {
 	tr->RotateOnce(trgo->rotation.x, trgo->rotation.y, trgo->rotation.z,true);
 	tr->Translate(go.GetPositions().x, go.GetPositions().y);
 	tr->Scale(go.scaleValues[0], go.scaleValues[1]);
-	SpriteRenderer* thisRenderer = this->GetComponentManager()->GetComponent<SpriteRenderer>();
-	SpriteRenderer* goRenderer = go.GetComponentManager()->GetComponent<SpriteRenderer>();
-	thisRenderer->SetColor(glm::vec4(goRenderer->color[0], goRenderer->color[1], goRenderer->color[2], goRenderer->color[3]));
-	thisRenderer->SetTexture(goRenderer->texture);
-	thisRenderer->SetUVs(goRenderer->GetUVs());
 	if (go.GetComponentManager()->GetComponent<RectangleCollider2D>() != nullptr) {
 		RectangleCollider2D* col = this->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		RectangleCollider2D* gocol = (RectangleCollider2D*)go.GetComponentManager()->GetComponent<RectangleCollider2D>();

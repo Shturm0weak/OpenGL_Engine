@@ -25,6 +25,8 @@ void Doom::Renderer3D::LoadMesh(Mesh * _mesh)
 	EraseFromInstancing();
 	mesh = _mesh;
 	ChangeRenderTechnic(renderTechnic);
+	if(owner->GetComponentManager()->GetComponent<CubeCollider3D>() == nullptr)
+		owner->GetComponentManager()->AddComponent<CubeCollider3D>()->isBoundingBox = true;
 }
 
 void Doom::Renderer3D::EraseFromInstancing()
@@ -45,12 +47,11 @@ void Doom::Renderer3D::EraseFromInstancing()
 
 Doom::Renderer3D::Renderer3D(GameObject* _owner)
 {
-	renderType = "3D";
-	SetType(ComponentTypes::RENDER);
+	renderType = RenderType::TYPE_3D;
+	SetType(ComponentType::RENDER);
 	owner = _owner;
 	shader = Shader::Get("Default3D");
 	tr = owner->GetComponentManager()->GetComponent<Transform>();
-	pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, tr->position.z));
 	Renderer::objects3d.push_back(this);
 }
 
@@ -68,19 +69,20 @@ void Doom::Renderer3D::BakeShadows()
 			Shader* bakeShader = Shader::Get("BakeShadows");
 			bakeShader->Bind();
 			glBindTextureUnit(0, diffuseTexture->m_RendererID);
-			bakeShader->SetUniformMat4f("u_Model", pos);
+			bakeShader->SetUniformMat4f("u_Model", tr->pos);
 			bakeShader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
-			bakeShader->SetUniformMat4f("u_Scale", scale);
-			bakeShader->SetUniformMat4f("u_View", view);
+			bakeShader->SetUniformMat4f("u_Scale", tr->scale);
+			bakeShader->SetUniformMat4f("u_View", tr->view);
 			bakeShader->Bind();
 			mesh->va->Bind();
 			mesh->ib->Bind();
 			mesh->vb->Bind();
-			Renderer::Vertices += mesh->meshSize * 0.5f;
+			Renderer::Vertices += mesh->indicesSize;
 			Renderer::DrawCalls++;
 			glDrawElements(GL_TRIANGLES, mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 			bakeShader->UnBind();
 			mesh->ib->UnBind();
+			glBindTextureUnit(0, Texture::WhiteTexture->m_RendererID);
 		}
 	}
 }
@@ -98,18 +100,18 @@ void Doom::Renderer3D::ForwardRender()
 			shader->Bind();
 			glBindTextureUnit(0, diffuseTexture->m_RendererID);
 			shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-			shader->SetUniformMat4f("u_Model", pos);
-			shader->SetUniformMat4f("u_View", view);
-			shader->SetUniformMat4f("u_Scale", scale);
+			shader->SetUniformMat4f("u_Model", tr->pos);
+			shader->SetUniformMat4f("u_View", tr->view);
+			shader->SetUniformMat4f("u_Scale", tr->scale);
 			shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
-
+			AdditionalUniformsLoad();
 			int dlightSize = DirectionalLight::dirLights.size();
 			shader->SetUniform1i("dLightSize", dlightSize);
 			for (int i = 0; i < dlightSize; i++)
 			{
 				char buffer[64];
 				DirectionalLight* dl = DirectionalLight::dirLights[i];
-				dl->dir = dl->GetOwnerOfComponent()->GetComponent<Irenderer>()->view * glm::vec4(0, 0, -1, 1);
+				dl->dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->view * glm::vec4(0, 0, -1, 1);
 				sprintf(buffer, "dirLights[%i].dir", i);
 				shader->SetUniform3fv(buffer, dl->dir);
 				sprintf(buffer, "dirLights[%i].color", i);
@@ -150,12 +152,12 @@ void Doom::Renderer3D::ForwardRender()
 			mesh->va->Bind();
 			mesh->ib->Bind();
 			mesh->vb->Bind();
-			Renderer::Vertices += mesh->meshSize * 0.5f;
+			Renderer::Vertices += mesh->ib->GetCount();
 			Renderer::DrawCalls++;
 			glDrawElements(GL_TRIANGLES, mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 			shader->UnBind();
 			mesh->ib->UnBind();
-			glBindTextureUnit(0, 0);
+			glBindTextureUnit(0, Texture::WhiteTexture->m_RendererID);
 		}
 		else {
 			//shader = Shader::Get("SkyBoxShader");
@@ -166,14 +168,15 @@ void Doom::Renderer3D::ForwardRender()
 			shader->Bind();
 			Window::GetCamera().RecalculateViewMatrix();
 			shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetProjectionMatrix());
-			shader->SetUniformMat4f("u_Model", pos);
+			shader->SetUniformMat4f("u_Model", tr->pos);
 			shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetCamera().GetViewMatrix())));
-			shader->SetUniformMat4f("u_Scale", scale);
+			shader->SetUniformMat4f("u_Scale", tr->scale);
 			shader->SetUniform1i("u_DiffuseTexture", 0);
 			shader->Bind();
 			mesh->va->Bind();
 			mesh->ib->Bind();
 			mesh->vb->Bind();
+			Renderer::Vertices += mesh->ib->GetCount();
 			Renderer::DrawCalls++;
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			glBindVertexArray(0);
@@ -183,6 +186,14 @@ void Doom::Renderer3D::ForwardRender()
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
 		}
+	}
+}
+
+void Doom::Renderer3D::AdditionalUniformsLoad()
+{
+	for (auto i = floatUniforms.begin(); i != floatUniforms.end(); i++)
+	{
+		shader->SetUniform1f(i->first, *i->second);
 	}
 }
 

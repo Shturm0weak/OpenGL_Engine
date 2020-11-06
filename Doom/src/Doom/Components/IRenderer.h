@@ -5,16 +5,18 @@
 
 namespace Doom {
 
+	enum DOOM_API RenderType {
+		TYPE_2D,
+		TYPE_3D,
+	};
+
 	class DOOM_API Irenderer : public Component{
 	public:
-		glm::mat4 scale = glm::mat4(1.f);
-		glm::mat4 pos = glm::mat4(1.f);
-		glm::mat4 viewXscale = glm::mat4(1.f);
+
 		glm::mat4 MVP = glm::mat4(1.f);
-		glm::mat4 view = glm::mat4(1.f);
 		glm::vec4 color = COLORS::White;
 		TextureAtlas* textureAtlas = nullptr;
-		std::string renderType = "2D";
+		RenderType renderType = RenderType::TYPE_2D;
 
 		Irenderer() {}
 		virtual ~Irenderer() {}

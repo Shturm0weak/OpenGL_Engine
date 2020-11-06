@@ -251,7 +251,8 @@ namespace fbx {
 			delete[] mesh->vertecesForNormals;
 			delete[] mesh->indices;
 			delete[] mesh->normals;
-			delete[] mesh->uv;
+			//TODO!!! NEED TO FIX THIS
+			//delete[] mesh->uv;
 			delete[] mesh->uvForVert;
 			return mesh;
 		}

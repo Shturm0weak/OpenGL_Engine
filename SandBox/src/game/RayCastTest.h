@@ -11,7 +11,6 @@ public:
 	}
 
 	virtual void OnStart() override {
-		Renderer::Load("src/savedRayCastTest.txt");
 		Window::GetCamera().Zoom(28);
 		coin = new GameObject("Coin",5,5);
 		RectangleCollider2D* col = coin->GetComponentManager()->AddComponent<RectangleCollider2D>();

@@ -67,3 +67,8 @@ void Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length
 	}
 
 }
+
+void Doom::Ray3D::Normilize(glm::vec3 & vector)
+{
+		vector = glm::vec3(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)));
+}

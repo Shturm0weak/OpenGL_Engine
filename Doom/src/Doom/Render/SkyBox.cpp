@@ -5,7 +5,6 @@ using namespace Doom;
 
 SkyBox::SkyBox(std::vector<std::string> faces,Mesh* mesh) {
 	name = "SkyBox";
-	GetComponentManager()->RemoveComponent<Irenderer>();
 	Renderer3D* r = GetComponentManager()->AddComponent<Renderer3D>();
 	r->isSkyBox = true;
 	r->mesh = mesh;
@@ -13,5 +12,5 @@ SkyBox::SkyBox(std::vector<std::string> faces,Mesh* mesh) {
 	Texture* texture = new Texture();
 	texture->m_RendererID = m_RendererID;
 	GetComponent<Renderer3D>()->diffuseTexture = texture;
-	GetComponent<Renderer3D>()->shader = Shader::Create("SkyBoxShader","src/Shaders/SkyBox.shader");
+	GetComponent<Renderer3D>()->shader = Shader::Get("SkyBox");
 }

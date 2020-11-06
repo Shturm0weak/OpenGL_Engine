@@ -11,28 +11,31 @@ namespace Doom {
 	class DOOM_API Transform : public Component {
 	private:
 
-
-		std::mutex mtx_move;
-		std::mutex mtx_rotateOnce;
-		std::mutex mtx_rotateOnceDir;
-		std::mutex mtx_rotate;
-		std::mutex mtx_translate;
-		std::mutex mtx_scale;
-
-
 		Irenderer* sr = nullptr;
 		RectangleCollider2D* col = nullptr;
 
 		void init();
 		void RealVertexPositions();
 
-		float WorldVerPos[16];
 		float prevAngle;
 
 		glm::vec3 prevPosition;
 
+		glm::mat4 scale = glm::mat4(1.f);
+		glm::mat4 pos = glm::mat4(1.f);
+		glm::mat4 viewXscale = glm::mat4(1.f);
+		glm::mat4 view = glm::mat4(1.f);
+
 		friend class ComponentManager;
 		friend class RectangleCollider2D;
+		friend class DirectionalLight;
+		friend class Renderer3D;
+		friend class SpriteRenderer;
+		friend class Instancing;
+		friend class Batch;
+		friend class Editor;
+		friend class CubeCollider3D;
+		friend class Gizmos;
 
 	public:
 		Transform();

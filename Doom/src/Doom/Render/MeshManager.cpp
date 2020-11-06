@@ -20,11 +20,17 @@ void MeshManager::LoadMesh(std::string name, std::string filepath)
 	else if (subStr == "stl") {
 		Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
 	}
+	else {
+		return;
+	}
 	std::vector<Renderer3D*> New;
+	#define	_LOAD_MESH_
 	Mesh* mesh = GetMesh(name);
+	#undef _LOAD_MESH_
 	mesh->Init();
 	Instancing::Instance()->instancedObjects.insert(std::make_pair(mesh,New));
 	Instancing::Instance()->Create(mesh);
+	std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN  << "> has been loaded\n" << RESET;
 }
 
 void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath)
@@ -41,9 +47,12 @@ void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath)
 		else if (subStr == "stl") {
 			Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
 		}
+		else {
+			return;
+		}
 		Mesh* mesh = GetMesh(name);
 		needToInitMeshes.push_back(mesh);
-		std::cout << BOLDGREEN << "Mesh " << name << " has been loaded\n" << RESET;
+		std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
 	});
 }
 
@@ -54,7 +63,9 @@ Mesh * MeshManager::GetMesh(std::string name)
 		return iter->second;
 	}
 	else {
-		std::cout << RED << "No such mesh\n" << RESET;
+#ifdef _LOAD_MESH_
+		std::cout << RED << "Mesh: <" NAMECOLOR << name << RED << "> has not been found!\n" << RESET;
+#endif
 		return nullptr;
 	}
 }

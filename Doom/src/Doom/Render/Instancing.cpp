@@ -49,7 +49,7 @@ void Doom::Instancing::Render()
 		for (int i = 0; i < dlightSize; i++)
 		{	
 			DirectionalLight* dl = DirectionalLight::dirLights[i];
-			dl->dir = dl->GetOwnerOfComponent()->GetComponent<Irenderer>()->view * glm::vec4(0, 0, -1, 1);
+			dl->dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->view * glm::vec4(0, 0, -1, 1);
 			sprintf(buffer, "dirLights[%i].dir", i);
 			shader->SetUniform3fv(buffer, dl->dir);
 			sprintf(buffer, "dirLights[%i].color", i);
@@ -87,7 +87,7 @@ void Doom::Instancing::Render()
 		glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
 		shader->SetUniform1i("u_ShadowMap", 2);
 
-		Renderer::Vertices += gliter->first->meshSize * objsSize;
+		Renderer::Vertices += gliter->first->indicesSize * objsSize;
 		Renderer::DrawCalls++;
 
 		gliter->second.vao->Bind();
@@ -126,12 +126,13 @@ void Doom::Instancing::Render()
 		gliter->second.ibo->UnBind();
 		gliter->second.vao->UnBind();
 		gliter->second.vbo->UnBind();
+		glBindTextureUnit(0, Texture::WhiteTexture->m_RendererID);
 	}
 }
 
 void Doom::Instancing::BakeShadows()
 {
-	shader = Shader::Get("Instancing3DBakeShadows");
+	shader = Shader::Get("BakeShadowsInstancing");
 
 	for (auto iter = instancedObjects.begin(); iter != instancedObjects.end(); iter++)
 	{
@@ -183,6 +184,7 @@ void Doom::Instancing::BakeShadows()
 		gliter->second.ibo->UnBind();
 		gliter->second.vao->UnBind();
 		gliter->second.vbo->UnBind();
+		glBindTextureUnit(0, Texture::WhiteTexture->m_RendererID);
 	}
 	shader = nullptr;
 }
@@ -241,7 +243,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(&posPtr[6], &r->color[0], 16);
 				posPtr[10] = r->mat.ambient;
 				posPtr[11] = r->mat.specular;
-				float* view = glm::value_ptr(r->view);
+				float* view = glm::value_ptr(owner->GetComponent<Transform>()->view);
 				memcpy(&posPtr[12], view, 64);
 			}
 			{
@@ -267,7 +269,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(&posPtr[6], &r->color[0], 16);
 				posPtr[10] = r->mat.ambient;
 				posPtr[11] = r->mat.specular;
-				float* view = glm::value_ptr(r->view);
+				float* view = glm::value_ptr(owner->GetComponent<Transform>()->view);
 				memcpy(&posPtr[12], view, 64);
 			}
 			{

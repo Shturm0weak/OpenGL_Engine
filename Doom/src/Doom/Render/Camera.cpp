@@ -11,7 +11,7 @@ using namespace Doom;
 
 Camera::Camera(){
 	m_Position = glm::vec3(0, 0, 0);
-	EventSystem::GetInstance()->RegisterClient("OnWindowResize", this);
+	EventSystem::GetInstance()->RegisterClient(EventType::ONWINDOWRESIZE, this);
 }
 
 void Camera::RecalculateViewMatrix() {

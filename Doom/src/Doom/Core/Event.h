@@ -14,10 +14,10 @@ namespace Doom {
 		void* parameter;
 
 	public:
-		const char* eventId;
+		int eventId;
 		Listener* sender;
 
-		Event(const char* eventId, Listener* sender, void* parameter = 0) {
+		Event(int eventId, Listener* sender, void* parameter = 0) {
 			this->eventId = eventId;
 			this->parameter = parameter;
 			this->sender = sender;
@@ -25,11 +25,7 @@ namespace Doom {
 
 		~Event() {}
 
-		inline const char* EventId() const {
-			if (eventId != nullptr)
-				return eventId;
-			return nullptr;
-		}
+		inline int EventId() {return this->eventId;}
 		inline void* Parameter() { return parameter; }
 		inline Listener* Sender() { return sender; }
 	};

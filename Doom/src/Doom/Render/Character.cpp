@@ -85,7 +85,7 @@ Doom::Font::~Font()
 	characters.clear();
 }
 
-void Doom::Font::LoadFont(std::string filename, std::string pathToTexture)
+void Doom::Font::LoadFont(const std::string& filename, const std::string& pathToTexture)
 {
 	fontAtlas = Texture::Create(pathToTexture);
 	std::ifstream in_file;
@@ -124,9 +124,8 @@ void Doom::Font::LoadFont(std::string filename, std::string pathToTexture)
 			//std::cout << xadvance[i] << std::endl;
 		}
 	}
-	//std::cout << "count " << count << std::endl;
 	in_file.close();
-	std::cout << BOLDGREEN << "Font " << name << " has been loaded" << RESET << std::endl;
+	std::cout << BOLDGREEN << "Font: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded" << RESET << std::endl;
 }
 
 void Doom::Font::LoadCharacters()
@@ -136,7 +135,6 @@ void Doom::Font::LoadCharacters()
 	{
 		character = (new Character(this, i));
 		characters.insert(std::make_pair(character->ch, character));
-		//std::cout << i << "	" << int(characters[i].get().ch) << "	" << characters[i].get().ch << std::endl;
 	}
-	std::cout << BOLDGREEN << "Characters has been loaded" << RESET << std::endl;
+	//std::cout << BOLDGREEN << "Characters has been loaded" << RESET << std::endl;
 }

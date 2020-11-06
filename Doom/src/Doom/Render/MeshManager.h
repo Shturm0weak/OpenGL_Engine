@@ -14,6 +14,7 @@ namespace Doom {
 		static const char** listOfMeshes;
 	public:
 		static void LoadMesh(std::string name, std::string filepath);
+
 		static void AsyncLoadMesh(std::string name, std::string filepath);
 
 		static Mesh* GetMesh(std::string name);

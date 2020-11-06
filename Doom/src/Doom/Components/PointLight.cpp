@@ -5,7 +5,7 @@ using namespace Doom;
 
 Doom::PointLight::PointLight()
 {
-	SetType(ComponentTypes::POINTLIGHT);
+	SetType(ComponentType::POINTLIGHT);
 	pLights.push_back(this);
 }
 

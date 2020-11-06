@@ -12,6 +12,7 @@ namespace Doom {
 		};
 
 		static void RayCast(glm::vec3 start, glm::vec3 dir,Hit* hit,float length);
+		static void Normilize(glm::vec3& vector);
 	};
 
 }

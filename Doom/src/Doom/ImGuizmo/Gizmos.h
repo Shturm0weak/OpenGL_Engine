@@ -15,7 +15,9 @@ namespace Doom {
 		GameObject* f = nullptr;
 	public:
 		bool Enable = false;
-
+		bool roundTransform = false;
+		bool isHovered;
+		bool blockFrame = false;
 		Transform* tr;
 		GameObject* obj = nullptr;
 

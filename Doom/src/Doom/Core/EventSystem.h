@@ -13,15 +13,29 @@ using std::pair;
 #include "Core.h"
 
 namespace Doom {
+
+	enum DOOM_API EventType {
+		ONUPDATE,
+		ONSTART,
+		ONWINDOWRESIZE,
+		ONMAINTHREADPROCESS,
+		ONCOLLSION,
+		ONMISS,
+		ONMOVE,
+		ONROTATE,
+		ONSCALE,
+		ONTRANSLATE
+	};
+
 	class DOOM_API EventSystem {
 	private:
 
-		multimap<const char*, Listener*> database;
+		multimap<EventType, Listener*> database;
 
-		pair<multimap<const char*, Listener*>::iterator,
-			multimap<const char*, Listener*>::iterator> range;
+		pair<multimap<EventType, Listener*>::iterator,
+			multimap<EventType, Listener*>::iterator> range;
 
-		multimap<const char*, Listener*>::iterator iter;
+		multimap<EventType, Listener*>::iterator iter;
 
 		std::queue<Event> currentEvents;
 		mutable std::mutex mtx, mtx1;
@@ -40,7 +54,7 @@ namespace Doom {
 
 		int GetAmountOfEvents() { return currentEvents.size(); }
 
-		bool AlreadyRegistered(const char* eventId, Listener* client);
+		bool AlreadyRegistered(EventType eventId, Listener* client);
 
 		EventSystem(EventSystem& rhs) {}
 
@@ -48,13 +62,13 @@ namespace Doom {
 
 		static EventSystem* GetInstance();
 
-		void RegisterClient(const char* event, Listener* client);
+		void RegisterClient(EventType event, Listener* client);
 
-		void UnregisterClient(const char* event, Listener* client);
+		void UnregisterClient(EventType event, Listener* client);
 
 		void UnregisterAll(Listener* client);
 
-		void SendEvent(const char* eventId, Listener* sender, void* data = 0);
+		void SendEvent(EventType eventId, Listener* sender, void* data = 0);
 
 		void ProcessEvents();
 
@@ -69,7 +83,7 @@ namespace Doom {
 	public:
 		
 		MainThread() {
-			EventSystem::GetInstance()->RegisterClient("OnMainThreadProcess", (Listener*)this);
+			EventSystem::GetInstance()->RegisterClient(EventType::ONMAINTHREADPROCESS, (Listener*)this);
 		}
 
 		static void Init() {

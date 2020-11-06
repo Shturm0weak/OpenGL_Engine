@@ -18,13 +18,6 @@ void Editor::EditorUpdate()
 
 	ImGui::Begin("Console");
 
-	if (ImGui::Button("Save")) {
-		Renderer::Save("C:/Users/Alexandr/Desktop/saved.txt");
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Load")) {
-		Renderer::Load("C:/Users/Alexandr/Desktop/saved.txt");
-	}
 	ImGui::SameLine();
 	if (ImGui::Button("EXIT")) {
 		glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
@@ -54,6 +47,20 @@ void Editor::EditorUpdate()
 			Renderer::CalculateObjectsVectors().size();
 			go = World::objects.back();
 		}
+		if (ImGui::MenuItem("Create 2D GameObject"))
+		{
+			Renderer::CreateGameObject();
+			Renderer::CalculateObjectsVectors().size();
+			go = World::objects.back();
+			go->GetComponentManager()->AddComponent<SpriteRenderer>();
+		}
+		if (ImGui::MenuItem("Create 3D GameObject"))
+		{
+			Renderer::CreateGameObject();
+			Renderer::CalculateObjectsVectors().size();
+			go = World::objects.back();
+			go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+		}
 		if (ImGui::MenuItem("Clone"))
 		{
 			GameObject* clgo = Renderer::CreateGameObject();
@@ -80,22 +87,59 @@ void Editor::EditorUpdate()
 	ImGui::SetWindowFontScale(1.25);
 	Renderer::CalculateObjectsVectors();
 
-	
+	SceneHierarchy();
+
+	if (gizmo->obj != nullptr) {
+		go = gizmo->obj;
+	}
+	else if (gizmo != nullptr && go != nullptr) {
+		gizmo->obj = go;
+	}
+
 	if (World::objects.size() > 0 && go == nullptr) {
 		go = World::objects[0];
 	}
 
-	if (gizmo != nullptr && go != nullptr) {
-		gizmo->obj = go;
-	}
 
-	SceneHierarchy();
 
 	ImGui::NewLine();
 	ImGui::End();
 
 	ImGui::Begin("Properties");
 	 {
+		if (ImGui::BeginPopupContextWindow())
+		{
+			if (ImGui::MenuItem("Renderer3D"))
+			{
+				go->GetComponentManager()->AddComponent<Renderer3D>();
+			}
+			if (ImGui::MenuItem("SpriteRenderer"))
+			{
+				go->GetComponentManager()->AddComponent<SpriteRenderer>();
+			}
+			if (ImGui::MenuItem("RectangleCollider2D"))
+			{
+				go->GetComponentManager()->AddComponent<Doom::RectangleCollider2D>();
+			}
+			if (ImGui::MenuItem("DirectionalLight"))
+			{
+				go->GetComponentManager()->AddComponent<DirectionalLight>();
+			}
+			if (ImGui::MenuItem("PointLight"))
+			{
+				go->GetComponentManager()->AddComponent<PointLight>();
+			}
+			if (ImGui::MenuItem("CubeCollider3D"))
+			{
+				go->GetComponentManager()->AddComponent<CubeCollider3D>();
+			}
+			if (ImGui::MenuItem("Child")) {
+				GameObject* child1 = new GameObject("Child", 0, 0);
+				go->AddChild((void*)child1);
+				child1->SetOwner((void*)go);
+			}
+			ImGui::EndPopup();
+		}
 		ImGui::SetWindowFontScale(1.25);
 		if (Renderer::GetObjectsWithNoOwnerReference().size() > 0) {
 			if (go == nullptr)
@@ -113,7 +157,7 @@ void Editor::EditorUpdate()
 				go->SetName(name);
 			}
 			ImGui::SliderInt("Layer", &go->GetLayer(), 0, Renderer::GetAmountOfObjects() - 1);
-			if (go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D") {
+			if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == TYPE_2D) {
 				if (ImGui::Button("Change layer")) {
 					if (go->GetLayer() > Renderer::GetAmountOfObjects() - 1) {
 						std::cout << "Error: layer out of range" << std::endl;
@@ -135,26 +179,8 @@ void Editor::EditorUpdate()
 			MeshPicker();
 			TexturePicker();
 			ShaderMenu();
-			ImGui::NewLine();
-			ImGui::Indent(ImGui::GetWindowSize().x * 0.4);
-			if (col == nullptr) {
-				if (ImGui::Button("Add collision")) {
-					go->GetComponentManager()->AddComponent<Doom::RectangleCollider2D>();
-				}
 			}
-			
-			ImGui::NewLine();
-			if (ImGui::Button("Add Child")) {
-				GameObject* child1 = new GameObject("Child", 0, 0);
-				go->AddChild((void*)child1);
-				child1->SetOwner((void*)go);
-			}
-			ImGui::Unindent();
-
 		}
-		
-	}
-
 	ImGui::End();
 }
 
@@ -198,7 +224,7 @@ void Editor::CreateTextureAtlas() {
 
 void Doom::Editor::MaterialComponent()
 {
-	if (go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "3D") {
+	if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == TYPE_3D) {
 		if (ImGui::CollapsingHeader("Renderer 3D")) {
 			Renderer3D* r = static_cast<Renderer3D*>(go->GetComponentManager()->GetComponent<Irenderer>());
 			ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
@@ -208,20 +234,27 @@ void Doom::Editor::MaterialComponent()
 				if (ImGui::Button("Reload")) {
 					shader->Reload();
 				}
+				ImGui::InputText("Shader's name", this->name, sizeof(this->name));
+				if (ImGui::Button("Change shader")) {
+					Shader* shaderTemp = Shader::Get(this->name);
+					if (shaderTemp != nullptr) {
+						r->shader = shaderTemp;
+					}
+				}
 			}
 			if (ImGui::CollapsingHeader("Material")) {
 				ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
 				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 50);
 				void* my_tex_id = reinterpret_cast<void*>(r->diffuseTexture->m_RendererID);
-				if (ImGui::ImageButton(my_tex_id, { 64,64 })) {
+				if (ImGui::ImageButton(my_tex_id, { 64,64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
 					IsActiveTexturePicker = true;
 					texturePickerId = 1;
 				}
 				if (r->normalMapTexture == nullptr)
-					my_tex_id = reinterpret_cast<void*>(-12345);
+					my_tex_id = reinterpret_cast<void*>(Texture::Get("InvalidTexture")->m_RendererID);
 				else
 					my_tex_id = reinterpret_cast<void*>(r->normalMapTexture->m_RendererID);
-				if (ImGui::ImageButton(my_tex_id, { 64,64 })) {
+				if (ImGui::ImageButton(my_tex_id, { 64,64 },ImVec2(0,0),ImVec2(1,1),-1,ImVec4(0.79,0,0.75,1))) {
 					IsActiveTexturePicker = true;
 					texturePickerId = 2;
 				}
@@ -231,7 +264,9 @@ void Doom::Editor::MaterialComponent()
 				r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
 			}
 			if (ImGui::CollapsingHeader("Mesh")) {
-				ImGui::Text("Name: %s", r->mesh->name);
+				if (r->mesh != nullptr) {
+					ImGui::Text("Name: %s", r->mesh->name);
+				}
 				if (ImGui::Button("Meshes")) {
 					IsActiveMeshPicker = true;
 				}
@@ -254,7 +289,7 @@ void Doom::Editor::CubeCollider3DComponent()
 
 void Doom::Editor::Renderer2DComponent()
 {
-	if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D" && ImGui::CollapsingHeader("Render2D")) {
+	if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == TYPE_2D && ImGui::CollapsingHeader("Render2D")) {
 		SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
 		color = sr->GetColor();
 		ImGui::ColorEdit4("Color", color);
@@ -474,7 +509,7 @@ void Doom::Editor::MeshPicker()
 				mesh++;
 			}
 		}
-		std::cout << "Mesh " << mesh->first << "is applied\n";
+		std::cout << "Mesh " << mesh->first << " is applied\n";
 		go->GetComponent<Renderer3D>()->LoadMesh(mesh->second);
 	}
 	ImGui::InputText("Path to mesh",mesh,128);
@@ -609,7 +644,7 @@ void Doom::Editor::DrawNode(GameObject* go, ImGuiTreeNodeFlags flags)
 {
 	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)go, flags, go->name.c_str());
 	if (ImGui::IsItemClicked()) {
-		this->go = go;
+		this->gizmo->obj = go;
 	}
 
 	if (opened) {
@@ -635,7 +670,7 @@ void Doom::Editor::ShaderMenu()
 	if (!IsActiveShaderMenu)
 		return;
 	ImGui::Begin("Shaders", &IsActiveShaderMenu);
-	ImGui::ListBox("Meshes", &selectedShader, Shader::GetListOfShaders(), Shader::shaders.size());
+	ImGui::ListBox("Shaders", &selectedShader, Shader::GetListOfShaders(), Shader::shaders.size());
 	if (ImGui::Button("Reload")) {
 		auto shader = Shader::shaders.begin();
 		if (selectedShader > -1) {
@@ -675,7 +710,7 @@ void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 		{
 			std::function<void()> f2 = [=] {Texture::LoadTextureInVRAM(texture[i]->GetFilePath()); };
 			std::function<void()>* f1 = new std::function<void()>(f2);
-			EventSystem::GetInstance()->SendEvent("OnMainThreadProcess",nullptr,f1);
+			EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS,nullptr,f1);
 		}
 		
 		
@@ -709,7 +744,7 @@ void Doom::Editor::CheckTexturesFolder(const std::string path)
 		{
 			std::function<void()> f2 = [=] {Texture::LoadTextureInVRAM(textureVecTemp[i]->GetFilePath()); };
 			std::function<void()>* f1 = new std::function<void()>(f2);
-			EventSystem::GetInstance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+			EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
 		}
 		textureVecTemp.clear();
 
@@ -742,8 +777,8 @@ void Doom::Editor::Debug()
 	ImGui::Text("Textures binded %d", Texture::bindedAmount);
 	ImGui::Text("Textures amount %d", Texture::textures.size());
 	ImGui::Checkbox("Polygon mode",&Renderer::PolygonMode);
-	ImGui::Checkbox("Draw normals", &drawNormals);
 	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::IsVisible);
+	ImGui::Checkbox("Round transformations", &Editor::Instance()->gizmo->roundTransform);
 	ImGui::End();
 	TextProps();
 }
@@ -781,7 +816,7 @@ void Doom::Editor::UpdateNormals()
 		for (size_t i = 0; i < size; i++)
 		{
 			Irenderer* iR = World::objects[i]->GetComponent<Irenderer>();
-			if (iR->renderType == "3D") {
+			if (iR->renderType == TYPE_3D) {
 				Renderer3D* r = static_cast<Renderer3D*>(iR);
 				Mesh* mesh = r->mesh;
 				size_t meshSize = r->mesh->meshSize;
@@ -789,7 +824,7 @@ void Doom::Editor::UpdateNormals()
 				{
 					glm::vec3 pos = glm::vec3(mesh->mesh[j + 0], mesh->mesh[j + 1], mesh->mesh[j + 2]);
 					glm::vec3 normals = glm::vec3(mesh->mesh[j + 3], mesh->mesh[j + 4], mesh->mesh[j + 5]);
-					glm::mat4 scaleXview = r->scale * r->view;
+					glm::mat4 scaleXview = r->GetOwnerOfComponent()->GetComponent<Transform>()->scale * r->GetOwnerOfComponent()->GetComponent<Transform>()->view;
 					glm::vec4 transformedPos = scaleXview * glm::vec4(pos.x, pos.y, pos.z, 0);
 					glm::vec4 transformedNor = scaleXview * glm::vec4(normals.x, normals.y, normals.z, 0);
 					this->normals[counter]->SetStartPoint(World::objects[i]->position + (glm::vec3)transformedPos);

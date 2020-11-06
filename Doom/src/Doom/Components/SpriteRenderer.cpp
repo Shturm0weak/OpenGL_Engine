@@ -24,10 +24,9 @@ void SpriteRenderer::InitShader() {
 
 Doom::SpriteRenderer::SpriteRenderer(GameObject* _owner)
 {
-	SetType(ComponentTypes::RENDER);
+	SetType(ComponentType::RENDER);
 	this->owner = _owner;
 	tr = owner->GetComponentManager()->GetComponent<Transform>();
-	this->pos = translate(glm::mat4(1.f), glm::vec3(tr->position.x, tr->position.y, 0));
 	InitShader();
 	Renderer::objects2d.push_back(this);
 }
@@ -39,9 +38,9 @@ Doom::SpriteRenderer::~SpriteRenderer()
 void Doom::SpriteRenderer::Update(glm::vec3 pos)
 {
 	ThreadPool::Instance()->enqueue([=]{
-		this->pos = translate(glm::mat4(1.f), pos);
+		Transform* tr = this->GetOwnerOfComponent()->GetComponentManager()->GetComponent<Transform>();
 		float WorldVerPos[16];
-		glm::mat4 scaleXview = view * scale;
+		glm::mat4 scaleXview = tr->view * tr->scale;
 		float* pSource;
 		pSource = (float*)glm::value_ptr(scaleXview);
 		for (unsigned int i = 0; i < 4; i++) {

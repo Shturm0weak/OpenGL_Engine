@@ -118,6 +118,7 @@
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
     <ClInclude Include="src\Doom\Core\Ray3D.h" />
+    <ClInclude Include="src\Doom\Core\Utils.h" />
     <ClInclude Include="src\Doom\Core\World.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxnode.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="src\Doom\Components\PointLight.cpp" />
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
+    <ClCompile Include="src\Doom\Core\Listener.cpp" />
     <ClCompile Include="src\Doom\Core\Ray3D.cpp" />
     <ClCompile Include="src\Doom\Core\World.cpp" />
     <ClCompile Include="src\Doom\ECS\Component.cpp" />

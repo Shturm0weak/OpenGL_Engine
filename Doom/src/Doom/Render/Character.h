@@ -72,7 +72,7 @@ namespace Doom {
 		int *yoffset;
 		int *xadvance;
 
-		void LoadFont(std::string filename, std::string pathToTexture);
+		void LoadFont(const std::string& filename, const std::string& pathToTexture);
 		void LoadCharacters();
 	};
 

@@ -38,6 +38,8 @@ DOOM_API std::vector<std::string> Editor::texturesPath;
 DOOM_API std::vector<Texture*> Editor::texture;
 DOOM_API std::vector<Texture*> Editor::textureVecTemp;
 DOOM_API int Texture::bindedAmount = 0;
+DOOM_API std::vector<Texture*> Texture::loadedTextures;
+DOOM_API std::mutex Texture::lockTextureLoading;
 DOOM_API Texture* Texture::WhiteTexture;
 DOOM_API double Texture::VRAMused = 0;
 DOOM_API std::map<std::string, Texture*> Texture::textures;

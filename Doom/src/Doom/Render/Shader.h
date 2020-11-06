@@ -19,12 +19,12 @@ namespace Doom {
 		std::string m_Name;
 		int GetUniformLocation(const std::string& name);
 		std::unordered_map<std::string, int> m_UniformLocationCache;
-		Shader(std::string name,std::string filepath);
+		Shader(const std::string& name,const std::string& filepath);
 		~Shader();
 
 	public:
-		static Shader* Create(std::string name,std::string path);
-		static Shader* Get(std::string name);
+		static Shader* Create(const std::string& name, const std::string& path);
+		static Shader* Get(const std::string& name);
 
 		void Bind() const;
 		void UnBind() const;
@@ -32,20 +32,20 @@ namespace Doom {
 		ShaderProgramSource Parseshader(const std::string& filepath);
 		unsigned int CreateShader(const std::string& vertexShader, const std::string& FragmentShader);
 		unsigned int CompileShader(unsigned int type, const std::string& source);
-		void SetUniform1i(const std::string name, int value);
-		void SetUniform1iv(const std::string name, int* value);
+		void SetUniform1i(const std::string& name, int value);
+		void SetUniform1iv(const std::string& name, int* value);
 
-		void SetUniform4f(const std::string name, float v0, float v1, float v2, float fv3);
-		void SetUniform3f(const std::string name, float v0, float v1, float v2);
-		void SetUniform2f(const std::string name, float v0, float v1);
+		void SetUniform4f(const std::string& name, float v0, float v1, float v2, float fv3);
+		void SetUniform3f(const std::string& name, float v0, float v1, float v2);
+		void SetUniform2f(const std::string& name, float v0, float v1);
 
-		void SetUniform4fv(const std::string name,const glm::vec4& vec4);
-		void SetUniform3fv(const std::string name,const glm::vec3& vec3);
-		void SetUniform2fv(const std::string name,const glm::vec2& vec);
+		void SetUniform4fv(const std::string& name,const glm::vec4& vec4);
+		void SetUniform3fv(const std::string& name,const glm::vec3& vec3);
+		void SetUniform2fv(const std::string& name,const glm::vec2& vec);
 
-		void SetUniform1f(const std::string name, float v0);
+		void SetUniform1f(const std::string& name, float v0);
 
-		void SetUniformMat4f(const std::string name,const glm::mat4& matrix);
+		void SetUniformMat4f(const std::string& name,const glm::mat4& matrix);
 	
 		void Reload();
 

@@ -3,17 +3,17 @@
 
 using namespace Doom;
 
-bool EventSystem::AlreadyRegistered(const char* eventId, Listener* client) {
+bool EventSystem::AlreadyRegistered(EventType eventId, Listener* client) {
 
 	bool alreadyRegistered = false;
 
-	pair<multimap<const char*, Listener*>::iterator,
-		multimap<const char*, Listener*>::iterator> range;
+	pair<multimap<EventType, Listener*>::iterator,
+		multimap<EventType, Listener*>::iterator> range;
 
 	range = database.equal_range(eventId);
 
 	
-	for (multimap<const char*, Listener*>::iterator iter = range.first;
+	for (multimap<EventType, Listener*>::iterator iter = range.first;
 		iter != range.second; iter++) {
 		if ((*iter).second == client) {
 			alreadyRegistered = true;
@@ -25,10 +25,10 @@ bool EventSystem::AlreadyRegistered(const char* eventId, Listener* client) {
 }
 
 void EventSystem::DispatchEvent(Event* _event) {
-	range = database.equal_range(_event->eventId);
+	range = database.equal_range((EventType)_event->eventId);
 	for (iter = range.first;iter != range.second; iter++) {
 		(*iter).second->HandleEvent(_event);
-		if ((std::string)_event->EventId() != "OnUpdate") {
+		if (_event->EventId() != EventType::ONUPDATE) {
 			return;
 		}
 	}	
@@ -39,7 +39,7 @@ EventSystem* EventSystem::GetInstance() {
 	return &instance;
 }
 
-void EventSystem::RegisterClient(const char* event, Listener* client) {
+void EventSystem::RegisterClient(EventType event, Listener* client) {
 	if (!client || AlreadyRegistered(event, client)) {
 		return;
 	}
@@ -47,13 +47,13 @@ void EventSystem::RegisterClient(const char* event, Listener* client) {
 	database.insert(std::make_pair(event, client));
 }
 
-void EventSystem::UnregisterClient(const char* event, Listener* client) {
-	pair<multimap<const char*, Listener*>::iterator,
-		multimap<const char*, Listener*>::iterator> range;
+void EventSystem::UnregisterClient(EventType event, Listener* client) {
+	pair<multimap<EventType, Listener*>::iterator,
+		multimap<EventType, Listener*>::iterator> range;
 
 	range = database.equal_range(event);
 
-	for (multimap<const char*, Listener*>::iterator iter = range.first;
+	for (multimap<EventType, Listener*>::iterator iter = range.first;
 		iter != range.second; iter++) {
 		if ((*iter).second == client) {
 			iter = database.erase(iter);
@@ -64,7 +64,7 @@ void EventSystem::UnregisterClient(const char* event, Listener* client) {
 
 void EventSystem::UnregisterAll(Listener* client) {
 	if (database.size() > 0) {
-		multimap<const char*, Listener*>::iterator iter = database.begin();
+		multimap<EventType, Listener*>::iterator iter = database.begin();
 		while (iter != database.end()) {
 			if ((*iter).second == client) {
 				iter = database.erase(iter);
@@ -76,21 +76,20 @@ void EventSystem::UnregisterAll(Listener* client) {
 	}
 }
 
-void EventSystem::SendEvent(const char* eventId, Listener* sender, void* data)
+void EventSystem::SendEvent(EventType eventId, Listener* sender, void* data)
 {
-	std::string s = eventId;
-	if (s != "OnWindowResize" && s != "OnMainThreadProcess" && process_events == false)
+	if (eventId != EventType::ONWINDOWRESIZE && eventId != EventType::ONMAINTHREADPROCESS && process_events == false)
 		return;
 	mtx1.lock();
-	for (auto i = database.begin(); i != database.end(); i++)
+	/*for (auto i = database.begin(); i != database.end(); i++)
 	{
-		if (!strcmp(i->first, eventId)) {
+		if (i->first == eventId) {
 			std::unique_ptr<Event> newEvent(new Event(i->first, sender, data));
 			currentEvents.push(*newEvent);
 			mtx1.unlock();
 			return;
 		}
-	}
+	}*/
 	std::unique_ptr<Event> newEvent(new Event(eventId, sender, data));
 	currentEvents.push(*newEvent);
 	mtx1.unlock();

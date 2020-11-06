@@ -73,9 +73,10 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	bulletsPlaceHolder->Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
 	bulletsPlaceHolder->SetOwner((void*)this);
-	EventSystem::GetInstance()->RegisterClient("OnUpdate", (GameObject*)this);
-	EventSystem::GetInstance()->RegisterClient("OnStart", (GameObject*)this);
-	EventSystem::GetInstance()->RegisterClient("OnCollision", (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (GameObject*)this);
+	EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
+	GetComponentManager()->AddComponent<SpriteRenderer>();
 	col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 	tr = GetComponentManager()->GetComponent<Transform>();
 	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());

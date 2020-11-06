@@ -44,10 +44,10 @@ namespace Doom {
 			-1.0f, 1.0f, 1.0f,
 			 1.0f,-1.0f, 1.0f
 		};
-		uint32_t indeces[36];
+		uint32_t indices[36];
 		glm::vec4 color = COLORS::Green;
 
-		Shader* shader = Shader::Create("CubeCollider","src/Shaders/CubeCollider.shader");
+		Shader* shader = Shader::Get("CubeCollider");
 
 		VertexBufferLayout* layout = nullptr;
 		VertexBuffer* vb = nullptr;
@@ -56,6 +56,7 @@ namespace Doom {
 	public:
 		glm::vec3 offset = {0,0,0};
 		glm::vec3 scale = {1,1,1};
+		bool isBoundingBox = false;
 		static std::vector<CubeCollider3D*> colliders;
 		~CubeCollider3D();
 		CubeCollider3D();

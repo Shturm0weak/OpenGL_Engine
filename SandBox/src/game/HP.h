@@ -15,7 +15,7 @@ public:
 	float y = 0;
 	HP(float x, float y){
 		prevYPos = y;
-		EventSystem::GetInstance()->RegisterClient("OnUpdate", this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, this);
 		for (unsigned int i = 0; i < 3; i++)
 		{
 			hearts.push_back(new GameObject());

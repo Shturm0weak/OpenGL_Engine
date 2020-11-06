@@ -3,6 +3,8 @@
 #include "glfw3.h"
 #include <iostream>
 
+#define NAMECOLOR "\033[1m\033[36m"
+
 #ifdef DOOM_ENGINE
 #define DOOM_API __declspec(dllexport)
 #else

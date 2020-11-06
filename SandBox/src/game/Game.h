@@ -35,7 +35,6 @@ class Game : public Doom::Application{
 public:
 	virtual void OnStart() override{
 		SoundManager::SetVolume(0.1);
-		Renderer::Load("src/game/savePlatformer.txt");
 		go = new Player("player", -1, 10);
 		max = 0, lowest = 1000000, fps = 0;
 		delay = 1;

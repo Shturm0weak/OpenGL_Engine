@@ -353,19 +353,21 @@ void Batch::Submit(SpriteRenderer & c)
 		}
 	}
 
+	Transform* trOfR = c.GetOwnerOfComponent()->GetComponent<Transform>();
+
 	Gbuffer->vertex = glm::vec2(c.mesh2D[0] * c.owner->scaleValues[0], c.mesh2D[1] * c.owner->scaleValues[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
 	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.view[0];
-	Gbuffer->rotationMat1 = c.view[1];
-	Gbuffer->rotationMat2 = c.view[2];
-	Gbuffer->rotationMat3 = c.view[3];
-	Gbuffer->posMat0 = c.pos[0];
-	Gbuffer->posMat1 = c.pos[1];
-	Gbuffer->posMat2 = c.pos[2];
-	Gbuffer->posMat3 = c.pos[3];
+	Gbuffer->rotationMat0 = trOfR->view[0];
+	Gbuffer->rotationMat1 = trOfR->view[1];
+	Gbuffer->rotationMat2 = trOfR->view[2];
+	Gbuffer->rotationMat3 = trOfR->view[3];
+	Gbuffer->posMat0 = trOfR->pos[0];
+	Gbuffer->posMat1 = trOfR->pos[1];
+	Gbuffer->posMat2 = trOfR->pos[2];
+	Gbuffer->posMat3 = trOfR->pos[3];
 	Gbuffer++;
 
 	Gbuffer->vertex = glm::vec2(c.mesh2D[4] * c.owner->scaleValues[0], c.mesh2D[5] * c.owner->scaleValues[1]);
@@ -373,14 +375,14 @@ void Batch::Submit(SpriteRenderer & c)
 	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.view[0];
-	Gbuffer->rotationMat1 = c.view[1];
-	Gbuffer->rotationMat2 = c.view[2];
-	Gbuffer->rotationMat3 = c.view[3];
-	Gbuffer->posMat0 = c.pos[0];
-	Gbuffer->posMat1 = c.pos[1];
-	Gbuffer->posMat2 = c.pos[2];
-	Gbuffer->posMat3 = c.pos[3];
+	Gbuffer->rotationMat0 = trOfR->view[0];
+	Gbuffer->rotationMat1 = trOfR->view[1];
+	Gbuffer->rotationMat2 = trOfR->view[2];
+	Gbuffer->rotationMat3 = trOfR->view[3];
+	Gbuffer->posMat0 = trOfR->pos[0];
+	Gbuffer->posMat1 = trOfR->pos[1];
+	Gbuffer->posMat2 = trOfR->pos[2];
+	Gbuffer->posMat3 = trOfR->pos[3];
 	Gbuffer++;
 
 	Gbuffer->vertex = glm::vec2(c.mesh2D[8] * c.owner->scaleValues[0], c.mesh2D[9] * c.owner->scaleValues[1]);
@@ -388,14 +390,14 @@ void Batch::Submit(SpriteRenderer & c)
 	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.view[0];
-	Gbuffer->rotationMat1 = c.view[1];
-	Gbuffer->rotationMat2 = c.view[2];
-	Gbuffer->rotationMat3 = c.view[3];
-	Gbuffer->posMat0 = c.pos[0];
-	Gbuffer->posMat1 = c.pos[1];
-	Gbuffer->posMat2 = c.pos[2];
-	Gbuffer->posMat3 = c.pos[3];
+	Gbuffer->rotationMat0 = trOfR->view[0];
+	Gbuffer->rotationMat1 = trOfR->view[1];
+	Gbuffer->rotationMat2 = trOfR->view[2];
+	Gbuffer->rotationMat3 = trOfR->view[3];
+	Gbuffer->posMat0 = trOfR->pos[0];
+	Gbuffer->posMat1 = trOfR->pos[1];
+	Gbuffer->posMat2 = trOfR->pos[2];
+	Gbuffer->posMat3 = trOfR->pos[3];
 	Gbuffer++;
 
 	Gbuffer->vertex = glm::vec2(c.mesh2D[12] * c.owner->scaleValues[0], c.mesh2D[13] * c.owner->scaleValues[1]);
@@ -403,21 +405,21 @@ void Batch::Submit(SpriteRenderer & c)
 	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = c.view[0];
-	Gbuffer->rotationMat1 = c.view[1];
-	Gbuffer->rotationMat2 = c.view[2];
-	Gbuffer->rotationMat3 = c.view[3];
-	Gbuffer->posMat0 = c.pos[0];
-	Gbuffer->posMat1 = c.pos[1];
-	Gbuffer->posMat2 = c.pos[2];
-	Gbuffer->posMat3 = c.pos[3];
+	Gbuffer->rotationMat0 = trOfR->view[0];
+	Gbuffer->rotationMat1 = trOfR->view[1];
+	Gbuffer->rotationMat2 = trOfR->view[2];
+	Gbuffer->rotationMat3 = trOfR->view[3];
+	Gbuffer->posMat0 = trOfR->pos[0];
+	Gbuffer->posMat1 = trOfR->pos[1];
+	Gbuffer->posMat2 = trOfR->pos[2];
+	Gbuffer->posMat3 = trOfR->pos[3];
 	Gbuffer++;
 
 	Gindexcount += 6;
 }
 
 void Batch::Submit(RectangleCollider2D& c) {
-	glm::mat4 mvp = c.owner->GetComponentManager()->GetComponent<Irenderer>()->pos * c.owner->GetComponentManager()->GetComponent<Irenderer>()->view;
+	glm::mat4 mvp = c.owner->GetComponentManager()->GetComponent<Transform>()->pos * c.owner->GetComponentManager()->GetComponent<Transform>()->view;
 	if (GtextureSlotsIndex > maxTextureSlots - 1) {
 		EndGameObjects();
 		flushGameObjects(shader);
@@ -501,6 +503,7 @@ void Batch::flushGameObjects(Shader * shader)
 
 	glDrawElements(GL_TRIANGLES, Gindexcount, GL_UNSIGNED_INT, NULL);
 	Renderer::DrawCalls++;
+	Renderer::Vertices += Gindexcount;
 	shader->UnBind();
 	Gibo->UnBind();
 	GtextureSlotsIndex = 2;
@@ -525,6 +528,7 @@ void Batch::flushCollision(Shader * shader)
 	glLineWidth(1.0f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	Renderer::DrawCalls++;
+	Renderer::Vertices += Gindexcount;
 	shader->UnBind();
 	Gibo->UnBind();
 	Gindexcount = 0;
@@ -594,6 +598,7 @@ void Batch::flushText(Shader* shader)
 
 	glDrawElements(GL_TRIANGLES, indexcount, GL_UNSIGNED_INT, NULL);
 	Renderer::DrawCalls++;
+	Renderer::Vertices += indexcount;
 	shader->UnBind();
 	ibo->UnBind();
 	glBindVertexArray(0);
@@ -615,6 +620,7 @@ void Doom::Batch::flushLines(Shader * shader)
 	glDrawElements(GL_LINES, Lindexcount, GL_UNSIGNED_INT, nullptr);
 	glLineWidth(1.0f);
 	Renderer::DrawCalls++;
+	Renderer::Vertices += Lindexcount;
 	shader->UnBind();
 	Libo->UnBind();
 	glBindVertexArray(0);

@@ -55,134 +55,10 @@ void Doom::Renderer::DeleteObject(int id) {
 		GameObject* owner = static_cast<GameObject*>(go->GetOwner());
 		owner->RemoveChild(go);
 	}
-	if (go->GetComponent<Irenderer>()->renderType == "3D") {
+	if (go->GetComponent<Irenderer>() != nullptr && go->GetComponent<Irenderer>()->renderType == TYPE_3D) {
 		go->GetComponent<Renderer3D>()->EraseFromInstancing();
 	}
 	delete go;
-}
-
-void Doom::Renderer::Save(const std::string filename) {
-	std::ofstream out_file;
-	out_file.open(filename, std::ofstream::trunc);
-	if (out_file.is_open()) {
-		for (unsigned int i = 0; i < World::objects.size(); i++)
-		{
-			GameObject* go = (GameObject*)World::objects[i];
-			SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
-			if (World::objects[i]->type.c_str() == "GameObject")
-				continue;
-			float* color = sr->GetColor();
-			glm::vec3 scale = go->GetScale();
-			out_file << go->name << "\n"
-				<< go->Enable << "\n"
-				<< go->type << "\n"
-				<< go->GetPositions().x << " " << go->GetPositions().y << " " << go->GetPositions().z << "\n"
-				<< go->GetAngle() << "\n"
-				<< Editor::Instance()->axes[0] << " " << Editor::Instance()->axes[1] << " " << Editor::Instance()->axes[2] << "\n";
-			if (static_cast<ComponentManager*>(World::objects[i]->GetComponentManager())->GetComponent<RectangleCollider2D>() != nullptr) {
-				out_file << 1 << "\n";
-				out_file << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->offset.x
-					<< " " << static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->offset.y << "\n"
-					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->IsTrigger << "\n"
-					<< static_cast<ComponentManager*>(go->GetComponentManager())->GetComponent<RectangleCollider2D>()->GetTag() << "\n";
-			}
-			else {
-				out_file << 0 << "\n";
-				out_file << 0 << " " << 0 << "\n";
-				out_file << 0 << "\n";
-				out_file << "NONE" << "\n";
-			}
-			if (World::objects[i]->GetComponentManager()->GetComponent<Irenderer>() != nullptr && World::objects[i]->GetComponentManager()->GetComponent<Irenderer>()->renderType == "2D")
-				out_file << sr->GetPathToTexture() << "\n";
-			else
-				out_file << "None" << "\n";
-			out_file << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << "\n";
-			out_file << scale[0] << " " << scale[1] << " " << scale[2] << "\n";
-		
-			out_file << sr->mesh2D[2] << " " << sr->mesh2D[3] << " " << sr->mesh2D[6]<< " " << sr->mesh2D[7] << " "
-				<< sr->mesh2D[10] << " " << sr->mesh2D[11] << " " << sr->mesh2D[14] << " " << sr->mesh2D[15] << "\n";
-			if (sr->textureAtlas == nullptr) {
-				out_file << 0 << "\n";
-				out_file << 0 << " " << 0;
-			}
-			else {
-				out_file << 1 << "\n";
-				out_file << sr->textureAtlas->spriteWidth << " " << sr->textureAtlas->spriteHeight;
-			}
-			if (i + 1 != World::objects.size())
-				out_file << "\n";
-			delete color;
-
-		}
-	}
-	else {
-		std::cout << "Error: filename doesn't exist";
-		out_file.close();
-		return;
-	}
-
-	out_file.close();
-	std::cout  << "Saved" << std::endl;
-}
-
-void Doom::Renderer::Load(const std::string filename)
-{
-	DeleteAll();
-	bool enable = true;
-	std::string name = "";
-	std::string type = "";
-	std::string pathtotext = "";
-	std::string tag = "";
-	bool hascollision = 0;
-	bool istrigger = false;
-	float angle = 0;
-	double pos[3];
-	float scale[3];
-	float color[4];
-	float offset[2];
-	float UVs[8];
-	int axes[3] = { 0,0,1 };
-	bool isSprite = false;
-	float spriteSize[2];
-	std::ifstream in_file;
-	in_file.open(filename);
-	if (in_file.is_open()) {
-		while (in_file.peek() != EOF) {
-				in_file >> name;
-				//std::cout << name << std::endl;
-				in_file >> enable;
-				//std::cout << enable << std::endl;
-				in_file >> type;
-				//std::cout << type << std::endl;
-				in_file >> pos[0] >> pos[1] >> pos[2];
-				//std::cout << pos[0] << "	" << pos[1] << std::endl;
-				in_file >> angle;
-				in_file >> axes[0] >> axes[1] >> axes[2];
-				//std::cout << angle << std::endl;
-				in_file >> hascollision;
-				//std::cout << hascollision << std::endl;
-				in_file >> offset[0] >> offset[1];
-				//std::cout << offset[0] << " " << offset[1] << std::endl;
-				in_file >> istrigger;
-				//std::cout << istrigger << std::endl;
-				in_file >> tag;
-				//std::cout << tag << std::endl;
-				in_file >> pathtotext;
-				//std::cout << pathtotext << std::endl;
-				in_file >> color[0] >> color[1] >> color[2] >> color[3];
-				//std::cout << color[0] << "	" << color[1] <<  "	" << color[2] << "	" << color[3] << std::endl;
-				in_file >> scale[0] >> scale[1] >> scale[2];
-				//std::cout << scale[0] << "	" << scale[1] << "	" << scale[2] << std::endl;
-				in_file >> UVs[0] >> UVs[1] >> UVs[2] >> UVs[3] >> UVs[4] >> UVs[5] >> UVs[6] >> UVs[7];
-				in_file >> isSprite;
-				in_file >> spriteSize[0] >> spriteSize[1];
-				if (type == "GameObject") {		
-					LoadObj<GameObject>(enable,name, pathtotext, angle, color, scale, pos, hascollision, offset, axes, istrigger, tag, UVs,isSprite,spriteSize);
-				}
-		}
-	}
-	in_file.close();
-	std::cout << BOLDGREEN << "Save has been loaded" << RESET << std::endl;
 }
 
 GameObject* Doom::Renderer::SelectObject()
@@ -238,6 +114,24 @@ void Doom::Renderer::ShutDown()
 void Doom::Renderer::PopBack()
 {
 	World::objects.pop_back();
+}
+
+#include "../Core/Ray3D.h"
+
+void Doom::Renderer::SelectObject3D()
+{
+	if (!Editor::Instance()->gizmo->isHovered && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
+		Ray3D::Hit hit;
+		glm::vec3 forward = Window::GetCamera().GetMouseDirVec();
+		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward, &hit, 100);
+		if (hit.Object != nullptr) {
+			GameObject* go = hit.Object->GetOwnerOfComponent();
+			if (go != Editor::Instance()->gizmo->obj) {
+				Editor::Instance()->gizmo->blockFrame = true;
+				Editor::Instance()->gizmo->obj = go;
+			}
+		}
+	}
 }
 
 unsigned int Doom::Renderer::GetAmountOfObjects()

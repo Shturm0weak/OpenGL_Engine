@@ -6,7 +6,7 @@
 using namespace Doom;
 
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
-	SetType(ComponentTypes::COLLISION);
+	SetType(ComponentType::COLLISION);
 	this->owner = owner;
 	id = Renderer::col_id;
 	Renderer::col_id++;
@@ -207,9 +207,9 @@ void RectangleCollider2D::IsCollidedSAT() {
 						if (ShapeOverlap_SAT(*this, *col)) {
 							isCollided = true;
 							collidedObject = col;
-							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::GetInstance(),"OnCollision", (Listener*)(owner), (void*)this->collidedObject);
+							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::GetInstance(),EventType::ONCOLLSION, (Listener*)(owner), (void*)this->collidedObject);
 							std::function<void()>* f1 = new std::function<void()>(f2);
-							EventSystem::GetInstance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+							EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
 							//EventSystem::Instance()->SendEvent("OnCollision", (Listener*)(owner), (void*)this->collidedObject);
 						}
 						else {
@@ -356,9 +356,9 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 		
 	posToTranslate.y = trans1->position.y - (overlap * d.y / s);
 	trans1->Translate(posToTranslate.x, posToTranslate.y);
-	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), "OnCollision", (Listener*)(owner), &r2);
+	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(owner), &r2);
 	std::function<void()>* f1 = new std::function<void()>(f2);
-	EventSystem::GetInstance()->SendEvent("OnMainThreadProcess", nullptr, f1);
+	EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
 	return false;
 }
 

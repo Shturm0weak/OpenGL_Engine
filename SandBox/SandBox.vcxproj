@@ -119,6 +119,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\2Dshootergame\PlayerCharacter.h" />
     <ClInclude Include="src\2Dshootergame\ShooterGame.h" />
+    <ClInclude Include="src\game\BlankProject.h" />
     <ClInclude Include="src\game\DrawLines.h" />
     <ClInclude Include="src\game\Game.h" />
     <ClInclude Include="src\game\Bomb.h" />
@@ -151,17 +152,17 @@
     <None Include="src\Mesh\Tree.fbx" />
     <None Include="src\Shaders\BakeShadows.shader" />
     <None Include="src\Shaders\BakeShadowsInstancing.shader" />
-    <None Include="src\Shaders\Basic.shader" />
-    <None Include="src\Shaders\Basic3D.shader" />
-    <None Include="src\Shaders\Batch.shader" />
+    <None Include="src\Shaders\Default2D.shader" />
+    <None Include="src\Shaders\Default3D.shader" />
     <None Include="src\Shaders\CubeCollider.shader" />
     <None Include="src\Shaders\DepthBuffer.shader" />
     <None Include="src\Shaders\Instancing3D.shader" />
     <None Include="src\Shaders\Line.shader" />
     <None Include="src\Shaders\LineSimple.shader" />
-    <None Include="src\Shaders\newshader.shader" />
+    <None Include="src\Shaders\Collision2D.shader" />
     <None Include="src\Shaders\SkyBox.shader" />
-    <None Include="src\Shaders\Text.shader" />
+    <None Include="src\Shaders\Font.shader" />
+    <None Include="src\Shaders\Tron.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\Fonts\arial.txt" />
