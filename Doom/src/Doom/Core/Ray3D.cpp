@@ -1,73 +1,33 @@
 #include "../pch.h"
 #include "Ray3D.h"
-
-std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length)
+#include "../Render/Line.h"
+std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length, bool AABB)
 {
 	std::map<float, CubeCollider3D*> d;
 	size_t size = CubeCollider3D::colliders.size();
 	for (size_t i = 0; i < size; i++)
 	{
-		CubeCollider3D* c = CubeCollider3D::colliders[i];
-		glm::vec3 pos = c->offset + c->GetOwnerOfComponent()->GetPositions();
-		glm::vec3 scale = c->scale * c->GetOwnerOfComponent()->GetScale();
-		glm::vec3 bMin = pos + (glm::vec3(-1,-1,-1) * scale);
-		glm::vec3 bMax = pos + (glm::vec3(1, 1, 1) * scale);
-
-		float txMin = (bMin.x - start.x) / dir.x;
-		float txMax = (bMax.x - start.x) / dir.x;
-		if (txMax < txMin) {
-			float temp = txMax;
-			txMax = txMin;
-			txMin = temp;
-		}
-
-		float tyMin = (bMin.y - start.y) / dir.y;
-		float tyMax = (bMax.y - start.y) / dir.y;
-		if (tyMax < tyMin) {
-			float temp = tyMax;
-			tyMax = tyMin;
-			tyMin = temp;
-		}
-
-		float tzMin = (bMin.z - start.z) / dir.z;
-		float tzMax = (bMax.z - start.z) / dir.z;
-		if (tzMax < tzMin) {
-			float temp = tzMax;
-			tzMax = tzMin;
-			tzMin = temp;
-		}
-
-		float tMin = (txMin > tyMin) ? txMin : tyMin;
-		float tMax = (txMax < tyMax) ? txMax : tyMax;
-
-		if (txMin > tyMax || tyMin > txMax) continue;
-		if (tMin > tzMax || tzMin > tMax) continue;
-		if (tzMin > tMin) tMin = tzMin;
-		if (tzMax < tMax) tMax = tzMax;
-		d.insert(std::make_pair(tMin, c));
-	}
-
-	float min = 1e300;
-	for (auto i = d.begin(); i != d.end(); i++)
-	{
-		if (i->first < min)
-			min = i->first;
+		bool isIntersected = false;
+		if(AABB)
+			isIntersected = IntersectBoxAABB(start, dir, hit, length, CubeCollider3D::colliders[i]);
+		else
+			isIntersected = IntersectBoxOBB(start, dir, hit, length, CubeCollider3D::colliders[i]);
+		if (isIntersected)
+			d.insert(std::make_pair(hit->distance, hit->Object));
 	}
 
 	Doom::Ray3D::sortMap(d);
 
-	auto iter = d.find(min);
-	if (iter != d.end()) {
-		hit->Object = iter->second;
-		hit->point = dir * iter->first;
-		hit->distance = iter->first;
+	if(d.size() > 0){
+		hit->Object = d.begin()->second;
+		hit->point = dir * d.begin()->first;
+		hit->distance = d.begin()->first;
 	}
 	else {
 		hit->Object = nullptr;
 		hit->point = glm::vec3(0.0f);
 		hit->distance = 0;
 	}
-
 	return d;
 }
 
@@ -107,6 +67,96 @@ bool Doom::Ray3D::IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit * hit, f
 void Doom::Ray3D::Normilize(glm::vec3 & vector)
 {
 		vector = glm::vec3(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)));
+}
+
+bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D * c)
+{
+	glm::vec3 pos = c->offset + c->GetOwnerOfComponent()->GetPositions();
+	glm::vec3 scale = c->scale * c->GetOwnerOfComponent()->GetScale();
+	glm::vec3 bMin = pos + (glm::vec3(-1, -1, -1) * scale);
+	glm::vec3 bMax = pos + (glm::vec3(1, 1, 1) * scale);
+
+	float txMin = (bMin.x - start.x) / dir.x;
+	float txMax = (bMax.x - start.x) / dir.x;
+	if (txMax < txMin) {
+		float temp = txMax;
+		txMax = txMin;
+		txMin = temp;
+	}
+
+	float tyMin = (bMin.y - start.y) / dir.y;
+	float tyMax = (bMax.y - start.y) / dir.y;
+	if (tyMax < tyMin) {
+		float temp = tyMax;
+		tyMax = tyMin;
+		tyMin = temp;
+	}
+
+	float tzMin = (bMin.z - start.z) / dir.z;
+	float tzMax = (bMax.z - start.z) / dir.z;
+	if (tzMax < tzMin) {
+		float temp = tzMax;
+		tzMax = tzMin;
+		tzMin = temp;
+	}
+
+	float tMin = (txMin > tyMin) ? txMin : tyMin;
+	float tMax = (txMax < tyMax) ? txMax : tyMax;
+
+	if (txMin > tyMax || tyMin > txMax) return false;
+	if (tMin > tzMax || tzMin > tMax) return false;
+	if (tzMin > tMin) tMin = tzMin;
+	if (tzMax < tMax) tMax = tzMax;
+	hit->distance = tMin;
+	hit->Object = c;
+	hit->point = tMin * dir + start;
+	return true;
+}
+
+
+
+bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D * c)
+{
+	Transform* tr = c->GetOwnerOfComponent()->GetComponent<Transform>();
+	glm::vec3 bounds0(-1.0f, -1.0f, -1.0f);
+	glm::vec3 bounds1( 1.0f,  1.0f,  1.0f);
+	glm::vec3 vPos = tr->position + c->offset;
+	glm::mat4 pos = glm::translate(glm::mat4(1.0f), vPos);
+	glm::mat4 wMat = pos * tr->view;
+	bounds0 = glm::vec3(tr->scale * glm::vec4(bounds0, 1.0f));
+	bounds1 = glm::vec3(tr->scale * glm::vec4(bounds1, 1.0f));
+	float* wMatPtr = glm::value_ptr(wMat);
+	glm::vec3 axis;
+	glm::vec3 bbRayDelta = vPos - start;
+
+	float tMin = 0, tMax = 1000000, nomLen, denomLen, tmp, min, max;
+	uint32_t p;
+
+	for (uint32_t i = 0; i < 3; i++) {
+		p = i * 4;
+		axis = glm::vec3(wMatPtr[p], wMatPtr[p + 1], wMatPtr[p + 2]);
+		glm::normalize(axis);
+		nomLen = glm::dot(axis, bbRayDelta);
+		denomLen = glm::dot(dir, axis);
+		if (glm::abs(denomLen) > 0.00001) {
+
+			min = (nomLen + bounds0[i]) / denomLen;
+			max = (nomLen + bounds1[i]) / denomLen;
+
+			if (min > max) { tmp = min; min = max; max = tmp; }
+			if (min > tMin) tMin = min;
+			if (max < tMax) tMax = max;
+
+			if (tMax < tMin) return false;
+
+		}
+		else if (-nomLen + bounds0[i] > 0 || -nomLen + bounds1[i] < 0) return false;
+	}
+
+	hit->distance = tMin;
+	hit->Object = c;
+	hit->point = tMin * dir + start;
+	return true;
 }
 
 void Doom::Ray3D::sortMap(std::map<float, CubeCollider3D*>& M)

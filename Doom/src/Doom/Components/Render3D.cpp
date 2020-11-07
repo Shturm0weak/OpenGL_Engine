@@ -6,6 +6,8 @@
 
 void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 {
+	if (isTransparent)
+		return;
 	renderTechnic = rt;
 	if (renderTechnic == RenderTechnic::Instancing) {
 		for (auto i = Instancing::Instance()->instancedObjects.begin(); i != Instancing::Instance()->instancedObjects.end(); i++)
@@ -52,7 +54,10 @@ Doom::Renderer3D::Renderer3D(GameObject* _owner)
 	owner = _owner;
 	shader = Shader::Get("Default3D");
 	tr = owner->GetComponentManager()->GetComponent<Transform>();
-	Renderer::objects3d.push_back(this);
+	if(isTransparent)
+		Renderer::objects3dTransparent.push_back(this);
+	else
+		Renderer::objects3d.push_back(this);
 }
 
 Doom::Renderer3D::~Renderer3D()
@@ -84,6 +89,29 @@ void Doom::Renderer3D::BakeShadows()
 			mesh->ib->UnBind();
 			glBindTextureUnit(0, Texture::WhiteTexture->m_RendererID);
 		}
+	}
+}
+
+void Doom::Renderer3D::MakeTransparent()
+{
+	auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), this);
+	if(iter != Renderer::objects3d.end()) {
+		EraseFromInstancing();
+		ChangeRenderTechnic(RenderTechnic::Forward);
+		Renderer::objects3d.erase(iter);
+		Renderer::objects3dTransparent.push_back(this);
+		isTransparent = true;
+	}
+}
+
+void Doom::Renderer3D::MakeSolid()
+{
+	auto iter = std::find(Renderer::objects3dTransparent.begin(), Renderer::objects3dTransparent.end(), this);
+	if (iter != Renderer::objects3dTransparent.end()) {
+		Renderer::objects3dTransparent.erase(iter);
+		Renderer::objects3d.push_back(this);
+		ChangeRenderTechnic(RenderTechnic::Forward);
+		isTransparent = false;
 	}
 }
 

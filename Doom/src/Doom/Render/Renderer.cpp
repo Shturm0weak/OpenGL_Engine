@@ -117,29 +117,45 @@ void Doom::Renderer::PopBack()
 }
 
 #include "../Core/Ray3D.h"
-
+#include "../Core/Utils.h"
 void Doom::Renderer::SelectObject3D()
 {
 	if (!Editor::Instance()->gizmo->isHovered && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 		Ray3D::Hit hit;
-		glm::vec3 forward = Window::GetCamera().GetMouseDirVec();
 		glm::vec3 pos = Window::GetCamera().GetPosition();
-		std::map<float, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 1000);
+		glm::vec3 forward = Window::GetCamera().GetMouseDirVec();
+		std::map<float, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 1000,false);
 		for (auto i = d.begin(); i != d.end(); i++)
 		{
 			if (i->second != nullptr) {
 				GameObject* go = i->second->GetOwnerOfComponent();
-				glm::vec3 goPos = go->GetPositions();
-				glm::vec3 goScale = go->GetScale();
+				Transform* tr = go->GetComponent<Transform>();
+				glm::mat4 model = tr->pos;
+				glm::mat4 view = tr->view;
+				glm::mat4 scale = tr->scale;
 				Ray3D::Hit hit1;
 				Mesh* mesh = go->GetComponentManager()->GetComponent<Renderer3D>()->mesh;
-				for (uint32_t i = 0; i < mesh->meshSize - 14; i += (14 * 3))
+				new Line(pos, forward * 1000.f);
+				for (uint32_t i = 0; i < mesh->meshSize; i += (14 * 3))
 				{
-					glm::vec3 a = goPos + goScale * glm::vec3(mesh->mesh[i + 0], mesh->mesh[i + 1], mesh->mesh[i + 2]);
-					glm::vec3 b = goPos + goScale * glm::vec3(mesh->mesh[i + 14 + 0], mesh->mesh[i + 14 + 1], mesh->mesh[i + 14 + 2]);
-					glm::vec3 c = goPos + goScale * glm::vec3(mesh->mesh[i + 28 + 0], mesh->mesh[i + 28 + 1], mesh->mesh[i + 28 + 2]);
+					glm::vec3 a = glm::vec3(mesh->mesh[i + 0], mesh->mesh[i + 1], mesh->mesh[i + 2]);
+					glm::vec3 b = glm::vec3(mesh->mesh[i + 14 + 0], mesh->mesh[i + 14 + 1], mesh->mesh[i + 14 + 2]);
+					glm::vec3 c = glm::vec3(mesh->mesh[i + 28 + 0], mesh->mesh[i + 28 + 1], mesh->mesh[i + 28 + 2]);
 					glm::vec3 n = glm::vec3(mesh->mesh[i + 3], mesh->mesh[i + 4], mesh->mesh[i + 5]);
+					a = glm::vec3(model * view * scale * glm::vec4(a, 1.0f));
+					b = glm::vec3(model * view * scale * glm::vec4(b, 1.0f));
+					c = glm::vec3(model * view * scale * glm::vec4(c, 1.0f));
+					n = glm::vec3(view * glm::vec4(n, 1.0f));
 					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 1000, a, b, c, n)) {
+						//GameObject* go0 = new GameObject("p1", a.x, a.y, a.z);
+						//go0->GetComponentManager()->AddComponent<SpriteRenderer>();
+						//GameObject* go1 = new GameObject("p2", b.x, b.y, b.z);
+						//go1->GetComponentManager()->AddComponent<SpriteRenderer>();
+						//GameObject* go2 = new GameObject("p3", c.x, c.y, c.z);
+						//go2->GetComponentManager()->AddComponent<SpriteRenderer>();
+						//new Line(a, b);
+						//new Line(a, c);
+						//new Line(c, b);
 						if (go != Editor::Instance()->gizmo->obj) {
 							Editor::Instance()->gizmo->blockFrame = true;
 							Editor::Instance()->gizmo->obj = go;
@@ -228,16 +244,10 @@ void Renderer::Render() {
 	Render2DObjects();
 	RenderCollision();
 	Render3DObjects();
-	Editor::Instance()->gizmo->Render();
 	RenderLines();
-	size_t size = CubeCollider3D::colliders.size();
-	if (size > 0) {
-		for (size_t i = 0; i < size; i++)
-		{
-			if(RectangleCollider2D::IsVisible)
-				CubeCollider3D::colliders[i]->Render();
-		}
-	}
+	RenderCollision3D();
+	RenderTransparent();
+	Editor::Instance()->gizmo->Render();
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	RenderText();
@@ -284,8 +294,6 @@ void Doom::Renderer::Render3DObjects()
 	if(PolygonMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
-	//each 3D object in one drawcall
-	
 	for each (Renderer3D* r in Renderer::objects3d)
 	{
 		if (r->GetOwnerOfComponent()->Enable == true)
@@ -293,8 +301,6 @@ void Doom::Renderer::Render3DObjects()
 			r->Render();
 		}
 	}
-
-	//All 3D objects with one mesh in one drawcall
 
 	Instancing::Instance()->Render();
 
@@ -311,10 +317,13 @@ void Doom::Renderer::BakeShadows()
 			r->BakeShadows();
 		}
 	}
-
-	//All 3D objects with one mesh in one drawcall
-
-	//Instancing::Instance()->Render();
+	for each (Renderer3D* r in Renderer::objects3dTransparent)
+	{
+		if (r->GetOwnerOfComponent()->Enable == true)
+		{
+			r->BakeShadows();
+		}
+	}
 }
 
 void Doom::Renderer::UpdateLightSpaceMatrices()
@@ -322,6 +331,18 @@ void Doom::Renderer::UpdateLightSpaceMatrices()
 	for (DirectionalLight* light : DirectionalLight::dirLights)
 	{
 		light->UpdateLightMatrix();
+	}
+}
+
+void Doom::Renderer::RenderCollision3D()
+{
+	size_t size = CubeCollider3D::colliders.size();
+	if (size > 0) {
+		for (size_t i = 0; i < size; i++)
+		{
+			if (RectangleCollider2D::IsVisible)
+				CubeCollider3D::colliders[i]->Render();
+		}
 	}
 }
 
@@ -348,6 +369,17 @@ void Doom::Renderer::RenderLines()
 
 void Doom::Renderer::RenderText() {
 	Batch::GetInstance()->flushText(Batch::GetInstance()->TextShader);
+}
+
+void Doom::Renderer::RenderTransparent()
+{
+	for each (Renderer3D* r in Renderer::objects3dTransparent)
+	{
+		if (r->GetOwnerOfComponent()->Enable == true)
+		{
+			r->Render();
+		}
+	}
 }
 
 void Doom::Renderer::RenderCollision(){

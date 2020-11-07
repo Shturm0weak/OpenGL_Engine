@@ -19,6 +19,7 @@ namespace Doom {
 		bool IsActiveMeshPicker = false;
 		bool IsActiveTexturePicker = false;
 		bool IsActiveShaderMenu = false;
+		int previousSelectedGo = -1;
 		int selectedShader = -1;
 		int selectedAtlas = -1;
 		int selectedanimation = 0;

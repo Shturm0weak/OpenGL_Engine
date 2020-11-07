@@ -44,11 +44,15 @@ namespace Doom {
 		Material mat;
 
 		void BakeShadows();
-
+		void MakeTransparent();
+		void MakeSolid();
 		virtual void Render() override;
 
 	private:
 
+		//TODO ??? Upload in shader, calculate the angle between the normal and light dir if angle > 90 then shadow should not be drawn!!! ???
+		//TODO Make bake shadows strength depending on alpha channel of color for transparent object!!!
+		bool isTransparent = false;
 		bool isSkyBox = false;
 
 		void ForwardRender();
@@ -56,9 +60,11 @@ namespace Doom {
 
 		RenderTechnic renderTechnic = RenderTechnic::Forward;
 
-		friend class EntryPoint;
-		friend class SkyBox;
-		friend class MeshManager;
+		friend class Doom::EntryPoint;
+		friend class Doom::SkyBox;
+		friend class Doom::MeshManager;
+		friend class Doom::ComponentManager;
+		friend class Doom::Editor;
 	};
 
 }

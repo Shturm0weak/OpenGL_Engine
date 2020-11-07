@@ -36,6 +36,8 @@ namespace Doom {
 		friend class Editor;
 		friend class CubeCollider3D;
 		friend class Gizmos;
+		friend class Renderer;
+		friend class Ray3D;
 
 	public:
 		Transform();

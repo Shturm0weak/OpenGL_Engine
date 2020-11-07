@@ -71,6 +71,7 @@ public:
 				go->GetComponentManager()->GetComponent<Renderer3D>()->diffuseTexture = t;
 			return t;
 		});
+		go->GetComponent<Renderer3D>()->MakeTransparent();
 	}
 
 	virtual void OnUpdate() {

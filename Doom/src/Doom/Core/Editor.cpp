@@ -73,9 +73,9 @@ void Editor::EditorUpdate()
 			if (go != nullptr) {
 				Renderer::DeleteObject(go->GetId());
 				if(World::objects.size() > 0)
-					go = World::objects[World::objects.size() - 1];
+					gizmo->obj = World::objects[World::objects.size() - 1];
 				else
-					go = nullptr;
+					gizmo->obj = nullptr;
 			}
 			ImGui::EndPopup();
 			ImGui::End();
@@ -86,8 +86,6 @@ void Editor::EditorUpdate()
 
 	ImGui::SetWindowFontScale(1.25);
 	Renderer::CalculateObjectsVectors();
-
-	SceneHierarchy();
 
 	if (gizmo->obj != nullptr) {
 		go = gizmo->obj;
@@ -100,7 +98,7 @@ void Editor::EditorUpdate()
 		go = World::objects[0];
 	}
 
-
+	SceneHierarchy();
 
 	ImGui::NewLine();
 	ImGui::End();
@@ -243,6 +241,17 @@ void Doom::Editor::MaterialComponent()
 				}
 			}
 			if (ImGui::CollapsingHeader("Material")) {
+				if (!r->isTransparent){
+					if (ImGui::Button("Make Transparent")) {
+						r->MakeTransparent();
+					}
+				}
+				else {
+					if (ImGui::Button("Make Solid")) {
+						r->MakeSolid();
+					}
+				}
+
 				ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
 				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 50);
 				void* my_tex_id = reinterpret_cast<void*>(r->diffuseTexture->m_RendererID);

@@ -85,7 +85,8 @@ void Doom::CubeCollider3D::Render()
 	this->shader->Bind();
 	this->shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 	this->shader->SetUniformMat4f("u_Model", glm::translate(tr->pos,offset));
-	this->shader->SetUniformMat4f("u_Scale", glm::scale(tr->scale,scale));
+	this->shader->SetUniformMat4f("u_Scale", tr->scale);
+	this->shader->SetUniformMat4f("u_View", tr->view);
 	this->shader->SetUniform4fv("u_Color", color);
 	va->Bind();
 	ib->Bind();

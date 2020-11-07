@@ -48,6 +48,7 @@ namespace Doom {
 			RemoveComponent<PointLight>();
 			RemoveComponent<DirectionalLight>();
 		}
+
 		ComponentManager(GameObject* owner, std::string& owner_name) {
 			this->owner = owner;
 			this->owner_name = owner_name;
@@ -204,13 +205,20 @@ namespace Doom {
 				}
 			}
 			else if (col->renderType == TYPE_3D) {
-				auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), col);
-				if (iter != Renderer::objects3d.end()) {
-					Renderer::objects3d.erase(iter);
+				if (static_cast<Renderer3D*>(col)->isTransparent) {
+					auto iter = std::find(Renderer::objects3dTransparent.begin(), Renderer::objects3dTransparent.end(), col);
+					if (iter != Renderer::objects3dTransparent.end()) {
+						Renderer::objects3dTransparent.erase(iter);
+					}
+				}
+				else {
+					auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), col);
+					if (iter != Renderer::objects3d.end()) {
+						Renderer::objects3d.erase(iter);
+					}
 				}
 			}
 			
-
 			delete col;
 			return;
 		}

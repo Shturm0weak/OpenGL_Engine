@@ -18,6 +18,7 @@ DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::colliders;
 //Warning: used only for rendering
 DOOM_API std::vector <SpriteRenderer*> Renderer::objects2d;
 DOOM_API std::vector <Renderer3D*> Renderer::objects3d;
+DOOM_API std::vector <Renderer3D*> Renderer::objects3dTransparent;
 //storage of all references to our object's collisions in the scene
 DOOM_API std::vector <RectangleCollider2D*> Renderer::collision2d;
 DOOM_API Batch* Batch::instance;
