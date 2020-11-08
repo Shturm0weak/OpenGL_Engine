@@ -6,7 +6,9 @@ And now engine has:
 
 Simple sprite animation component
 
-Collision component SAT algorithm
+Collision2D component SAT algorithm
+
+Collision3D component AABB, OBB , ray to triangle algorithms
 
 Transform component
 
