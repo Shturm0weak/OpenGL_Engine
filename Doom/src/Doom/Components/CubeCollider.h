@@ -16,8 +16,9 @@ namespace Doom {
 		VertexArray* va = nullptr;
 		IndexBuffer* ib = nullptr;
 	public:
+		glm::vec3 minP = { -1,-1,-1 };
+		glm::vec3 maxP = {  1, 1, 1 };
 		glm::vec3 offset = {0,0,0};
-		glm::vec3 scale = {1,1,1};
 		bool isBoundingBox = false;
 		static std::vector<CubeCollider3D*> colliders;
 		static void InitMesh();

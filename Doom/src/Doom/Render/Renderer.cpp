@@ -18,6 +18,42 @@ void Doom::Renderer::Clear(){
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 }
 
+void Doom::Renderer::SortTransparentObjects()
+{
+	std::sort(objects3dTransparent.begin(), objects3dTransparent.end(), [](Renderer3D* r1, Renderer3D* r2) {
+		GameObject* go0 = r1->GetOwnerOfComponent();
+		GameObject* go1 = r2->GetOwnerOfComponent();
+		CubeCollider3D* cc0 = nullptr;
+		CubeCollider3D* cc1 = nullptr;
+		if (r1->mesh != nullptr)
+			cc0 = go0->GetComponentManager()->GetComponent<CubeCollider3D>();
+		else
+			return false;
+		if (r2->mesh != nullptr)
+			cc1 = go1->GetComponentManager()->GetComponent<CubeCollider3D>();
+		else
+			return false;
+		glm::vec3 camPos = Window::GetCamera().GetPosition();
+		glm::vec3 pos0 = go0->GetPositions();
+		glm::vec3 pos1 = go1->GetPositions();
+		float d1 = glm::distance(camPos, pos0 + cc0->minP);
+		float d2 = glm::distance(camPos, pos0 + cc0->maxP);
+		float r1d = 0;
+		float r2d = 0;
+		if (d1 < d2)
+			r1d = d1;
+		else
+			r1d = d2;
+		d1 = glm::distance(camPos, pos1 + cc1->minP);
+		d2 = glm::distance(camPos, pos1 + cc1->maxP);
+		if (d1 < d2)
+			r2d = d1;
+		else
+			r2d = d2;
+		return r1d > r2d;
+	});
+}
+
 void Doom::Renderer::DeleteAll() {
 	for (unsigned int i = 0; i < World::objects.size(); i++)
 	{
@@ -135,7 +171,7 @@ void Doom::Renderer::SelectObject3D()
 				glm::mat4 scale = tr->scale;
 				Ray3D::Hit hit1;
 				Mesh* mesh = go->GetComponentManager()->GetComponent<Renderer3D>()->mesh;
-				new Line(pos, forward * 1000.f);
+				//new Line(pos, forward * 1000.f);
 				for (uint32_t i = 0; i < mesh->meshSize; i += (14 * 3))
 				{
 					glm::vec3 a = glm::vec3(mesh->mesh[i + 0], mesh->mesh[i + 1], mesh->mesh[i + 2]);
@@ -153,9 +189,9 @@ void Doom::Renderer::SelectObject3D()
 						//go1->GetComponentManager()->AddComponent<SpriteRenderer>();
 						//GameObject* go2 = new GameObject("p3", c.x, c.y, c.z);
 						//go2->GetComponentManager()->AddComponent<SpriteRenderer>();
-						//new Line(a, b);
-						//new Line(a, c);
-						//new Line(c, b);
+						/*new Line(a, b);
+						new Line(a, c);
+						new Line(c, b);*/
 						if (go != Editor::Instance()->gizmo->obj) {
 							Editor::Instance()->gizmo->blockFrame = true;
 							Editor::Instance()->gizmo->obj = go;

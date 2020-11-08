@@ -27,6 +27,7 @@ namespace Doom {
 		static void RenderTransparent();
 		static void RenderCollision();
 		static void Clear();
+		static void SortTransparentObjects();
 		static GameObject* SelectObject();
 		static std::vector<unsigned int> CalculateObjectsVectors();
 		inline static std::vector<unsigned int> GetObjectsWithNoOwnerReference() { return ObjectsWithNoOwner; }

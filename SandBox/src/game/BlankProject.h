@@ -65,28 +65,16 @@ public:
 		MeshManager::GetMeshWhenLoaded("cube",(void*)(skybox->GetComponentManager()->GetComponent<Renderer3D>()));
 		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::StandartFonts::ARIAL]);
 		go = new Obj();
-		Texture::GetAsync(go,[=] {
-			Texture* t = Texture::Get("src/Images/coin.png");
-			if (t != nullptr)
-				go->GetComponentManager()->GetComponent<Renderer3D>()->diffuseTexture = t;
-			return t;
-		});
 		go->GetComponent<Renderer3D>()->MakeTransparent();
 	}
 
 	virtual void OnUpdate() {
-		if (Input::IsKeyPressed(Keycode::KEY_G)) {
-			Texture::Create("src/Images/coin.png");
-		}
-		if (Input::IsKeyPressed(Keycode::KEY_V)) {
-			Gui::GetInstance()->GetStandartFonts()[Gui::StandartFonts::ARIAL]->fontAtlas = Texture::Get("src/fonts/coin.png");
-		}
 	}
 
 	virtual void OnGuiRender() {
 		Gui* g = Gui::GetInstance();
 		g->xAlign = g->XCENTER;
-		g->Text("FPS %f",1,840,540,80,COLORS::White,0,Window::GetFPS());
+		g->Text("FPS %f",1,0,0,80,COLORS::White,3,Window::GetFPS());
 	}
 
 };

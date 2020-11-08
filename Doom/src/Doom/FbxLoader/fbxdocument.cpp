@@ -40,9 +40,33 @@ namespace fbx {
 									{
 										mesh->vertecesSize = nodeG.properties[l].values.size();
 										mesh->verteces = new float[mesh->vertecesSize];
+										mesh->theHighestPoint = glm::vec3(0);
+										mesh->theLowestPoint = glm::vec3(0);
+										uint32_t tcount = 0;
 										for (size_t a = 0; a < mesh->vertecesSize; a++)
 										{
 											mesh->verteces[a] = nodeG.properties[l].values[a].f64;
+											if (tcount == 0) {
+												if (mesh->theHighestPoint.x < mesh->verteces[a])
+													mesh->theHighestPoint.x = mesh->verteces[a];
+												else if (mesh->theLowestPoint.x > mesh->verteces[a])
+													mesh->theLowestPoint.x = mesh->verteces[a];
+												tcount++;
+											}
+											else if (tcount == 1) {
+												if (mesh->theHighestPoint.y < mesh->verteces[a])
+													mesh->theHighestPoint.y = mesh->verteces[a];
+												else if (mesh->theLowestPoint.y > mesh->verteces[a])
+													mesh->theLowestPoint.y = mesh->verteces[a];
+												tcount++;
+											}
+											else if (tcount == 2) {
+												if (mesh->theHighestPoint.z < mesh->verteces[a])
+													mesh->theHighestPoint.z = mesh->verteces[a];
+												else if (mesh->theLowestPoint.z > mesh->verteces[a])
+													mesh->theLowestPoint.z = mesh->verteces[a];
+												tcount = 0;
+											}
 										}
 									}
 								}

@@ -27,8 +27,17 @@ void Doom::Renderer3D::LoadMesh(Mesh * _mesh)
 	EraseFromInstancing();
 	mesh = _mesh;
 	ChangeRenderTechnic(renderTechnic);
-	if(owner->GetComponentManager()->GetComponent<CubeCollider3D>() == nullptr)
-		owner->GetComponentManager()->AddComponent<CubeCollider3D>()->isBoundingBox = true;
+	CubeCollider3D* cc = owner->GetComponentManager()->GetComponent<CubeCollider3D>();
+	if (cc == nullptr) {
+		cc = owner->GetComponentManager()->AddComponent<CubeCollider3D>();
+		cc->isBoundingBox = true;
+	}
+	cc->minP = mesh->theLowestPoint;
+	cc->maxP = mesh->theHighestPoint;
+	cc->offset = (cc->maxP - (glm::abs(cc->minP) + glm::abs(cc->maxP)) * 0.5f);
+	//std::cout << "offset " << cc->offset.x << " " << cc->offset.y << " " << cc->offset.z << "\n";
+	//std::cout << "the highest " << mesh->theHighestPoint.x << " " << mesh->theHighestPoint.y << " " << mesh->theHighestPoint.z << "\n";
+	//std::cout << "the lowest " << mesh->theLowestPoint.x << " " << mesh->theLowestPoint.y << " " << mesh->theLowestPoint.z << "\n";
 }
 
 void Doom::Renderer3D::EraseFromInstancing()

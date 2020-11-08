@@ -291,7 +291,6 @@ void Doom::Editor::CubeCollider3DComponent()
 	if (cc != nullptr && cc->isBoundingBox == false) {
 		if (ImGui::CollapsingHeader("CubeCollider3D")) {
 			ImGui::SliderFloat3("Position", &cc->offset.x, -50, 50);
-			ImGui::SliderFloat3("Scale", &cc->scale.x, 0, 100);
 		}
 	}
 }
@@ -518,7 +517,6 @@ void Doom::Editor::MeshPicker()
 				mesh++;
 			}
 		}
-		std::cout << "Mesh " << mesh->first << " is applied\n";
 		go->GetComponent<Renderer3D>()->LoadMesh(mesh->second);
 	}
 	ImGui::InputText("Path to mesh",mesh,128);

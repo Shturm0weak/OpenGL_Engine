@@ -12,9 +12,9 @@ layout(location = 7) in vec4 m_color;
 layout(location = 8) in vec2 mat;
 layout(location = 9) in mat4 u_View;
 mat4 u_Model = mat4(1.0, 0.0, 0.0, 0.0,
-	0.0, 1.0, 0.0, 0.0,
-	0.0, 0.0, 1.0, 0.0,
-	v.x, v.y, v.z, 1.0);
+					0.0, 1.0, 0.0, 0.0,
+					0.0, 0.0, 1.0, 0.0,
+					v.x, v.y, v.z, 1.0);
 mat4 u_Scale = mat4(s.x, 0.0, 0.0, 0.0,
 	0.0, s.y, 0.0, 0.0,
 	0.0, 0.0, s.z, 0.0,

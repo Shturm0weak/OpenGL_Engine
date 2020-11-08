@@ -74,6 +74,7 @@ void EntryPoint::Run()
 
 		EventSystem::GetInstance()->ProcessEvents();
 		Renderer::SelectObject3D();
+		Renderer::SortTransparentObjects();
 
 		if (Input::IsKeyPressed(Keycode::KEY_E)) {
 			isEditorEnable = !isEditorEnable;

@@ -8,6 +8,7 @@
 #include "IndexBuffer.h"
 #include <iostream>
 #include "../Core/Core.h"
+#include "glm/glm.hpp"
 
 namespace Doom {
 
@@ -19,7 +20,8 @@ namespace Doom {
 		float* mesh = nullptr;
 		uint32_t indicesSize = 0;
 		uint32_t* indicesForNormals = nullptr;
-
+		glm::vec3 theHighestPoint = glm::vec3(1.0f);
+		glm::vec3 theLowestPoint = glm::vec3(-1.0f);
 		float* verteces = nullptr;
 		uint32_t vertecesSize = 0;
 		float* vertecesForNormals = nullptr;
@@ -50,4 +52,4 @@ namespace Doom {
 	};
 
 }
-#endif // MESH_H
+#endif
