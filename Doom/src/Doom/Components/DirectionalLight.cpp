@@ -3,6 +3,14 @@
 
 using namespace Doom;
 
+glm::mat4 Doom::DirectionalLight::GetLightSpaceMatrix()
+{
+	if (dirLights.size() > 0)
+		return dirLights[0]->lightSpaceMatrix;
+	else
+		return glm::mat4(1.0f);
+}
+
 void Doom::DirectionalLight::UpdateLightMatrix()
 {
 	Camera& cam = Window::GetCamera();

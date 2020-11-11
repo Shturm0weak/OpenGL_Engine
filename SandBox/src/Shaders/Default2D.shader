@@ -3,7 +3,6 @@
 
 layout(location = 0) in vec4 positions;
 layout(location = 1) in vec2 texcoords;
-layout(location = 2) in int m_static;
 layout(location = 3) in vec4 m_color;
 layout(location = 4) in float texIndex;
 layout(location = 5) in vec4 rotationMat0;
@@ -16,11 +15,10 @@ layout(location = 12) in vec4 positionMat2;
 layout(location = 13) in vec4 positionMat3;
 
 out vec4 positionsfrag;
-out float tex_index;
+flat out int tex_index;
 out vec4 out_color;
 out vec2 v_textcoords;
 uniform mat4 u_ViewProjection;
-uniform mat4 u_Projection;
 mat4 rot = mat4(
 	rotationMat0,
 	rotationMat1,
@@ -35,16 +33,10 @@ mat4 pos = mat4(
 );
 
 void main() {
-	if (m_static == 0) {
-		gl_Position = u_ViewProjection * pos * rot * positions;
-	}
-	else if (m_static > 1) {
-		gl_Position = u_Projection * pos * rot * positions;
-	}
-
+	gl_Position = u_ViewProjection * pos * rot * positions;
 	v_textcoords = texcoords;
 	out_color = m_color;
-	tex_index = texIndex;
+	tex_index = int(texIndex);
 	positionsfrag = gl_Position;
 };
 
@@ -53,17 +45,13 @@ void main() {
 
 layout(location = 0) out vec4 gl_FragColor;
 in vec4 positionsfrag;
-in float tex_index;
+flat in int tex_index;
 in vec4 out_color;
 in vec2 v_textcoords;
 
 uniform sampler2D u_Texture[32];
 
 void main() {
-	int index = int(tex_index);
-
-	vec4 texColor = texture(u_Texture[index], v_textcoords);
-
+	vec4 texColor = texture(u_Texture[tex_index], v_textcoords);
 	gl_FragColor = texColor * out_color;
-
 };

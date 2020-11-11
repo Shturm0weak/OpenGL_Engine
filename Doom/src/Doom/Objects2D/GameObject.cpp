@@ -7,19 +7,13 @@ using namespace Doom;
 
 GameObject::GameObject(const std::string name,float x, float y,float z) {
 	this->name = name;
-	this->type = "GameObject";
 	layer = World::objects.size();
 	id = Renderer::obj_id;
 	Renderer::obj_id++;
 	component_manager = new ComponentManager(this, this->name);
-	component_manager->AddComponent<Transform>();
-	component_manager->GetComponent<Transform>()->Translate(x, y, z);
+	transform = component_manager->AddComponent<Transform>();
+	transform->Translate(x, y, z);
 	World::objects.push_back(this);
-}
-
-void GameObject::SetName(const char * _name)
-{
-	name = _name;
 }
 
 Doom::GameObject::~GameObject()
@@ -31,30 +25,29 @@ Doom::GameObject::~GameObject()
 	delete component_manager;
 }
 
-void GameObject::operator=(GameObject& go) {
-	this->SetName(go.name.c_str());
-	this->name.append("(clone)");
-	Transform* tr = this->GetComponentManager()->GetComponent<Transform>();
-	Transform* trgo = go.GetComponentManager()->GetComponent<Transform>();
-	tr->RotateOnce(trgo->rotation.x, trgo->rotation.y, trgo->rotation.z,true);
-	tr->Translate(go.GetPositions().x, go.GetPositions().y);
-	tr->Scale(go.scaleValues[0], go.scaleValues[1]);
-	if (go.GetComponentManager()->GetComponent<RectangleCollider2D>() != nullptr) {
-		RectangleCollider2D* col = this->GetComponentManager()->AddComponent<RectangleCollider2D>();
-		RectangleCollider2D* gocol = (RectangleCollider2D*)go.GetComponentManager()->GetComponent<RectangleCollider2D>();
-		col->SetOffset(gocol->offset.x, gocol->offset.y);
-		col->Enable = gocol->Enable;
-		col->Translate(position.x, position.y);
-		col->IsTrigger = gocol->IsTrigger;
-		col->SetTag(gocol->GetTag());
-	}
-}
+//void GameObject::operator=(GameObject& go) {
+//	this->SetName(go.name.c_str());
+//	this->name.append("(clone)");
+//	Transform* tr = this->GetComponentManager()->GetComponent<Transform>();
+//	Transform* trgo = go.GetComponentManager()->GetComponent<Transform>();
+//	tr->RotateOnce(trgo->rotation.x, trgo->rotation.y, trgo->rotation.z,true);
+//	tr->Translate(go.GetPositions().x, go.GetPositions().y);
+//	tr->Scale(go.scaleValues[0], go.scaleValues[1]);
+//	if (go.GetComponentManager()->GetComponent<RectangleCollider2D>() != nullptr) {
+//		RectangleCollider2D* col = this->GetComponentManager()->AddComponent<RectangleCollider2D>();
+//		RectangleCollider2D* gocol = (RectangleCollider2D*)go.GetComponentManager()->GetComponent<RectangleCollider2D>();
+//		col->SetOffset(gocol->offset.x, gocol->offset.y);
+//		col->Enable = gocol->Enable;
+//		col->Translate(position.x, position.y);
+//		col->IsTrigger = gocol->IsTrigger;
+//		col->SetTag(gocol->GetTag());
+//	}
+//}
 
-glm::vec3 GameObject::GetPositions() {
-	 Transform* tr = this->GetComponentManager()->GetComponent<Transform>();
-	 position.x = tr->position.x;
-	 position.y = tr->position.y;
-	 return position;
+#include "../Core/Utils.h"
+
+glm::vec3 GameObject::GetPosition() {
+	return Utils::GetPosition(transform->pos);
 }
 
 void Doom::GameObject::RemoveChild(void * child)
@@ -67,6 +60,6 @@ void Doom::GameObject::RemoveChild(void * child)
 		}
 	}
 }
-glm::vec3 GameObject::GetScale() const {	return scaleValues;}
-
-float GameObject::GetAngle() const { return component_manager->GetComponent<Transform>()->angleRad; }
+glm::vec3 GameObject::GetScale() {
+	return Utils::GetScale(transform->scale);
+}

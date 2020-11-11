@@ -8,6 +8,7 @@ namespace Doom {
 
 	public:
 		SkyBox(std::vector<std::string> faces,Mesh* mesh);
+		std::vector<std::string> faces;
 	};
 
 }

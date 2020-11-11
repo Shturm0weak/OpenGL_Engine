@@ -1,20 +1,22 @@
 #include "TextureAtlas.h"
 
-Doom::TextureAtlas::TextureAtlas(float spriteWidth, float spriteHeight,std::string texturePath) : spriteHeight(spriteHeight),spriteWidth(spriteWidth)
-{
-	m_texture = Texture::Create(texturePath);
-	textureAtlases.push_back(this);
-}
-
-Doom::TextureAtlas::TextureAtlas(float spriteWidth, float spriteHeight, Texture * texture) : spriteHeight(spriteHeight), spriteWidth(spriteWidth)
+Doom::TextureAtlas::TextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture * texture) : name(name), spriteHeight(spriteHeight), spriteWidth(spriteWidth)
 {
 	m_texture = texture;
-	textureAtlases.push_back(this);
+	textureAtlases.insert(std::make_pair(name,this));
 }
 
 Doom::TextureAtlas::~TextureAtlas()
 {
-	delete m_texture;
+}
+
+Doom::TextureAtlas * Doom::TextureAtlas::CreateTextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture * texture)
+{
+	TextureAtlas* ta = GetTextureAtlas(name);
+	if (ta == nullptr)
+		new TextureAtlas(name, spriteWidth, spriteHeight, texture);
+	else
+		return ta;
 }
 
 float * Doom::TextureAtlas::GetSpriteUVs(float x, float y)
@@ -30,13 +32,35 @@ float * Doom::TextureAtlas::GetSpriteUVs(float x, float y)
 	return UVs;
 }
 
+Doom::TextureAtlas * Doom::TextureAtlas::GetTextureAtlas(std::string name)
+{
+	auto iter = textureAtlases.find(name);
+	if (iter != textureAtlases.end()) {
+		return iter->second;
+	}
+	else
+		return nullptr;
+}
+
+Doom::TextureAtlas * Doom::TextureAtlas::GetTextureAtlas(int id)
+{
+	int count = 0;
+	for (auto iter = textureAtlases.begin(); iter != textureAtlases.end(); iter++) {
+		if (count == id)
+			return iter->second;
+		count++;
+	}
+	return nullptr;
+}
+
 const char** Doom::TextureAtlas::GetTextureAtlases() {
 	if (items != nullptr)
 		delete[] items;
 	items = new const char*[textureAtlases.size()];
-	for (unsigned int i = 0; i < textureAtlases.size(); i++)
-	{
-		items[i] = textureAtlases[i]->m_texture->GetFilePath().c_str();
+	uint32_t count = 0;
+	for (auto iter = textureAtlases.begin(); iter != textureAtlases.end(); iter++) {
+		items[count] = iter->second->name.c_str();
+		count++;
 	}
 	return items;
 }

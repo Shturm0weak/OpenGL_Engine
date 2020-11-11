@@ -26,7 +26,6 @@ public:
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		col->SetTag("Player");
 		tr = GetComponentManager()->GetComponent<Transform>();
-		type = "Player";
 		anim = GetComponentManager()->AddComponent<Animator>();
 		anim->SetAnimation("src/Animations");
 		tr->Scale(4,5);
@@ -42,7 +41,7 @@ public:
 		if(hp <= 0){
 			tr->Move(0, -10, 0);
 			col->Enable = false;
-			if (tr->position.y < -5) {
+			if (tr->GetPosition().y < -5) {
 				isDead = true;
 			}
 		}
@@ -70,7 +69,7 @@ public:
 			}
 			Keys();
 			col->IsCollidedDIAGS();
-			if (!col->isCollided && tr->position.y > 20.) {
+			if (!col->isCollided && tr->GetPosition().y > 20.) {
 				if (prevKey == Keycode::KEY_D) {
 					auto iter = anim->animations.find(anim->GetAnimations()[3]);
 					anim->PlayAnim(iter->second);
@@ -104,7 +103,7 @@ public:
 						anim->PlayAnim(iter->second);
 					}
 				}
-			if (tr->position.y < -18)
+			if (tr->GetPosition().y < -18)
 				Dead();
 		}
 	}

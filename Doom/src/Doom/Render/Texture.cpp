@@ -236,9 +236,9 @@ void Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFr
 		UnloadFromVRAM(filePath);
 		return;
 	}
+
 	glGenTextures(1, &t->m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, t->m_RendererID);
-
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

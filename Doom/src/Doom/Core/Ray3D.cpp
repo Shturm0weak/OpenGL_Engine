@@ -71,7 +71,7 @@ void Doom::Ray3D::Normilize(glm::vec3 & vector)
 
 bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D * c)
 {
-	glm::vec3 pos = c->offset + c->GetOwnerOfComponent()->GetPositions();
+	glm::vec3 pos = c->offset + c->GetOwnerOfComponent()->GetPosition();
 	glm::vec3 scale = glm::abs(c->minP) + glm::abs(c->maxP);
 	glm::vec3 bMin = pos + (glm::vec3(-1, -1, -1) * scale);
 	glm::vec3 bMax = pos + (glm::vec3(1, 1, 1) * scale);
@@ -120,7 +120,7 @@ bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, flo
 	Transform* tr = c->GetOwnerOfComponent()->GetComponent<Transform>();
 	glm::vec3 bounds0 = c->minP;
 	glm::vec3 bounds1= c->maxP;
-	glm::vec3 vPos = tr->position + c->offset;
+	glm::vec3 vPos = tr->GetPosition() + c->offset;
 	glm::mat4 pos = glm::translate(glm::mat4(1.0f), vPos);
 	glm::mat4 wMat = pos * tr->view;
 	bounds0 = glm::vec3(tr->scale * glm::vec4(bounds0, 1.0f));

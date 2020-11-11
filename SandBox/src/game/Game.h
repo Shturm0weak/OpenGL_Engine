@@ -105,9 +105,9 @@ public:
 			{
 				if (fireTimer > 2.99 && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 					Hit hit;
-					glm::vec2 direction = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x - go->GetPositions().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y - go->GetPositions().y);
+					glm::vec2 direction = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x - go->GetPosition().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y - go->GetPosition().y);
 					Ray2D::Normilize(direction);
-					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPositions().x, go->GetPositions().y), direction, ray->ignoreMask)) {
+					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPosition().x, go->GetPosition().y), direction, ray->ignoreMask)) {
 						if (hit.Object->GetTag() == "Coin") {
 							Coin* coin = (Coin*)hit.Object->GetOwnerOfComponent();
 							coin->OnCollision(go->col);
@@ -165,7 +165,7 @@ public:
 			Gui::GetInstance()->Text("FPS : %f", true, 0, 0, 25, COLORS::Red, 0, fps);
 			Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 			Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
-			Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, go->GetPositions().x, go->GetPositions().y);
+			Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, go->GetPosition().x, go->GetPosition().y);
 			Gui::GetInstance()->Text("Textures: %d", true, 0, 0, 25, COLORS::Red, 0, Texture::bindedAmount);
 			Gui::GetInstance()->Text("Collisions: %d", true, 0, 0, 25, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
 			Gui::GetInstance()->Text("VRAM used: %f MB", true, 0, 0, 25, COLORS::Red, 3, Texture::VRAMused);

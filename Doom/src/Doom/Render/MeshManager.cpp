@@ -146,8 +146,7 @@ void MeshManager::DispatchLoadedMeshes()
 			auto iter = Meshes.find(i->first);
 			if (iter != Meshes.end()) {
 				Renderer3D* r = static_cast<Renderer3D*>(i->second);
-				r->mesh = iter->second;
-				r->ChangeRenderTechnic(r->renderTechnic);
+				r->LoadMesh(iter->second);
 				meshQueue.erase(i++);
 			}
 			else

@@ -18,7 +18,6 @@ public:
 		EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
-		type = "GameObject";
 		tr->Scale(3, 3);
 		col->IsTrigger = true;
 		col->SetTag("Bomb");
@@ -35,7 +34,7 @@ public:
 		}
 		tr->Move(0, -5, 0);
 		tr->Rotate(0,0,1);
-		if (tr->position.y <= -18) {
+		if (GetPosition().y <= -18) {
 			Randomize();
 		}
 		if (particlePlay) {
@@ -52,7 +51,7 @@ public:
 			Player* player = dynamic_cast<Player*>(col->GetOwnerOfComponent());
 			player->missed += 3;
 			player = nullptr;
-			particle->SetPosition(position.x, position.y);
+			particle->SetPosition(GetPosition().x, GetPosition().y);
 			particlePlay = true;
 			particle->Restart();
 		}
@@ -63,7 +62,7 @@ public:
 			SoundManager::Play(bombSound);
 			Enable = false;
 			this->col->Enable = false;
-			particle->SetPosition(position.x, position.y);
+			particle->SetPosition(GetPosition().x, GetPosition().y);
 			particlePlay = true;
 			particle->Restart();
 		}

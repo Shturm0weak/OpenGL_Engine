@@ -22,7 +22,7 @@ namespace Doom {
 		virtual void OnTranslate() {}
 
 	public:
-
+		std::vector<int> registeredEvents;
 		void HandleEvent(Event* e);
 	};
 

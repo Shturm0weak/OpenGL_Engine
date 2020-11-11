@@ -23,7 +23,7 @@ namespace Doom {
 		Camera();
 		~Camera() {}
 
-		glm::vec3 GetRotation() const ;
+		glm::vec3 GetRotation();
 		glm::vec3 GetMouseDirVec();
 
 		inline glm::vec3 GetPosition() const { return m_Position; }
@@ -49,8 +49,10 @@ namespace Doom {
 
 		float GetRationWH() const;
 		float GetRationHW() const;
+		float GetFOV() { return fovy; }
 
 		friend class Editor;
+		friend class Batch;
 	private:
 		float zfar = 10;
 		float znear = 0.1f;

@@ -41,8 +41,8 @@ void ShipPlayer::ShipMovement()
 
 	tr->Move(speed.x, speed.y, speed.z);
 	dir = glm::vec3(ViewPort::GetInstance()->GetMousePositionToWorldSpace(), 0);
-	dir.x -= GetPositions().x;
-	dir.y -= GetPositions().y;
+	dir.x -= GetPosition().x;
+	dir.y -= GetPosition().y;
 	
 	tr->RotateOnce(dir, glm::vec3(0, 0, 1));
 }
@@ -50,19 +50,19 @@ void ShipPlayer::ShipMovement()
 void ShipPlayer::ScreenBorders()
 {
 	double xBorder = (Window::GetCamera().GetAspectRatio() * Window::GetCamera().GetZoomLevel());
-	if (position.x > xBorder - sr->GetWidth() * 0.5) {
-		tr->Translate(xBorder - sr->GetWidth() * 0.5,position.y);
+	if (GetPosition().x > xBorder - sr->GetWidth() * 0.5) {
+		tr->Translate(xBorder - sr->GetWidth() * 0.5, GetPosition().y);
 	}
-	else if (position.x < -xBorder + sr->GetWidth() * 0.5) {
-		tr->Translate(-xBorder + sr->GetWidth() * 0.5,position.y);
+	else if (GetPosition().x < -xBorder + sr->GetWidth() * 0.5) {
+		tr->Translate(-xBorder + sr->GetWidth() * 0.5, GetPosition().y);
 	}
 
 	double yBorder = (1 * Window::GetCamera().GetZoomLevel());
-	if (position.y > yBorder - sr->GetHeight() * 0.5) {
-		tr->Translate(position.x, yBorder - sr->GetHeight() * 0.5);
+	if (GetPosition().y > yBorder - sr->GetHeight() * 0.5) {
+		tr->Translate(GetPosition().x, yBorder - sr->GetHeight() * 0.5);
 	}
-	else if (position.y < -yBorder + sr->GetHeight() * 0.5) {
-		tr->Translate(position.x,-yBorder + sr->GetHeight() * 0.5);
+	else if (GetPosition().y < -yBorder + sr->GetHeight() * 0.5) {
+		tr->Translate(GetPosition().x,-yBorder + sr->GetHeight() * 0.5);
 	}
 }
 
@@ -86,7 +86,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	col->IsTrigger = true;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
-		bullets.push_back(new Bullet("Bullet",dir,"Bullet" + std::to_string(i),position.x,position.y));
+		bullets.push_back(new Bullet("Bullet",dir,"Bullet" + std::to_string(i), GetPosition().x, GetPosition().y));
 		bullets[i]->isActive = false;
 		bullets[i]->SetOwner((void*)bulletsPlaceHolder);
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
@@ -153,7 +153,7 @@ void ShipPlayer::OnCollision(void * _col)
 		Ammo* a = static_cast<Ammo*>(__col->GetOwnerOfComponent());
 		ammo += a->GetAmmo();
 		SoundManager::Play(SoundManager::GetSound("pickUp"));
-		Renderer::DeleteObject(a->GetId());
+		Renderer::DeleteObject(a->id);
 	}
 }
 
@@ -172,7 +172,7 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 			if (usedBulletCounter == amountOfBulletsInPool)
 				usedBulletCounter = 0;
 			bullets[usedBulletCounter]->SetMoveDirection(dir);
-			bullets[usedBulletCounter]->tr->Translate(position.x + xOffset,position.y + yOffset);
+			bullets[usedBulletCounter]->tr->Translate(GetPosition().x + xOffset, GetPosition().y + yOffset);
 			bullets[usedBulletCounter]->Enable = true;
 			bullets[usedBulletCounter]->col->Enable = true;
 			bullets[usedBulletCounter]->isActive = true;

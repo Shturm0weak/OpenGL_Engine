@@ -46,7 +46,7 @@ void Doom::CubeCollider3D::InitMesh()
 	uint32_t* indices = new uint32_t[36];
 	for (size_t i = 0; i < 36; i++)
 		indices[i] = i;
-	Mesh* mesh = new Mesh("CubeCollider");
+	Mesh* mesh = new Mesh("CubeCollider","src/Mesh/Primitives/cube.fbx");
 	mesh->mesh = vertices;
 	mesh->indicesForNormals = indices;
 	MeshManager::AddMesh(mesh);

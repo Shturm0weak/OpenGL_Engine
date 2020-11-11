@@ -10,7 +10,6 @@ namespace Doom {
 	private:
 		static std::map<std::string, Texture*> textures;
 		static bool textureAdded;
-
 		std::string m_FilePath;
 		std::string m_Name;
 		unsigned char* m_LocalBuffer = nullptr;

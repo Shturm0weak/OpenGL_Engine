@@ -25,7 +25,8 @@ namespace Doom {
 	public:
 		static Shader* Create(const std::string& name, const std::string& path);
 		static Shader* Get(const std::string& name);
-
+		inline std::string& GetName() { return m_Name; }
+		inline std::string& GetFilePath() { return m_FilePath; }
 		void Bind() const;
 		void UnBind() const;
 

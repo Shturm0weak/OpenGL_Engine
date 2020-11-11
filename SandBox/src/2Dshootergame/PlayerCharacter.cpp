@@ -12,26 +12,23 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 	col->SetTag("Player");
 	tr = GetComponentManager()->GetComponent<Transform>();
-	type = "Player";
 	anim = GetComponentManager()->AddComponent<Animator>();
 	anim->SetAnimation("src/ShooterAnimation");
 	tr->Scale(3, 3);
 	col->Scale(3,3);
 	anim->isPlayingAnim = true;
-	muzzleFlashObj = new GameObject("MuzzleFlashObj",position.x,position.x);
+	muzzleFlashObj = new GameObject("MuzzleFlashObj",GetPosition().x, GetPosition().x);
 	muzzleFlashObj->SetOwner(this);
 	AddChild(muzzleFlashObj);
 	static_cast<SpriteRenderer*>(muzzleFlashObj->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(muzzleFlash);
 	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Scale(0.4f, 0.4f);
-	SetObjectType("Player");
-	muzzleFlashObj->SetObjectType("MuzzleFlash");
-	rayfire = new Ray2D(glm::vec2(position.x,position.y),glm::vec2(1,0),15);
+	rayfire = new Ray2D(glm::vec2(GetPosition().x, GetPosition().y),glm::vec2(1,0),15);
 	line = new Line(glm::vec3(0), glm::vec3(0),15);
 	test1 = new Line(glm::vec3(0), glm::vec3(0), 15);
 	test2 = new Line(glm::vec3(0), glm::vec3(0), 15);
 	test3 = new Line(glm::vec3(0), glm::vec3(0), 15);
 	line->width = 2.f;
-	checkGround = new Ray2D(glm::vec2(position.x, position.y), glm::vec2(0, -1), 100);
+	checkGround = new Ray2D(glm::vec2(GetPosition().x, GetPosition().y), glm::vec2(0, -1), 100);
 }
 
 PlayerCharacter::~PlayerCharacter()
@@ -46,7 +43,7 @@ void PlayerCharacter::OnStart()
 void PlayerCharacter::OnUpdate()
 {
 	fireRateTimer += DeltaTime::deltatime;
-	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Translate(position.x + flashOffset.x, position.y + flashOffset.y);
+	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Translate(GetPosition().x + flashOffset.x, GetPosition().y + flashOffset.y);
 	PlayerMovement();
 	SpriteRenderer* sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 	//ThreadPool::Instance()->enqueue([=] {
@@ -56,9 +53,9 @@ void PlayerCharacter::OnUpdate()
 		Hit hit;
 		count = 0;
 		glm::vec2 resultV;
-		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[0] + position.x,position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[0] + GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->ignoreMask)) {
 			if (hit.Object->GetTag() == "Land") {
- 				x = ((abs(sr->WorldVertexPositions[1] + position.y)) - abs(hit.point.y));
+ 				x = ((abs(sr->WorldVertexPositions[1] + GetPosition().y)) - abs(hit.point.y));
 				test1->SetStartPoint(checkGround->start.x, checkGround->start.y);
 				test1->SetEndPoint(hit.point.x, hit.point.y);
 				if (x < 0.05 && x > -0.15) {
@@ -71,10 +68,10 @@ void PlayerCharacter::OnUpdate()
 		}
 
 		
-		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[2] + position.x, position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[2] + GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->ignoreMask)) {
 			if (hit.Object->GetTag() == "Land") {
 
-				x = ((abs(sr->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
+				x = ((abs(sr->WorldVertexPositions[3] + GetPosition().y)) - abs(hit.point.y));
 				test2->SetStartPoint(checkGround->start.x, checkGround->start.y);
 				test2->SetEndPoint(hit.point.x, hit.point.y);
 				if (x < 0.05 && x > -0.15) {
@@ -86,9 +83,9 @@ void PlayerCharacter::OnUpdate()
 			}
 		}
 
-		if (checkGround->Raycast(hit, 150, glm::vec2(position.x, position.y), glm::vec2(0, -1), checkGround->ignoreMask)) {
+		if (checkGround->Raycast(hit, 150, glm::vec2(GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->ignoreMask)) {
 			if (hit.Object->GetTag() == "Land") {
-				x = ((abs(sr->WorldVertexPositions[3] + position.y)) - abs(hit.point.y));
+				x = ((abs(sr->WorldVertexPositions[3] + GetPosition().y)) - abs(hit.point.y));
 				test3->SetStartPoint(checkGround->start.x, checkGround->start.y);
 				test3->SetEndPoint(hit.point.x, hit.point.y);
 				if (x < 0.05 && x > -0.15) {
@@ -124,7 +121,7 @@ void PlayerCharacter::PlayerMovement()
 			direction = glm::vec2(1,0);
 		else if(turnSide == 1)
 			direction = glm::vec2(-1, 0);
-		rayfire->Raycast(hit, 15, glm::vec2(position.x,position.y) , direction , rayfire->ignoreMask);
+		rayfire->Raycast(hit, 15, glm::vec2(GetPosition().x, GetPosition().y) , direction , rayfire->ignoreMask);
 		fireRateTimer = 0.0f;
 		muzzleFlashObj->Enable = true;
 		line->SetStartPoint(rayfire->start.x,rayfire->start.y);

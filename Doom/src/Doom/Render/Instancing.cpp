@@ -64,7 +64,7 @@ void Doom::Instancing::Render()
 		{
 			PointLight* pl = PointLight::pLights[i];
 			sprintf(buffer, "pointLights[%i].position", i);
-			shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->position);
+			shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
 			sprintf(buffer, "pointLights[%i].color", i);
 			shader->SetUniform3fv(buffer, pl->color);
 			sprintf(buffer, "pointLights[%i].constant", i);
@@ -82,7 +82,7 @@ void Doom::Instancing::Render()
 		}
 		shader->SetUniform1i("u_isNormalMapping", iter->second[0]->useNormalMap);
 
-		shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
+		shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		shader->SetUniform1f("u_DrawShadows", drawShadows);
 		glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
 		shader->SetUniform1i("u_ShadowMap", 2);
@@ -146,7 +146,7 @@ void Doom::Instancing::BakeShadows()
 
 		shader->Bind();
 
-		shader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
+		shader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 
 		gliter->second.vao->Bind();
 		gliter->second.ibo->Bind();
@@ -237,8 +237,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				Renderer3D* r = iter->second[i];
 				float* posPtr = &gliter->second.pos[i * sizeOfAttribs];
 				GameObject* owner = r->GetOwnerOfComponent();
-				memcpy(posPtr, &owner->position[0], 12);
-				memcpy(&posPtr[3], &owner->scaleValues[0], 12);
+				memcpy(posPtr, &owner->GetPosition()[0], 12);
+				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
 				//r->color = color;
 				memcpy(&posPtr[6], &r->color[0], 16);
 				posPtr[10] = r->mat.ambient;
@@ -263,8 +263,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				Renderer3D* r = iter->second[i];
 				float* posPtr = &gliter->second.pos[i * sizeOfAttribs];
 				GameObject* owner = r->GetOwnerOfComponent();
-				memcpy(posPtr, &owner->position[0], 12);
-				memcpy(&posPtr[3], &owner->scaleValues[0], 12);
+				memcpy(posPtr, &owner->GetPosition()[0], 12);
+				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
 				//r->color = COLORS::Blue;
 				memcpy(&posPtr[6], &r->color[0], 16);
 				posPtr[10] = r->mat.ambient;

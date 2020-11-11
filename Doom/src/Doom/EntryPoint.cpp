@@ -9,6 +9,7 @@
 #include "Render/MeshManager.h"
 #include "Render/Instancing.h"
 #include "Core/Utils.h"
+#include "Core/SceneSerializer.h"
 
 using namespace Doom;
 
@@ -28,7 +29,7 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 #ifndef LOADFROMFILE
 	Utils::LoadShadersFromFolder("src/Shaders");
 	Utils::LoadTexturesFromFolder("src/Images");
-	Utils::LoadMeshesFromFolder("src/Mesh");
+	Utils::LoadMeshesFromFolder("src/Mesh/Primitives");
 #endif
 
 	Gui::GetInstance()->LoadStandartFonts();
@@ -46,7 +47,7 @@ void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
 	bool FirstFrame = true;
-
+	SceneSerializer::DeSerialize("src/Scenes/scene.yaml");
 	app->OnStart();
 	EventSystem::GetInstance()->SendEvent(EventType::ONSTART, nullptr);
 
@@ -73,8 +74,10 @@ void EntryPoint::Run()
 		SoundManager::UpdateSourceState();
 
 		EventSystem::GetInstance()->ProcessEvents();
-		Renderer::SelectObject3D();
-		Renderer::SortTransparentObjects();
+		if (app->type == RenderType::TYPE_3D) {
+			Renderer::SelectObject3D();
+			Renderer::SortTransparentObjects();
+		}
 
 		if (Input::IsKeyPressed(Keycode::KEY_E)) {
 			isEditorEnable = !isEditorEnable;
@@ -142,9 +145,8 @@ void EntryPoint::Run()
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}
+	SceneSerializer::Serialize("src/Scenes/scene.yaml");
 	app->OnClose();
-	delete app;
-	
 }
 
 EntryPoint::~EntryPoint() {

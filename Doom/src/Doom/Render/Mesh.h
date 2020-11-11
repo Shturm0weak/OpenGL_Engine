@@ -16,6 +16,7 @@ namespace Doom {
 	public:
 
 		std::string name;
+		std::string filePath;
 		uint32_t meshSize = 0;
 		float* mesh = nullptr;
 		uint32_t indicesSize = 0;
@@ -46,7 +47,7 @@ namespace Doom {
 		IndexBuffer* ib = nullptr;
 		VertexBufferLayout* layout = nullptr;
 
-		Mesh(std::string name) : name(name) {}
+		Mesh(std::string name, std::string filePath) : name(name), filePath(filePath) {}
 
 		~Mesh();
 	};

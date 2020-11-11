@@ -117,7 +117,7 @@ void Doom::Camera::SetOrthographic(float ratio)
 	type = ORTHOGRAPHIC;
 }
 
-glm::vec3 Doom::Camera::GetRotation() const
+glm::vec3 Doom::Camera::GetRotation()
 {
 	return glm::vec3(pitch, yaw, roll);
 }

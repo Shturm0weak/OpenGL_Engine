@@ -34,8 +34,8 @@ void Doom::Renderer::SortTransparentObjects()
 		else
 			return false;
 		glm::vec3 camPos = Window::GetCamera().GetPosition();
-		glm::vec3 pos0 = go0->GetPositions();
-		glm::vec3 pos1 = go1->GetPositions();
+		glm::vec3 pos0 = go0->GetPosition();
+		glm::vec3 pos1 = go1->GetPosition();
 		float d1 = glm::distance(camPos, pos0 + cc0->minP);
 		float d2 = glm::distance(camPos, pos0 + cc0->maxP);
 		float r1d = 0;
@@ -77,8 +77,8 @@ void Doom::Renderer::DeleteObject(int id) {
 	if (id != size) {
 		for (unsigned int i = 0; i < size; i++)
 		{
-			World::objects[i]->SetId(i);
-			World::objects[i]->GetLayer() = i;
+			World::objects[i]->id = (i);
+			World::objects[i]->layer = i;
 		}
 	}
 	unsigned int childsAmount = go->GetChilds().size();
@@ -105,10 +105,10 @@ GameObject* Doom::Renderer::SelectObject()
 		GameObject* go = static_cast<GameObject*>(World::objects[i]);
 		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
 		p.clear();
-		p.push_back(glm::vec2(sr->WorldVertexPositions[0] + go->GetPositions().x, sr->WorldVertexPositions[1] + go->GetPositions().y));
-		p.push_back(glm::vec2(sr->WorldVertexPositions[2] + go->GetPositions().x, sr->WorldVertexPositions[3] + go->GetPositions().y));
-		p.push_back(glm::vec2(sr->WorldVertexPositions[4] + go->GetPositions().x, sr->WorldVertexPositions[5] + go->GetPositions().y));
-		p.push_back(glm::vec2(sr->WorldVertexPositions[6] + go->GetPositions().x, sr->WorldVertexPositions[7] + go->GetPositions().y));
+		p.push_back(glm::vec2(sr->WorldVertexPositions[0] + go->GetPosition().x, sr->WorldVertexPositions[1] + go->GetPosition().y));
+		p.push_back(glm::vec2(sr->WorldVertexPositions[2] + go->GetPosition().x, sr->WorldVertexPositions[3] + go->GetPosition().y));
+		p.push_back(glm::vec2(sr->WorldVertexPositions[4] + go->GetPosition().x, sr->WorldVertexPositions[5] + go->GetPosition().y));
+		p.push_back(glm::vec2(sr->WorldVertexPositions[6] + go->GetPosition().x, sr->WorldVertexPositions[7] + go->GetPosition().y));
 		if (ObjectCollided(p,i)) {
 			if (Editor::Instance()->go != go) {
 				Editor::Instance()->go = go;
@@ -128,10 +128,10 @@ std::vector<unsigned int> Doom::Renderer::CalculateObjectsVectors()
 	for (unsigned int i = 0; i < World::objects.size(); i++)
 	{
 		if (World::objects[i]->GetOwner() == nullptr) {
-			ObjectsWithNoOwner.push_back(World::objects[i]->GetId());
+			ObjectsWithNoOwner.push_back(World::objects[i]->id);
 		}
 		else {
-			ObjectsWithOwner.push_back(World::objects[i]->GetId());
+			ObjectsWithOwner.push_back(World::objects[i]->id);
 		}
 	}
 	return ObjectsWithNoOwner;
@@ -277,13 +277,14 @@ void Renderer::Render() {
 		return;
 	}			
 	
-	Render2DObjects();
 	RenderCollision();
 	Render3DObjects();
 	RenderLines();
 	RenderCollision3D();
+	Render2DObjects();
 	RenderTransparent();
-	Editor::Instance()->gizmo->Render();
+	if(Editor::Instance()->gizmo != nullptr)
+		Editor::Instance()->gizmo->Render();
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	RenderText();
@@ -376,8 +377,23 @@ void Doom::Renderer::RenderCollision3D()
 	if (size > 0) {
 		for (size_t i = 0; i < size; i++)
 		{
-			if (RectangleCollider2D::IsVisible)
+			if (!CubeCollider3D::colliders[i]->isBoundingBox && RectangleCollider2D::IsVisible)
 				CubeCollider3D::colliders[i]->Render();
+		}
+	}
+	if (size > 0) {
+		for (size_t i = 0; i < size; i++)
+		{
+			if (CubeCollider3D::colliders[i]->isBoundingBox && Editor::Instance()->isBoundingBoxesVisible)
+				CubeCollider3D::colliders[i]->Render();
+		}
+	}
+	size = SphereCollider::spheres.size();
+	if (size > 0) {
+		for (size_t i = 0; i < size; i++)
+		{
+			if (RectangleCollider2D::IsVisible)
+				SphereCollider::spheres[i]->Render();
 		}
 	}
 }

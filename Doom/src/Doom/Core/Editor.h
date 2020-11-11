@@ -13,6 +13,7 @@ namespace Doom {
 	private:
 		std::mutex mtx_updateNormals;
 		float campos[2] = { 0,0 };
+		bool isBoundingBoxesVisible = false;
 		bool IsActiveTextureAtlasCreation = false;
 		bool IsActiveEditor = false;
 		bool tool_active = true;

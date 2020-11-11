@@ -44,44 +44,44 @@ void Doom::Gizmos::OnUpdate()
 	else
 		Enable = true;
 
-	tr->Translate(obj->position.x, obj->position.y, obj->position.z);
+	tr->Translate(obj->GetPosition().x, obj->GetPosition().y, obj->GetPosition().z);
 	glm::vec3 pos = Window::GetCamera().GetPosition();
-	glm::vec3 v = (pos - tr->position);
+	glm::vec3 v = (pos - tr->GetPosition());
 	float d = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	d *= 0.1;
 	tr->Scale(d, d, d);
 
-	axis[0]->SetStartPoint(tr->position);
-	axis[0]->SetEndPoint(tr->position.x + d * 1.5, tr->position.y, tr->position.z);
+	axis[0]->SetStartPoint(tr->GetPosition());
+	axis[0]->SetEndPoint(tr->GetPosition().x + d * 1.5, tr->GetPosition().y, tr->GetPosition().z);
 	axis[0]->color = COLORS::Red;
-	axis[1]->SetStartPoint(tr->position);
-	axis[1]->SetEndPoint(tr->position.x, tr->position.y + d * 1.5, tr->position.z);
+	axis[1]->SetStartPoint(tr->GetPosition());
+	axis[1]->SetEndPoint(tr->GetPosition().x, tr->GetPosition().y + d * 1.5, tr->GetPosition().z);
 	axis[1]->color = COLORS::Green;
-	axis[2]->SetStartPoint(tr->position);
-	axis[2]->SetEndPoint(tr->position.x, tr->position.y, tr->position.z + d * 1.5);
+	axis[2]->SetStartPoint(tr->GetPosition());
+	axis[2]->SetEndPoint(tr->GetPosition().x, tr->GetPosition().y, tr->GetPosition().z + d * 1.5);
 	axis[2]->color = COLORS::Blue;
 
 	Transform* trO = nullptr;
 	faces[0]->GetComponent<SpriteRenderer>()->color = COLORS::Red;
 	trO = faces[0]->GetComponent<Transform>();
-	trO->Translate(tr->position.x, tr->position.y + d, tr->position.z + d);
-	if (pos.x > trO->position.x)
+	trO->Translate(tr->GetPosition().x, tr->GetPosition().y + d, tr->GetPosition().z + d);
+	if (pos.x > trO->GetPosition().x)
 		trO->RotateOnce(0, -90, 0, false);
 	else
 		trO->RotateOnce(0, 90, 0, false);
 
 	faces[1]->GetComponent<SpriteRenderer>()->color = COLORS::Green;
 	trO = faces[1]->GetComponent<Transform>();
-	trO->Translate(tr->position.x + d, tr->position.y, tr->position.z + d);
-	if (pos.y < trO->position.y)
+	trO->Translate(tr->GetPosition().x + d, tr->GetPosition().y, tr->GetPosition().z + d);
+	if (pos.y < trO->GetPosition().y)
 		trO->RotateOnce(-90, 0, 0, false);
 	else
 		trO->RotateOnce(90, 0, 0, false);
 
 	faces[2]->GetComponent<SpriteRenderer>()->color = COLORS::Blue;
 	trO = faces[2]->GetComponent<Transform>();
-	trO->Translate(tr->position.x + d, tr->position.y + d, tr->position.z);
-	if (pos.z < trO->position.z)
+	trO->Translate(tr->GetPosition().x + d, tr->GetPosition().y + d, tr->GetPosition().z);
+	if (pos.z < trO->GetPosition().z)
 		trO->RotateOnce(180, 0, 0, false);
 	else
 		trO->RotateOnce(0, 0, 0, false);
@@ -196,7 +196,7 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 				transform = glm::round(Window::GetCamera().GetPosition().x + dir.x * dist - diff.x * 0.5f);
 			else
 				transform = Window::GetCamera().GetPosition().x + dir.x * dist - diff.x * 0.5f;
-			obj->GetComponent<Transform>()->Translate(transform, obj->GetPositions().y, obj->GetPositions().z);
+			obj->GetComponent<Transform>()->Translate(transform, obj->GetPosition().y, obj->GetPosition().z);
 			faces[0]->Enable = false;
 			faces[1]->Enable = false;
 			faces[2]->Enable = false;
@@ -208,7 +208,7 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 				transform = glm::round(Window::GetCamera().GetPosition().y + dir.y * dist - diff.y * 0.5f);
 			else
 				transform = Window::GetCamera().GetPosition().y + dir.y * dist - diff.y * 0.5f;
-			obj->GetComponent<Transform>()->Translate(obj->GetPositions().x, transform, obj->GetPositions().z);
+			obj->GetComponent<Transform>()->Translate(obj->GetPosition().x, transform, obj->GetPosition().z);
 			faces[0]->Enable = false;
 			faces[1]->Enable = false;
 			faces[2]->Enable = false;
@@ -220,7 +220,7 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 				transform = glm::round(Window::GetCamera().GetPosition().z + dir.z * dist - diff.z * 0.5f);
 			else
 				transform = Window::GetCamera().GetPosition().z + dir.z * dist - diff.z * 0.5f;
-			obj->GetComponent<Transform>()->Translate(obj->GetPositions().x, obj->GetPositions().y, transform);
+			obj->GetComponent<Transform>()->Translate(obj->GetPosition().x, obj->GetPosition().y, transform);
 			faces[0]->Enable = false;
 			faces[1]->Enable = false;
 			faces[2]->Enable = false;
@@ -250,7 +250,7 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 			continue;
 		Transform* tr = c->GetComponent<Transform>();
 		float tMin = 1e300;
-		glm::vec3 pos = c->GetPositions();
+		glm::vec3 pos = c->GetPosition();
 		glm::mat4 viewXscale = tr->view * tr->scale;
 		glm::vec4 transformedBMin = viewXscale * (glm::vec4(-0.5f, -0.5f, 0, 0) * scale);
 		glm::vec4 transformedBMax = viewXscale * (glm::vec4(0.5f, 0.5f, 0, 0)* scale);
@@ -282,7 +282,7 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 	if (go != nullptr && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 		go->GetComponent<SpriteRenderer>()->color = COLORS::Orange;
 		isHovered = true;
-		glm::vec3 diff = go->GetPositions() - obj->GetPositions();
+		glm::vec3 diff = go->GetPosition() - obj->GetPosition();
 		for (size_t i = 0; i < 3; i++)
 		{
 			axis[i]->Enable = false;
@@ -299,20 +299,20 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 			diff.z = glm::round(diff.z);
 		}
 		if (go->name == "Face0") {
-			go->GetComponent<Transform>()->Translate(go->GetPositions().x, transform.y, transform.z);
-			obj->GetComponent<Transform>()->Translate(obj->GetPositions().x, transform.y - diff.y, transform.z - diff.z);
+			go->GetComponent<Transform>()->Translate(go->GetPosition().x, transform.y, transform.z);
+			obj->GetComponent<Transform>()->Translate(obj->GetPosition().x, transform.y - diff.y, transform.z - diff.z);
 			faces[1]->Enable = false;
 			faces[2]->Enable = false;
 		}
 		else if (go->name == "Face1") {
-			go->GetComponent<Transform>()->Translate(transform.x, go->GetPositions().y, transform.z);
-			obj->GetComponent<Transform>()->Translate(transform.x - diff.x, obj->GetPositions().y, transform.z - diff.z);
+			go->GetComponent<Transform>()->Translate(transform.x, go->GetPosition().y, transform.z);
+			obj->GetComponent<Transform>()->Translate(transform.x - diff.x, obj->GetPosition().y, transform.z - diff.z);
 			faces[0]->Enable = false;
 			faces[2]->Enable = false;
 		}
 		else if (go->name == "Face2") {
-			go->GetComponent<Transform>()->Translate(transform.x, transform.y, go->GetPositions().z);
-			obj->GetComponent<Transform>()->Translate(transform.x - diff.x, transform.y - diff.y, obj->GetPositions().z);
+			go->GetComponent<Transform>()->Translate(transform.x, transform.y, go->GetPosition().z);
+			obj->GetComponent<Transform>()->Translate(transform.x - diff.x, transform.y - diff.y, obj->GetPosition().z);
 			faces[0]->Enable = false;
 			faces[1]->Enable = false;
 		}
@@ -331,7 +331,7 @@ void Doom::Gizmos::Render()
 	std::map<float,GameObject*> d;
 	for (size_t i = 0; i < 3; i++)
 	{
-		d.insert(std::make_pair(glm::distance(pos, faces[i]->GetPositions()),faces[i]));
+		d.insert(std::make_pair(glm::distance(pos, faces[i]->GetPosition()),faces[i]));
 	}
 	
 	Batch::GetInstance()->Gindexcount = 0;

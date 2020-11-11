@@ -18,7 +18,7 @@ layout(location = 12) in int relatedToPanel;
 out float edgeRadius;
 out vec2 uisize;
 out vec2 uipos;
-out float tex_index;
+flat out int tex_index;
 out float flagIsGui;
 out vec4 out_color;
 out vec2 v_textcoords;
@@ -42,7 +42,7 @@ void main() {
 	v_textcoords = texcoords;
 	out_color = m_color;
 	flagIsGui = isGui;
-	tex_index = texIndex;
+	tex_index = int(texIndex);
 	uisize = size;
 	uipos = vec2(u_ViewProjection * vec4(pos,0,0));
 	edgeRadius = radius;
@@ -57,7 +57,7 @@ void main() {
 
 layout(location = 0) out vec4 color;
 
-in float tex_index;
+flat in int tex_index;
 in float flagIsGui;
 in vec4 out_color;
 in vec2 v_textcoords;

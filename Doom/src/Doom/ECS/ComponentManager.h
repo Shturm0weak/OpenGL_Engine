@@ -16,6 +16,7 @@
 #include "../Core/ColoredOutput.h"
 #include "../Components/PointLight.h"
 #include "../Components/DirectionalLight.h"
+#include "../Components/SphereCollider.h"
 
 namespace Doom {
 
@@ -27,6 +28,7 @@ namespace Doom {
 		ANIMATOR,
 		POINTLIGHT,
 		DIRECTIONALLIGHT,
+		SPHERECOLLIDER,
 	};
 
 	class DOOM_API ComponentManager {
@@ -184,6 +186,24 @@ namespace Doom {
 		}
 
 		template <>
+		void RemoveComponent<SphereCollider>() {
+			SphereCollider* sp = nullptr;
+			sp = GetComponent<SphereCollider>();
+			if (sp == nullptr)
+				return;
+			components.erase(components.begin() + sp->m_Id);
+			unsigned int _size = components.size();
+			if (sp->m_Id != _size) {
+				for (unsigned int i = sp->m_Id; i < _size; i++)
+				{
+					components[i]->m_Id = i;
+				}
+			}
+			delete sp;
+			return;
+		}
+
+		template <>
 		void RemoveComponent<Irenderer>() {
 			Irenderer* col = nullptr;
 			col = GetComponent<Irenderer>();
@@ -255,6 +275,17 @@ namespace Doom {
 			{
 				if (components[i]->GetComponentType() == ComponentType::RENDER) {
 					return (Irenderer*)components[i];
+				}
+			}
+			return nullptr;
+		}
+
+		template<>
+		SphereCollider* GetComponent() {
+			for (unsigned int i = 0; i < components.size(); i++)
+			{
+				if (components[i]->GetComponentType() == ComponentType::SPHERECOLLIDER) {
+					return (SphereCollider*)components[i];
 				}
 			}
 			return nullptr;
@@ -367,6 +398,21 @@ namespace Doom {
 		}
 
 		template <>
+		SphereCollider* AddComponent<SphereCollider>() {
+			if (GetComponent<SphereCollider>() == nullptr) {
+				SphereCollider* object = new SphereCollider();
+				object->owner = (this->owner);
+				object->m_Id = components.size();
+				components.push_back(object);
+#ifdef _DEBUG
+				std::cout << NAMECOLOR << "SphereCollider" << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
+#endif
+				return object;
+			}
+			return nullptr;
+		}
+
+		template <>
 		SpriteRenderer* AddComponent<SpriteRenderer>() {
 			if (GetComponent<SpriteRenderer>() == nullptr) {
 				SpriteRenderer* object = new SpriteRenderer(owner);
@@ -416,7 +462,6 @@ namespace Doom {
 			if (GetComponent<Transform>() == nullptr) {
 				Transform* object = new Transform();
 				object->owner = owner;
-				object->init();
 				object->m_Id = components.size();
 				components.push_back(object);
 #ifdef _DEBUG

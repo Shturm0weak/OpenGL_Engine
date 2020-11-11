@@ -71,7 +71,7 @@ void Editor::EditorUpdate()
 		if (ImGui::MenuItem("Delete"))
 		{
 			if (go != nullptr) {
-				Renderer::DeleteObject(go->GetId());
+				Renderer::DeleteObject(go->id);
 				if(World::objects.size() > 0)
 					gizmo->obj = World::objects[World::objects.size() - 1];
 				else
@@ -87,7 +87,7 @@ void Editor::EditorUpdate()
 	ImGui::SetWindowFontScale(1.25);
 	Renderer::CalculateObjectsVectors();
 
-	if (gizmo->obj != nullptr) {
+	if (gizmo != nullptr && gizmo->obj != nullptr) {
 		go = gizmo->obj;
 	}
 	else if (gizmo != nullptr && go != nullptr) {
@@ -131,6 +131,10 @@ void Editor::EditorUpdate()
 			{
 				go->GetComponentManager()->AddComponent<CubeCollider3D>();
 			}
+			if (ImGui::MenuItem("SphereCollider3D"))
+			{
+				go->GetComponentManager()->AddComponent<SphereCollider>();
+			}
 			if (ImGui::MenuItem("Child")) {
 				GameObject* child1 = new GameObject("Child", 0, 0);
 				go->AddChild((void*)child1);
@@ -144,15 +148,14 @@ void Editor::EditorUpdate()
 				return;
 			Doom::Transform* tr = go->component_manager->GetComponent<Doom::Transform>();
 			Doom::RectangleCollider2D* col = go->component_manager->GetComponent<Doom::RectangleCollider2D>();
-			ImGui::Text("ID %d", go->GetId());
+			ImGui::Text("ID %d", go->id);
 			ImGui::Checkbox("Enable", &go->Enable);
-			ImGui::Checkbox("Static", &go->Static);
 			if (go->GetOwner() != nullptr)
 				ImGui::Text("Has Owner");
 			ImGui::InputText("Name", name, sizeof(name));
 			ImGui::SameLine();
 			if (ImGui::Button("Change name")) {
-				go->SetName(name);
+				go->name = name;
 			}
 			ImGui::SliderInt("Layer", &go->GetLayer(), 0, Renderer::GetAmountOfObjects() - 1);
 			if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == TYPE_2D) {
@@ -177,6 +180,15 @@ void Editor::EditorUpdate()
 			MeshPicker();
 			TexturePicker();
 			ShaderMenu();
+			if (ImGui::Button("add Child")) {
+				
+				GameObject* obj = Renderer::CreateGameObject();
+				Renderer::CalculateObjectsVectors().size();
+				obj->SetOwner((void*)go);
+				go->AddChild((void*)obj);
+				go = World::objects.back();
+				go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+			}
 			}
 		}
 	ImGui::End();
@@ -215,7 +227,8 @@ void Editor::CreateTextureAtlas() {
 	ImGui::NewLine();
 	if (ImGui::Button("Apply") &&  textureForAtlas != nullptr) {
 		IsActiveTextureAtlasCreation = false;
-		TextureAtlas* textureAtlas = new TextureAtlas(spriteSize[0],spriteSize[1],textureForAtlas);
+		std::string name = "TextureAtlas/" + textureForAtlas->GetFilePath();
+		TextureAtlas* textureAtlas = TextureAtlas::CreateTextureAtlas(name,spriteSize[0],spriteSize[1],textureForAtlas);
 	}
 	ImGui::End();
 }
@@ -305,9 +318,9 @@ void Doom::Editor::Renderer2DComponent()
 		delete[] color;
 		int counterImagesButtons = 0;
 		ImGui::Text("Textures");
-		for (unsigned int i = 0; i < texture.size(); i++)
+		for (auto i = Texture::textures.begin(); i != Texture::textures.end(); i++)
 		{
-			void* my_tex_id = reinterpret_cast<void*>(texture[i]->m_RendererID);
+			void* my_tex_id = reinterpret_cast<void*>(i->second->m_RendererID);
 			int frame_padding = -1;
 			if (counterImagesButtons > 6) {
 				ImGui::NewLine();
@@ -317,7 +330,7 @@ void Doom::Editor::Renderer2DComponent()
 			if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
 				if (go != nullptr) {
 
-					sr->SetTexture(texture[i]);
+					sr->SetTexture(i->second);
 				}
 
 			}
@@ -339,7 +352,7 @@ void Doom::Editor::Renderer2DComponent()
 		}
 		if (ImGui::Button("No texture")) {
 			if (go != nullptr)
-				sr->SetTexture(nullptr);
+				sr->SetTexture(Texture::WhiteTexture);
 		}
 		ImGui::InputText("path", pathToTextureFolder, 64);
 		if (ImGui::Button("Refresh textures")) {
@@ -357,21 +370,21 @@ void Doom::Editor::Renderer2DComponent()
 			if (tool_active) {
 				ImGui::Begin("Texture Atlas", &tool_active);
 
-				Texture* textureOfAtlas = TextureAtlas::textureAtlases[selectedAtlas]->GetTexture();
+				Texture* textureOfAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetTexture();
 				int frame_padding = -1;
-				unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteWidth());
-				unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteHeight());
+				unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteWidth());
+				unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteHeight());
 				for (unsigned int i = 0; i < amountOfSpritesY; i++)
 				{
 					for (unsigned int j = 0; j < amountOfSpritesX; j++)
 					{
-						float* uvs = TextureAtlas::textureAtlases[selectedAtlas]->GetSpriteUVs(j, amountOfSpritesY - i);
+						float* uvs = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteUVs(j, amountOfSpritesY - i);
 						ImGui::PushID((i * amountOfSpritesX) + j);
 						if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
 						{
 							if (go != nullptr) {
 								SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
-								sr->textureAtlas = TextureAtlas::textureAtlases[selectedAtlas];
+								sr->textureAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas);
 								sr->SetTexture(textureOfAtlas);
 								sr->SetUVs(uvs);
 							}
@@ -384,7 +397,7 @@ void Doom::Editor::Renderer2DComponent()
 				ImGui::NewLine();
 				ImGui::InputFloat2("Sprite size", spriteSize);
 				if (ImGui::Button("Apply")) {
-					TextureAtlas::textureAtlases[selectedAtlas]->SetSpriteSize(spriteSize[0], spriteSize[1]);
+					TextureAtlas::GetTextureAtlas(selectedAtlas)->SetSpriteSize(spriteSize[0], spriteSize[1]);
 				}
 				ImGui::End();
 			}
@@ -461,20 +474,22 @@ void Doom::Editor::TransformComponent(Transform* tr)
 	if (ImGui::CollapsingHeader("Transform")) {
 		ImGui::Text("Position");
 		ImGui::InputFloat2("Limits", changeSliderPos);
-		ImGui::SliderFloat("Position X", &(tr->position.x), changeSliderPos[0], changeSliderPos[1]);
-		ImGui::SliderFloat("Position Y", &(tr->position.y), changeSliderPos[0], changeSliderPos[1]);
-		ImGui::SliderFloat("Position Z", &(tr->position.z), changeSliderPos[0], changeSliderPos[1]);
+		glm::vec3 position = go->GetPosition();
+		ImGui::SliderFloat("Position X", &(position.x), changeSliderPos[0], changeSliderPos[1]);
+		ImGui::SliderFloat("Position Y", &(position.y), changeSliderPos[0], changeSliderPos[1]);
+		ImGui::SliderFloat("Position Z", &(position.z), changeSliderPos[0], changeSliderPos[1]);
 		ImGui::Text("Scale");
 		ImGui::InputFloat2("Limits", changeSliderScale);
-		ImGui::SliderFloat("Scale X", &(go->scaleValues[0]), changeSliderScale[0], changeSliderScale[1]);
-		ImGui::SliderFloat("Scale Y", &(go->scaleValues[1]), changeSliderScale[0], changeSliderScale[1]);
-		ImGui::SliderFloat("Scale Z", &(go->scaleValues[2]), changeSliderScale[0], changeSliderScale[1]);
+		glm::vec3 scale = go->GetScale();
+		ImGui::SliderFloat("Scale X", &(scale[0]), changeSliderScale[0], changeSliderScale[1]);
+		ImGui::SliderFloat("Scale Y", &(scale[1]), changeSliderScale[0], changeSliderScale[1]);
+		ImGui::SliderFloat("Scale Z", &(scale[2]), changeSliderScale[0], changeSliderScale[1]);
 		ImGui::Text("Rotate");
 		ImGui::SliderAngle("Pitch", &tr->rotation.x);
 		ImGui::SliderAngle("Yaw", &tr->rotation.y);
 		ImGui::SliderAngle("Roll", &tr->rotation.z);
-		tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
-		tr->Translate(tr->position.x, tr->position.y, tr->position.z);
+		tr->Scale(scale[0], scale[1], scale[2]);
+		tr->Translate(position.x, position.y, position.z);
 		tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
 	}
 }
@@ -651,7 +666,8 @@ void Doom::Editor::DrawNode(GameObject* go, ImGuiTreeNodeFlags flags)
 {
 	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)go, flags, go->name.c_str());
 	if (ImGui::IsItemClicked()) {
-		this->gizmo->obj = go;
+		if(this->gizmo != nullptr)
+			this->gizmo->obj = go;
 	}
 
 	if (opened) {
@@ -785,7 +801,9 @@ void Doom::Editor::Debug()
 	ImGui::Text("Textures amount %d", Texture::textures.size());
 	ImGui::Checkbox("Polygon mode",&Renderer::PolygonMode);
 	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::IsVisible);
-	ImGui::Checkbox("Round transformations", &Editor::Instance()->gizmo->roundTransform);
+	ImGui::Checkbox("Visible bounding boxes", &isBoundingBoxesVisible);
+	if(gizmo != nullptr)
+		ImGui::Checkbox("Round transformations", &Editor::Instance()->gizmo->roundTransform);
 	ImGui::End();
 	TextProps();
 }
@@ -834,8 +852,8 @@ void Doom::Editor::UpdateNormals()
 					glm::mat4 scaleXview = r->GetOwnerOfComponent()->GetComponent<Transform>()->scale * r->GetOwnerOfComponent()->GetComponent<Transform>()->view;
 					glm::vec4 transformedPos = scaleXview * glm::vec4(pos.x, pos.y, pos.z, 0);
 					glm::vec4 transformedNor = scaleXview * glm::vec4(normals.x, normals.y, normals.z, 0);
-					this->normals[counter]->SetStartPoint(World::objects[i]->position + (glm::vec3)transformedPos);
-					this->normals[counter]->SetEndPoint(World::objects[i]->position + (glm::vec3)transformedPos + glm::vec3(transformedNor));
+					this->normals[counter]->SetStartPoint(World::objects[i]->GetPosition() + (glm::vec3)transformedPos);
+					this->normals[counter]->SetEndPoint(World::objects[i]->GetPosition() + (glm::vec3)transformedPos + glm::vec3(transformedNor));
 					this->normals[counter]->Enable = true;
 					counter++;
 				}
@@ -865,28 +883,30 @@ void Doom::Editor::EditorUpdateMyGui()
 		g->relatedPanelProperties.autoAllignment = true;
 		g->Panel("Directional light", -1080 + 200 + 5, 0, 400, 1080, glm::vec4(0.3, 0.3, 0.3, 0.8));
 		g->xAlign = g->LEFT;
-		g->Text("ID %d", true, 0, 0, 20, COLORS::White, 0, go->GetId());
+		g->Text("ID %d", true, 0, 0, 20, COLORS::White, 0, go->id);
 		g->CheckBox("Enable", &go->Enable, 0, 0, 20);
 		if (g->CollapsingHeader("Transform", 0, 0, COLORS::DarkGray * 0.7f)) {
 			g->Text("Position");
-			g->SliderFloat("X pos", &(tr->position.x), -50, 50, 0, 0, 200, 25);
-			g->SliderFloat("Y pos", &(tr->position.y), -50, 50, 0, 0, 200, 25);
-			g->SliderFloat("Z pos", &(tr->position.z), -50, 50, 0, 0, 200, 25);
+			glm::vec3 pos = go->GetPosition();
+			g->SliderFloat("X pos", &(pos.x), -50, 50, 0, 0, 200, 25);
+			g->SliderFloat("Y pos", &(pos.y), -50, 50, 0, 0, 200, 25);
+			g->SliderFloat("Z pos", &(pos.z), -50, 50, 0, 0, 200, 25);
 			g->Text("Scale");
-			g->SliderFloat("X scale", &go->scaleValues[0], -20, 50, 0, 0, 200, 25);
-			g->SliderFloat("Y scale", &go->scaleValues[1], -20, 50, 0, 0, 200, 25);
-			g->SliderFloat("Z scale", &go->scaleValues[2], -20, 50, 0, 0, 200, 25);
+			glm::vec3 scale = go->GetScale();
+			g->SliderFloat("X scale", &scale[0], -20, 50, 0, 0, 200, 25);
+			g->SliderFloat("Y scale", &scale[1], -20, 50, 0, 0, 200, 25);
+			g->SliderFloat("Z scale", &scale[2], -20, 50, 0, 0, 200, 25);
 			g->Text("Rotation");
 			g->SliderFloat("Pitch", &tr->rotation[0], -6.28, 6.28, 0, 0, 200, 25);
 			g->SliderFloat("Yaw", &tr->rotation[1], -6.28, 6.28, 0, 0, 200, 25);
 			g->SliderFloat("Roll", &tr->rotation[2], -6.28, 6.28, 0, 0, 200, 25);
 			if (g->Button("Reset", 0, 0, 20, 100, 20, glm::vec4(0.5, 0.5, 0.5, 1))) {
 				tr->rotation = glm::vec3(0, 0, 0);
-				go->scaleValues = glm::vec3(1, 1, 1);
-				tr->position = glm::vec3(0, 0, 0);
+				scale = glm::vec3(1, 1, 1);
+				pos = glm::vec3(0, 0, 0);
 			}
-			tr->Scale(go->scaleValues[0], go->scaleValues[1], go->scaleValues[2]);
-			tr->Translate(tr->position.x, tr->position.y, tr->position.z);
+			tr->Scale(scale[0], scale[1], scale[2]);
+			tr->Translate(pos.x, pos.y, pos.z);
 			tr->RotateOnce(tr->rotation.x, tr->rotation.y, tr->rotation.z, true);
 		}
 		if (g->CollapsingHeader("Light Component", 0, 0, COLORS::DarkGray * 0.7f)) {

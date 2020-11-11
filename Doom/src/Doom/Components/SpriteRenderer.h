@@ -17,7 +17,7 @@ namespace Doom {
 
 		std::mutex updateLock;
 
-		unsigned int indeces2D[6] = { 0,1,2,3,2,0 };
+		static unsigned int indeces2D[6];
 		float mesh2D[16] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,
@@ -37,9 +37,10 @@ namespace Doom {
 		friend class GameObject;
 		friend class Batch;
 		friend class Renderer;
+		friend class SceneSerializer;
 	
 	public:
-		Texture* texture = nullptr;
+		Texture* texture = Texture::WhiteTexture;
 		SpriteRenderer(GameObject* owner);
 		~SpriteRenderer();
 
@@ -52,8 +53,6 @@ namespace Doom {
 			 0.5f,  0.5f,
 			-0.5f,  0.5f
 		};
-
-		bool AlwaysDraw = false;
 
 		inline int GetTexture() { return texture->m_RendererID; }
 		inline Texture* GetTexturePointer() { return texture; }

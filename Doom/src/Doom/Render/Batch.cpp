@@ -351,13 +351,15 @@ void Batch::Submit(SpriteRenderer & c)
 			GtextureSlots[GtextureSlotsIndex] = c.texture->m_RendererID;
 			GtextureSlotsIndex++;
 		}
+		//c.texture->Bind();
 	}
 
 	Transform* trOfR = c.GetOwnerOfComponent()->GetComponent<Transform>();
-
-	Gbuffer->vertex = glm::vec2(c.mesh2D[0] * c.owner->scaleValues[0], c.mesh2D[1] * c.owner->scaleValues[1]);
+	
+	//GtextureIndex = 0;
+	glm::vec2 scale = c.owner->GetScale();
+	Gbuffer->vertex = glm::vec2(c.mesh2D[0] * scale[0], c.mesh2D[1] * scale[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
-	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = trOfR->view[0];
@@ -370,9 +372,8 @@ void Batch::Submit(SpriteRenderer & c)
 	Gbuffer->posMat3 = trOfR->pos[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[4] * c.owner->scaleValues[0], c.mesh2D[5] * c.owner->scaleValues[1]);
+	Gbuffer->vertex = glm::vec2(c.mesh2D[4] * scale[0], c.mesh2D[5] * scale[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[6], c.mesh2D[7]);
-	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = trOfR->view[0];
@@ -385,9 +386,8 @@ void Batch::Submit(SpriteRenderer & c)
 	Gbuffer->posMat3 = trOfR->pos[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[8] * c.owner->scaleValues[0], c.mesh2D[9] * c.owner->scaleValues[1]);
+	Gbuffer->vertex = glm::vec2(c.mesh2D[8] * scale[0], c.mesh2D[9] * scale[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[10], c.mesh2D[11]);
-	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = trOfR->view[0];
@@ -400,9 +400,8 @@ void Batch::Submit(SpriteRenderer & c)
 	Gbuffer->posMat3 = trOfR->pos[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[12] * c.owner->scaleValues[0], c.mesh2D[13] * c.owner->scaleValues[1]);
+	Gbuffer->vertex = glm::vec2(c.mesh2D[12] * scale[0], c.mesh2D[13] * scale[1]);
 	Gbuffer->textcoords = glm::vec2(c.mesh2D[14], c.mesh2D[15]);
-	Gbuffer->m_static = c.owner->Static;
 	Gbuffer->m_color = c.color;
 	Gbuffer->texIndex = GtextureIndex;
 	Gbuffer->rotationMat0 = trOfR->view[0];
@@ -498,8 +497,7 @@ void Batch::flushGameObjects(Shader * shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->SetUniformMat4f("u_Projection", Gui::GetInstance()->ViewProjecTionRelatedToCamera);
-	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().m_ViewProjectionMatrix);
 
 	glDrawElements(GL_TRIANGLES, Gindexcount, GL_UNSIGNED_INT, NULL);
 	Renderer::DrawCalls++;
@@ -513,6 +511,7 @@ void Batch::flushGameObjects(Shader * shader)
 		GtextureSlots[i] = 0;
 		glBindTextureUnit(i, 0);
 	}
+	glDisable(GL_TEXTURE_2D_ARRAY);
 }
 
 void Batch::flushCollision(Shader * shader)
@@ -717,9 +716,6 @@ void Batch::initGameObjects()
 
 	glEnableVertexArrayAttrib(Gvao, 1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, textcoords));
-
-	glEnableVertexArrayAttrib(Gvao, 2);
-	glVertexAttribPointer(2, 1, GL_INT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, m_static));
 
 	glEnableVertexArrayAttrib(Gvao, 3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, m_color));

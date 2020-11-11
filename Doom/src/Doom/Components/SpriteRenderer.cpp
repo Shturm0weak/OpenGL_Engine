@@ -126,12 +126,12 @@ void SpriteRenderer::SetUVs(float* uvs)
 
 double Doom::SpriteRenderer::GetWidth() const
 {
-	return owner->scaleValues[0] * mesh2D[4] * 2;
+	return owner->GetScale()[0] * mesh2D[4] * 2;
 }
 
 double Doom::SpriteRenderer::GetHeight() const
 {
-	return owner->scaleValues[1] * mesh2D[9] * 2;
+	return owner->GetScale()[1] * mesh2D[9] * 2;
 }
 
 float * SpriteRenderer::GetUVs() const
@@ -152,14 +152,14 @@ void SpriteRenderer::Setlayer(int layer)
 {
 	unsigned int size = World::objects.size();
 #ifdef _DEBUG
-	std::cout << owner->name << " is set from layer " << owner->GetId() << " to " << layer << std::endl;
+	std::cout << owner->name << " is set from layer " << owner->id << " to " << layer << std::endl;
 #endif
-	World::objects.erase(World::objects.begin() + owner->GetId());
+	World::objects.erase(World::objects.begin() + owner->id);
 	World::objects.insert(World::objects.begin() + layer, owner);
 	for (unsigned int i = 0; i < World::objects.size(); i++)
 	{
-		World::objects[i]->SetId(i);
-		World::objects[i]->GetLayer() = i;
+		World::objects[i]->id = i;
+		World::objects[i]->layer = i;
 	}
 	return;
 }

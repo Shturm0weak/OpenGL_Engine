@@ -14,7 +14,7 @@ namespace Doom {
 	class DOOM_API Renderer3D : public Irenderer {
 	public:
 
-		std::map<std::string, float*> floatUniforms;
+		std::map<std::string, float> floatUniforms;
 
 		enum class RenderTechnic {
 			Forward,
@@ -42,12 +42,12 @@ namespace Doom {
 		~Renderer3D();
 
 		Material mat;
-
+		bool isCastingShadows = true;
+		bool isWireMesh = false;
 		void BakeShadows();
 		void MakeTransparent();
 		void MakeSolid();
 		virtual void Render() override;
-
 	private:
 
 		//TODO ??? Upload in shader, calculate the angle between the normal and light dir if angle > 90 then shadow should not be drawn!!! ???
@@ -55,11 +55,12 @@ namespace Doom {
 		bool isTransparent = false;
 		bool isSkyBox = false;
 
-		void ForwardRender();
+		void ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color);
 		void AdditionalUniformsLoad();
 
 		RenderTechnic renderTechnic = RenderTechnic::Forward;
 
+		friend class SceneSerializer;
 		friend class Doom::EntryPoint;
 		friend class Doom::SkyBox;
 		friend class Doom::MeshManager;

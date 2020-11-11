@@ -35,7 +35,7 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	col->IsTrigger = false;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
-		bullets.push_back(new Bullet("EnemyBullet", glm::vec3(0,-1,0), "Bullet" + std::to_string(i), position.x, position.y));
+		bullets.push_back(new Bullet("EnemyBullet", glm::vec3(0,-1,0), "Bullet" + std::to_string(i), GetPosition().x, GetPosition().y));
 		bullets[i]->isActive = false;
 		bullets[i]->SetOwner((void*)bulletsPlaceHolder);
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
@@ -64,7 +64,7 @@ void ShipEnemy::OnUpdate() {
 	col->IsCollidedSAT();// });
 	Fire();
 
-	if (position.y < -30)
+	if (GetPosition().y < -30)
 		Death();
 
 	if (isDead == false)
@@ -77,7 +77,7 @@ void ShipEnemy::Spawn()
 	Enable = true;
 	col->Enable = true;
 	isDead = false;
-	tr->Translate(position.x, 20);
+	tr->Translate(GetPosition().x, 20);
 }
 
 void ShipEnemy::Death()
@@ -87,7 +87,7 @@ void ShipEnemy::Death()
 	col->Enable = false;
 	isDead = true;
 	SoundManager::Play(explosionSound);
-	ps->SetPosition(position.x,position.y);
+	ps->SetPosition(GetPosition().x, GetPosition().y);
 	ps->Restart();
 	psPlay = true;
 	std::random_device rd;
@@ -97,7 +97,7 @@ void ShipEnemy::Death()
 	std::uniform_int_distribution<int> distribution1(5, 40);
 	int ammo = distribution1(e2);
 	if (chance <= 1) {
-		Ammo* a = new Ammo("AmmoPickUp", position.x, position.y, ammo);
+		Ammo* a = new Ammo("AmmoPickUp", GetPosition().x, GetPosition().y, ammo);
 		static_cast<SpriteRenderer*>(a->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(Texture::Create("src/SpaceFire/Images/Ammo.png"));
 		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
 		RectangleCollider2D* col = a->GetComponentManager()->AddComponent<RectangleCollider2D>();
@@ -111,7 +111,7 @@ void ShipEnemy::Fire() {
 		if (usedBulletCounter == amountOfBulletsInPool)
 			usedBulletCounter = 0;
 		bullets[usedBulletCounter]->SetMoveDirection(glm::vec3(0,-1,0));
-		bullets[usedBulletCounter]->tr->Translate(position.x, position.y);
+		bullets[usedBulletCounter]->tr->Translate(GetPosition().x, GetPosition().y);
 		bullets[usedBulletCounter]->Enable = true;
 		bullets[usedBulletCounter]->col->Enable = true;
 		bullets[usedBulletCounter]->isActive = true;

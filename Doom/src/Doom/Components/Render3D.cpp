@@ -20,21 +20,30 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 			}
 		}
 	}
+	else if (renderTechnic == RenderTechnic::Forward) {
+		auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), this);
+		if (iter == Renderer::objects3d.end()) {
+			shader = Shader::Get("Default3D");
+			Renderer::objects3d.push_back(this);
+		}
+	}
 }
 
 void Doom::Renderer3D::LoadMesh(Mesh * _mesh)
 {
 	EraseFromInstancing();
 	mesh = _mesh;
-	ChangeRenderTechnic(renderTechnic);
-	CubeCollider3D* cc = owner->GetComponentManager()->GetComponent<CubeCollider3D>();
-	if (cc == nullptr) {
-		cc = owner->GetComponentManager()->AddComponent<CubeCollider3D>();
-		cc->isBoundingBox = true;
+	ChangeRenderTechnic(RenderTechnic::Forward);
+	if (!isSkyBox) {
+		CubeCollider3D* cc = owner->GetComponentManager()->GetComponent<CubeCollider3D>();
+		if (cc == nullptr) {
+			cc = owner->GetComponentManager()->AddComponent<CubeCollider3D>();
+			cc->isBoundingBox = true;
+		}
+		cc->minP = mesh->theLowestPoint;
+		cc->maxP = mesh->theHighestPoint;
+		cc->offset = (cc->maxP - (glm::abs(cc->minP) + glm::abs(cc->maxP)) * 0.5f);
 	}
-	cc->minP = mesh->theLowestPoint;
-	cc->maxP = mesh->theHighestPoint;
-	cc->offset = (cc->maxP - (glm::abs(cc->minP) + glm::abs(cc->maxP)) * 0.5f);
 	//std::cout << "offset " << cc->offset.x << " " << cc->offset.y << " " << cc->offset.z << "\n";
 	//std::cout << "the highest " << mesh->theHighestPoint.x << " " << mesh->theHighestPoint.y << " " << mesh->theHighestPoint.z << "\n";
 	//std::cout << "the lowest " << mesh->theLowestPoint.x << " " << mesh->theLowestPoint.y << " " << mesh->theLowestPoint.z << "\n";
@@ -78,13 +87,13 @@ Doom::Renderer3D::~Renderer3D()
 
 void Doom::Renderer3D::BakeShadows()
 {
-	if (mesh != nullptr) {
+	if (isCastingShadows && mesh != nullptr) {
 		if (!isSkyBox) {
 			Shader* bakeShader = Shader::Get("BakeShadows");
 			bakeShader->Bind();
 			glBindTextureUnit(0, diffuseTexture->m_RendererID);
 			bakeShader->SetUniformMat4f("u_Model", tr->pos);
-			bakeShader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
+			bakeShader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 			bakeShader->SetUniformMat4f("u_Scale", tr->scale);
 			bakeShader->SetUniformMat4f("u_View", tr->view);
 			bakeShader->Bind();
@@ -126,20 +135,29 @@ void Doom::Renderer3D::MakeSolid()
 
 void Doom::Renderer3D::Render()
 {
-	if (renderTechnic == RenderTechnic::Forward)
-		ForwardRender();
+	if (renderTechnic == RenderTechnic::Forward) {
+		if (isWireMesh) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			ForwardRender(tr->pos, tr->view, tr->scale, color);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		else {
+			ForwardRender(tr->pos, tr->view, tr->scale, color);
+		}
+			
+	}
 }
 
-void Doom::Renderer3D::ForwardRender()
+void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
 {
 	if (mesh != nullptr) {
 		if (!isSkyBox) {
 			shader->Bind();
 			glBindTextureUnit(0, diffuseTexture->m_RendererID);
 			shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-			shader->SetUniformMat4f("u_Model", tr->pos);
-			shader->SetUniformMat4f("u_View", tr->view);
-			shader->SetUniformMat4f("u_Scale", tr->scale);
+			shader->SetUniformMat4f("u_Model", pos);
+			shader->SetUniformMat4f("u_View", view);
+			shader->SetUniformMat4f("u_Scale", scale);
 			shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
 			AdditionalUniformsLoad();
 			int dlightSize = DirectionalLight::dirLights.size();
@@ -162,7 +180,7 @@ void Doom::Renderer3D::ForwardRender()
 			{
 				PointLight* pl = PointLight::pLights[i];
 				sprintf(buffer, "pointLights[%i].position", i);
-				shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->position);
+				shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
 				sprintf(buffer, "pointLights[%i].color", i);
 				shader->SetUniform3fv(buffer, pl->color);
 				sprintf(buffer, "pointLights[%i].constant", i);
@@ -175,7 +193,7 @@ void Doom::Renderer3D::ForwardRender()
 			shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
 			shader->SetUniform1f("u_Ambient", mat.ambient);
 			shader->SetUniform1f("u_Specular", mat.specular);
-			shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::dirLights[0]->lightSpaceMatrix);
+			shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 			shader->SetUniform1i("u_DiffuseTexture", 0);
 			glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
 			shader->SetUniform1i("u_ShadowTexture", 2);
@@ -230,7 +248,7 @@ void Doom::Renderer3D::AdditionalUniformsLoad()
 {
 	for (auto i = floatUniforms.begin(); i != floatUniforms.end(); i++)
 	{
-		shader->SetUniform1f(i->first, *i->second);
+		shader->SetUniform1f(i->first, i->second);
 	}
 }
 

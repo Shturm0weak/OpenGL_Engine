@@ -11,8 +11,8 @@
 #include "src/game/BlankProject.h"
 
 int main(){
-	BlankProject* app = new BlankProject();
-	Doom::EntryPoint entrypoint(app);
+	BlankProject app;
+	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;
 }

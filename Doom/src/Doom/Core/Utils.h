@@ -18,7 +18,7 @@ namespace Utils {
 			size_t index = 0;
 			index = meshes.back().find("\\", index);
 			meshes.back().replace(index, 1, "/");
-			MeshManager::AsyncLoadMesh(GetNameFromFilePath(meshes.back()),meshes.back());
+			Doom::MeshManager::LoadMesh(GetNameFromFilePath(meshes.back()),meshes.back());
 		}
 	}
 
@@ -29,7 +29,7 @@ namespace Utils {
 			size_t index = 0;
 			index = shaders.back().find("\\", index);
 			shaders.back().replace(index, 1, "/");
-			Shader::Create(GetNameFromFilePath(shaders.back(),6), shaders.back());
+			Doom::Shader::Create(GetNameFromFilePath(shaders.back(),6), shaders.back());
 		}
 	}
 
@@ -42,8 +42,18 @@ namespace Utils {
 				size_t index = 0;
 				index = textures.back().find("\\", index);
 				textures.back().replace(index, 1, "/");
-				Texture::AsyncLoadTexture(textures.back());
+				Doom::Texture::AsyncLoadTexture(textures.back());
 			}
 		}
+	}
+
+	static glm::vec3 GetPosition(glm::mat4& pos) {
+		float* matPtr = glm::value_ptr(pos);
+		return glm::vec3(matPtr[12], matPtr[13], matPtr[14]);
+	}
+
+	static glm::vec3 GetScale(glm::mat4& scale) {
+		float* matPtr = glm::value_ptr(scale);
+		return glm::vec3(matPtr[0], matPtr[5], matPtr[10]);
 	}
 }

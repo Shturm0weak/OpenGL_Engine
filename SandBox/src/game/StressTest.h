@@ -19,7 +19,7 @@ public:
 		gameobj = new GameObject();
 		gameobj->GetComponent<RectangleCollider2D>();
 		ImGui::SetCurrentContext(Window::imGuiContext);
-		textureAtlas = new TextureAtlas(128, 128, "src/GameRPG/Textures/RPGpack_sheet_2X.png");
+		textureAtlas = TextureAtlas::CreateTextureAtlas("TileMap",128, 128, Texture::Create("src/GameRPG/Textures/RPGpack_sheet_2X.png"));
 		std::unordered_map<char, glm::vec2> textures;
 		const char* map =
 			"WWWWWWWWWWWWWWWWWWWWWWWW"

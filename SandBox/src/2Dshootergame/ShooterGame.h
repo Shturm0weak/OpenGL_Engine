@@ -17,7 +17,7 @@ class ShooterGame : public Application {
 
 		EventSystem::GetInstance()->SendEvent(EventType::ONUPDATE, nullptr);
 		EventSystem::GetInstance()->ProcessEvents();
-		Window::GetCamera().SetPosition(glm::vec3(pl->GetPositions().x,pl->GetPositions().y,0));
+		Window::GetCamera().SetPosition(glm::vec3(pl->GetPosition().x,pl->GetPosition().y,0));
 	}
 	
 	virtual void OnClose() override  {

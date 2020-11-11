@@ -10,7 +10,7 @@ namespace Doom {
 
 	class DOOM_API Character {
 
-		unsigned int indeces2D[6] = { 0,1,2,3,2,0 };
+		static unsigned int indeces2D[6];
 		float mesh2D[20] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,

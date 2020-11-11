@@ -6,7 +6,8 @@ using namespace Doom;
 ParticleSystem::ParticleSystem(float x, float y ,int amount,double lifeTime,float speed,float maxSize,float minSize,float radiusToSpawn, double minTimeToSpawn, double maxTimeToSpawn,Texture* texture) :
 	AmountOfParticles(amount),lifeTime(lifeTime),speedMultiplier(speed),maxSize(maxSize),minSize(minSize), radiusToSpawn(radiusToSpawn),minTimeToSpawn(minTimeToSpawn),maxTimeToSpawn(maxTimeToSpawn),texture(texture)
 {
-	SetName("ParticleSystem");
+	name = "ParticleSystem";
+	glm::vec2 position;
 	position.x = x;
 	position.y = y;
 	Enable = false;
@@ -80,8 +81,8 @@ void ParticleSystem::Restart() {
 		particlesPool[i].Enable = false;
 		std::uniform_real_distribution<float> distributionraduis(-this->radiusToSpawn, this->radiusToSpawn);
 		float radius = distributionraduis(e2);
-		particlesPool[i].x = position.x + radius;
-		particlesPool[i].y = position.y + radius;
+		particlesPool[i].x = GetPosition().x + radius;
+		particlesPool[i].y = GetPosition().y + radius;
 		particlesPool[i].pos = glm::translate(glm::mat4(1.f), glm::vec3(particlesPool[i].x, particlesPool[i].y, 0));
 		std::uniform_real_distribution<float> distribution1(this->minSize, this->maxSize);
 		float scale = distribution1(e2);

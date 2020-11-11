@@ -44,6 +44,7 @@ void EventSystem::RegisterClient(EventType event, Listener* client) {
 		return;
 	}
 
+	client->registeredEvents.push_back((int)event);
 	database.insert(std::make_pair(event, client));
 }
 

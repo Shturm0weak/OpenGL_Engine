@@ -18,7 +18,7 @@ namespace Doom {
 		void* Owner = nullptr;
 		const char** items = nullptr;
 
-		ComponentManager* component_manager;
+		ComponentManager* component_manager = nullptr;
 
 		friend class Doom::Transform;
 		friend class Doom::RectangleCollider2D;
@@ -31,44 +31,33 @@ namespace Doom {
 
 	public:
 
-		glm::vec3 position;
+		Transform* transform = nullptr;
 
 		int id = 0;
 		int layer = 0;
+		bool Enable = true;
+		bool isSerializable = true;
+		bool isParticle = false;
 
-		glm::vec3 scaleValues = { 1,1,1 };
-
-		std::string type;
 		std::string name;
 
 		std::vector<void*> GetChilds() const { return Childs; }
-
-		float GetAngle() const ;
 		void* GetOwner() const { return Owner; }
-		void SetObjectType(std::string _type) { type = _type; }
 		void AddChild(void* child) { Childs.push_back(child); }
 		void SetOwner(void* owner) { this->Owner = owner; }
 		void RemoveChild(void* child);
-		void operator=(GameObject& go);
-		void SetName(const char* _name);
 
 		template <typename T>
 		T* GetComponent() {
 			return component_manager->GetComponent<T>();
 		}
 
-		bool Enable = true;
-		bool isParticle = false;
-		bool Static = false;
-		
 		virtual ~GameObject();
 		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0,float z = 0);
 		
-		glm::vec3 GetScale() const;
-		glm::vec3 GetPositions();
+		glm::vec3 GetScale();
+		glm::vec3 GetPosition();
 		ComponentManager* GetComponentManager() const { return component_manager; };
-		inline void SetId(int id) { this->id = id; }
-		inline int GetId() { return id; }
 		inline int& GetLayer() { return layer; }
 		
 	};

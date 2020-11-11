@@ -19,12 +19,11 @@ public:
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		col->SetOwner(this);
-		type = "GameObject";
 		tr->Scale(3, 3);
 		col->IsTrigger = true;
 		col->SetTag("Coin");
-		prevscale[0] = scaleValues[0];
-		prevscale[1] = scaleValues[1];
+		prevscale[0] = GetScale()[0];
+		prevscale[1] = GetScale()[1];
 	}
 
 	~Coin() {
@@ -35,15 +34,15 @@ public:
 		if (playanim) {
 
 			if (!secondphase) {
-				tr->Scale(scaleValues[0] *  (1 + (5.2f * DeltaTime::deltatime)), scaleValues[1] * (1 + (5.2f * DeltaTime::deltatime)));
-				if (scaleValues[0] > prevscale[0] * 1.5f)
+				tr->Scale(GetScale()[0] *  (1 + (5.2f * DeltaTime::deltatime)), GetScale()[1] * (1 + (5.2f * DeltaTime::deltatime)));
+				if (GetScale()[0] > prevscale[0] * 1.5f)
 					secondphase = true;
 			}
 			else if (secondphase) {
-				tr->Scale(scaleValues[0] * (1 - (5.f * DeltaTime::deltatime)), scaleValues[1] * (1 - (5.f * DeltaTime::deltatime)));
+				tr->Scale(GetScale()[0] * (1 - (5.f * DeltaTime::deltatime)), GetScale()[1] * (1 - (5.f * DeltaTime::deltatime)));
 			}
 
-			if (scaleValues[0] < prevscale[0] * 0.5f) {
+			if (GetScale()[0] < prevscale[0] * 0.5f) {
 				auto rand = std::bind(&Coin::Randomize, this);
 				rand();
 				playanim = false;
@@ -56,7 +55,7 @@ public:
 			EventSystem::GetInstance()->SendEvent(EventType::ONCOLLSION, this, col->collidedObject);
 		}
 		tr->Move(0,-5,0);
-		if (tr->position.y <= -18) {
+		if (GetPosition().y <= -18) {
 			Randomize();
 			EventSystem::GetInstance()->SendEvent(EventType::ONMISS, nullptr);
 		}

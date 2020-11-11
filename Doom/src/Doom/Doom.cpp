@@ -15,6 +15,7 @@
 using namespace Doom;
 
 DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::colliders;
+DOOM_API std::vector<SphereCollider*> SphereCollider::spheres;
 //Warning: used only for rendering
 DOOM_API std::vector <SpriteRenderer*> Renderer::objects2d;
 DOOM_API std::vector <Renderer3D*> Renderer::objects3d;
@@ -79,7 +80,7 @@ DOOM_API vec4 COLORS::DarkGray(0.4, 0.4, 0.4, 1);
 DOOM_API std::vector<Line*> Line::lines;
 DOOM_API float Line::width = 1.0f;
 
-DOOM_API std::vector<TextureAtlas*> TextureAtlas::textureAtlases;
+DOOM_API std::map<std::string, TextureAtlas*> TextureAtlas::textureAtlases;
 DOOM_API const char** TextureAtlas::items;
 
 DOOM_API std::map<std::string,Shader*> Shader::shaders;
@@ -102,3 +103,6 @@ DOOM_API std::vector<DirectionalLight*> DirectionalLight::dirLights;
 
 //storage of all references to our objects in the scene
 DOOM_API std::vector <GameObject*> World::objects;
+
+DOOM_API unsigned int Character::indeces2D[6] = { 0,1,2,3,2,0 };
+DOOM_API unsigned int SpriteRenderer::indeces2D[6] = { 0,1,2,3,2,0 };

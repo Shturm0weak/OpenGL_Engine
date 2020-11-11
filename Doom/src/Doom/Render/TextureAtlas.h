@@ -9,15 +9,20 @@ namespace Doom {
 		
 		float UVs[8];
 		static const char** items;
-	public:
-		float spriteWidth; float spriteHeight;
-		static std::vector<TextureAtlas*> textureAtlases;
-
-		TextureAtlas(float spriteWidth,float spriteHeight,std::string texturePath);
-		TextureAtlas(float spriteWidth, float spriteHeight, Texture* texture);
+		TextureAtlas(std::string name, float spriteWidth, float spriteHeight, std::string texturePath);
+		TextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture* texture);
 		~TextureAtlas();
+	public:
+		std::string name;
+		float spriteWidth; float spriteHeight;
+		static std::map<std::string,TextureAtlas*> textureAtlases;
+
+		static TextureAtlas* CreateTextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture* texture);
 
 		float* GetSpriteUVs(float x, float y);
+
+		static TextureAtlas* GetTextureAtlas(std::string name);
+		static TextureAtlas* GetTextureAtlas(int id);
 
 		inline Texture* GetTexture() const { return m_texture; }
 

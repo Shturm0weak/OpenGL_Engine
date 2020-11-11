@@ -20,7 +20,7 @@ public:
 		{
 			hearts.push_back(new GameObject());
 			SpriteRenderer* sr = static_cast<SpriteRenderer*>(hearts[i]->GetComponentManager()->GetComponent<Irenderer>());
-			hearts[i]->SetName("HP");
+			hearts[i]->name = ("HP");
 			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Scale(2,2);
 			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Translate(x + (i * (sr->GetWidth() + 1)),y);
 			sr->Setlayer(i);
@@ -40,9 +40,9 @@ public:
 				Transform* tr = hearts[i]->GetComponentManager()->GetComponent<Transform>();
 				if (secondtphase[i]) {
 					tr->Move(0, 40, 0);
-					if (tr->position.y > prevYPos * 1.1) {
+					if (tr->GetPosition().y > prevYPos * 1.1) {
 						secondtphase[i] = false;
-						tr->Translate(tr->position.x, prevYPos);
+						tr->Translate(tr->GetPosition().x, prevYPos);
 						isShake = false;
 					}
 					continue;
@@ -54,10 +54,10 @@ public:
 					tr->Move(0, -40, 0);
 				}
 
-				if (tr->position.y > prevYPos * 1.1) {
+				if (tr->GetPosition().y > prevYPos * 1.1) {
  					firstphase[i] = true;
 				}
-				else if (tr->position.y < prevYPos * 0.9) {
+				else if (tr->GetPosition().y < prevYPos * 0.9) {
 					firstphase[i] = false;
 					secondtphase[i] = true;
 				}

@@ -18,7 +18,7 @@ namespace fbx {
 		try
 		{
 			read(filepath);
-			Mesh* mesh = new Mesh(name);
+			Mesh* mesh = new Mesh(name,filepath);
 			size_t size = nodes.size();
 			for (size_t i = 0; i < size; i++)
 			{

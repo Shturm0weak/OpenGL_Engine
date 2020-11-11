@@ -247,7 +247,7 @@ public:
 
 	void CrossSection(std::vector<glm::vec3>& dots, glm::vec2 a,glm::vec2 b) {
 		Mesh* m = gladiator->GetComponent<Renderer3D>()->mesh;
-		glm::vec3 pos = gladiator->GetPositions();
+		glm::vec3 pos = gladiator->GetPosition();
 		glm::vec3 scale = gladiator->GetScale();
 		uint32_t counter = 0;
 		for (uint32_t i = 0; i < m->meshSize - 14; i += (14 * 3))
@@ -270,7 +270,7 @@ public:
 			if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 				if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
 					if (hit.Object != nullptr) {
-						int id = hit.Object->GetOwnerOfComponent()->GetId();
+						int id = hit.Object->GetOwnerOfComponent()->id;
 						Renderer::DeleteObject(id);
 						hit.Object = nullptr;
 						dirtCount++;
@@ -279,7 +279,7 @@ public:
 				else if (Input::IsKeyPressed(Keycode::KEY_G)) {
 					if (dirtCount == 0)
 						return;
-					glm::vec3 pos = hit.Object->GetOwnerOfComponent()->GetPositions();
+					glm::vec3 pos = hit.Object->GetOwnerOfComponent()->GetPosition();
 					glm::vec3 camPos = Window::GetCamera().GetPosition();
 					glm::vec3 place = camPos + forward * hit.distance;
 					glm::vec3 newPlace(0);
