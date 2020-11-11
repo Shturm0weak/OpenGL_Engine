@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\2Dshootergame">
+      <UniqueIdentifier>{90C01BBA-FCD6-1950-454E-A571B1A3EAD7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Minecraft">
+      <UniqueIdentifier>{D503A428-41C4-1F5F-0AFF-68DC767E643B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\SpaceFire">
+      <UniqueIdentifier>{CE48086C-3A09-84A2-0344-CD1F6FC3C87E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game">
+      <UniqueIdentifier>{165530CF-0222-8BDA-2B3B-79821767C068}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="src\2Dshootergame\PlayerCharacter.h">
+      <Filter>src\2Dshootergame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\2Dshootergame\ShooterGame.h">
+      <Filter>src\2Dshootergame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Minecraft\Minecraft.h">
+      <Filter>src\Minecraft</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\Ammo.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\Bullet.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\ShipEnemy.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\ShipPlayer.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\SpaceFire.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\BlankProject.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Bomb.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Coin.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\DrawLines.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Game.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\HP.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Player.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\RayCastTest.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\StressTest.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\TestImGui.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\TicTacToe.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SandBox.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="src\2Dshootergame\PlayerCharacter.cpp">
+      <Filter>src\2Dshootergame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp">
+      <Filter>src\SpaceFire</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp">
+      <Filter>src\SpaceFire</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

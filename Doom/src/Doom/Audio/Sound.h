@@ -10,10 +10,6 @@
 #include "OpenAl/OpenAl/al.h"
 #include "OpenAl/OpenAl/alc.h"
 
-#define STB_VORBIS_HEADER_ONLY
-#include "vorbis.h"
-#undef STB_VORBIS_HEADER_ONLY
-
 namespace Doom {
 
 	enum AudioState {

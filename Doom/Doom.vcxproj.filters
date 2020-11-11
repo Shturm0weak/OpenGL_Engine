@@ -1,266 +1,676 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{9718D90C-032D-01BE-CCAE-A41D3882FDEE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{6B7DD516-5735-1764-C03C-F0BFAC13B254}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{60E1870B-CCEA-877C-5566-9E7CC16E937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FbxLoader">
+      <UniqueIdentifier>{DC00FB0B-486B-AF82-91A9-6028FD528DD7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGuizmo">
+      <UniqueIdentifier>{36FD234F-22CA-7E5A-4BE3-6C02370FB4E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects2D">
+      <UniqueIdentifier>{451D2E28-B187-E29E-FAC5-9344666FC0F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{C5BB87CE-B15D-B2A4-9A18-C6F8865939F5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="STLloader">
+      <UniqueIdentifier>{8FBC551A-FB26-0A91-4465-BB36B00EE8E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="yaml-cpp">
+      <UniqueIdentifier>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="yaml-cpp\contrib">
+      <UniqueIdentifier>{8841EE2F-743A-0D82-9D6C-F20689C4EC8D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="yaml-cpp\node">
+      <UniqueIdentifier>{5DDDAD87-C99D-29BE-92D8-723BFE576E9A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="yaml-cpp\node\detail">
+      <UniqueIdentifier>{7F8A573E-6B19-E107-1438-F50200A6F1AD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="yaml-cpp\src">
+      <UniqueIdentifier>{9F336A3A-8B96-F9DE-341C-3295205EC561}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="yaml-cpp\src\contrib">
+      <UniqueIdentifier>{9FAA0758-8B39-9121-3458-A51C20C6A1C7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Doom\Application.h" />
+    <ClInclude Include="src\Doom\Audio\Sound.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Audio\SoundManager.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Audio\vorbis.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Audio\wavParser.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\Animator.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\CubeCollider.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\DirectionalLight.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\IRenderer.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\PointLight.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\RectangleCollider2D.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\Render3D.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\SphereCollider.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\SpriteRenderer.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\Transform.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\ColoredOutput.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\ColorsRGBA.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\DeltaTime.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Editor.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Event.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\EventSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Input.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\KeyCode.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Listener.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Ray2D.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Ray3D.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\SceneSerializer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\ThreadPool.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Timer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\Utils.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\Core\Window.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\pch.h" />
-    <ClInclude Include="src\Doom\Core\ColorsRGBA.h" />
-    <ClInclude Include="src\Doom\Core\Core.h" />
-    <ClInclude Include="src\Doom\Core\DeltaTime.h" />
-    <ClInclude Include="src\Doom\Core\Editor.h" />
-    <ClInclude Include="src\Doom\Core\Event.h" />
-    <ClInclude Include="src\Doom\Core\EventSystem.h" />
-    <ClInclude Include="src\Doom\Core\Input.h" />
-    <ClInclude Include="src\Doom\Core\KeyCode.h" />
-    <ClInclude Include="src\Doom\Core\Listener.h" />
-    <ClInclude Include="src\Doom\Core\ThreadPool.h" />
-    <ClInclude Include="src\Doom\Core\Timer.h" />
-    <ClInclude Include="src\Doom\Core\WindowsInput.h" />
-    <ClInclude Include="src\Doom\Components\Animator.h" />
-    <ClInclude Include="src\Doom\Components\Transform.h" />
-    <ClInclude Include="src\Doom\ECS\Component.h" />
-    <ClInclude Include="src\Doom\ECS\ComponentManager.h" />
-    <ClInclude Include="src\Doom\Objects2D\GameObject.h" />
-    <ClInclude Include="src\Doom\Render\Batch.h" />
-    <ClInclude Include="src\Doom\Render\Character.h" />
-    <ClInclude Include="src\Doom\Render\IndexBuffer.h" />
-    <ClInclude Include="src\Doom\Render\ParticleSystem.h" />
-    <ClInclude Include="src\Doom\Render\Renderer.h" />
-    <ClInclude Include="src\Doom\Render\Shader.h" />
-    <ClInclude Include="src\Doom\Render\stb_image.h" />
-    <ClInclude Include="src\Doom\Render\Texture.h" />
-    <ClInclude Include="src\Doom\Render\VertexArray.h" />
-    <ClInclude Include="src\Doom\Render\VertexBuffer.h" />
-    <ClInclude Include="src\Doom\Render\VertexBufferLayout.h" />
+    <ClInclude Include="src\Doom\Core\WindowsInput.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Core\World.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\ECS\Component.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\ECS\ComponentManager.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\EntryPoint.h" />
-    <ClInclude Include="src\Doom\Render\Line.h" />
-    <ClInclude Include="src\Doom\Render\TextureAtlas.h" />
-    <ClInclude Include="src\Doom\Render\TileMap.h" />
-    <ClInclude Include="src\Doom\Render\FrameBuffer.h" />
-    <ClInclude Include="src\Doom\Render\ViewPort.h" />
-    <ClInclude Include="src\Doom\Core\ColoredOutput.h" />
-    <ClInclude Include="src\Doom\Render\Gui.h" />
-    <ClInclude Include="src\Doom\Audio\Sound.h" />
-    <ClInclude Include="src\Doom\Audio\SoundManager.h" />
-    <ClInclude Include="src\Doom\Audio\wavParser.h" />
-    <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
-    <ClInclude Include="src\Doom\Components\IRenderer.h" />
-    <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h" />
-    <ClInclude Include="src\Doom\FbxLoader\fbxnode.h" />
-    <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
-    <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
-    <ClInclude Include="src\Doom\Render\Mesh.h" />
-    <ClInclude Include="src\Doom\Render\Camera.h" />
-    <ClInclude Include="src\Doom\Components\Render3D.h" />
-    <ClInclude Include="src\Doom\Objects2D\GridLayOut.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h" />
-    <ClInclude Include="src\Doom\Render\SkyBox.h" />
-    <ClInclude Include="src\Doom\Core\Ray2D.h" />
-    <ClInclude Include="src\Doom\Components\CubeCollider.h" />
-    <ClInclude Include="src\Doom\Components\RectangleCollider2D.h" />
-    <ClInclude Include="src\Doom\Core\Ray3D.h" />
-    <ClInclude Include="src\Doom\Render\MeshManager.h" />
-    <ClInclude Include="src\Doom\Render\Instancing.h" />
-    <ClInclude Include="src\Doom\Components\PointLight.h" />
-    <ClInclude Include="src\Doom\Components\DirectionalLight.h" />
-    <ClInclude Include="src\Doom\Core\World.h" />
-    <ClInclude Include="src\Doom\STLloader\STLloader.h" />
-    <ClInclude Include="src\Doom\Core\Utils.h" />
-    <ClInclude Include="src\Doom\Components\SphereCollider.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\contrib\anchordict.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\contrib\graphbuilder.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\impl.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\iterator.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\iterator_fwd.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\memory.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\node.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\node_data.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\node_iterator.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\detail\node_ref.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\convert.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\emit.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\impl.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\iterator.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\node.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\parse.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\ptr.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\node\type.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\anchor.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\binary.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\depthguard.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\dll.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\emitfromevents.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\emitter.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\emitterdef.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\emittermanip.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\emitterstyle.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\eventhandler.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\exceptions.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\mark.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\noexcept.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\null.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\ostream_wrapper.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\parser.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\stlemitter.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\traits.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\include\yaml-cpp\yaml.h" />
-    <ClInclude Include="src\Doom\Core\SceneSerializer.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\contrib\anchordict.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\contrib\graphbuilder.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\impl.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\iterator.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\iterator_fwd.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\memory.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node_data.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node_iterator.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node_ref.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\convert.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\emit.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\impl.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\iterator.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\node.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\parse.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\ptr.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\node\type.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\contrib\graphbuilderadapter.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\collectionstack.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\directives.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\emitterstate.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\emitterutils.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\exp.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\indentation.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\nodebuilder.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\nodeevents.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\ptr_vector.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\regex_yaml.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\regeximpl.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\scanner.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\scanscalar.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\scantag.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\setting.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\singledocparser.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\stream.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\streamcharsource.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\stringsource.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\tag.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\src\token.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\anchor.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\binary.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\depthguard.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\dll.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\emitfromevents.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\emitter.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\emitterdef.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\emittermanip.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\emitterstyle.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\eventhandler.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\exceptions.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\mark.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\noexcept.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\null.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\ostream_wrapper.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\parser.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\stlemitter.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\traits.h" />
-    <ClInclude Include="src\Doom\yaml-cpp\yaml.h" />
+    <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h">
+      <Filter>FbxLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\FbxLoader\fbxnode.h">
+      <Filter>FbxLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h">
+      <Filter>FbxLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\FbxLoader\fbxutil.h">
+      <Filter>FbxLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h">
+      <Filter>ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Objects2D\GameObject.h">
+      <Filter>Objects2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Objects2D\GridLayOut.h">
+      <Filter>Objects2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Batch.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Camera.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Character.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\FrameBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Gui.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\IndexBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Instancing.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Line.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Mesh.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\MeshManager.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\ParticleSystem.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Renderer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Shader.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\SkyBox.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\Texture.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\TextureAtlas.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\TileMap.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\VertexArray.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\VertexBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\VertexBufferLayout.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\ViewPort.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Render\stb_image.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\STLloader\STLloader.h">
+      <Filter>STLloader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\pch.h" />
+    <ClInclude Include="src\Doom\yaml-cpp\anchor.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\binary.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\contrib\anchordict.h">
+      <Filter>yaml-cpp\contrib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\contrib\graphbuilder.h">
+      <Filter>yaml-cpp\contrib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\depthguard.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\dll.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\emitfromevents.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\emitter.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\emitterdef.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\emittermanip.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\emitterstyle.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\eventhandler.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\exceptions.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\mark.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\convert.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\impl.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\iterator.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\iterator_fwd.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\memory.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node_data.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node_iterator.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\detail\node_ref.h">
+      <Filter>yaml-cpp\node\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\emit.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\impl.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\iterator.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\node.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\parse.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\ptr.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\node\type.h">
+      <Filter>yaml-cpp\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\noexcept.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\null.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\ostream_wrapper.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\parser.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\collectionstack.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\contrib\graphbuilderadapter.h">
+      <Filter>yaml-cpp\src\contrib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\directives.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\emitterstate.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\emitterutils.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\exp.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\indentation.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\nodebuilder.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\nodeevents.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\ptr_vector.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\regex_yaml.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\regeximpl.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\scanner.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\scanscalar.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\scantag.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\setting.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\singledocparser.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\stream.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\streamcharsource.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\stringsource.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\tag.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\src\token.h">
+      <Filter>yaml-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\stlemitter.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\traits.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\yaml-cpp\yaml.h">
+      <Filter>yaml-cpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Doom\Doom.cpp" />
-    <ClCompile Include="src\Doom\pch.cpp" />
-    <ClCompile Include="src\Doom\Core\Editor.cpp" />
-    <ClCompile Include="src\Doom\Core\EventSystem.cpp" />
-    <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
-    <ClCompile Include="src\Doom\Core\WindowsInput.cpp" />
-    <ClCompile Include="src\Doom\Components\Animator.cpp" />
-    <ClCompile Include="src\Doom\Components\Transform.cpp" />
-    <ClCompile Include="src\Doom\Objects2D\GameObject.cpp" />
-    <ClCompile Include="src\Doom\Render\Batch.cpp" />
-    <ClCompile Include="src\Doom\Render\Character.cpp" />
-    <ClCompile Include="src\Doom\Render\IndexBuffer.cpp" />
-    <ClCompile Include="src\Doom\Render\ParticleSystem.cpp" />
-    <ClCompile Include="src\Doom\Render\Renderer.cpp" />
-    <ClCompile Include="src\Doom\Render\Shader.cpp" />
-    <ClCompile Include="src\Doom\Render\stb_image.cpp" />
-    <ClCompile Include="src\Doom\Render\Texture.cpp" />
-    <ClCompile Include="src\Doom\Render\VertexArray.cpp" />
-    <ClCompile Include="src\Doom\Render\VertexBuffer.cpp" />
-    <ClCompile Include="src\Doom\EntryPoint.cpp" />
-    <ClCompile Include="src\Doom\Render\Line.cpp" />
-    <ClCompile Include="src\Doom\Render\TextureAtlas.cpp" />
-    <ClCompile Include="src\Doom\Render\TileMap.cpp" />
-    <ClCompile Include="src\Doom\Render\FrameBuffer.cpp" />
-    <ClCompile Include="src\Doom\Render\Gui.cpp" />
-    <ClCompile Include="src\Doom\Audio\Sound.cpp" />
-    <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
-    <ClCompile Include="src\Doom\Audio\vorbis.h" />
-    <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
-    <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
-    <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />
-    <ClCompile Include="src\Doom\FbxLoader\fbxnode.cpp" />
-    <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
-    <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
-    <ClCompile Include="src\Doom\Render\Camera.cpp" />
     <ClCompile Include="src\Doom\Application.cpp" />
-    <ClCompile Include="src\Doom\Render\ViewPort.cpp" />
-    <ClCompile Include="src\Doom\Components\Render3D.cpp" />
-    <ClCompile Include="src\Doom\ECS\Component.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp" />
-    <ClCompile Include="src\Doom\Render\SkyBox.cpp" />
-    <ClCompile Include="src\Doom\Core\Ray2D.cpp" />
-    <ClCompile Include="src\Doom\Components\RectangleCollider2D.cpp" />
-    <ClCompile Include="src\Doom\Core\Ray3D.cpp" />
-    <ClCompile Include="src\Doom\Components\CubeCollider.cpp" />
-    <ClCompile Include="src\Doom\Render\MeshManager.cpp" />
-    <ClCompile Include="src\Doom\Render\Instancing.cpp" />
-    <ClCompile Include="src\Doom\Render\Mesh.cpp" />
-    <ClCompile Include="src\Doom\Components\PointLight.cpp" />
-    <ClCompile Include="src\Doom\Components\DirectionalLight.cpp" />
-    <ClCompile Include="src\Doom\Core\World.cpp" />
-    <ClCompile Include="src\Doom\STLloader\STLloader.cpp" />
-    <ClCompile Include="src\Doom\Core\Listener.cpp" />
-    <ClCompile Include="src\Doom\Components\SphereCollider.cpp" />
-    <ClCompile Include="src\Doom\Core\SceneSerializer.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\contrib\graphbuilder.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\binary.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\convert.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\depthguard.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\directives.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\emit.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\emitfromevents.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\emitter.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\emitterstate.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\emitterutils.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\exceptions.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\exp.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\memory.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\node.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\node_data.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\nodebuilder.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\nodeevents.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\null.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\ostream_wrapper.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\parse.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\parser.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\regex_yaml.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\scanner.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\scanscalar.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\scantag.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\scantoken.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\simplekey.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\singledocparser.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\stream.cpp" />
-    <ClCompile Include="src\Doom\yaml-cpp\src\tag.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Doom\Shaders\Line.shader" />
+    <ClCompile Include="src\Doom\Audio\Sound.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Audio\SoundManager.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\Animator.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\CubeCollider.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\DirectionalLight.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\PointLight.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\RectangleCollider2D.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\Render3D.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\SphereCollider.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\Transform.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\Editor.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\EventSystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\Listener.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\Ray2D.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\Ray3D.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\SceneSerializer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\ThreadPool.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\WindowsInput.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Core\World.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Doom.cpp" />
+    <ClCompile Include="src\Doom\ECS\Component.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\EntryPoint.cpp" />
+    <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp">
+      <Filter>FbxLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp">
+      <Filter>FbxLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\FbxLoader\fbxnode.cpp">
+      <Filter>FbxLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp">
+      <Filter>FbxLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp">
+      <Filter>FbxLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp">
+      <Filter>ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Objects2D\GameObject.cpp">
+      <Filter>Objects2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Batch.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Camera.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Character.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\FrameBuffer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Gui.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\IndexBuffer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Instancing.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Line.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Mesh.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\MeshManager.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\ParticleSystem.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Renderer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Shader.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\SkyBox.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\Texture.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\TextureAtlas.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\TileMap.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\VertexArray.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\VertexBuffer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\ViewPort.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Render\stb_image.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\STLloader\STLloader.cpp">
+      <Filter>STLloader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\pch.cpp" />
+    <ClCompile Include="src\Doom\yaml-cpp\src\binary.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\contrib\graphbuilder.cpp">
+      <Filter>yaml-cpp\src\contrib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\contrib\graphbuilderadapter.cpp">
+      <Filter>yaml-cpp\src\contrib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\convert.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\depthguard.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\directives.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\emit.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\emitfromevents.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\emitter.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\emitterstate.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\emitterutils.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\exceptions.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\exp.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\memory.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\node.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\node_data.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\nodebuilder.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\nodeevents.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\null.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\ostream_wrapper.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\parse.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\parser.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\regex_yaml.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\scanner.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\scanscalar.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\scantag.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\scantoken.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\simplekey.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\singledocparser.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\stream.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\yaml-cpp\src\tag.cpp">
+      <Filter>yaml-cpp\src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

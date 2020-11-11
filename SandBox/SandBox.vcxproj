@@ -26,11 +26,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
+    <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -50,7 +48,7 @@
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release-windows-x86_64\SandBox\</OutDir>
     <IntDir>..\bin-int\Release-windows-x86_64\SandBox\</IntDir>
     <TargetName>SandBox</TargetName>
@@ -60,48 +58,76 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN64;_WIN32;GLEW_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Doom\src\Doom;$(SolutionDir)vendor;$(SolutionDir)SandBox;$(SolutionDir)vendor\bullet3-master\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN64;GLEW_STATIC;_WINDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)SandBox;$(SolutionDir)vendor;$(SolutionDir)SandBox\src;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>zlib.lib;opengl32.lib;glfw3.lib;glew32s.lib;ImGui.lib;winmm.lib;Bullet3Collision_vs2010_x64_release.lib;Bullet3Common_vs2010_x64_release.lib;Bullet3Dynamics_vs2010_x64_release.lib;Bullet3Geometry_vs2010_x64_release.lib;Bullet3OpenCL_clew_vs2010_x64_release.lib;BulletCollision_vs2010_x64_release.lib;BulletDynamics_vs2010_x64_release.lib;BulletExampleBrowserLib_vs2010_x64_release.lib;BulletInverseDynamics_vs2010_x64_release.lib;BulletInverseDynamicsUtils_vs2010_x64_release.lib;BulletSoftBody_vs2010_x64_release.lib;BussIK_vs2010_x64_release.lib;gwen_vs2010_x64_release.lib;LinearMath_vs2010_x64_release.lib;OpenGL_Window_vs2010_x64_release.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;zlib.lib;OpenAL32.lib;Doom.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libs;..\bin\Debug-windows-x86_64\Doom;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN64;_WIN32;GLEW_STATIC;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Doom\src\Doom;$(SolutionDir)vendor;$(SolutionDir)vendor\bullet3-master\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>None</DebugInformationFormat>
-      <Optimization>MaxSpeed</Optimization>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <SupportJustMyCode>false</SupportJustMyCode>
-      <SDLCheck>true</SDLCheck>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN64;GLEW_STATIC;_WINDLL;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)SandBox;$(SolutionDir)vendor;$(SolutionDir)SandBox\src;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <OmitFramePointers>false</OmitFramePointers>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>zlib.lib;opengl32.lib;glfw3.lib;glew32s.lib;ImGui.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;ImGui.lib;zlib.lib;OpenAL32.lib;Doom.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libs;..\bin\Release-windows-x86_64\Doom;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="src\2Dshootergame\PlayerCharacter.h" />
+    <ClInclude Include="src\2Dshootergame\ShooterGame.h" />
+    <ClInclude Include="src\Minecraft\Minecraft.h" />
+    <ClInclude Include="src\SpaceFire\Ammo.h" />
+    <ClInclude Include="src\SpaceFire\Bullet.h" />
+    <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
+    <ClInclude Include="src\SpaceFire\ShipPlayer.h" />
+    <ClInclude Include="src\SpaceFire\SpaceFire.h" />
+    <ClInclude Include="src\game\BlankProject.h" />
+    <ClInclude Include="src\game\Bomb.h" />
+    <ClInclude Include="src\game\Coin.h" />
+    <ClInclude Include="src\game\DrawLines.h" />
+    <ClInclude Include="src\game\Game.h" />
+    <ClInclude Include="src\game\HP.h" />
+    <ClInclude Include="src\game\Player.h" />
+    <ClInclude Include="src\game\RayCastTest.h" />
+    <ClInclude Include="src\game\StressTest.h" />
+    <ClInclude Include="src\game\TestImGui.h" />
+    <ClInclude Include="src\game\TicTacToe.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SandBox.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="src\2Dshootergame\PlayerCharacter.cpp" />
+    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
+    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doom\Doom.vcxproj">
       <Project>{3440847C-2077-850D-C963-6B10B579010F}</Project>
@@ -109,103 +135,6 @@
     <ProjectReference Include="..\vendor\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="pch.cpp" />
-    <ClCompile Include="SandBox.cpp" />
-    <ClCompile Include="src\2Dshootergame\PlayerCharacter.cpp" />
-    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
-    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="src\2Dshootergame\PlayerCharacter.h" />
-    <ClInclude Include="src\2Dshootergame\ShooterGame.h" />
-    <ClInclude Include="src\game\BlankProject.h" />
-    <ClInclude Include="src\game\DrawLines.h" />
-    <ClInclude Include="src\game\Game.h" />
-    <ClInclude Include="src\game\Bomb.h" />
-    <ClInclude Include="src\game\Coin.h" />
-    <ClInclude Include="src\game\HP.h" />
-    <ClInclude Include="src\game\Player.h" />
-    <ClInclude Include="src\game\RayCastTest.h" />
-    <ClInclude Include="src\game\StressTest.h" />
-    <ClInclude Include="src\game\TestImGui.h" />
-    <ClInclude Include="src\game\TicTacToe.h" />
-    <ClInclude Include="src\Minecraft\Minecraft.h" />
-    <ClInclude Include="src\SpaceFire\Ammo.h" />
-    <ClInclude Include="src\SpaceFire\Bullet.h" />
-    <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
-    <ClInclude Include="src\SpaceFire\ShipPlayer.h" />
-    <ClInclude Include="src\SpaceFire\SpaceFire.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="imgui.ini" />
-    <None Include="src\Mesh\cube.fbx" />
-    <None Include="src\Mesh\Cup1.fbx" />
-    <None Include="src\Mesh\Hex.fbx" />
-    <None Include="src\Mesh\hill.fbx" />
-    <None Include="src\Mesh\house.fbx" />
-    <None Include="src\Mesh\level.fbx" />
-    <None Include="src\Mesh\mountain.fbx" />
-    <None Include="src\Mesh\plant.FBX" />
-    <None Include="src\Mesh\Stone.fbx" />
-    <None Include="src\Mesh\Stonefbx.fbx" />
-    <None Include="src\Mesh\Tree.fbx" />
-    <None Include="src\Shaders\BakeShadows.shader" />
-    <None Include="src\Shaders\BakeShadowsInstancing.shader" />
-    <None Include="src\Shaders\Default2D.shader" />
-    <None Include="src\Shaders\Default3D.shader" />
-    <None Include="src\Shaders\CubeCollider.shader" />
-    <None Include="src\Shaders\DepthBuffer.shader" />
-    <None Include="src\Shaders\Instancing3D.shader" />
-    <None Include="src\Shaders\Line.shader" />
-    <None Include="src\Shaders\LineSimple.shader" />
-    <None Include="src\Shaders\Collision2D.shader" />
-    <None Include="src\Shaders\SkyBox.shader" />
-    <None Include="src\Shaders\Font.shader" />
-    <None Include="src\Shaders\Tron.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\Fonts\arial.txt" />
-    <Text Include="src\Fonts\calibri.txt" />
-    <Text Include="src\Fonts\harrington.txt" />
-    <Text Include="src\game\savePlatformer.txt" />
-    <Text Include="src\saved.txt" />
-    <Text Include="src\savedRayCastTest.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="src\Fonts\arial.png" />
-    <Image Include="src\Fonts\calibri.png" />
-    <Image Include="src\Fonts\harrington.png" />
-    <Image Include="src\GameRPG\Textures\RPGpack_sheet_2X.png" />
-    <Image Include="src\Images\arial.png" />
-    <Image Include="src\Images\background.jpg" />
-    <Image Include="src\Images\bird.png" />
-    <Image Include="src\Images\bomb.png" />
-    <Image Include="src\Images\car.png" />
-    <Image Include="src\Images\Circle.png" />
-    <Image Include="src\Images\coin.png" />
-    <Image Include="src\Images\CrossLines.png" />
-    <Image Include="src\Images\dirt.jpg" />
-    <Image Include="src\Images\download.png" />
-    <Image Include="src\Images\Heart.png" />
-    <Image Include="src\Images\MuzzleFlash.png" />
-    <Image Include="src\Images\one.png" />
-    <Image Include="src\Images\reddot.png" />
-    <Image Include="src\Images\tube.png" />
-    <Image Include="src\Images\watermellon.png" />
-    <Image Include="src\Images\WhiteCircle.png" />
-    <Image Include="src\SpaceFire\Images\Ammo.png" />
-    <Image Include="src\SpaceFire\Images\SpaceBack.png" />
-    <Image Include="src\SpaceFire\Images\SpaceShip.png" />
-    <Image Include="src\SpaceFire\Images\WhiteCircle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="src\Sounds\Coin.wav" />
-    <Media Include="src\Sounds\Grenade.wav" />
-    <Media Include="src\Sounds\GunFire.wav" />
-    <Media Include="src\Sounds\Place.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

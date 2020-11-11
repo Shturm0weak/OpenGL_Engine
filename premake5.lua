@@ -19,24 +19,27 @@ project "Doom"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
 	}
 
 	includedirs{
-		"$(SolutionDir)%{prj.name}/Includes/GLEW",
-		"$(SolutionDir)%{prj.name}/Includes/GLFW",
-		"$(SolutionDir)vendor"
+		"$(SolutionDir)Includes/GLEW",
+		"$(SolutionDir)Includes/GLFW",
+		"$(SolutionDir)vendor",
+		"$(SolutionDir)%{prj.name}/src/%{prj.name}"
 	}
 
-	libdirs {"$(SolutionDir)%{prj.name}/Libs"}
+	libdirs {"$(SolutionDir)Libs"}
 
 	links{
-		"ImGui",
 		"glfw3.lib",
 		"opengl32.lib",
 		"glew32s.lib",
-		"ImGui.lib"
+		"ImGui.lib",
+		"zlib.lib",
+		"OpenAL32.lib",
+		"ImGUi"
 	}
 
 	filter "system:windows"
@@ -44,22 +47,31 @@ project "Doom"
 		cppdialect "C++17"
 
 	defines{
+		"_CRT_SECURE_NO_WARNINGS",
 		"GLEW_STATIC",
 		"DOOM_ENGINE",
-		"_WIN64"
+		"_WIN64",
+		"VORBIS_FPU_CONTROL"
 	}
 
 	postbuildcommands{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .."/SandBox")
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/SandBox"),
 	}
 
+	flags {
+	 "MultiProcessorCompile",
+	 }
+
 	filter "configurations:Debug"
+		runtime "Debug"
 		defines "_DEBUG"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "_RELEASE"
+		runtime "Release"
 		symbols "on"
+		optimize "Full"
 
 project "SandBox"
 	location "SandBox"
@@ -75,37 +87,54 @@ filter "system:windows"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
 	}
 
-	libdirs {"$(SolutionDir)Doom/Libs"}
+	libdirs {
+		"$(SolutionDir)Libs",
+		"bin/" .. outputdir .. "/Doom"
+	}
 
 	includedirs{
-		"$(SolutionDir)Doom/Includes/GLEW",
-		"$(SolutionDir)Doom/Includes/GLFW",
-		"$(SolutionDir)Doom/src/Doom",
-		"$(SolutionDir)vendor"
+		"$(SolutionDir)Includes/GLEW",
+		"$(SolutionDir)Includes/GLFW",
+		"$(SolutionDir)SandBox",
+		"$(SolutionDir)vendor",
+		"$(SolutionDir)%{prj.name}/src",
+		"$(SolutionDir)Doom/src/Doom"
 	}
 
+	flags {
+	 "MultiProcessorCompile",
+	 }
+
 	links{
-		"Doom",
-		"ImGui",
-		"opengl32.lib",
 		"glfw3.lib",
+		"opengl32.lib",
 		"glew32s.lib",
-		"ImGui.lib"
+		"ImGui.lib",
+		"zlib.lib",
+		"OpenAL32.lib",
+		"Doom.lib",
+		"Doom",
+		"ImGUi"
 	}
 
 	defines{
+		"_CRT_SECURE_NO_WARNINGS",
 		"_WIN64",
-		"GLEW_STATIC"
+		"GLEW_STATIC",
+		"_WINDLL"
 	}
 
 	filter "configurations:Debug"
 		defines "_DEBUG"
+		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "_RELEASE"
+		runtime "Release"
 		symbols "on"
+		optimize "Full"
