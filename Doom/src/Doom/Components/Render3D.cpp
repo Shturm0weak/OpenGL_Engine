@@ -31,6 +31,7 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 
 void Doom::Renderer3D::LoadMesh(Mesh * _mesh)
 {
+	tr = owner->GetComponentManager()->GetComponent<Transform>();
 	EraseFromInstancing();
 	mesh = _mesh;
 	ChangeRenderTechnic(RenderTechnic::Forward);
@@ -65,13 +66,11 @@ void Doom::Renderer3D::EraseFromInstancing()
 	}
 }
 
-Doom::Renderer3D::Renderer3D(GameObject* _owner)
+Doom::Renderer3D::Renderer3D()
 {
 	renderType = RenderType::TYPE_3D;
-	SetType(ComponentType::RENDER);
-	owner = _owner;
+	//SetType(ComponentType::RENDER3D);
 	shader = Shader::Get("Default3D");
-	tr = owner->GetComponentManager()->GetComponent<Transform>();
 	if(isTransparent)
 		Renderer::objects3dTransparent.push_back(this);
 	else
@@ -80,6 +79,22 @@ Doom::Renderer3D::Renderer3D(GameObject* _owner)
 
 Doom::Renderer3D::~Renderer3D()
 {
+	CubeCollider3D* cc = GetOwnerOfComponent()->GetComponentManager()->GetComponent<CubeCollider3D>();
+	if (cc != nullptr && cc->isBoundingBox) {
+		GetOwnerOfComponent()->GetComponentManager()->RemoveComponent(cc);
+	}
+	if (isTransparent) {
+		auto iter = std::find(Renderer::objects3dTransparent.begin(), Renderer::objects3dTransparent.end(), this);
+		if (iter != Renderer::objects3dTransparent.end()) {
+			Renderer::objects3dTransparent.erase(iter);
+		}
+	}
+	else {
+		auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), this);
+		if (iter != Renderer::objects3d.end()) {
+			Renderer::objects3d.erase(iter);
+		}
+	}
 }
 
 #include "../Core/Timer.h"

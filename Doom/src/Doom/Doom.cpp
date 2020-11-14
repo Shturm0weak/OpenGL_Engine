@@ -11,16 +11,19 @@
 #include "Core/Editor.h"
 #include "Components/RectangleCollider2D.h"
 #include "Components/PointLight.h"
+#include "Lua/LuaState.h"
 
 using namespace Doom;
 
+DOOM_API std::vector<LuaState*> LuaState::luaStates;
+
 DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::colliders;
 DOOM_API std::vector<SphereCollider*> SphereCollider::spheres;
-//Warning: used only for rendering
+
 DOOM_API std::vector <SpriteRenderer*> Renderer::objects2d;
 DOOM_API std::vector <Renderer3D*> Renderer::objects3d;
 DOOM_API std::vector <Renderer3D*> Renderer::objects3dTransparent;
-//storage of all references to our object's collisions in the scene
+
 DOOM_API std::vector <RectangleCollider2D*> Renderer::collision2d;
 DOOM_API Batch* Batch::instance;
 DOOM_API std::vector<unsigned int> Renderer::ObjectsWithOwner;
@@ -31,11 +34,10 @@ DOOM_API std::condition_variable Renderer::condVar;
 DOOM_API bool Renderer::PolygonMode = false;
 DOOM_API int Renderer::DrawCalls = 0;
 DOOM_API int Renderer::Vertices = 0;
-//visible collisions
+
 DOOM_API int Renderer::obj_id = 0;
 DOOM_API int Renderer::col_id = 0;
-//ThreadPool
-//Textures
+
 DOOM_API std::vector<std::string> Editor::texturesPath;
 DOOM_API std::vector<Texture*> Editor::texture;
 DOOM_API std::vector<Texture*> Editor::textureVecTemp;
@@ -47,9 +49,9 @@ DOOM_API std::mutex Texture::lockTextureLoading;
 DOOM_API Texture* Texture::WhiteTexture;
 DOOM_API double Texture::VRAMused = 0;
 DOOM_API std::map<std::string, Texture*> Texture::textures;
-//Timer
+
 DOOM_API double Timer::start;
-//ThreadPool
+
 DOOM_API ThreadPool* ThreadPool::thread_pool = nullptr;
 DOOM_API bool ThreadPool::initialized;
 

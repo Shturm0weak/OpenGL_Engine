@@ -55,5 +55,5 @@ const char** Doom::Animator::GetAnimations() {
 }
 
 Doom::Animator::Animator() {
-	SetType(ComponentType::ANIMATOR);
+//	SetType(ComponentType::ANIMATOR);
 }

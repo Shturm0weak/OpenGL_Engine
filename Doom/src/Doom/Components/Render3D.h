@@ -38,7 +38,7 @@ namespace Doom {
 
 		Mesh* mesh = nullptr;
 
-		Renderer3D(GameObject* _owner);
+		Renderer3D();
 		~Renderer3D();
 
 		Material mat;
@@ -49,6 +49,8 @@ namespace Doom {
 		void MakeSolid();
 		virtual void Render() override;
 	private:
+
+	
 
 		//TODO ??? Upload in shader, calculate the angle between the normal and light dir if angle > 90 then shadow should not be drawn!!! ???
 		//TODO Make bake shadows strength depending on alpha channel of color for transparent object!!!

@@ -29,6 +29,7 @@ namespace Doom {
 		int texturePickerId = -1;
 		//int selected = 0;
 		int selectedcomponent = 0;
+		int closedButtonsId = 103212;
 		float* color;
 		Texture* textureForAtlas = nullptr;
 		float spriteSize[2] = {128,128};
@@ -52,14 +53,21 @@ namespace Doom {
 		float shadowOffset[2] = {0,0};
 		std::vector<Line*> normals;
 
-		void MaterialComponent();
-		void CubeCollider3DComponent();
-		void Renderer2DComponent();
-		void RectangleCollider2D(RectangleCollider2D* col);
-		void Animator2DComponent();
-		void TransformComponent(Transform* tr);
-		void LightPointComponent();
-		void DirPointComponent();
+		void MenuRenderer3D();
+		void MenuCubeCollider3D();
+		void MenuRenderer2D();
+		void MenuRectangleCollider2D(RectangleCollider2D* col);
+		void MenuAnimator2D();
+		void MenuTransform(Transform* tr);
+		void MenuLightPoint();
+		void MenuDirectionalLight();
+		void MenuSphereCollisionComponent();
+		void MenuScriptComponent();
+
+		template<class T>
+		bool MenuRemoveComponent();
+
+		bool MenuRemoveScript(ScriptComponent* sc);
 		void MeshPicker();
 		void TexturePicker();
 		void SceneHierarchy();
@@ -74,6 +82,7 @@ namespace Doom {
 		GameObject* go = nullptr;
 		bool isItemActive = false;
 		static Editor* Instance();
+		void MenuBar();
 		void EditorUpdateMyGui();
 		void EditorUpdate();
 		static void CheckTexturesFolderUnique(const std::string path);

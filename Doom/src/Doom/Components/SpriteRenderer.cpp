@@ -7,6 +7,7 @@
 using namespace Doom;
 
 void SpriteRenderer::SetTexture(Texture* texture) {
+	tr = owner->GetComponentManager()->GetComponent<Transform>();
 	if (texture == nullptr) {
 		pathToTexture = "None";
 		this->texture = nullptr;
@@ -18,21 +19,19 @@ void SpriteRenderer::SetTexture(Texture* texture) {
 	pathToTexture = texture->GetFilePath();
 }
 
-void SpriteRenderer::InitShader() {
-	shader = Shader::Get("Default2D");
-}
-
-Doom::SpriteRenderer::SpriteRenderer(GameObject* _owner)
+Doom::SpriteRenderer::SpriteRenderer()
 {
-	SetType(ComponentType::RENDER);
-	this->owner = _owner;
-	tr = owner->GetComponentManager()->GetComponent<Transform>();
-	InitShader();
+	//SetType(ComponentType::SPRITERENDERER);
+	shader = Shader::Get("Default2D");
 	Renderer::objects2d.push_back(this);
 }
 
 Doom::SpriteRenderer::~SpriteRenderer()
 {
+	auto iter = std::find(Renderer::objects2d.begin(), Renderer::objects2d.end(), this);
+	if (iter != Renderer::objects2d.end()) {
+		Renderer::objects2d.erase(iter);
+	}
 }
 
 void Doom::SpriteRenderer::Update(glm::vec3 pos)

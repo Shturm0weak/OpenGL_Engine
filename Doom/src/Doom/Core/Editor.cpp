@@ -6,14 +6,32 @@
 #include "../Render/Gui.h"
 #include "../Core/World.h"
 #include "../Render/Instancing.h"
+#include "Components/ScriptComponent.h"
+
 namespace fs = std::filesystem;
 
 using namespace Doom;
 
+template<class T>
+bool Editor::MenuRemoveComponent()
+{
+	ImGui::PushID(closedButtonsId);
+	if (ImGui::Button("x")) {
+		go->GetComponentManager()->RemoveComponent<T>();
+		ImGui::PopID();
+		return false;
+	}
+	ImGui::PopID();
+	closedButtonsId++;
+	ImGui::SameLine();
+	return true;
+}
+
 void Editor::EditorUpdate()
 {
+	
+	closedButtonsId = 103212;
 	Debug();
-
 	Threads();
 
 	ImGui::Begin("Console");
@@ -135,6 +153,9 @@ void Editor::EditorUpdate()
 			{
 				go->GetComponentManager()->AddComponent<SphereCollider>();
 			}
+			if (ImGui::MenuItem("ScriptComponent")) {
+				go->GetComponentManager()->AddComponent<ScriptComponent>();
+			}
 			if (ImGui::MenuItem("Child")) {
 				GameObject* child1 = new GameObject("Child", 0, 0);
 				go->AddChild((void*)child1);
@@ -158,7 +179,7 @@ void Editor::EditorUpdate()
 				go->name = name;
 			}
 			ImGui::SliderInt("Layer", &go->GetLayer(), 0, Renderer::GetAmountOfObjects() - 1);
-			if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == TYPE_2D) {
+			if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->renderType == TYPE_2D) {
 				if (ImGui::Button("Change layer")) {
 					if (go->GetLayer() > Renderer::GetAmountOfObjects() - 1) {
 						std::cout << "Error: layer out of range" << std::endl;
@@ -169,17 +190,20 @@ void Editor::EditorUpdate()
 				}
 			}
 
-			TransformComponent(tr);
-			Renderer2DComponent();
-			Animator2DComponent();
-			CubeCollider3DComponent();
-			RectangleCollider2D(col);
-			LightPointComponent();
-			DirPointComponent();
-			MaterialComponent();
+			MenuTransform(tr);
+			MenuRenderer2D();
+			MenuAnimator2D();
+			MenuCubeCollider3D();
+			MenuRectangleCollider2D(col);
+			MenuLightPoint();
+			MenuDirectionalLight();
+			MenuRenderer3D();
 			MeshPicker();
 			TexturePicker();
 			ShaderMenu();
+			MenuScriptComponent();
+			MenuSphereCollisionComponent();
+
 			if (ImGui::Button("add Child")) {
 				
 				GameObject* obj = Renderer::CreateGameObject();
@@ -189,11 +213,11 @@ void Editor::EditorUpdate()
 				go = World::objects.back();
 				go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
 			}
-			}
 		}
+	}
+	MenuBar();
 	ImGui::End();
 }
-
 void Editor::CreateTextureAtlas() {
 	if (!IsActiveTextureAtlasCreation)
 		return;
@@ -233,244 +257,261 @@ void Editor::CreateTextureAtlas() {
 	ImGui::End();
 }
 
-void Doom::Editor::MaterialComponent()
+void Doom::Editor::MenuRenderer3D()
 {
-	if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == TYPE_3D) {
-		if (ImGui::CollapsingHeader("Renderer 3D")) {
-			Renderer3D* r = static_cast<Renderer3D*>(go->GetComponentManager()->GetComponent<Irenderer>());
-			ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
-			if (ImGui::CollapsingHeader("Shader")) {
-				Shader* shader = go->GetComponentManager()->GetComponent<Irenderer>()->shader;
-				ImGui::Text("%s", shader->m_Name);
-				if (ImGui::Button("Reload")) {
-					shader->Reload();
-				}
-				ImGui::InputText("Shader's name", this->name, sizeof(this->name));
-				if (ImGui::Button("Change shader")) {
-					Shader* shaderTemp = Shader::Get(this->name);
-					if (shaderTemp != nullptr) {
-						r->shader = shaderTemp;
+	if (go->GetComponentManager()->GetComponent<Renderer3D>() != nullptr && go->GetComponentManager()->GetComponent<Renderer3D>()->renderType == TYPE_3D) {
+		if (MenuRemoveComponent<Renderer3D>()) {
+			if (ImGui::CollapsingHeader("Renderer 3D")) {
+				Renderer3D* r = go->GetComponentManager()->GetComponent<Renderer3D>();
+				ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
+				ImGui::Checkbox("Cast shadows", &r->isCastingShadows);
+				ImGui::Checkbox("Wire mesh", &r->isWireMesh);
+				if (ImGui::CollapsingHeader("Shader")) {
+					Shader* shader = go->GetComponentManager()->GetComponent<Renderer3D>()->shader;
+					ImGui::Text("%s", shader->m_Name);
+					if (ImGui::Button("Reload")) {
+						shader->Reload();
+					}
+					ImGui::InputText("Shader's name", this->name, sizeof(this->name));
+					if (ImGui::Button("Change shader")) {
+						Shader* shaderTemp = Shader::Get(this->name);
+						if (shaderTemp != nullptr) {
+							r->shader = shaderTemp;
+						}
 					}
 				}
-			}
-			if (ImGui::CollapsingHeader("Material")) {
-				if (!r->isTransparent){
-					if (ImGui::Button("Make Transparent")) {
-						r->MakeTransparent();
+				if (ImGui::CollapsingHeader("Material")) {
+					if (!r->isTransparent) {
+						if (ImGui::Button("Make Transparent")) {
+							r->MakeTransparent();
+						}
 					}
-				}
-				else {
-					if (ImGui::Button("Make Solid")) {
-						r->MakeSolid();
+					else {
+						if (ImGui::Button("Make Solid")) {
+							r->MakeSolid();
+						}
 					}
-				}
 
-				ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
-				ImGui::SliderFloat("Specular", &r->mat.specular, 0, 50);
-				void* my_tex_id = reinterpret_cast<void*>(r->diffuseTexture->m_RendererID);
-				if (ImGui::ImageButton(my_tex_id, { 64,64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
-					IsActiveTexturePicker = true;
-					texturePickerId = 1;
+					ImGui::SliderFloat("Ambient", &r->mat.ambient, 0, 1);
+					ImGui::SliderFloat("Specular", &r->mat.specular, 0, 50);
+					void* my_tex_id = reinterpret_cast<void*>(r->diffuseTexture->m_RendererID);
+					if (ImGui::ImageButton(my_tex_id, { 64,64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
+						IsActiveTexturePicker = true;
+						texturePickerId = 1;
+					}
+					if (r->normalMapTexture == nullptr)
+						my_tex_id = reinterpret_cast<void*>(Texture::Get("InvalidTexture")->m_RendererID);
+					else
+						my_tex_id = reinterpret_cast<void*>(r->normalMapTexture->m_RendererID);
+					if (ImGui::ImageButton(my_tex_id, { 64,64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
+						IsActiveTexturePicker = true;
+						texturePickerId = 2;
+					}
+					ImGui::Checkbox("NormalMap", &r->useNormalMap);
+					float* tempColor = r->GetColor();
+					ImGui::ColorEdit4("Color", tempColor);
+					r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
 				}
-				if (r->normalMapTexture == nullptr)
-					my_tex_id = reinterpret_cast<void*>(Texture::Get("InvalidTexture")->m_RendererID);
-				else
-					my_tex_id = reinterpret_cast<void*>(r->normalMapTexture->m_RendererID);
-				if (ImGui::ImageButton(my_tex_id, { 64,64 },ImVec2(0,0),ImVec2(1,1),-1,ImVec4(0.79,0,0.75,1))) {
-					IsActiveTexturePicker = true;
-					texturePickerId = 2;
+				if (ImGui::CollapsingHeader("Mesh")) {
+					if (r->mesh != nullptr) {
+						ImGui::Text("Name: %s", r->mesh->name);
+					}
+					if (ImGui::Button("Meshes")) {
+						IsActiveMeshPicker = true;
+					}
 				}
-				ImGui::Checkbox("NormalMap", &r->useNormalMap);
-				float* tempColor = r->GetColor();
-				ImGui::ColorEdit4("Color", tempColor);
-				r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
+				ImGui::Unindent();
 			}
-			if (ImGui::CollapsingHeader("Mesh")) {
-				if (r->mesh != nullptr) {
-					ImGui::Text("Name: %s", r->mesh->name);
-				}
-				if (ImGui::Button("Meshes")) {
-					IsActiveMeshPicker = true;
-				}
-			}
-			ImGui::Unindent();
 		}
 	}
 }
 
-void Doom::Editor::CubeCollider3DComponent()
+void Doom::Editor::MenuCubeCollider3D()
 {
 	CubeCollider3D* cc = go->GetComponentManager()->GetComponent<CubeCollider3D>();
 	if (cc != nullptr && cc->isBoundingBox == false) {
-		if (ImGui::CollapsingHeader("CubeCollider3D")) {
-			ImGui::SliderFloat3("Position", &cc->offset.x, -50, 50);
+		if (MenuRemoveComponent<CubeCollider3D>()) {
+			if (ImGui::CollapsingHeader("CubeCollider3D")) {
+				ImGui::SliderFloat3("Position", &cc->offset.x, -50, 50);
+			}
 		}
 	}
 }
 
-void Doom::Editor::Renderer2DComponent()
+void Doom::Editor::MenuRenderer2D()
 {
-	if (go->GetComponentManager()->GetComponent<Irenderer>() != nullptr && go->GetComponentManager()->GetComponent<Irenderer>()->renderType == TYPE_2D && ImGui::CollapsingHeader("Render2D")) {
+	if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->renderType == TYPE_2D) {
 		SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
-		color = sr->GetColor();
-		ImGui::ColorEdit4("Color", color);
-		sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
-		delete[] color;
-		int counterImagesButtons = 0;
-		ImGui::Text("Textures");
-		for (auto i = Texture::textures.begin(); i != Texture::textures.end(); i++)
-		{
-			void* my_tex_id = reinterpret_cast<void*>(i->second->m_RendererID);
-			int frame_padding = -1;
-			if (counterImagesButtons > 6) {
-				ImGui::NewLine();
-				counterImagesButtons = 0;
-			}
-
-			if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
-				if (go != nullptr) {
-
-					sr->SetTexture(i->second);
-				}
-
-			}
-
-			ImGui::SameLine();
-			counterImagesButtons++;
-		}
-
-		ImGui::NewLine();
-		ImGui::InputFloat2("UVs Offset", uvsOffset);
-
-		if (ImGui::Button("Use these UVs")) {
-			if (go != nullptr && sr->textureAtlas != nullptr)
-				sr->SetUVs(sr->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
-		}
-		if (ImGui::Button("Original UVs")) {
-			if (go != nullptr)
-				sr->OriginalUvs();
-		}
-		if (ImGui::Button("No texture")) {
-			if (go != nullptr)
-				sr->SetTexture(Texture::WhiteTexture);
-		}
-		ImGui::InputText("path", pathToTextureFolder, 64);
-		if (ImGui::Button("Refresh textures")) {
-			texturesPath.clear();
-			texture.clear();
-			CheckTexturesFolderUnique(pathToTextureFolder);
-		}
-		int prevselectedAtlas = selectedAtlas;
-		if (TextureAtlas::textureAtlases.size() > 0) {
-			ImGui::ListBox("Texture atlases", &selectedAtlas, TextureAtlas::GetTextureAtlases(), TextureAtlas::textureAtlases.size());
-		}
-		if (selectedAtlas != -1) {
-			if (selectedAtlas != prevselectedAtlas)
-				tool_active = true;
-			if (tool_active) {
-				ImGui::Begin("Texture Atlas", &tool_active);
-
-				Texture* textureOfAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetTexture();
-				int frame_padding = -1;
-				unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteWidth());
-				unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteHeight());
-				for (unsigned int i = 0; i < amountOfSpritesY; i++)
+		if (MenuRemoveComponent<SpriteRenderer>()) {
+			if (ImGui::CollapsingHeader("Render2D")) {
+				color = sr->GetColor();
+				ImGui::ColorEdit4("Color", color);
+				sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
+				delete[] color;
+				int counterImagesButtons = 0;
+				ImGui::Text("Textures");
+				for (auto i = Texture::textures.begin(); i != Texture::textures.end(); i++)
 				{
-					for (unsigned int j = 0; j < amountOfSpritesX; j++)
-					{
-						float* uvs = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteUVs(j, amountOfSpritesY - i);
-						ImGui::PushID((i * amountOfSpritesX) + j);
-						if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
-						{
-							if (go != nullptr) {
-								SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
-								sr->textureAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas);
-								sr->SetTexture(textureOfAtlas);
-								sr->SetUVs(uvs);
-							}
-						}
-						ImGui::PopID();
-						ImGui::SameLine();
-					}
-					ImGui::NewLine();
-				}
-				ImGui::NewLine();
-				ImGui::InputFloat2("Sprite size", spriteSize);
-				if (ImGui::Button("Apply")) {
-					TextureAtlas::GetTextureAtlas(selectedAtlas)->SetSpriteSize(spriteSize[0], spriteSize[1]);
-				}
-				ImGui::End();
-			}
-			else
-				selectedAtlas = -1;
-		}
-
-	}
-}
-
-void Doom::Editor::RectangleCollider2D(Doom::RectangleCollider2D* col)
-{
-	if (col != nullptr) {
-		if (ImGui::CollapsingHeader("Rectangle collider2D")) {
-			ImGui::Text("Collision");
-			ImGui::Text("ID %d", col->GetId());
-			ImGui::Text("Tag %s", col->GetTag().c_str());
-			ImGui::InputText("Tag", tag, sizeof(tag));
-			ImGui::SameLine();
-			if (ImGui::Button("Change tag")) {
-				col->SetTag(tag);
-			}
-			ImGui::Checkbox("Enable collision", &col->Enable);
-			ImGui::Checkbox("Trigger", &col->IsTrigger);
-			ImGui::InputFloat2("Set the borders of X and Y offset slider", changeSliderCollisionOffset);
-			ImGui::SliderFloat("Offset X", &col->offset.x, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-			ImGui::SliderFloat("Offset Y", &col->offset.y, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-			ImGui::InputFloat2("Offset", &(col->offset.x, col->offset.x));
-			col->SetOffset(col->offset.x, col->offset.y);
-			if (ImGui::Button("Remove collider")) {
-				go->component_manager->RemoveComponent<Doom::RectangleCollider2D>();
-				selectedcomponent = 0;
-			}
-		}
-	}
-}
-
-void Doom::Editor::Animator2DComponent()
-{
-	if (go->GetComponentManager()->GetComponent<Animator>() != nullptr) {
-		if (ImGui::CollapsingHeader("Animator")) {
-			Animator* anim = go->GetComponentManager()->GetComponent<Animator>();
-			ImGui::Text("Animator");
-			ImGui::Text("counter %d", anim->counter);
-			ImGui::ListBox("Animations", &selectedanimation, anim->GetAnimations(), anim->GetAmountOfAnimations());
-
-			int count = 0;
-			ImGui::SliderFloat("Animation speed slider", &anim->speed, 0, 100);
-			if (anim->GetAmountOfAnimations() > 0) {
-				auto iter = anim->animations.find(anim->GetAnimations()[selectedanimation]);
-				if (iter._Ptr == nullptr)
-					return;
-				for (unsigned int i = 0; i < iter->second.size(); i++) {
-					void* my_tex_id = reinterpret_cast<void*>((*iter).second[i]->m_RendererID);
+					void* my_tex_id = reinterpret_cast<void*>(i->second->m_RendererID);
 					int frame_padding = -1;
-					ImGui::Image(my_tex_id, ImVec2(42, 64), ImVec2(1, 1), ImVec2(0, 0), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-					if (count < 5) {
-						ImGui::SameLine();
-						count++;
+					if (counterImagesButtons > 6) {
+						ImGui::NewLine();
+						counterImagesButtons = 0;
+					}
+
+					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
+						if (go != nullptr) {
+
+							sr->SetTexture(i->second);
+						}
+
+					}
+
+					ImGui::SameLine();
+					counterImagesButtons++;
+				}
+
+				ImGui::NewLine();
+				ImGui::InputFloat2("UVs Offset", uvsOffset);
+
+				if (ImGui::Button("Use these UVs")) {
+					if (go != nullptr && sr->textureAtlas != nullptr)
+						sr->SetUVs(sr->textureAtlas->GetSpriteUVs(uvsOffset[0], uvsOffset[1]));
+				}
+				if (ImGui::Button("Original UVs")) {
+					if (go != nullptr)
+						sr->OriginalUvs();
+				}
+				if (ImGui::Button("No texture")) {
+					if (go != nullptr)
+						sr->SetTexture(Texture::WhiteTexture);
+				}
+				ImGui::InputText("path", pathToTextureFolder, 64);
+				if (ImGui::Button("Refresh textures")) {
+					texturesPath.clear();
+					texture.clear();
+					CheckTexturesFolderUnique(pathToTextureFolder);
+				}
+				int prevselectedAtlas = selectedAtlas;
+				if (TextureAtlas::textureAtlases.size() > 0) {
+					ImGui::ListBox("Texture atlases", &selectedAtlas, TextureAtlas::GetTextureAtlases(), TextureAtlas::textureAtlases.size());
+				}
+				if (selectedAtlas != -1) {
+					if (selectedAtlas != prevselectedAtlas)
+						tool_active = true;
+					if (tool_active) {
+						ImGui::Begin("Texture Atlas", &tool_active);
+
+						Texture* textureOfAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetTexture();
+						int frame_padding = -1;
+						unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteWidth());
+						unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteHeight());
+						for (unsigned int i = 0; i < amountOfSpritesY; i++)
+						{
+							for (unsigned int j = 0; j < amountOfSpritesX; j++)
+							{
+								float* uvs = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteUVs(j, amountOfSpritesY - i);
+								ImGui::PushID((i * amountOfSpritesX) + j);
+								if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
+								{
+									if (go != nullptr) {
+										SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
+										sr->textureAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas);
+										sr->SetTexture(textureOfAtlas);
+										sr->SetUVs(uvs);
+									}
+								}
+								ImGui::PopID();
+								ImGui::SameLine();
+							}
+							ImGui::NewLine();
+						}
+						ImGui::NewLine();
+						ImGui::InputFloat2("Sprite size", spriteSize);
+						if (ImGui::Button("Apply")) {
+							TextureAtlas::GetTextureAtlas(selectedAtlas)->SetSpriteSize(spriteSize[0], spriteSize[1]);
+						}
+						ImGui::End();
 					}
 					else
-						count = 0;
+						selectedAtlas = -1;
 				}
-				anim->selectedanim = selectedanimation;
+
 			}
-			ImGui::NewLine();
-			ImGui::Checkbox("Play animation", &anim->isPlayingAnim);
 		}
 	}
 }
 
-void Doom::Editor::TransformComponent(Transform* tr)
+void Doom::Editor::MenuRectangleCollider2D(Doom::RectangleCollider2D* col)
 {
+	if (col != nullptr) {
+		if (MenuRemoveComponent<RectangleCollider2D>()) {
+			if (ImGui::CollapsingHeader("Rectangle collider2D")) {
+				ImGui::Text("Collision");
+				ImGui::Text("ID %d", col->GetId());
+				ImGui::Text("Tag %s", col->GetTag().c_str());
+				ImGui::InputText("Tag", tag, sizeof(tag));
+				ImGui::SameLine();
+				if (ImGui::Button("Change tag")) {
+					col->SetTag(tag);
+				}
+				ImGui::Checkbox("Enable collision", &col->Enable);
+				ImGui::Checkbox("Trigger", &col->IsTrigger);
+				ImGui::InputFloat2("Set the borders of X and Y offset slider", changeSliderCollisionOffset);
+				ImGui::SliderFloat("Offset X", &col->offset.x, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+				ImGui::SliderFloat("Offset Y", &col->offset.y, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+				ImGui::InputFloat2("Offset", &(col->offset.x, col->offset.x));
+				col->SetOffset(col->offset.x, col->offset.y);
+				if (ImGui::Button("Remove collider")) {
+					go->component_manager->RemoveComponent<Doom::RectangleCollider2D>();
+					selectedcomponent = 0;
+				}
+			}
+		}
+	}
+}
+
+void Doom::Editor::MenuAnimator2D()
+{
+	if (go->GetComponentManager()->GetComponent<Animator>() != nullptr) {
+		if (MenuRemoveComponent<Animator>()) {
+			if (ImGui::CollapsingHeader("Animator")) {
+				Animator* anim = go->GetComponentManager()->GetComponent<Animator>();
+				ImGui::Text("Animator");
+				ImGui::Text("counter %d", anim->counter);
+				ImGui::ListBox("Animations", &selectedanimation, anim->GetAnimations(), anim->GetAmountOfAnimations());
+
+				int count = 0;
+				ImGui::SliderFloat("Animation speed slider", &anim->speed, 0, 100);
+				if (anim->GetAmountOfAnimations() > 0) {
+					auto iter = anim->animations.find(anim->GetAnimations()[selectedanimation]);
+					if (iter._Ptr == nullptr)
+						return;
+					for (unsigned int i = 0; i < iter->second.size(); i++) {
+						void* my_tex_id = reinterpret_cast<void*>((*iter).second[i]->m_RendererID);
+						int frame_padding = -1;
+						ImGui::Image(my_tex_id, ImVec2(42, 64), ImVec2(1, 1), ImVec2(0, 0), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+						if (count < 5) {
+							ImGui::SameLine();
+							count++;
+						}
+						else
+							count = 0;
+					}
+					anim->selectedanim = selectedanimation;
+				}
+				ImGui::NewLine();
+				ImGui::Checkbox("Play animation", &anim->isPlayingAnim);
+			}
+		}
+	}
+}
+
+void Doom::Editor::MenuTransform(Transform* tr)
+{
+	if (ImGui::Button("o")) {
+	}
+	ImGui::SameLine();
 	if (ImGui::CollapsingHeader("Transform")) {
 		ImGui::Text("Position");
 		ImGui::InputFloat2("Limits", changeSliderPos);
@@ -494,27 +535,87 @@ void Doom::Editor::TransformComponent(Transform* tr)
 	}
 }
 
-void Doom::Editor::LightPointComponent()
+void Doom::Editor::MenuLightPoint()
 {
 	PointLight* pl = go->GetComponentManager()->GetComponent<PointLight>();
 	if (pl == nullptr)
 		return;
-	if (ImGui::CollapsingHeader("Point light")) {
-		ImGui::SliderFloat("Constant",&pl->constant,0,1);
-		ImGui::SliderFloat("Linear", &pl->linear,0,0.100f);
-		ImGui::SliderFloat("Quadratic", &pl->quadratic,0,0.100);
-		ImGui::ColorPicker3("Color", &pl->color[0]);
+	if (MenuRemoveComponent<PointLight>()) {
+		if (ImGui::CollapsingHeader("Point light")) {
+			ImGui::SliderFloat("Constant", &pl->constant, 0, 1);
+			ImGui::SliderFloat("Linear", &pl->linear, 0, 0.100f);
+			ImGui::SliderFloat("Quadratic", &pl->quadratic, 0, 0.100);
+			ImGui::ColorPicker3("Color", &pl->color[0]);
+		}
 	}
 }
 
-void Doom::Editor::DirPointComponent()
+void Doom::Editor::MenuDirectionalLight()
 {
 	DirectionalLight* pl = go->GetComponentManager()->GetComponent<DirectionalLight>();
 	if (pl == nullptr)
 		return;
-	if (ImGui::CollapsingHeader("Directional light")) {
-		ImGui::ColorPicker3("Color", &pl->color[0]);
-		ImGui::SliderFloat("Intensity", &pl->intensity, 1, 10);
+	if (MenuRemoveComponent<DirectionalLight>()) {
+		if (ImGui::CollapsingHeader("Directional light")) {
+			ImGui::ColorPicker3("Color", &pl->color[0]);
+			ImGui::SliderFloat("Intensity", &pl->intensity, 1, 10);
+		}
+	}
+}
+
+void Doom::Editor::MenuSphereCollisionComponent()
+{
+	if (go->GetComponentManager()->GetComponent<SphereCollider>() != nullptr) {
+		if (MenuRemoveComponent<SphereCollider>()) {
+			SphereCollider* cs = go->GetComponentManager()->GetComponent<SphereCollider>();
+			if (ImGui::CollapsingHeader("Sphere collider")) {
+				ImGui::Checkbox("Is in bounding box", &cs->isInBoundingBox);
+				ImGui::SliderFloat("Radius", &cs->radius, 0, 50);
+				ImGui::SliderFloat2("Offset", &cs->offset[0], -100, 100);
+			}
+		}
+	}
+}
+
+bool Doom::Editor::MenuRemoveScript(ScriptComponent* sc)
+{
+	ImGui::PushID(closedButtonsId);
+	if (ImGui::Button("x")) {
+		go->GetComponentManager()->RemoveComponent(sc);
+		ImGui::PopID();
+		return false;
+	}
+	ImGui::PopID();
+	closedButtonsId++;
+	ImGui::SameLine();
+	return true;
+}
+
+#include "SceneSerializer.h"
+#include <optional>
+
+void Doom::Editor::MenuBar()
+{
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Open")) {
+				std::optional<std::string> filePath = SceneSerializer::OpenFile("Doom Scene (*.yaml)\0*.yaml\0");
+				if (filePath) {
+					Renderer::ShutDown();
+					SceneSerializer::DeSerialize(*filePath);
+					gizmo->obj = World::objects[0];
+					go = gizmo->obj;
+				}
+			}
+			if (ImGui::MenuItem("Save as")) {
+				std::optional<std::string> filePath = SceneSerializer::SaveFile("Doom Scene (*.yaml)\0*.yaml\0");
+				if (filePath) {
+					SceneSerializer::Serialize(*filePath);
+				}
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
 	}
 }
 
@@ -705,6 +806,30 @@ void Doom::Editor::ShaderMenu()
 		shader->second->Reload();
 	}
 	ImGui::End();
+}
+
+void Doom::Editor::MenuScriptComponent()
+{
+	std::vector<ScriptComponent*> scripts = go->GetComponentManager()->GetScripts();
+	for (auto script : scripts)
+	{
+		if (script != nullptr) {
+			ImGui::PushID(script);
+			if (MenuRemoveScript(script)) {
+				ImGui::SameLine();
+				if (ImGui::CollapsingHeader("Script")) {
+					if (ImGui::Button("Assign script")) {
+						script->AssignScript("src/Scripts/GameTest.lua");
+					}
+				}
+				ImGui::PopID();
+			}
+			else {
+				ImGui::PopID();
+				return;
+			}
+		}
+	}
 }
 
 void Doom::Editor::CheckTexturesFolderUnique(const std::string path)

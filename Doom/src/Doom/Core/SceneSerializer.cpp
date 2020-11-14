@@ -211,7 +211,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		Renderer3D* r = obj->GetComponentManager()->AddComponent<Renderer3D>();
 		auto mat = renderer3DComponent["Material"];
 		r->mat.ambient = mat["Ambient"].as<float>();
-		r->mat.ambient = mat["Specular"].as<float>();
+		r->mat.specular = mat["Specular"].as<float>();
+		r->color = mat["Color"].as<glm::vec4>();
 		r->shader = Shader::Get(Utils::GetNameFromFilePath(renderer3DComponent["Shader"].as<std::string>(), 6));
 		r->ChangeRenderTechnic((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
 		bool isTransparent = renderer3DComponent["Transparent"].as<bool>();
@@ -386,6 +387,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 			out << YAML::BeginMap;
 			out << YAML::Key << "Ambient" << YAML::Value << r->mat.ambient;
 			out << YAML::Key << "Specular" << YAML::Value << r->mat.specular;
+			out << YAML::Key << "Color" << YAML::Value << r->color;
 			out << YAML::EndMap;
 
 			out << YAML::Key << "Shader" << YAML::Value << r->shader->GetFilePath();
@@ -505,3 +507,44 @@ void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter & out, GameO
 	out << YAML::Key << "Registered events" << YAML::Value << go->registeredEvents;
 }
 
+#include <sstream>
+#include <commdlg.h>
+
+std::optional<std::string> Doom::SceneSerializer::OpenFile(const char* filter)
+{
+	OPENFILENAMEA ofn;
+	CHAR szFile[260] = { 0 };
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = glfwGetWin32Window(Window::GetWindow());
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetOpenFileNameA(&ofn) == TRUE)
+		return ofn.lpstrFile;
+	return std::nullopt;
+}
+
+std::optional<std::string> Doom::SceneSerializer::SaveFile(const char* filter)
+{
+	OPENFILENAMEA ofn;
+	CHAR szFile[260] = { 0 };
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = glfwGetWin32Window(Window::GetWindow());
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	// Sets the default extension by extracting it from the filter
+	ofn.lpstrDefExt = strchr(filter, '\0') + 1;
+
+	if (GetSaveFileNameA(&ofn) == TRUE)
+		return ofn.lpstrFile;
+	return std::nullopt;
+}

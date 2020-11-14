@@ -19,6 +19,9 @@
     <Filter Include="ImGuizmo">
       <UniqueIdentifier>{36FD234F-22CA-7E5A-4BE3-6C02370FB4E8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{A705880B-130F-887C-9C8A-9E7C0893937C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Objects2D">
       <UniqueIdentifier>{451D2E28-B187-E29E-FAC5-9344666FC0F3}</UniqueIdentifier>
     </Filter>
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h">
       <Filter>ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Lua\LuaState.h">
+      <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Objects2D\GameObject.h">
       <Filter>Objects2D</Filter>
@@ -423,6 +429,8 @@
     <ClInclude Include="src\Doom\yaml-cpp\yaml.h">
       <Filter>yaml-cpp</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\Lua\GameObjectLua.h" />
+    <ClInclude Include="src\Doom\Components\ScriptComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -508,6 +516,9 @@
     </ClCompile>
     <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp">
       <Filter>ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Lua\LuaState.cpp">
+      <Filter>Lua</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Objects2D\GameObject.cpp">
       <Filter>Objects2D</Filter>
@@ -672,5 +683,7 @@
     <ClCompile Include="src\Doom\yaml-cpp\src\tag.cpp">
       <Filter>yaml-cpp\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Doom\Lua\GameObjectLua.cpp" />
+    <ClCompile Include="src\Doom\Components\ScriptComponent.cpp" />
   </ItemGroup>
 </Project>

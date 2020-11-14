@@ -1,11 +1,11 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [-29.4695282, 40.4911957, -22.1359596]
-    Rotation: [-0.751787066, -2.16258335, 0]
+    Position: [-13.0398703, 40.1862984, 45.5502472]
+    Rotation: [-0.469044626, 5.96928883, 0]
   FOV: 1
 GameObjects:
-  - GameObject: 0
+  - GameObject: 78
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]
@@ -15,6 +15,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/SkyBox.shader
       Render technic: 0
       Transparent: false
@@ -86,6 +87,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -117,6 +119,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -148,6 +151,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -179,6 +183,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -210,6 +215,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -241,6 +247,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -272,6 +279,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -303,6 +311,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -334,6 +343,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -365,6 +375,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -396,6 +407,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -427,6 +439,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -451,25 +464,21 @@ GameObjects:
   - GameObject: 14
     Name: 0 -2
     Transform:
-      Position: [0, 0, -4]
-      Scale: [1, 1, 1]
+      Position: [12.1855278, 20.9034767, 12.4311018]
+      Scale: [9.8752346, 12.9974041, 9.8752346]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 0.552941203]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
-      Transparent: false
+      Transparent: true
       SkyBox: false
-      Casting shadows: true
+      Casting shadows: false
       Wire mesh: false
       Use normal map: false
-      Uniforms float:
-        u_EdgeSharpness: 30
-        u_EdgeSubstruct: 0.300000012
-        u_EdgeThickness: 2
-        u_GlowStrength: 10
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -489,6 +498,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -520,6 +530,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -551,6 +562,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -582,6 +594,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -613,6 +626,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -644,6 +658,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -668,13 +683,14 @@ GameObjects:
   - GameObject: 21
     Name: 1 -1
     Transform:
-      Position: [2, 2, -2]
+      Position: [7.89968777, 7.85787773, 7.89968777]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -706,6 +722,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -737,6 +754,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -768,6 +786,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -799,6 +818,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -830,6 +850,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -861,6 +882,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -892,6 +914,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -916,13 +939,14 @@ GameObjects:
   - GameObject: 29
     Name: 2 1
     Transform:
-      Position: [4, 2, 2]
+      Position: [-1.34712076, 16.7551804, -10.9013081]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -954,6 +978,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -985,6 +1010,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -1016,6 +1042,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -1047,6 +1074,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -1078,6 +1106,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -1109,6 +1138,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -1140,6 +1170,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -1171,6 +1202,7 @@ GameObjects:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
+        Color: [1, 1, 1, 1]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: false
@@ -1193,14 +1225,35 @@ GameObjects:
     Registered events:
       []
   - GameObject: 38
-    Name: Directional light
+    Name: Sun
     Transform:
-      Position: [0, 0, 0]
-      Scale: [1, 1, 1]
-      Rotation: [0.855211377, 0, 0]
+      Position: [12.4055099, 20.2510643, 12.3972359]
+      Scale: [11, 11, 11]
+      Rotation: [0.785398185, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1
+        Specular: 0
+        Color: [1, 0.895968258, 0.161626697, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/sphere.fbx
     Directional light:
       Intensity: 1
       Color: [1, 1, 1]
+    Cube collider:
+      Bounding box: true
+    Sphere collider:
+      Inside of bounding box: true
     Registered events:
       []
 Texture atlases:

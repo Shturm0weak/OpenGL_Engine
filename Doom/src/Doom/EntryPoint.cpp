@@ -18,8 +18,8 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 		this->app = new Application();
 	else
 		this->app = app;
-	Window::Init(app->name.c_str(),app->width,app->height,app->Vsync);
-	app->Init();
+	Window::Init(this->app->name.c_str(), this->app->width, this->app->height, this->app->Vsync);
+	this->app->Init();
 	MainThread::Init();
 	ThreadPool::Init();
 	Texture::WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
@@ -37,11 +37,13 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	SoundManager::Init();
 	Window::GetCamera().frameBufferColor = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB,GL_UNSIGNED_BYTE,false, GL_COLOR_ATTACHMENT0,true,true,true);
 	Window::GetCamera().frameBufferShadowMap = new FrameBuffer(4096, 4096, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
-	if (app->type == TYPE_3D) {
+	if (this->app->type == TYPE_3D) {
 		GridLayOut* grid = new GridLayOut();
 		Editor::Instance()->gizmo = new Gizmos;
 	}
 }
+
+#include "Lua/LuaState.h"
 
 void EntryPoint::Run()
 {
@@ -73,6 +75,7 @@ void EntryPoint::Run()
 		Texture::DispatchLoadedTextures();
 		SoundManager::UpdateSourceState();
 
+		World::ProccessLuaStates();
 		EventSystem::GetInstance()->ProcessEvents();
 		if (app->type == RenderType::TYPE_3D) {
 			Renderer::SelectObject3D();
@@ -150,8 +153,8 @@ void EntryPoint::Run()
 }
 
 EntryPoint::~EntryPoint() {
-	MeshManager::ShutDown();
 	Renderer::ShutDown();
+	MeshManager::ShutDown();
 	Gui::GetInstance()->ShutDown();
 	EventSystem::GetInstance()->Shutdown();
 	ThreadPool::Instance()->Shutdown();

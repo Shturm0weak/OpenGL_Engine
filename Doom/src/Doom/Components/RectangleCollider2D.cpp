@@ -6,7 +6,7 @@
 using namespace Doom;
 
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
-	SetType(ComponentType::COLLISION);
+	//SetType(ComponentType::COLLISION);
 	this->owner = owner;
 	id = Renderer::col_id;
 	Renderer::col_id++;

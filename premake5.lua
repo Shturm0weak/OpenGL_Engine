@@ -26,6 +26,7 @@ project "Doom"
 	includedirs{
 		"$(SolutionDir)Includes/GLEW",
 		"$(SolutionDir)Includes/GLFW",
+		"$(SolutionDir)Includes/LUA",
 		"$(SolutionDir)vendor",
 		"$(SolutionDir)%{prj.name}/src/%{prj.name}"
 	}
@@ -39,7 +40,7 @@ project "Doom"
 		"ImGui.lib",
 		"zlib.lib",
 		"OpenAL32.lib",
-		"ImGUi"
+		"ImGUi",
 	}
 
 	filter "system:windows"
@@ -102,7 +103,8 @@ filter "system:windows"
 		"$(SolutionDir)SandBox",
 		"$(SolutionDir)vendor",
 		"$(SolutionDir)%{prj.name}/src",
-		"$(SolutionDir)Doom/src/Doom"
+		"$(SolutionDir)Doom/src/Doom",
+		"$(SolutionDir)Includes/LUA",
 	}
 
 	flags {
@@ -118,7 +120,7 @@ filter "system:windows"
 		"OpenAL32.lib",
 		"Doom.lib",
 		"Doom",
-		"ImGUi"
+		"ImGUi",
 	}
 
 	defines{

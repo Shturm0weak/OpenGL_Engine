@@ -76,7 +76,7 @@ CubeCollider3D::CubeCollider3D() {
 	vb->UnBind();
 	ib->UnBind();
 	colliders.push_back(this);
-	SetType(ComponentType::CUBECOLLIDER3D);
+	//SetType(ComponentType::CUBECOLLIDER3D);
 }
 
 void Doom::CubeCollider3D::Render()

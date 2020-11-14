@@ -20,10 +20,21 @@
 
 #include <glew.h>
 #include <glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+
+extern "C"
+{
+#include "lua.hpp"
+#include "lauxlib.h"
+#include "lualib.h"
+}
+
+#pragma comment(lib, "liblua54.a")
+
 #include "Core/DeltaTime.h"
 #include "Core/ColorsRGBA.h"
 #include "Render/Shader.h"

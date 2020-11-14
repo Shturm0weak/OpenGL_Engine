@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -15,20 +15,20 @@
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Doom</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;DOOM_ENGINE;_WIN64;VORBIS_FPU_CONTROL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Includes\LUA;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -83,7 +83,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;DOOM_ENGINE;_WIN64;VORBIS_FPU_CONTROL;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Includes\LUA;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -108,6 +108,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Doom\Components\ScriptComponent.h" />
+    <ClInclude Include="src\Doom\Lua\GameObjectLua.h" />
     <ClInclude Include="src\Doom\Application.h" />
     <ClInclude Include="src\Doom\Audio\Sound.h" />
     <ClInclude Include="src\Doom\Audio\SoundManager.h" />
@@ -150,6 +152,7 @@
     <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
     <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h" />
+    <ClInclude Include="src\Doom\Lua\LuaState.h" />
     <ClInclude Include="src\Doom\Objects2D\GameObject.h" />
     <ClInclude Include="src\Doom\Objects2D\GridLayOut.h" />
     <ClInclude Include="src\Doom\Render\Batch.h" />
@@ -237,6 +240,8 @@
     <ClInclude Include="src\Doom\yaml-cpp\yaml.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Doom\Components\ScriptComponent.cpp" />
+    <ClCompile Include="src\Doom\Lua\GameObjectLua.cpp" />
     <ClCompile Include="src\Doom\Application.cpp" />
     <ClCompile Include="src\Doom\Audio\Sound.cpp" />
     <ClCompile Include="src\Doom\Audio\SoundManager.cpp" />
@@ -267,6 +272,7 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp" />
+    <ClCompile Include="src\Doom\Lua\LuaState.cpp" />
     <ClCompile Include="src\Doom\Objects2D\GameObject.cpp" />
     <ClCompile Include="src\Doom\Render\Batch.cpp" />
     <ClCompile Include="src\Doom\Render\Camera.cpp" />

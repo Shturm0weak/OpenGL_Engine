@@ -31,17 +31,16 @@ namespace Doom {
 		inline std::string GetPathToTexture() const { return this->pathToTexture; };
 		std::string pathToTexture = ("None");
 
-		void InitShader();
-
 		friend class Transform;
 		friend class GameObject;
 		friend class Batch;
 		friend class Renderer;
 		friend class SceneSerializer;
+		friend class ComponentManager;
 	
 	public:
 		Texture* texture = Texture::WhiteTexture;
-		SpriteRenderer(GameObject* owner);
+		SpriteRenderer();
 		~SpriteRenderer();
 
 		virtual void Update(glm::vec3 pos) override;

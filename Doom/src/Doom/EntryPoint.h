@@ -12,7 +12,7 @@ namespace Doom {
 
 	class DOOM_API EntryPoint {
 	public:
-		int size[2];
+		int size[2] = {0,0};
 		Doom::Application* app = nullptr;
 		EntryPoint(Doom::Application* app);
 		~EntryPoint();

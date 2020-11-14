@@ -9,14 +9,14 @@
 using namespace Doom;
 
 Transform::Transform() {
-	SetType(ComponentType::TRANSFORM);
+	//SetType(ComponentType::TRANSFORM);
 }
 
 void Transform::RealVertexPositions()
 {
 	glm::vec3 position = Utils::GetPosition(pos);
 	if (prevPosition.x + prevPosition.y + prevPosition.z != position.x + position.y + position.z) {
-		sr = owner->GetComponentManager()->GetComponent<Irenderer>();
+		sr = owner->GetComponentManager()->GetComponent<SpriteRenderer>();
 		if (sr == NULL)
 			return;
 		prevPosition = position;

@@ -14,7 +14,7 @@ Doom::SphereCollider::~SphereCollider()
 SphereCollider::SphereCollider() {
 	mesh = MeshManager::GetMesh("sphere");
 	spheres.push_back(this);
-	SetType(ComponentType::SPHERECOLLIDER);
+	//SetType(ComponentType::SPHERECOLLIDER);
 }
 
 void Doom::SphereCollider::Render()

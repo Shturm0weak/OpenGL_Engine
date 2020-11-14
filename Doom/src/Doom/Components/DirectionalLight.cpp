@@ -24,7 +24,7 @@ void Doom::DirectionalLight::UpdateLightMatrix()
 
 Doom::DirectionalLight::DirectionalLight()
 {
-	SetType(ComponentType::DIRECTIONALLIGHT);
+	//SetType(ComponentType::DIRECTIONALLIGHT);
 	dirLights.push_back(this);
 }
 
