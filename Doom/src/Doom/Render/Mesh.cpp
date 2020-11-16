@@ -8,7 +8,7 @@ void Mesh::Init()
 	layout = new VertexBufferLayout();
 	vb = new VertexBuffer(mesh, meshSize * sizeof(float));
 	va = new VertexArray();
-	ib = new IndexBuffer(indicesForNormals, indicesSize);
+	ib = new IndexBuffer(indices, indicesSize);
 	layout->Push<float>(3);
 	layout->Push<float>(3);
 	layout->Push<float>(2);
@@ -23,7 +23,7 @@ void Mesh::Init()
 Mesh::~Mesh()
 {
 	delete[] mesh;
-	delete[] indicesForNormals;
+	delete[] indices;
 	delete layout;
 	delete vb;
 	delete va;

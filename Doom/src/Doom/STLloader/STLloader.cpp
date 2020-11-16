@@ -58,7 +58,7 @@ Mesh* Doom::StlLoader::ReadFromSTLASCII(std::string name, std::string filePath)
 	mesh->meshSize = verteces.size();
 	mesh->mesh = new float[mesh->meshSize];
 	mesh->indicesSize = indicesSize;
-	mesh->indicesForNormals = new uint32_t[mesh->indicesSize];
+	mesh->indices = new uint32_t[mesh->indicesSize];
 	for (uint32_t i = 0; i < mesh->meshSize; i++)
 	{
 		mesh->mesh[i] = verteces[i];
@@ -66,7 +66,7 @@ Mesh* Doom::StlLoader::ReadFromSTLASCII(std::string name, std::string filePath)
 	}
 	for (uint32_t i = 0; i < indicesSize; i++)
 	{
-		mesh->indicesForNormals[i] = i;
+		mesh->indices[i] = i;
 	}
 	verteces.clear();
 	normals.clear();

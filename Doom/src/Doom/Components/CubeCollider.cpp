@@ -48,7 +48,7 @@ void Doom::CubeCollider3D::InitMesh()
 		indices[i] = i;
 	Mesh* mesh = new Mesh("CubeCollider","src/Mesh/Primitives/cube.fbx");
 	mesh->mesh = vertices;
-	mesh->indicesForNormals = indices;
+	mesh->indices = indices;
 	MeshManager::AddMesh(mesh);
 }
 
@@ -68,7 +68,7 @@ CubeCollider3D::CubeCollider3D() {
 	layout = new VertexBufferLayout();
 	vb = new VertexBuffer(mesh->mesh, 36 * 3 * sizeof(float));
 	va = new VertexArray();
-	ib = new IndexBuffer(mesh->indicesForNormals, 36);
+	ib = new IndexBuffer(mesh->indices, 36);
 	layout->Push<float>(3);
 	va->AddBuffer(*this->vb, *this->layout);
 	va->UnBind();

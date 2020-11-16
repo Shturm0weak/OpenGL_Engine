@@ -1,8 +1,8 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [-8.95493507, 5.31149149, -2.06956768]
-    Rotation: [-0.323744118, -1.84664464, 0]
+    Position: [-7.79417944, 7.08316469, -4.73625898]
+    Rotation: [-0.390503019, -2.49997592, 0]
   FOV: 1
 GameObjects:
   - GameObject: 0
