@@ -1,6 +1,6 @@
 Welcome to the OpenGL_Engine!
 
-I've been making this game engine for a (year * 0.8f).
+I've been making this game engine for a (year * 1.2f).
 
 And now engine has:
 
@@ -8,9 +8,7 @@ Simple sprite animation component
 
 Collision2D component SAT algorithm
 
-Collision3D component AABB, OBB , ray to triangle algorithms
-
-Transform component
+Collision3D component AABB, ray to OBB , ray to triangle algorithms
 
 Component's manager
 
@@ -24,7 +22,7 @@ Text rendering
 
 Event system
 
-Simple particle system
+Simple sprite particle system
 
 Multithreading
 
@@ -33,6 +31,10 @@ Editor with ImGui
 2D textures and texture atlases
 
 Ray casting in 2D and 3D
+
+File dialogs
+
+Point and Directional lights
 
 Audio
 
