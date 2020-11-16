@@ -1,11 +1,11 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [-40.9116516, 44.6895828, 65.083992]
-    Rotation: [-0.480825603, 5.25809908, 0]
+    Position: [32.8531189, 33.7613487, -12.9538288]
+    Rotation: [-0.61434418, 1.5922904, 0]
   FOV: 1
 GameObjects:
-  - GameObject: 0
+  - GameObject: 2
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]
@@ -80,7 +80,7 @@ GameObjects:
   - GameObject: 2
     Name: -2 -2
     Transform:
-      Position: [-4, 0, -4]
+      Position: [-3.99013758, 0, -3.94226694]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Renderer3D:
@@ -465,7 +465,7 @@ GameObjects:
     Name: 0 -2
     Transform:
       Position: [12.1855278, 20.9034767, 12.4311018]
-      Scale: [9.8752346, 12.9974041, 9.8752346]
+      Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
@@ -1227,7 +1227,7 @@ GameObjects:
   - GameObject: 38
     Name: Sun
     Transform:
-      Position: [12.4055099, 20.2510643, 12.3972359]
+      Position: [3.94276953, 20.2510643, -18.5071812]
       Scale: [11, 11, 11]
       Rotation: [0.785398185, 0, 0]
     Renderer3D:
@@ -1239,7 +1239,7 @@ GameObjects:
       Render technic: 0
       Transparent: false
       SkyBox: false
-      Casting shadows: true
+      Casting shadows: false
       Wire mesh: false
       Use normal map: false
       Textures:

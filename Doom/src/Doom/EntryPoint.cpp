@@ -1,15 +1,16 @@
 #include "EntryPoint.h"
 #include "Core/Timer.h"
-#include "Render/Line.h"
+#include "Objects/Line.h"
 #include "Core/World.h"
 #include "Audio/SoundManager.h"
 #include "Core/Editor.h"
-#include "Objects2D/GridLayOut.h"
-#include "Render/SkyBox.h"
+#include "Objects/GridLayOut.h"
+#include "Objects/SkyBox.h"
 #include "Render/MeshManager.h"
 #include "Render/Instancing.h"
 #include "Core/Utils.h"
 #include "Core/SceneSerializer.h"
+#include "Lua/LuaState.h"
 
 using namespace Doom;
 
@@ -39,24 +40,22 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Window::GetCamera().frameBufferShadowMap = new FrameBuffer(4096, 4096, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
 	if (this->app->type == TYPE_3D) {
 		GridLayOut* grid = new GridLayOut();
-		Editor::Instance()->gizmo = new Gizmos;
+		Editor::GetInstance()->gizmo = new Gizmos;
 	}
 }
-
-#include "Lua/LuaState.h"
 
 void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
 	bool FirstFrame = true;
-	SceneSerializer::DeSerialize("src/Scenes/scene.yaml");
+	SceneSerializer::DeSerialize(SceneSerializer::currentSceneFilePath);
 	app->OnStart();
 	EventSystem::GetInstance()->SendEvent(EventType::ONSTART, nullptr);
 
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
 		Gui::GetInstance()->isAnyPanelHovered = false;
 		EventSystem::GetInstance()->SendEvent(EventType::ONUPDATE, nullptr);
-		ThreadPool::Instance()->enqueue([] {Editor::Instance()->UpdateNormals(); });
+		//ThreadPool::GetInstance()->Enqueue([] {Editor::GetInstance()->UpdateNormals(); });
 		DeltaTime::calculateDeltaTime();
 
 		if (FirstFrame) {
@@ -67,6 +66,7 @@ void EntryPoint::Run()
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
 		Window::GetCamera().WindowResize();
@@ -93,15 +93,8 @@ void EntryPoint::Run()
 		Gui::GetInstance()->End();
 
 		if (isEditorEnable) {
-			Editor::Instance()->EditorUpdate();
+			Editor::GetInstance()->EditorUpdate();
 		}
-		else {
-			//Gui::GetInstance()->Begin();
-			//Editor::Instance()->EditorUpdateMyGui();
-			//Gui::GetInstance()->End();
-		}
-		
-		Input::Clear();
 
 		Renderer::DrawCalls = 0;
 		Renderer::Vertices = 0;
@@ -148,7 +141,7 @@ void EntryPoint::Run()
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}
-	SceneSerializer::Serialize("src/Scenes/scene.yaml");
+	SceneSerializer::Serialize(SceneSerializer::currentSceneFilePath);
 	app->OnClose();
 }
 
@@ -157,7 +150,7 @@ EntryPoint::~EntryPoint() {
 	MeshManager::ShutDown();
 	Gui::GetInstance()->ShutDown();
 	EventSystem::GetInstance()->Shutdown();
-	ThreadPool::Instance()->Shutdown();
+	ThreadPool::GetInstance()->Shutdown();
 	Texture::ShutDown();
 	SoundManager::ShutDown();
 	

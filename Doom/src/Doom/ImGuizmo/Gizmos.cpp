@@ -327,6 +327,13 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 
 void Doom::Gizmos::Render()
 {
+	if (obj == nullptr) {
+		faces[0]->Enable = false;
+		faces[1]->Enable = false;
+		faces[2]->Enable = false;
+		return;
+	}
+
 	glm::vec3 pos = Window::GetCamera().GetPosition();
 	std::map<float,GameObject*> d;
 	for (size_t i = 0; i < 3; i++)

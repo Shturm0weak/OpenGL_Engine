@@ -1,6 +1,6 @@
 #include "Batch.h"
 #include "../Core/Timer.h"
-#include "Gui.h"
+#include "Text/Gui.h"
 
 using namespace Doom;
 

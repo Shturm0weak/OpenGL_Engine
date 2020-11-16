@@ -1,6 +1,6 @@
 #pragma once
 #include "../Core/Core.h"
-#include "Texture.h"
+#include "OpenGl/Texture.h"
 
 namespace Doom {
 

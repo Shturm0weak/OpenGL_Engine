@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef EVENT_H_
 #define EVENT_H_
 #include <functional>
@@ -10,12 +12,11 @@ namespace Doom {
 	class DOOM_API Event {
 	private:
 
-		
+		int eventId;
+		Listener* sender;
 		void* parameter;
 
 	public:
-		int eventId;
-		Listener* sender;
 
 		Event(int eventId, Listener* sender, void* parameter = 0) {
 			this->eventId = eventId;
@@ -25,9 +26,9 @@ namespace Doom {
 
 		~Event() {}
 
-		inline int EventId() {return this->eventId;}
-		inline void* Parameter() { return parameter; }
-		inline Listener* Sender() { return sender; }
+		inline int GetEventId() {return eventId;}
+		inline void* GetParameter() { return parameter; }
+		inline Listener* GetSender() { return sender; }
 	};
 
 }

@@ -13,23 +13,41 @@
     <Filter Include="ECS">
       <UniqueIdentifier>{60E1870B-CCEA-877C-5566-9E7CC16E937C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Enums">
+      <UniqueIdentifier>{CDEC1D0D-3901-46BE-0283-E91D6E5642EF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="FbxLoader">
       <UniqueIdentifier>{DC00FB0B-486B-AF82-91A9-6028FD528DD7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileDialogs">
+      <UniqueIdentifier>{68BC0FD4-D471-88C9-5D66-82A0C91A7FCD}</UniqueIdentifier>
     </Filter>
     <Filter Include="ImGuizmo">
       <UniqueIdentifier>{36FD234F-22CA-7E5A-4BE3-6C02370FB4E8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{953A660D-014F-8EBE-CAD0-311E36A48AEF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Lua">
       <UniqueIdentifier>{A705880B-130F-887C-9C8A-9E7C0893937C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects2D">
-      <UniqueIdentifier>{451D2E28-B187-E29E-FAC5-9344666FC0F3}</UniqueIdentifier>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{CF2649B1-3B06-C84C-441E-5323B07C2EAE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGl">
+      <UniqueIdentifier>{AA864AC8-9628-759E-7FE3-88F26B24FCEE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rays">
+      <UniqueIdentifier>{44B38B7C-30EA-8C0D-D9D6-7210C5EC080F}</UniqueIdentifier>
     </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{C5BB87CE-B15D-B2A4-9A18-C6F8865939F5}</UniqueIdentifier>
     </Filter>
     <Filter Include="STLloader">
       <UniqueIdentifier>{8FBC551A-FB26-0A91-4465-BB36B00EE8E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{EADC8C7C-D613-8E0D-7F00-74106B160A0F}</UniqueIdentifier>
     </Filter>
     <Filter Include="yaml-cpp">
       <UniqueIdentifier>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</UniqueIdentifier>
@@ -85,6 +103,9 @@
     <ClInclude Include="src\Doom\Components\Render3D.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\Components\ScriptComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\Components\SphereCollider.h">
       <Filter>Components</Filter>
     </ClInclude>
@@ -93,12 +114,6 @@
     </ClInclude>
     <ClInclude Include="src\Doom\Components\Transform.h">
       <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Core\ColoredOutput.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Core\ColorsRGBA.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Core\Core.h">
       <Filter>Core</Filter>
@@ -115,19 +130,7 @@
     <ClInclude Include="src\Doom\Core\EventSystem.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Core\Input.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Core\KeyCode.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Doom\Core\Listener.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Core\Ray2D.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Core\Ray3D.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Core\SceneSerializer.h">
@@ -142,10 +145,10 @@
     <ClInclude Include="src\Doom\Core\Utils.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Core\Window.h">
+    <ClInclude Include="src\Doom\Core\ViewPort.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Core\WindowsInput.h">
+    <ClInclude Include="src\Doom\Core\Window.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Core\World.h">
@@ -158,6 +161,15 @@
       <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\EntryPoint.h" />
+    <ClInclude Include="src\Doom\Enums\ColoredOutput.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Enums\ColorsRGBA.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Enums\KeyCode.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\FbxLoader\fbxdocument.h">
       <Filter>FbxLoader</Filter>
     </ClInclude>
@@ -170,40 +182,73 @@
     <ClInclude Include="src\Doom\FbxLoader\fbxutil.h">
       <Filter>FbxLoader</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\FileDialogs\FileDialogs.h">
+      <Filter>FileDialogs</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h">
       <Filter>ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Input\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Input\WindowsInput.h">
+      <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Lua\LuaState.h">
       <Filter>Lua</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Objects2D\GameObject.h">
-      <Filter>Objects2D</Filter>
+    <ClInclude Include="src\Doom\Objects\Camera.h">
+      <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Objects2D\GridLayOut.h">
-      <Filter>Objects2D</Filter>
+    <ClInclude Include="src\Doom\Objects\GameObject.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Objects\GridLayOut.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Objects\Line.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Objects\ParticleSystem.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Objects\SkyBox.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\FrameBuffer.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\IndexBuffer.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\Shader.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\Texture.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\VertexArray.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\VertexBuffer.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\VertexBufferLayout.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\OpenGl\stb_image.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Rays\Ray2D.h">
+      <Filter>Rays</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Rays\Ray3D.h">
+      <Filter>Rays</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Render\Batch.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Render\Camera.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\Character.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\FrameBuffer.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\Gui.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\IndexBuffer.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="src\Doom\Render\Instancing.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\Line.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Render\Mesh.h">
@@ -212,19 +257,7 @@
     <ClInclude Include="src\Doom\Render\MeshManager.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Render\ParticleSystem.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="src\Doom\Render\Renderer.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\Shader.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\SkyBox.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\Texture.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Render\TextureAtlas.h">
@@ -233,23 +266,14 @@
     <ClInclude Include="src\Doom\Render\TileMap.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Render\VertexArray.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\VertexBuffer.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\VertexBufferLayout.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\ViewPort.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\stb_image.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="src\Doom\STLloader\STLloader.h">
       <Filter>STLloader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Text\Character.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Text\Gui.h">
+      <Filter>Text</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\pch.h" />
     <ClInclude Include="src\Doom\yaml-cpp\anchor.h">
@@ -429,8 +453,6 @@
     <ClInclude Include="src\Doom\yaml-cpp\yaml.h">
       <Filter>yaml-cpp</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Lua\GameObjectLua.h" />
-    <ClInclude Include="src\Doom\Components\ScriptComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -458,6 +480,9 @@
     <ClCompile Include="src\Doom\Components\Render3D.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\Doom\Components\ScriptComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
     <ClCompile Include="src\Doom\Components\SphereCollider.cpp">
       <Filter>Components</Filter>
     </ClCompile>
@@ -476,19 +501,13 @@
     <ClCompile Include="src\Doom\Core\Listener.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Core\Ray2D.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Core\Ray3D.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\Doom\Core\SceneSerializer.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Core\ThreadPool.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Core\WindowsInput.cpp">
+    <ClCompile Include="src\Doom\Core\ViewPort.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Core\World.cpp">
@@ -514,37 +533,64 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp">
       <Filter>FbxLoader</Filter>
     </ClCompile>
+    <ClCompile Include="src\Doom\FileDialogs\FileDialogs.cpp">
+      <Filter>FileDialogs</Filter>
+    </ClCompile>
     <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp">
       <Filter>ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Input\WindowsInput.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Lua\LuaState.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Objects2D\GameObject.cpp">
-      <Filter>Objects2D</Filter>
+    <ClCompile Include="src\Doom\Objects\Camera.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Objects\GameObject.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Objects\Line.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Objects\ParticleSystem.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Objects\SkyBox.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\OpenGl\FrameBuffer.cpp">
+      <Filter>OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\OpenGl\IndexBuffer.cpp">
+      <Filter>OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\OpenGl\Shader.cpp">
+      <Filter>OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\OpenGl\Texture.cpp">
+      <Filter>OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\OpenGl\VertexArray.cpp">
+      <Filter>OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\OpenGl\VertexBuffer.cpp">
+      <Filter>OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\OpenGl\stb_image.cpp">
+      <Filter>OpenGl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Rays\Ray2D.cpp">
+      <Filter>Rays</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Rays\Ray3D.cpp">
+      <Filter>Rays</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Render\Batch.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Render\Camera.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\Character.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\FrameBuffer.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\Gui.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\IndexBuffer.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="src\Doom\Render\Instancing.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\Line.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Render\Mesh.cpp">
@@ -553,19 +599,7 @@
     <ClCompile Include="src\Doom\Render\MeshManager.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Render\ParticleSystem.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="src\Doom\Render\Renderer.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\Shader.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\SkyBox.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\Texture.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Render\TextureAtlas.cpp">
@@ -574,20 +608,14 @@
     <ClCompile Include="src\Doom\Render\TileMap.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Render\VertexArray.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\VertexBuffer.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\ViewPort.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\stb_image.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="src\Doom\STLloader\STLloader.cpp">
       <Filter>STLloader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Text\Character.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Text\Gui.cpp">
+      <Filter>Text</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\pch.cpp" />
     <ClCompile Include="src\Doom\yaml-cpp\src\binary.cpp">
@@ -683,7 +711,5 @@
     <ClCompile Include="src\Doom\yaml-cpp\src\tag.cpp">
       <Filter>yaml-cpp\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Lua\GameObjectLua.cpp" />
-    <ClCompile Include="src\Doom\Components\ScriptComponent.cpp" />
   </ItemGroup>
 </Project>

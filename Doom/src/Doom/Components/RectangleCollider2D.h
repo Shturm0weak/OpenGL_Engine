@@ -6,10 +6,12 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "../Core/ColorsRGBA.h"
-#include "../Render/Shader.h"
+#include "../Enums/ColorsRGBA.h"
+#include "../OpenGl/Shader.h"
 #include "Transform.h"
 #include <mutex>
+
+//!!! Deprecated !!!\\
 
 namespace Doom {
 

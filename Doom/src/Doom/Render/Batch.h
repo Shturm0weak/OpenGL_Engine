@@ -1,8 +1,8 @@
 #pragma once
 #include "../pch.h"
 #include "Renderer.h"
-#include "Character.h"
-#include "Line.h"
+#include "Text/Character.h"
+#include "Objects/Line.h"
 #include <array>
 #include <mutex>
 

@@ -13,7 +13,7 @@
 #include "../Components/Animator.h"
 #include "../Components/RectangleCollider2D.h"
 #include "../Components/CubeCollider.h"
-#include "../Core/ColoredOutput.h"
+#include "../Enums/ColoredOutput.h"
 #include "../Components/PointLight.h"
 #include "../Components/DirectionalLight.h"
 #include "../Components/SphereCollider.h"

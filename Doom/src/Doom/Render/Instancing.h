@@ -10,7 +10,7 @@ namespace Doom {
 		std::condition_variable cv;
 		std::mutex m;
 		std::atomic<bool>* ready = nullptr;
-		uint32_t nThreads = ThreadPool::Instance()->GetAmountOfThreads();
+		uint32_t nThreads = ThreadPool::GetInstance()->GetAmountOfThreads();
 		struct glBuffers{
 			uint32_t prevObjectSize = 0;
 			float* pos = nullptr;

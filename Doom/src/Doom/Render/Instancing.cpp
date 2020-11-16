@@ -227,7 +227,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				color = COLORS::DarkGray;
 			else if (k == 6)
 				color = COLORS::Orange;*/
-		ThreadPool::Instance()->enqueue([=] {
+		ThreadPool::GetInstance()->Enqueue([=] {
 			{
 				std::lock_guard lg(m);
 				this->ready[k] = false;
@@ -253,7 +253,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			}
 		});
 		}
-		ThreadPool::Instance()->enqueue([=] {
+		ThreadPool::GetInstance()->Enqueue([=] {
 			{
 				std::lock_guard lg(m);
 				this->ready[nThreads - 1] = false;

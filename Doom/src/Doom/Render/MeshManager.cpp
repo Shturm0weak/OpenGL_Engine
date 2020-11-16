@@ -1,7 +1,7 @@
 #include "MeshManager.h"
 #include "../FbxLoader/fbxdocument.h"
 #include "../Core/ThreadPool.h"
-#include "../Objects2D/GameObject.h"
+#include "../Objects/GameObject.h"
 #include "../STLloader/STLloader.h"
 #include "Instancing.h"
 
@@ -35,7 +35,7 @@ void MeshManager::LoadMesh(std::string name, std::string filepath)
 
 void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath)
 {
-	Doom::ThreadPool::Instance()->enqueue([=] {
+	Doom::ThreadPool::GetInstance()->Enqueue([=] {
 		auto iter = Meshes.find(name);
 		if (iter != Meshes.end())
 			return;

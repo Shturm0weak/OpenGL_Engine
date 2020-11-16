@@ -70,7 +70,7 @@ void ThreadPool::Init()
 	}
 }
 
-void ThreadPool::enqueue(Task task)
+void ThreadPool::Enqueue(Task task)
 {
 	{
 		std::unique_lock<std::mutex> lock{ m_mutex };

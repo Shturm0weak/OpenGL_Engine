@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ShipEnemy.h"
 #include "Bullet.h"
-#include "Render/Gui.h"
+#include "Text/Gui.h"
 #include "Ammo.h"
 
 void ShipEnemy::OnCollision(void * _col)

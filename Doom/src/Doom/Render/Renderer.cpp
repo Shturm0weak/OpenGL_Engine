@@ -3,9 +3,9 @@
 #include <iostream>
 #include "Batch.h"
 #include "../Core/Timer.h"
-#include "Line.h"
-#include "ViewPort.h"
-#include "ParticleSystem.h"
+#include "../Objects/Line.h"
+#include "../Core/ViewPort.h"
+#include "../Objects/ParticleSystem.h"
 #include "../Core/Editor.h"
 #include "Instancing.h"
 #include "../Core/World.h"
@@ -110,13 +110,13 @@ GameObject* Doom::Renderer::SelectObject()
 		p.push_back(glm::vec2(sr->WorldVertexPositions[4] + go->GetPosition().x, sr->WorldVertexPositions[5] + go->GetPosition().y));
 		p.push_back(glm::vec2(sr->WorldVertexPositions[6] + go->GetPosition().x, sr->WorldVertexPositions[7] + go->GetPosition().y));
 		if (ObjectCollided(p,i)) {
-			if (Editor::Instance()->go != go) {
-				Editor::Instance()->go = go;
+			if (Editor::GetInstance()->go != go) {
+				Editor::GetInstance()->go = go;
 				return go;
 			}
 		}
 	}
-	Editor::Instance()->go = nullptr;
+	Editor::GetInstance()->go = nullptr;
 	return nullptr;
 
 }
@@ -152,11 +152,11 @@ void Doom::Renderer::PopBack()
 	World::objects.pop_back();
 }
 
-#include "../Core/Ray3D.h"
+#include "../Rays/Ray3D.h"
 #include "../Core/Utils.h"
 void Doom::Renderer::SelectObject3D()
 {
-	if (!Editor::Instance()->gizmo->isHovered && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
+	if (!Editor::GetInstance()->gizmo->isHovered && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 		Ray3D::Hit hit;
 		glm::vec3 pos = Window::GetCamera().GetPosition();
 		glm::vec3 forward = Window::GetCamera().GetMouseDirVec();
@@ -192,9 +192,9 @@ void Doom::Renderer::SelectObject3D()
 						/*new Line(a, b);
 						new Line(a, c);
 						new Line(c, b);*/
-						if (go != Editor::Instance()->gizmo->obj) {
-							Editor::Instance()->gizmo->blockFrame = true;
-							Editor::Instance()->gizmo->obj = go;
+						if (go != Editor::GetInstance()->gizmo->obj) {
+							Editor::GetInstance()->gizmo->blockFrame = true;
+							Editor::GetInstance()->gizmo->obj = go;
 						}
 						return;
 					}
@@ -283,8 +283,8 @@ void Renderer::Render() {
 	RenderCollision3D();
 	Render2DObjects();
 	RenderTransparent();
-	if(Editor::Instance()->gizmo != nullptr)
-		Editor::Instance()->gizmo->Render();
+	if(Editor::GetInstance()->gizmo != nullptr)
+		Editor::GetInstance()->gizmo->Render();
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	RenderText();
@@ -384,7 +384,7 @@ void Doom::Renderer::RenderCollision3D()
 	if (size > 0) {
 		for (size_t i = 0; i < size; i++)
 		{
-			if (CubeCollider3D::colliders[i]->isBoundingBox && Editor::Instance()->isBoundingBoxesVisible)
+			if (CubeCollider3D::colliders[i]->isBoundingBox && Editor::GetInstance()->isBoundingBoxesVisible)
 				CubeCollider3D::colliders[i]->Render();
 		}
 	}
@@ -408,11 +408,11 @@ void Doom::Renderer::RenderLines()
 			Batch::GetInstance()->Submit(*Line::lines[i]);
 		}
 	}
-	if (Editor::Instance()->drawNormals) {
-		size = Editor::Instance()->normals.size();
+	if (Editor::GetInstance()->drawNormals) {
+		size = Editor::GetInstance()->normals.size();
 		for (uint32_t i = 0; i < size; i++)
 		{
-			Batch::GetInstance()->Submit(*Editor::Instance()->normals[i]);
+			Batch::GetInstance()->Submit(*Editor::GetInstance()->normals[i]);
 		}
 	}
 	Batch::GetInstance()->EndLines();

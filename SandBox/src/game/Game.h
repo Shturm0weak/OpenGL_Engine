@@ -7,11 +7,11 @@
 #include "Player.h"
 #include "Coin.h"
 #include "HP.h"
-#include "Render/Gui.h"
+#include "Text/Gui.h"
 #include "Bomb.h"
-#include "Render/Character.h"
-#include "Render/Line.h"
-#include "Core/Ray2D.h"
+#include "Text/Character.h"
+#include "Objects/Line.h"
+#include "Rays/Ray2D.h"
 
 
 using namespace Doom;

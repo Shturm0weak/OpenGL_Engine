@@ -42,14 +42,15 @@ extern "C"
 #pragma comment(lib, "liblua54.a")
 
 #include "Core/DeltaTime.h"
-#include "Core/ColorsRGBA.h"
-#include "Render/Shader.h"
-#include "Render/IndexBuffer.h"
-#include "Render/VertexBuffer.h"
-#include "Render/VertexBufferLayout.h"
-#include "Render/VertexArray.h"
-#include "Render/Texture.h"
-#include "Objects2D/GameObject.h"
+#include "Enums/ColorsRGBA.h"
+#include "OpenGl/Shader.h"
+#include "OpenGl/IndexBuffer.h"
+#include "OpenGl/VertexBuffer.h"
+#include "OpenGl/VertexBufferLayout.h"
+#include "OpenGl/VertexArray.h"
+#include "OpenGl/Texture.h"
+#include "Objects/GameObject.h"
 #include <Windows.h>
 #include "Core/Timer.h"
+#include "FileDialogs/FileDialogs.h"
 #endif // !PCH_H

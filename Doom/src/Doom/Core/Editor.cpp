@@ -2,11 +2,12 @@
 #include "Editor.h"
 #include <iostream>
 #include <filesystem>
-#include "ColoredOutput.h"
-#include "../Render/Gui.h"
+#include "../Enums/ColoredOutput.h"
+#include "../Text/Gui.h"
 #include "../Core/World.h"
 #include "../Render/Instancing.h"
 #include "Components/ScriptComponent.h"
+#include "Core/Utils.h"
 
 namespace fs = std::filesystem;
 
@@ -41,11 +42,11 @@ void Editor::EditorUpdate()
 		glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
 	}
 	if (ImGui::Button("Create Atlas")) {
-		IsActiveTextureAtlasCreation = !IsActiveTextureAtlasCreation;
+		isActiveTextureAtlasCreation = !isActiveTextureAtlasCreation;
 	}
 
 	if (ImGui::Button("Shaders")) {
-		IsActiveShaderMenu = true;
+		isActiveShaderMenu = true;
 	}
 
 	ImGui::SliderFloat("DrawShadows", &Instancing::Instance()->drawShadows, 0, 1);
@@ -57,6 +58,7 @@ void Editor::EditorUpdate()
 	ImGui::End();
 
 	ImGui::Begin("Scene");
+	Editor::GetInstance()->MenuBar();
 	if (ImGui::BeginPopupContextWindow())
 	{
 		if (ImGui::MenuItem("Create GameObject"))
@@ -94,6 +96,7 @@ void Editor::EditorUpdate()
 					gizmo->obj = World::objects[World::objects.size() - 1];
 				else
 					gizmo->obj = nullptr;
+				go = gizmo->obj;
 			}
 			ImGui::EndPopup();
 			ImGui::End();
@@ -120,7 +123,6 @@ void Editor::EditorUpdate()
 
 	ImGui::NewLine();
 	ImGui::End();
-
 	ImGui::Begin("Properties");
 	 {
 		if (ImGui::BeginPopupContextWindow())
@@ -156,10 +158,14 @@ void Editor::EditorUpdate()
 			if (ImGui::MenuItem("ScriptComponent")) {
 				go->GetComponentManager()->AddComponent<ScriptComponent>();
 			}
-			if (ImGui::MenuItem("Child")) {
-				GameObject* child1 = new GameObject("Child", 0, 0);
-				go->AddChild((void*)child1);
-				child1->SetOwner((void*)go);
+			if (ImGui::MenuItem("Add child")) {
+
+				GameObject* obj = Renderer::CreateGameObject();
+				Renderer::CalculateObjectsVectors().size();
+				obj->SetOwner((void*)go);
+				go->AddChild((void*)obj);
+				go = World::objects.back();
+				go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
 			}
 			ImGui::EndPopup();
 		}
@@ -203,25 +209,14 @@ void Editor::EditorUpdate()
 			ShaderMenu();
 			MenuScriptComponent();
 			MenuSphereCollisionComponent();
-
-			if (ImGui::Button("add Child")) {
-				
-				GameObject* obj = Renderer::CreateGameObject();
-				Renderer::CalculateObjectsVectors().size();
-				obj->SetOwner((void*)go);
-				go->AddChild((void*)obj);
-				go = World::objects.back();
-				go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
-			}
 		}
 	}
-	MenuBar();
 	ImGui::End();
 }
 void Editor::CreateTextureAtlas() {
-	if (!IsActiveTextureAtlasCreation)
+	if (!isActiveTextureAtlasCreation)
 		return;
-	ImGui::Begin("Texture Atlas creation", &IsActiveTextureAtlasCreation);
+	ImGui::Begin("Texture Atlas creation", &isActiveTextureAtlasCreation);
 	ImGui::InputFloat2("Sprite size", spriteSize);
 	ImGui::InputText("Path to texture folder from solution directory", pathToTextureFolder, 64);
 	if(ImGui::Button("Check Folder")) {
@@ -250,7 +245,7 @@ void Editor::CreateTextureAtlas() {
 
 	ImGui::NewLine();
 	if (ImGui::Button("Apply") &&  textureForAtlas != nullptr) {
-		IsActiveTextureAtlasCreation = false;
+		isActiveTextureAtlasCreation = false;
 		std::string name = "TextureAtlas/" + textureForAtlas->GetFilePath();
 		TextureAtlas* textureAtlas = TextureAtlas::CreateTextureAtlas(name,spriteSize[0],spriteSize[1],textureForAtlas);
 	}
@@ -296,7 +291,7 @@ void Doom::Editor::MenuRenderer3D()
 					ImGui::SliderFloat("Specular", &r->mat.specular, 0, 50);
 					void* my_tex_id = reinterpret_cast<void*>(r->diffuseTexture->m_RendererID);
 					if (ImGui::ImageButton(my_tex_id, { 64,64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
-						IsActiveTexturePicker = true;
+						isActiveTexturePicker = true;
 						texturePickerId = 1;
 					}
 					if (r->normalMapTexture == nullptr)
@@ -304,7 +299,7 @@ void Doom::Editor::MenuRenderer3D()
 					else
 						my_tex_id = reinterpret_cast<void*>(r->normalMapTexture->m_RendererID);
 					if (ImGui::ImageButton(my_tex_id, { 64,64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
-						IsActiveTexturePicker = true;
+						isActiveTexturePicker = true;
 						texturePickerId = 2;
 					}
 					ImGui::Checkbox("NormalMap", &r->useNormalMap);
@@ -317,7 +312,7 @@ void Doom::Editor::MenuRenderer3D()
 						ImGui::Text("Name: %s", r->mesh->name);
 					}
 					if (ImGui::Button("Meshes")) {
-						IsActiveMeshPicker = true;
+						isActiveMeshPicker = true;
 					}
 				}
 				ImGui::Unindent();
@@ -345,7 +340,7 @@ void Doom::Editor::MenuRenderer2D()
 		if (MenuRemoveComponent<SpriteRenderer>()) {
 			if (ImGui::CollapsingHeader("Render2D")) {
 				color = sr->GetColor();
-				ImGui::ColorEdit4("Color", color);
+				ImGui::ColorEdit4("Sprite color", color);
 				sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
 				delete[] color;
 				int counterImagesButtons = 0;
@@ -386,11 +381,11 @@ void Doom::Editor::MenuRenderer2D()
 					if (go != nullptr)
 						sr->SetTexture(Texture::WhiteTexture);
 				}
-				ImGui::InputText("path", pathToTextureFolder, 64);
-				if (ImGui::Button("Refresh textures")) {
-					texturesPath.clear();
-					texture.clear();
-					CheckTexturesFolderUnique(pathToTextureFolder);
+				if (ImGui::Button("Load texture ...")) {
+					std::optional<std::string> filePath = FileDialogs::OpenFile("textures (*.png)\0");
+					if (filePath) {
+						Texture::AsyncLoadTexture(*filePath);
+					}
 				}
 				int prevselectedAtlas = selectedAtlas;
 				if (TextureAtlas::textureAtlases.size() > 0) {
@@ -545,7 +540,7 @@ void Doom::Editor::MenuLightPoint()
 			ImGui::SliderFloat("Constant", &pl->constant, 0, 1);
 			ImGui::SliderFloat("Linear", &pl->linear, 0, 0.100f);
 			ImGui::SliderFloat("Quadratic", &pl->quadratic, 0, 0.100);
-			ImGui::ColorPicker3("Color", &pl->color[0]);
+			ImGui::ColorPicker3("Point light color", &pl->color[0]);
 		}
 	}
 }
@@ -557,7 +552,7 @@ void Doom::Editor::MenuDirectionalLight()
 		return;
 	if (MenuRemoveComponent<DirectionalLight>()) {
 		if (ImGui::CollapsingHeader("Directional light")) {
-			ImGui::ColorPicker3("Color", &pl->color[0]);
+			ImGui::ColorPicker3("Dir light color", &pl->color[0]);
 			ImGui::SliderFloat("Intensity", &pl->intensity, 1, 10);
 		}
 	}
@@ -596,36 +591,38 @@ bool Doom::Editor::MenuRemoveScript(ScriptComponent* sc)
 
 void Doom::Editor::MenuBar()
 {
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Open")) {
-				std::optional<std::string> filePath = SceneSerializer::OpenFile("Doom Scene (*.yaml)\0*.yaml\0");
-				if (filePath) {
-					Renderer::ShutDown();
-					SceneSerializer::DeSerialize(*filePath);
-					gizmo->obj = World::objects[0];
-					go = gizmo->obj;
-				}
-			}
-			if (ImGui::MenuItem("Save as")) {
-				std::optional<std::string> filePath = SceneSerializer::SaveFile("Doom Scene (*.yaml)\0*.yaml\0");
-				if (filePath) {
-					SceneSerializer::Serialize(*filePath);
-				}
-			}
-			ImGui::EndMenu();
+	if (ImGui::BeginMenu("File")) {
+		if (ImGui::MenuItem("New")) {
+			Renderer::ShutDown();
+			gizmo->obj = nullptr;
+			go = gizmo->obj;
 		}
-		ImGui::EndMainMenuBar();
+		if (ImGui::MenuItem("Open")) {
+			std::optional<std::string> filePath = FileDialogs::OpenFile("Doom Scene (*.yaml)\0*.yaml\0");
+			if (filePath) {
+				Renderer::ShutDown();
+				SceneSerializer::DeSerialize(*filePath);
+				gizmo->obj = nullptr;
+				go = gizmo->obj;
+			}
+		}
+		if (ImGui::MenuItem("Save as")) {
+			std::optional<std::string> filePath = FileDialogs::SaveFile("Doom Scene (*.yaml)\0*.yaml\0");
+			if (filePath) {
+				SceneSerializer::Serialize(*filePath);
+			}
+		}
+		ImGui::EndMenu();
 	}
 }
 
 void Doom::Editor::MeshPicker()
 {
-	if (!IsActiveMeshPicker)
+	if (!isActiveMeshPicker)
 		return;
-	ImGui::Begin("Meshes",&IsActiveMeshPicker);
+	ImGui::Begin("Meshes",&isActiveMeshPicker);
 	ImGui::ListBox("Meshes",&selectedMesh, MeshManager::GetListOfMeshes(), MeshManager::GetAmountOfMeshes());
-	if (ImGui::Button("Ok")) {
+	if (ImGui::Button("Apply")) {
 		auto mesh = MeshManager::Meshes.begin();
 		if (selectedMesh > -1) {
 			for (int i = 0; i < selectedMesh; i++)
@@ -635,19 +632,20 @@ void Doom::Editor::MeshPicker()
 		}
 		go->GetComponent<Renderer3D>()->LoadMesh(mesh->second);
 	}
-	ImGui::InputText("Path to mesh",mesh,128);
-	ImGui::InputText("Mesh name", name, 128);
-	if (ImGui::Button("Load")) {
-		MeshManager::AsyncLoadMesh(name, mesh);
+	if (ImGui::Button("Choose ...")) {
+		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
+		if (filePath) {
+			MeshManager::AsyncLoadMesh(Utils::GetNameFromFilePath(*filePath), *filePath);
+		}
 	}
 	ImGui::End();
 }
 
 void Doom::Editor::TexturePicker()
 {
-	if (!IsActiveTexturePicker)
+	if (!isActiveTexturePicker)
 		return;
-	ImGui::Begin("Textures", &IsActiveTexturePicker);
+	ImGui::Begin("Textures", &isActiveTexturePicker);
 	int width = 0;
 	int imageSize = 64;
 	for (auto texture : Texture::textures)
@@ -791,9 +789,9 @@ void Doom::Editor::DrawChilds(GameObject * go)
 
 void Doom::Editor::ShaderMenu()
 {
-	if (!IsActiveShaderMenu)
+	if (!isActiveShaderMenu)
 		return;
-	ImGui::Begin("Shaders", &IsActiveShaderMenu);
+	ImGui::Begin("Shaders", &isActiveShaderMenu);
 	ImGui::ListBox("Shaders", &selectedShader, Shader::GetListOfShaders(), Shader::shaders.size());
 	if (ImGui::Button("Reload")) {
 		auto shader = Shader::shaders.begin();
@@ -863,7 +861,7 @@ void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 		
 		
 	}, path);
-	ThreadPool::Instance()->enqueue(f);
+	ThreadPool::GetInstance()->Enqueue(f);
 }
 
 void Doom::Editor::CheckTexturesFolder(const std::string path)
@@ -897,7 +895,7 @@ void Doom::Editor::CheckTexturesFolder(const std::string path)
 		textureVecTemp.clear();
 
 	}, path);
-	ThreadPool::Instance()->enqueue(f);
+	ThreadPool::GetInstance()->Enqueue(f);
 }
 
 void Doom::Editor::Debug()
@@ -928,14 +926,14 @@ void Doom::Editor::Debug()
 	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::IsVisible);
 	ImGui::Checkbox("Visible bounding boxes", &isBoundingBoxesVisible);
 	if(gizmo != nullptr)
-		ImGui::Checkbox("Round transformations", &Editor::Instance()->gizmo->roundTransform);
+		ImGui::Checkbox("Round transformations", &Editor::GetInstance()->gizmo->roundTransform);
 	ImGui::End();
 	TextProps();
 }
 
 void Doom::Editor::Threads() {
 	ImGui::Begin("Threads");
-	for (auto i = ThreadPool::Instance()->isThreadBusy.begin(); i != ThreadPool::Instance()->isThreadBusy.end(); i++)
+	for (auto i = ThreadPool::GetInstance()->isThreadBusy.begin(); i != ThreadPool::GetInstance()->isThreadBusy.end(); i++)
 	{
 		ImGui::Text("ID: %d task: %d",i->first,i->second);
 	}
@@ -987,7 +985,7 @@ void Doom::Editor::UpdateNormals()
 	}
 }
 
-Editor *  Doom::Editor::Instance()
+Editor *  Doom::Editor::GetInstance()
 {
 	static Editor instance;
 	return &instance;

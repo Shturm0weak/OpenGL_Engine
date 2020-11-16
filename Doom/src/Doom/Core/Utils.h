@@ -8,6 +8,8 @@ namespace Utils {
 
 	static std::string GetNameFromFilePath(const std::string& path, int resolutionLength = 3) {
 		int index = path.find_last_of("/");
+		if (index == -1)
+			index = path.find_last_of("\\");
 		return path.substr(index + 1, path.length() - index - 2 - resolutionLength);
 	}
 

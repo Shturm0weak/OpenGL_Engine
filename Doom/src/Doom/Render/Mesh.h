@@ -2,10 +2,10 @@
 #define MESH_H
 
 #include <vector>
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "IndexBuffer.h"
+#include "OpenGl/VertexArray.h"
+#include "OpenGl/VertexBuffer.h"
+#include "OpenGl/VertexBufferLayout.h"
+#include "OpenGl/IndexBuffer.h"
 #include <iostream>
 #include "../Core/Core.h"
 #include "glm/glm.hpp"

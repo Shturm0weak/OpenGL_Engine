@@ -5,10 +5,10 @@
 #include "IRenderer.h"
 #include "Transform.h"
 #include "../Core/Core.h"
-#include "../Render/Texture.h"
+#include "../OpenGl/Texture.h"
 #include "../Render/TextureAtlas.h"
-#include "../Core/ColorsRGBA.h"
-#include "../Render/Shader.h"
+#include "../Enums/ColorsRGBA.h"
+#include "../OpenGl/Shader.h"
 
 namespace Doom {
 

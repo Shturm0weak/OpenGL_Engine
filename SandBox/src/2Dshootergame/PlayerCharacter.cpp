@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "Render/Line.h"
-#include "Core/Ray2D.h"
+#include "Objects/Line.h"
+#include "Rays/Ray2D.h"
 #include "PlayerCharacter.h"
 #include "Audio/Sound.h"
 

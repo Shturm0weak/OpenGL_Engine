@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Render/SkyBox.h"
-#include "Core/Ray3D.h"
+#include "Objects/SkyBox.h"
+#include "Rays/Ray3D.h"
 
 class TestImGui : public Application {
 public:

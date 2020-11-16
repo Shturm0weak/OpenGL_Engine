@@ -1,5 +1,5 @@
 #pragma once
-#include "../Render/Line.h"
+#include "../Objects/Line.h"
 
 namespace Doom {
 

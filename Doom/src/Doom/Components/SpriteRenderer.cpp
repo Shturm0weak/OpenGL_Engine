@@ -36,7 +36,7 @@ Doom::SpriteRenderer::~SpriteRenderer()
 
 void Doom::SpriteRenderer::Update(glm::vec3 pos)
 {
-	ThreadPool::Instance()->enqueue([=]{
+	ThreadPool::GetInstance()->Enqueue([=]{
 		Transform* tr = this->GetOwnerOfComponent()->GetComponentManager()->GetComponent<Transform>();
 		float WorldVerPos[16];
 		glm::mat4 scaleXview = tr->view * tr->scale;

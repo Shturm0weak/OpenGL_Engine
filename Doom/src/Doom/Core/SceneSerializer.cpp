@@ -1,7 +1,7 @@
 #include "../pch.h"
 #include "SceneSerializer.h"
 #include "World.h"
-#include "../Render/SkyBox.h"
+#include "../Objects/SkyBox.h"
 #include "../Core/Utils.h"
 
 namespace YAML {
@@ -84,6 +84,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec4& v) {
 
 void Doom::SceneSerializer::Serialize(const std::string & filePath)
 {
+	currentSceneFilePath = filePath;
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene";
@@ -126,6 +127,7 @@ void Doom::SceneSerializer::Serialize(const std::string & filePath)
 
 void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
 {
+	currentSceneFilePath = filePath;
 	std::ifstream stream(filePath);
 	std::stringstream strStream;
 
@@ -505,46 +507,4 @@ void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter & out
 void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter & out, GameObject * go)
 {
 	out << YAML::Key << "Registered events" << YAML::Value << go->registeredEvents;
-}
-
-#include <sstream>
-#include <commdlg.h>
-
-std::optional<std::string> Doom::SceneSerializer::OpenFile(const char* filter)
-{
-	OPENFILENAMEA ofn;
-	CHAR szFile[260] = { 0 };
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = glfwGetWin32Window(Window::GetWindow());
-	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = sizeof(szFile);
-	ofn.lpstrFilter = filter;
-	ofn.nFilterIndex = 1;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
-	if (GetOpenFileNameA(&ofn) == TRUE)
-		return ofn.lpstrFile;
-	return std::nullopt;
-}
-
-std::optional<std::string> Doom::SceneSerializer::SaveFile(const char* filter)
-{
-	OPENFILENAMEA ofn;
-	CHAR szFile[260] = { 0 };
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = glfwGetWin32Window(Window::GetWindow());
-	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = sizeof(szFile);
-	ofn.lpstrFilter = filter;
-	ofn.nFilterIndex = 1;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
-	// Sets the default extension by extracting it from the filter
-	ofn.lpstrDefExt = strchr(filter, '\0') + 1;
-
-	if (GetSaveFileNameA(&ofn) == TRUE)
-		return ofn.lpstrFile;
-	return std::nullopt;
 }

@@ -3,10 +3,10 @@
 #define RENDERER3D_H
 
 #include "../Core/Core.h"
-#include "../Render/VertexArray.h"
-#include "../Render/VertexBuffer.h"
-#include "../Render/VertexBufferLayout.h"
-#include "../Render/IndexBuffer.h"
+#include "../OpenGl/VertexArray.h"
+#include "../OpenGl/VertexBuffer.h"
+#include "../OpenGl/VertexBufferLayout.h"
+#include "../OpenGl/IndexBuffer.h"
 #include "../Render/MeshManager.h"
 
 namespace Doom {

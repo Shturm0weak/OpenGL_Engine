@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/Core.h"
-#include "../Core/ColoredOutput.h"
+#include "../Enums/ColoredOutput.h"
 
 #include <string>
 #include <iostream>

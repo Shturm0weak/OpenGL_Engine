@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/Core.h"
-#include "../Render/Texture.h"
+#include "../OpenGL/Texture.h"
 #include "../ECS/Component.h"
 
 namespace Doom {

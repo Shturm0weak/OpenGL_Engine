@@ -25,10 +25,10 @@ bool EventSystem::AlreadyRegistered(EventType eventId, Listener* client) {
 }
 
 void EventSystem::DispatchEvent(Event* _event) {
-	range = database.equal_range((EventType)_event->eventId);
+	range = database.equal_range((EventType)_event->GetEventId());
 	for (iter = range.first;iter != range.second; iter++) {
 		(*iter).second->HandleEvent(_event);
-		if (_event->EventId() != EventType::ONUPDATE) {
+		if (_event->GetEventId() != EventType::ONUPDATE) {
 			return;
 		}
 	}	

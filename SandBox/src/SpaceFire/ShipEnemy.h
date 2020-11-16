@@ -1,6 +1,6 @@
 #pragma once
 #include "ShipPlayer.h"
-#include "Render/ParticleSystem.h"
+#include "Objects/ParticleSystem.h"
 
 using namespace Doom;
 

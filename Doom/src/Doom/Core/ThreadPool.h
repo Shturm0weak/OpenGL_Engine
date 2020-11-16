@@ -12,6 +12,7 @@ namespace Doom {
 	using Task = std::function<void()>;
 	class DOOM_API ThreadPool {
 	private:
+
 		static ThreadPool* thread_pool;
 		std::vector<std::thread> m_Threads;
 		std::map <std::thread::id,bool> isThreadBusy;
@@ -23,16 +24,18 @@ namespace Doom {
 		void Infinite_loop_function();
 		bool m_stopping = false;
 		static bool initialized;
+
 	public:
 
-		uint32_t GetAmountOfThreads() { return m_Threads.size(); }
+		inline uint32_t GetAmountOfThreads() { return m_Threads.size(); }
 		ThreadPool(int n);
 		~ThreadPool();
 		void Shutdown()noexcept;
-		static ThreadPool* Instance() { return thread_pool; }
-		void enqueue(Task task);
+		void Enqueue(Task task);
+		static ThreadPool* GetInstance() { return thread_pool; }
 		static void Init();
 
 		friend class Editor;
+
 	};
 }

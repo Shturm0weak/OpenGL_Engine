@@ -1,14 +1,12 @@
 #pragma once
 
 #include "yaml-cpp/yaml.h"
-#include <optional>
 
 namespace Doom {
 
 	class DOOM_API SceneSerializer {
 	public:
-		static std::optional<std::string> OpenFile(const char* filter);
-		static std::optional<std::string> SaveFile(const char* filter);
+		static std::string currentSceneFilePath;
 		static void Serialize(const std::string& filePath);
 		static void DeSerialize(const std::string& filePath);
 	private:

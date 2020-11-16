@@ -1,5 +1,5 @@
 #pragma once
-#include "Render/ParticleSystem.h"
+#include "Objects/ParticleSystem.h"
 
 using namespace Doom;
 

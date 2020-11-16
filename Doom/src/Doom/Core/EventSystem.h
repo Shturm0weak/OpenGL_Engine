@@ -1,7 +1,10 @@
+#pragma once
+
 #ifndef _EVENTSYSTEM_H_
 #define _EVENTSYSTEM_H_
 #include <list>
 #include <map>
+
 using std::multimap;
 using std::list;
 using std::pair;

@@ -1,8 +1,8 @@
 #include "../pch.h"
 #include "Transform.h"
 #include "../Core/EventSystem.h"
-#include "../Objects2D/GameObject.h"
-#include "../Render/ViewPort.h"
+#include "../Objects/GameObject.h"
+#include "../Core/ViewPort.h"
 #include "../Core/Timer.h"
 #include "../Core/Utils.h"
 

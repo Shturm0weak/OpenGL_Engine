@@ -2,16 +2,18 @@
 #include "Core/World.h"
 #include "Core/Core.h"
 #include "Render/Renderer.h"
-#include "Render/Character.h"
+#include "Text/Character.h"
 #include "Core/Timer.h"
 #include "Render/Batch.h"
-#include "Render/Line.h"
-#include "Render/ParticleSystem.h"
+#include "Objects/Line.h"
+#include "Objects/ParticleSystem.h"
 #include "Audio/SoundManager.h"
 #include "Core/Editor.h"
 #include "Components/RectangleCollider2D.h"
 #include "Components/PointLight.h"
 #include "Lua/LuaState.h"
+#include "Core/SceneSerializer.h"
+#include "Input/WindowsInput.h"
 
 using namespace Doom;
 
@@ -54,6 +56,8 @@ DOOM_API double Timer::start;
 
 DOOM_API ThreadPool* ThreadPool::thread_pool = nullptr;
 DOOM_API bool ThreadPool::initialized;
+
+DOOM_API Input* Input::s_Instance = new WindowsInput();
 
 DOOM_API GLFWwindow* Window::m_window = nullptr;
 DOOM_API ImGuiIO* Window::io = nullptr;
@@ -108,3 +112,5 @@ DOOM_API std::vector <GameObject*> World::objects;
 
 DOOM_API unsigned int Character::indeces2D[6] = { 0,1,2,3,2,0 };
 DOOM_API unsigned int SpriteRenderer::indeces2D[6] = { 0,1,2,3,2,0 };
+
+DOOM_API std::string SceneSerializer::currentSceneFilePath = "src/Scenes/scene.yaml";

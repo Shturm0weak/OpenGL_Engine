@@ -90,7 +90,4 @@
       <Filter>src\SpaceFire</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Scripts\GameTest.lua" />
-  </ItemGroup>
 </Project>

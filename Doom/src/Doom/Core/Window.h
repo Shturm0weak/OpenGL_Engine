@@ -1,10 +1,10 @@
 #pragma once
 #include "../pch.h"
-#include "ColoredOutput.h"
+#include "../Enums/ColoredOutput.h"
 #include <ImGui/imgui.h>
 #include <ImGui/examples/imgui_impl_glfw.h>
 #include <ImGui/examples/imgui_impl_opengl3.h>
-#include "../Render/Camera.h"
+#include "../Objects/Camera.h"
 #include "../Application.h"
 
 namespace Doom {

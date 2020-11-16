@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef EDITOR_H
 #define EDITOR_H
 #include <ImGui/imgui.h>
@@ -14,12 +16,12 @@ namespace Doom {
 		std::mutex mtx_updateNormals;
 		float campos[2] = { 0,0 };
 		bool isBoundingBoxesVisible = false;
-		bool IsActiveTextureAtlasCreation = false;
-		bool IsActiveEditor = false;
+		bool isActiveTextureAtlasCreation = false;
+		bool isActiveEditor = false;
 		bool tool_active = true;
-		bool IsActiveMeshPicker = false;
-		bool IsActiveTexturePicker = false;
-		bool IsActiveShaderMenu = false;
+		bool isActiveMeshPicker = false;
+		bool isActiveTexturePicker = false;
+		bool isActiveShaderMenu = false;
 		int previousSelectedGo = -1;
 		int selectedShader = -1;
 		int selectedAtlas = -1;
@@ -46,10 +48,9 @@ namespace Doom {
 		static std::vector<std::string> texturesPath;
 		float uvsOffset[2];
 		Editor& operator=(const Editor& rhs) { return *this; }
-		Editor() {}
 		void CreateTextureAtlas();
 
-		float TextColor[4] = {255,255,255,255};
+		float TextColor[4] = {1,1,1,1};
 		float shadowOffset[2] = {0,0};
 		std::vector<Line*> normals;
 
@@ -81,18 +82,18 @@ namespace Doom {
 		static std::vector<Texture*> textureVecTemp;
 		GameObject* go = nullptr;
 		bool isItemActive = false;
-		static Editor* Instance();
+		static Editor* GetInstance();
 		void MenuBar();
 		void EditorUpdateMyGui();
 		void EditorUpdate();
 		static void CheckTexturesFolderUnique(const std::string path);
 		static void CheckTexturesFolder(const std::string path);
-		friend class Doom::Renderer;
+		friend class Renderer;
 		friend class Renderer3D;
 		void Threads();
 		void Debug();
 		void TextProps();
-		void UpdateNormals();
+		void UpdateNormals(); //Deprecated
 	};
 }
 #endif
