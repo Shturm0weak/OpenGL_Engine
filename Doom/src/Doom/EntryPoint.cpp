@@ -78,7 +78,7 @@ void EntryPoint::Run()
 		World::ProccessLuaStates();
 		EventSystem::GetInstance()->ProcessEvents();
 		if (app->type == RenderType::TYPE_3D) {
-			Renderer::SelectObject3D();
+			World::SelectObject3D();
 			Renderer::SortTransparentObjects();
 		}
 
@@ -146,7 +146,7 @@ void EntryPoint::Run()
 }
 
 EntryPoint::~EntryPoint() {
-	Renderer::ShutDown();
+	World::ShutDown();
 	MeshManager::ShutDown();
 	Gui::GetInstance()->ShutDown();
 	EventSystem::GetInstance()->Shutdown();

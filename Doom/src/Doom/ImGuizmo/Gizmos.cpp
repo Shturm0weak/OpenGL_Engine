@@ -8,8 +8,8 @@ Doom::Gizmos::Gizmos(float x, float y,float z) : GameObject("Gizmos", x, y) {
 	Enable = false;
 	GameObject::Enable = false;
 	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
-	Renderer::PopBack();
-	Renderer::obj_id--;
+	World::PopBack();
+	World::obj_id--;
 
 	for (size_t i = 0; i < 3; i++)
 	{
@@ -19,8 +19,8 @@ Doom::Gizmos::Gizmos(float x, float y,float z) : GameObject("Gizmos", x, y) {
 		AddChild((void*)faces.back());
 		axis.push_back(new Line(glm::vec3(0),glm::vec3(0)));
 		faces.back()->Enable = false;
-		Renderer::PopBack();
-		Renderer::obj_id--;
+		World::PopBack();
+		World::obj_id--;
 		Line::lines.pop_back();
 	}
 	tr = GetComponent<Transform>();

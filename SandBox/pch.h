@@ -46,4 +46,5 @@ extern "C"
 #include "Objects/GameObject.h"
 #include <Windows.h>
 #include "FileDialogs/FileDialogs.h"
+#include "Core/World.h"
 #endif //PCH_H

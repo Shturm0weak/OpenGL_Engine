@@ -35,6 +35,7 @@ namespace Doom {
 		friend class Ray3D;
 		friend class GameObject;
 		friend class SphereCollider;
+		friend class World;
 
 	public:
 		Transform();

@@ -11,7 +11,7 @@ class ShooterGame : public Application {
 	virtual void OnUpdate() override {
 		if (timer > 0.2 && Input::IsMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			timer = 0;
-			Renderer::SelectObject();
+			World::SelectObject();
 		}
 		timer += DeltaTime::deltatime;
 

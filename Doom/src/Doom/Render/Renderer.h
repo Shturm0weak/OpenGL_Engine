@@ -14,8 +14,6 @@ namespace Doom {
 		static int Vertices;
 		static bool PolygonMode;
 		static int DrawCalls;
-		static void DeleteObject(int id);
-		static void DeleteAll();
 		static void Render2DObjects();
 		static void Render3DObjects();
 		static void BakeShadows();
@@ -28,25 +26,10 @@ namespace Doom {
 		static void RenderCollision();
 		static void Clear();
 		static void SortTransparentObjects();
-		static GameObject* SelectObject();
-		static std::vector<unsigned int> CalculateObjectsVectors();
-		inline static std::vector<unsigned int> GetObjectsWithNoOwnerReference() { return ObjectsWithNoOwner; }
-		inline static std::vector<unsigned int> GetObjectsWithOwnerReference() { return ObjectsWithOwner; }
 		inline static unsigned int GetAmountOfCollisions() { return collision2d.size(); }
 		static const char** items;
-		static void ShutDown();
-		static void PopBack();
-		static void SelectObject3D();
-		static unsigned int GetAmountOfObjects();
-		static const char** GetItems();
-		static int obj_id;
-		static int col_id;
-		static GameObject* CreateGameObject();
 
 	private:
-		static bool ObjectCollided(std::vector<glm::vec2>& p,int i);
-		static std::vector<unsigned int> ObjectsWithNoOwner;
-		static std::vector<unsigned int> ObjectsWithOwner;
 		static std::vector <RectangleCollider2D*> collision2d;
 		static std::vector <SpriteRenderer*> objects2d;
 		static std::vector <Renderer3D*> objects3d;

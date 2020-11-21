@@ -40,7 +40,6 @@ namespace Doom {
 		~ComponentManager() {
 			delete[] namesOfMembers;
 			RemoveComponent<RectangleCollider2D>();
-			RemoveComponent<Transform>();
 			RemoveComponent<Animator>();
 			RemoveComponent<CubeCollider3D>();
 			RemoveComponent<PointLight>();
@@ -48,6 +47,7 @@ namespace Doom {
 			RemoveComponent<Renderer3D>();
 			RemoveComponent<SpriteRenderer>();
 			RemoveComponent<SphereCollider>();
+			RemoveComponent<Transform>();
 
 			std::vector<ScriptComponent*> scripts = GetScripts();
 			for (uint32_t i = 0; i < scripts.size(); i++)
@@ -96,8 +96,7 @@ namespace Doom {
 			return;
 		}
 
-		template<class T>
-		void RemoveComponent(T* com) {
+		void RemoveComponent(Component* com) {
 			if (com == nullptr)
 				return;
 			int _id = com->m_Id;

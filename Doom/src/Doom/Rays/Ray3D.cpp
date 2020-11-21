@@ -4,8 +4,7 @@
 std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length, bool AABB)
 {
 	std::map<float, CubeCollider3D*> d;
-	size_t size = CubeCollider3D::colliders.size();
-	for (size_t i = 0; i < size; i++)
+	for (size_t i = 0; i < CubeCollider3D::colliders.size(); i++)
 	{
 		bool isIntersected = false;
 		if(AABB)

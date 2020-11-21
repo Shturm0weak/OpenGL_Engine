@@ -63,27 +63,24 @@ void Editor::EditorUpdate()
 	{
 		if (ImGui::MenuItem("Create GameObject"))
 		{
-			Renderer::CreateGameObject();
-			Renderer::CalculateObjectsVectors().size();
+			World::CreateGameObject();
 			go = World::objects.back();
 		}
 		if (ImGui::MenuItem("Create 2D GameObject"))
 		{
-			Renderer::CreateGameObject();
-			Renderer::CalculateObjectsVectors().size();
+			World::CreateGameObject();
 			go = World::objects.back();
 			go->GetComponentManager()->AddComponent<SpriteRenderer>();
 		}
 		if (ImGui::MenuItem("Create 3D GameObject"))
 		{
-			Renderer::CreateGameObject();
-			Renderer::CalculateObjectsVectors().size();
+			World::CreateGameObject();
 			go = World::objects.back();
 			go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
-			GameObject* clgo = Renderer::CreateGameObject();
+			GameObject* clgo = World::CreateGameObject();
 			clgo->operator=(*go);
 			go = clgo;
 		}
@@ -91,7 +88,7 @@ void Editor::EditorUpdate()
 		if (ImGui::MenuItem("Delete"))
 		{
 			if (go != nullptr) {
-				Renderer::DeleteObject(go->id);
+				World::DeleteObject(go->id);
 				if(World::objects.size() > 0)
 					gizmo->obj = World::objects[World::objects.size() - 1];
 				else
@@ -106,7 +103,6 @@ void Editor::EditorUpdate()
 	}
 
 	ImGui::SetWindowFontScale(1.25);
-	Renderer::CalculateObjectsVectors();
 
 	if (gizmo != nullptr && gizmo->obj != nullptr) {
 		go = gizmo->obj;
@@ -160,8 +156,7 @@ void Editor::EditorUpdate()
 			}
 			if (ImGui::MenuItem("Add child")) {
 
-				GameObject* obj = Renderer::CreateGameObject();
-				Renderer::CalculateObjectsVectors().size();
+				GameObject* obj = World::CreateGameObject();
 				obj->SetOwner((void*)go);
 				go->AddChild((void*)obj);
 				go = World::objects.back();
@@ -170,46 +165,43 @@ void Editor::EditorUpdate()
 			ImGui::EndPopup();
 		}
 		ImGui::SetWindowFontScale(1.25);
-		if (Renderer::GetObjectsWithNoOwnerReference().size() > 0) {
-			if (go == nullptr)
-				return;
-			Doom::Transform* tr = go->component_manager->GetComponent<Doom::Transform>();
-			Doom::RectangleCollider2D* col = go->component_manager->GetComponent<Doom::RectangleCollider2D>();
-			ImGui::Text("ID %d", go->id);
-			ImGui::Checkbox("Enable", &go->Enable);
-			if (go->GetOwner() != nullptr)
-				ImGui::Text("Has Owner");
-			ImGui::InputText("Name", name, sizeof(name));
-			ImGui::SameLine();
-			if (ImGui::Button("Change name")) {
-				go->name = name;
-			}
-			ImGui::SliderInt("Layer", &go->GetLayer(), 0, Renderer::GetAmountOfObjects() - 1);
-			if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->renderType == TYPE_2D) {
-				if (ImGui::Button("Change layer")) {
-					if (go->GetLayer() > Renderer::GetAmountOfObjects() - 1) {
-						std::cout << "Error: layer out of range" << std::endl;
-						return;
-					}
-					go->GetComponent<SpriteRenderer>()->Setlayer(go->GetLayer());
-					Renderer::CalculateObjectsVectors();
-				}
-			}
-
-			MenuTransform(tr);
-			MenuRenderer2D();
-			MenuAnimator2D();
-			MenuCubeCollider3D();
-			MenuRectangleCollider2D(col);
-			MenuLightPoint();
-			MenuDirectionalLight();
-			MenuRenderer3D();
-			MeshPicker();
-			TexturePicker();
-			ShaderMenu();
-			MenuScriptComponent();
-			MenuSphereCollisionComponent();
+		if (go == nullptr)
+			return;
+		Doom::Transform* tr = go->component_manager->GetComponent<Doom::Transform>();
+		Doom::RectangleCollider2D* col = go->component_manager->GetComponent<Doom::RectangleCollider2D>();
+		ImGui::Text("ID %d", go->id);
+		ImGui::Checkbox("Enable", &go->Enable);
+		if (go->GetOwner() != nullptr)
+			ImGui::Text("Has Owner");
+		ImGui::InputText("Name", name, sizeof(name));
+		ImGui::SameLine();
+		if (ImGui::Button("Change name")) {
+			go->name = name;
 		}
+		ImGui::SliderInt("Layer", &go->GetLayer(), 0, World::GetAmountOfObjects() - 1);
+		if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->renderType == TYPE_2D) {
+			if (ImGui::Button("Change layer")) {
+				if (go->GetLayer() > World::GetAmountOfObjects() - 1) {
+					std::cout << "Error: layer out of range" << std::endl;
+					return;
+				}
+				go->GetComponent<SpriteRenderer>()->Setlayer(go->GetLayer());
+			}
+		}
+
+		MenuTransform(tr);
+		MenuRenderer2D();
+		MenuAnimator2D();
+		MenuCubeCollider3D();
+		MenuRectangleCollider2D(col);
+		MenuLightPoint();
+		MenuDirectionalLight();
+		MenuRenderer3D();
+		MeshPicker();
+		TexturePicker();
+		ShaderMenu();
+		MenuScriptComponent();
+		MenuSphereCollisionComponent();
 	}
 	ImGui::End();
 }
@@ -593,14 +585,14 @@ void Doom::Editor::MenuBar()
 {
 	if (ImGui::BeginMenu("File")) {
 		if (ImGui::MenuItem("New")) {
-			Renderer::ShutDown();
+			World::ShutDown();
 			gizmo->obj = nullptr;
 			go = gizmo->obj;
 		}
 		if (ImGui::MenuItem("Open")) {
 			std::optional<std::string> filePath = FileDialogs::OpenFile("Doom Scene (*.yaml)\0*.yaml\0");
 			if (filePath) {
-				Renderer::ShutDown();
+				World::ShutDown();
 				SceneSerializer::DeSerialize(*filePath);
 				gizmo->obj = nullptr;
 				go = gizmo->obj;
@@ -748,8 +740,7 @@ void Doom::Editor::TexturePicker()
 void Doom::Editor::SceneHierarchy()
 {
 	if (ImGui::CollapsingHeader("Game Objects")) {
-		uint32_t amount = Renderer::GetAmountOfObjects();
-		for (uint32_t i = 0; i < amount; i++)
+		for (uint32_t i = 0; i < World::GetAmountOfObjects(); i++)
 		{
 			GameObject* go = World::objects[i];
 			if (go->GetOwner() != nullptr) {

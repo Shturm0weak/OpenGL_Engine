@@ -53,4 +53,5 @@ extern "C"
 #include <Windows.h>
 #include "Core/Timer.h"
 #include "FileDialogs/FileDialogs.h"
+#include "Core/World.h"
 #endif // !PCH_H

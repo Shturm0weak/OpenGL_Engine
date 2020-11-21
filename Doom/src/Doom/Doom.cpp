@@ -28,17 +28,14 @@ DOOM_API std::vector <Renderer3D*> Renderer::objects3dTransparent;
 
 DOOM_API std::vector <RectangleCollider2D*> Renderer::collision2d;
 DOOM_API Batch* Batch::instance;
-DOOM_API std::vector<unsigned int> Renderer::ObjectsWithOwner;
-DOOM_API std::vector<unsigned int> Renderer::ObjectsWithNoOwner;
-DOOM_API const char** Renderer::items;
 DOOM_API std::mutex Renderer::mtx;
 DOOM_API std::condition_variable Renderer::condVar;
 DOOM_API bool Renderer::PolygonMode = false;
 DOOM_API int Renderer::DrawCalls = 0;
 DOOM_API int Renderer::Vertices = 0;
 
-DOOM_API int Renderer::obj_id = 0;
-DOOM_API int Renderer::col_id = 0;
+DOOM_API int World::obj_id = 0;
+DOOM_API int World::col_id = 0;
 
 DOOM_API std::vector<std::string> Editor::texturesPath;
 DOOM_API std::vector<Texture*> Editor::texture;

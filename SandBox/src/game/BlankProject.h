@@ -55,17 +55,13 @@ public:
 		//MeshManager::GetMeshWhenLoaded("sphere", earth->GetComponentManager()->AddComponent<Renderer3D>());
 		//MeshManager::GetMeshWhenLoaded("sphere", moon->GetComponentManager()->AddComponent<Renderer3D>());
 		//GameObject* terrain = new GameObject("Terrain");
-		//for (int i = -2; i < 4; i++)
+		//for (int i = -5; i < 4; i++)
 		//{
-		//	for (int j = -2; j < 4; j++)
+		//	for (int j = -5; j < 4; j++)
 		//	{
 		//		go = new Obj();
-		//		go->SetOwner((void*)terrain);
-		//		terrain->AddChild((void*)go);
 		//		go->transform->Translate(i * 2, 0, j * 2);
 		//		go->name = std::to_string(i) + " " + std::to_string(j);
-		//		go->GetComponent<Renderer3D>()->mat.ambient = 0.7;
-		//		go->GetComponent<Renderer3D>()->mat.specular = 1;
 		//	}
 		//}
 		//Texture::GetAsync(earth, [=] {

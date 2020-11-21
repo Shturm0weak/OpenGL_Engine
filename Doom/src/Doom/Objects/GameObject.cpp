@@ -8,8 +8,8 @@ using namespace Doom;
 GameObject::GameObject(const std::string name,float x, float y,float z) {
 	this->name = name;
 	layer = World::objects.size();
-	id = Renderer::obj_id;
-	Renderer::obj_id++;
+	id = World::obj_id;
+	World::obj_id++;
 	component_manager = new ComponentManager(this, this->name);
 	transform = component_manager->AddComponent<Transform>();
 	transform->Translate(x, y, z);

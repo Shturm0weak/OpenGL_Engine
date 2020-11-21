@@ -270,7 +270,7 @@ public:
 				if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
 					if (hit.Object != nullptr) {
 						int id = hit.Object->GetOwnerOfComponent()->id;
-						Renderer::DeleteObject(id);
+						World::DeleteObject(id);
 						hit.Object = nullptr;
 						dirtCount++;
 					}

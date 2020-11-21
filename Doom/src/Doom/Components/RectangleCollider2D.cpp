@@ -1,15 +1,15 @@
+#include "../pch.h"
 #include "RectangleCollider2D.h"
 #include "../Render/Renderer.h"
-#include "../pch.h"
-
+#include "Core/World.h"
 
 using namespace Doom;
 
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 	//SetType(ComponentType::COLLISION);
 	this->owner = owner;
-	id = Renderer::col_id;
-	Renderer::col_id++;
+	id = World::col_id;
+	World::col_id++;
 	Renderer::collision2d.push_back(this);
 	if (owner != nullptr) {
 		position.x = owner->GetPosition().x;
@@ -39,7 +39,7 @@ RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 Doom::RectangleCollider2D::~RectangleCollider2D()
 {
 	Renderer::collision2d.erase(GetId() + Renderer::collision2d.begin());
-	Renderer::col_id--;
+	World::col_id--;
 	unsigned int size = Renderer::collision2d.size();
 	if (GetId() != size) {
 		for (unsigned int i = GetId(); i < size; i++)

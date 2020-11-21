@@ -1,11 +1,11 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [32.8531189, 33.7613487, -12.9538288]
-    Rotation: [-0.61434418, 1.5922904, 0]
+    Position: [-32.3292885, 23.0003338, -11.711112]
+    Rotation: [-0.394433379, 4.37506914, 0]
   FOV: 1
 GameObjects:
-  - GameObject: 2
+  - GameObject: 573
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]
@@ -464,14 +464,14 @@ GameObjects:
   - GameObject: 14
     Name: 0 -2
     Transform:
-      Position: [12.1855278, 20.9034767, 12.4311018]
+      Position: [-10.276969, 6.11842108, -4.47270441]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
-        Color: [1, 1, 1, 0.552941203]
+        Color: [0, 1, 0.0521376133, 0.258823544]
       Shader: src/Shaders/Tron.shader
       Render technic: 0
       Transparent: true
@@ -939,7 +939,7 @@ GameObjects:
   - GameObject: 29
     Name: 2 1
     Transform:
-      Position: [-1.34712076, 16.7551804, -10.9013081]
+      Position: [-9.50839043, 16.7551804, -9.0983448]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Renderer3D:
@@ -1254,6 +1254,35 @@ GameObjects:
       Bounding box: true
     Sphere collider:
       Inside of bounding box: true
+    Registered events:
+      []
+  - GameObject: 45
+    Name: Unnamed
+    Transform:
+      Position: [-8.49030876, 6.51425886, -4.9065218]
+      Scale: [1, 1, 1]
+      Rotation: [0, 4.71238899, 0]
+    Sprite renderer:
+      Color: [1, 1, 1, 1]
+      Texture: src/Images/bird.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
     Registered events:
       []
 Texture atlases:

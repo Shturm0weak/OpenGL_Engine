@@ -153,7 +153,7 @@ void ShipPlayer::OnCollision(void * _col)
 		Ammo* a = static_cast<Ammo*>(__col->GetOwnerOfComponent());
 		ammo += a->GetAmmo();
 		SoundManager::Play(SoundManager::GetSound("pickUp"));
-		Renderer::DeleteObject(a->id);
+		World::DeleteObject(a->id);
 	}
 }
 
