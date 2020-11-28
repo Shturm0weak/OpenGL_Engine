@@ -75,9 +75,9 @@ namespace Doom {
 
 		public:
 			glm::vec3 forwardV = { 0,0,-1 };
-			float znears = -100.0f;
-			float zfars = 100.0f;
-			float rationprojections = 100.0f;
+			float znears = -50.0f;
+			float zfars = 50.0f;
+			float rationprojections = 50.0f;
 
 	};
 

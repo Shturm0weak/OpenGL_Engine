@@ -7,15 +7,17 @@
 
 using namespace Doom;
 
-void MeshManager::LoadMesh(std::string name, std::string filepath)
+void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t meshId)
 {
+	if (meshId > 0)
+		name = name.append(std::to_string(meshId));
 	auto iter = Meshes.find(name);
 	if (iter != Meshes.end())
 		return;
 	std::string subStr = filepath.substr(filepath.size() - 3, 3);
 	if (subStr == "fbx") {
 		fbx::FBXDocument doc;
-		Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath)));
+		Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath,meshId)));
 	}
 	else if (subStr == "stl") {
 		Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
@@ -33,7 +35,13 @@ void MeshManager::LoadMesh(std::string name, std::string filepath)
 	std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN  << "> has been loaded\n" << RESET;
 }
 
-void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath)
+void Doom::MeshManager::LoadScene(std::string filepath)
+{
+	fbx::FBXDocument doc;
+	doc.LoadScene(filepath);
+}
+
+void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId)
 {
 	Doom::ThreadPool::GetInstance()->Enqueue([=] {
 		auto iter = Meshes.find(name);
@@ -42,7 +50,7 @@ void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath)
 		std::string subStr = filepath.substr(filepath.size() - 3, 3);
 		if (subStr == "fbx") {
 			fbx::FBXDocument doc;
-			Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath)));
+			Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath, meshId)));
 		}
 		else if (subStr == "stl") {
 			Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));

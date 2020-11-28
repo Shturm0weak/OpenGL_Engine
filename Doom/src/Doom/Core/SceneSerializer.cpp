@@ -250,8 +250,15 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		}
 		auto mesh = renderer3DComponent["Mesh"];
 		std::string meshPath = mesh["Mesh"].as<std::string>();
-		MeshManager::LoadMesh(Utils::GetNameFromFilePath(meshPath), meshPath);
-		r->LoadMesh(MeshManager::GetMesh(Utils::GetNameFromFilePath(meshPath)));
+		auto _meshId = mesh["Mesh Id"];
+		uint32_t meshId = 0;
+		if (_meshId) {
+			meshId = _meshId.as<uint32_t>();
+		}
+		std::string meshName = Utils::GetNameFromFilePath(meshPath);
+		MeshManager::LoadMesh(meshName, meshPath, meshId);
+		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
+		r->LoadMesh(MeshManager::GetMesh(meshName));
 
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
@@ -425,6 +432,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 			out << YAML::Key << "Mesh";
 			out << YAML::BeginMap;
 			out << YAML::Key << "Mesh" << YAML::Value << (r->mesh != nullptr ? r->mesh->filePath : "InvalidMesh");
+			out << YAML::Key << "Mesh Id" << YAML::Value << (r->mesh != nullptr ? r->mesh->idOfMeshInFile : 0);
 			out << YAML::EndMap;
 
 			out << YAML::EndMap;

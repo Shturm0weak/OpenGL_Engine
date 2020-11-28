@@ -37,7 +37,7 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Batch::Init();
 	SoundManager::Init();
 	Window::GetCamera().frameBufferColor = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB,GL_UNSIGNED_BYTE,false, GL_COLOR_ATTACHMENT0,true,true,true);
-	Window::GetCamera().frameBufferShadowMap = new FrameBuffer(4096, 4096, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
+	Window::GetCamera().frameBufferShadowMap = new FrameBuffer(4096 * 2, 4096 * 2, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
 	if (this->app->type == TYPE_3D) {
 		GridLayOut* grid = new GridLayOut();
 		Editor::GetInstance()->gizmo = new Gizmos;
@@ -109,14 +109,14 @@ void EntryPoint::Run()
 			Instancing::Instance()->BakeShadows();
 			shadowMap->UnBind();
 
-			/*void* my_tex_id = reinterpret_cast<void*>(shadowMap->texture);
+			void* my_tex_id = reinterpret_cast<void*>(shadowMap->texture);
 			ImGui::Begin("FrameBuffer");
 			ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::SliderFloat("Znear", &Window::GetCamera().znears, -500, 500);
 			ImGui::SliderFloat("Zfar", &Window::GetCamera().zfars, 0, 500);
 			ImGui::SliderFloat("Projection", &Window::GetCamera().rationprojections, 0, 1000);
 			ImGui::SliderFloat("DrawShadows", &Instancing::Instance()->drawShadows, 0, 1);
-			ImGui::End();*/
+			ImGui::End();
 		}
 
 		glViewport(0, 0, size[0], size[1]);
@@ -129,6 +129,17 @@ void EntryPoint::Run()
 		Instancing::Instance()->PrepareVertexAtrrib();
 
 		ViewPort::GetInstance()->Update();
+
+		if (Input::IsKeyPressed(Keycode::KEY_BACKSPACE)) {
+			if (Editor::GetInstance()->gizmo->obj != nullptr) {
+				World::DeleteObject(Editor::GetInstance()->gizmo->obj->id);
+				if (World::objects.size() > 0)
+					Editor::GetInstance()->gizmo->obj = World::objects[World::objects.size() - 1];
+				else
+					Editor::GetInstance()->gizmo->obj = nullptr;
+				Editor::GetInstance()->go = Editor::GetInstance()->gizmo->obj;
+			}
+		}
 
 		if (ViewPort::GetInstance()->viewportResized) {
 			Window::GetCamera().frameBufferColor->Resize(ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y);

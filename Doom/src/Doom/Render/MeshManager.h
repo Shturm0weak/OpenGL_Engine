@@ -13,9 +13,11 @@ namespace Doom {
 		static std::multimap<std::string, void*> meshQueue;
 		static const char** listOfMeshes;
 	public:
-		static void LoadMesh(std::string name, std::string filepath);
+		static void LoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
 
-		static void AsyncLoadMesh(std::string name, std::string filepath);
+		static void LoadScene(std::string filepath);
+
+		static void AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
 
 		static Mesh* GetMesh(std::string name);
 

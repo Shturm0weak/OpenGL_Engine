@@ -1,11 +1,11 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [-32.3292885, 23.0003338, -11.711112]
-    Rotation: [-0.394433379, 4.37506914, 0]
+    Position: [-5.93004465, 15.4386749, 5.90512371]
+    Rotation: [-0.512243152, 4.27291346, 0]
   FOV: 1
 GameObjects:
-  - GameObject: 573
+  - GameObject: 4
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]

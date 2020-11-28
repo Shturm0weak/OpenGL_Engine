@@ -17,6 +17,7 @@ namespace Doom {
 
 		std::string name;
 		std::string filePath;
+		uint32_t idOfMeshInFile = 0;
 		float* mesh = nullptr;
 		uint32_t meshSize = 0;
 		uint32_t indicesSize = 0;

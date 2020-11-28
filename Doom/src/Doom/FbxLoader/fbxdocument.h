@@ -14,22 +14,23 @@ public:
 
     struct Data {
 		uint32_t vertecesSize = 0;
-		float* verteces = nullptr;
+		std::vector<float> verteces;
 		uint32_t normalsSize = 0;
-		float* normals = nullptr;
+		std::vector<float> normals;
 		uint32_t uvSize = 0;
-		float* uv = nullptr;
+		std::vector<float> uv;
 		uint32_t uvIndexSize = 0;
-		uint32_t* uvIndex = nullptr;
+		std::vector<uint32_t> uvIndex;
 		uint32_t vertecesSizeForNormals = 0;
-		float* vertecesForNormals = nullptr;
+		std::vector<float> vertecesForNormals;
 		uint32_t uvSizeForVert = 0;
-		float* uvForVert = nullptr;
-		float* tangent = nullptr;
-		float* btangent = nullptr;
+		std::vector<float> uvForVert;
+		std::vector<float> tangent;
+		std::vector<float> btangent;
     };
 
-	Doom::Mesh* LoadMesh(std::string name,std::string filepath);
+	void LoadScene(std::string filepath);
+	Doom::Mesh* LoadMesh(std::string name, std::string filepath, uint32_t meshId);
 
     FBXDocument();
     void read(std::ifstream &input);
@@ -45,6 +46,11 @@ public:
     void print();
 
 private:
+	void LoadData(Data& data, FBXNode& fbxNode, Doom::Mesh* mesh);
+	void GenerateMesh(Data& data, Doom::Mesh* mesh);
+	std::string GetNameOfModel(std::string model, uint32_t offset = 1);
+	std::string GetNameOfMesh(std::string model, uint32_t offset = 1);
+
     std::uint32_t version;
 };
 

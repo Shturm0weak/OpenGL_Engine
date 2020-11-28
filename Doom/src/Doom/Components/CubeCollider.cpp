@@ -84,7 +84,7 @@ void Doom::CubeCollider3D::Render()
 	Transform* tr = owner->GetComponent<Transform>();
 	this->shader->Bind();
 	this->shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-	this->shader->SetUniformMat4f("u_Model", glm::translate(tr->pos,offset));
+	this->shader->SetUniformMat4f("u_Model", glm::translate(tr->pos,offset * tr->GetScale())); //??? Probably I need to offset * glm::vec3 not just glm::vec3.y ???
 	this->shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), (glm::abs(minP) + glm::abs(maxP)) * 0.5f) * tr->scale);
 	this->shader->SetUniformMat4f("u_View", tr->view);
 	this->shader->SetUniform4fv("u_Color", color);

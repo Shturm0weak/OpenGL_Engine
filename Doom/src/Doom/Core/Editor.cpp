@@ -302,6 +302,7 @@ void Doom::Editor::MenuRenderer3D()
 				if (ImGui::CollapsingHeader("Mesh")) {
 					if (r->mesh != nullptr) {
 						ImGui::Text("Name: %s", r->mesh->name);
+						ImGui::Text("Id: %i", r->mesh->idOfMeshInFile);
 					}
 					if (ImGui::Button("Meshes")) {
 						isActiveMeshPicker = true;
@@ -628,6 +629,12 @@ void Doom::Editor::MeshPicker()
 		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
 		if (filePath) {
 			MeshManager::AsyncLoadMesh(Utils::GetNameFromFilePath(*filePath), *filePath);
+		}
+	}
+	if (ImGui::Button("Load fbx scene ...")) {
+		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
+		if (filePath) {
+			MeshManager::LoadScene(*filePath);
 		}
 	}
 	ImGui::End();
