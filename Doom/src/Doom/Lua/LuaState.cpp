@@ -65,7 +65,7 @@ int Doom::LuaState::LuaScale(lua_State* l)
 	scale.x = lua_tonumber(l, 3);
 	scale.y = lua_tonumber(l, 2);
 	scale.z = lua_tonumber(l, 1);
-	go->transform->Scale(scale.x, scale.y, scale.z);
+	go->m_Transform->Scale(scale.x, scale.y, scale.z);
 	return 0;
 }
 
@@ -77,7 +77,7 @@ int Doom::LuaState::LuaTranslate(lua_State* l)
 	pos.x = lua_tonumber(l, 3);
 	pos.y = lua_tonumber(l, 2);
 	pos.z = lua_tonumber(l, 1);
-	go->transform->Translate(pos.x, pos.y, pos.z);
+	go->m_Transform->Translate(pos.x, pos.y, pos.z);
 	return 0;
 }
 
@@ -85,7 +85,7 @@ void Doom::LuaState::OnUpdate(float dt)
 {
 	lua_getglobal(l,"OnUpdate");
 	if(lua_isfunction(l,-1)){
-		lua_pushnumber(l, DeltaTime::deltatime);
+		lua_pushnumber(l, DeltaTime::m_Deltatime);
 		CL(lua_pcall(l,1,0,0));
 	}
 }
@@ -115,8 +115,8 @@ Doom::LuaState::~LuaState()
 
 const char* Doom::LuaState::GetLuaGlobalName(GameObject* go)
 {
-	std::string name = go->name.c_str();
-	name.append(std::to_string(go->id).c_str());
+	std::string name = go->m_Name.c_str();
+	name.append(std::to_string(go->m_Id).c_str());
 	return name.c_str();
 }
 

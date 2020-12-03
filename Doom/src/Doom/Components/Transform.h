@@ -10,16 +10,18 @@ namespace Doom {
 
 	class DOOM_API Transform : public Component {
 	private:
+
 		Irenderer* sr = nullptr;
 		RectangleCollider2D* col = nullptr;
 
 		void RealVertexPositions();
 
-		glm::vec3 prevPosition;
+		glm::vec3 m_Rotation = glm::vec3(0.0);
+		glm::vec3 m_PrevPosition;
 
-		glm::mat4 scale = glm::mat4(1.f);
-		glm::mat4 pos = glm::mat4(1.f);
-		glm::mat4 view = glm::mat4(1.f);
+		glm::mat4 m_ScaleMat4 = glm::mat4(1.f);
+		glm::mat4 m_PosMat4   = glm::mat4(1.f);
+		glm::mat4 m_ViewMat4  = glm::mat4(1.f);
 
 		friend class ComponentManager;
 		friend class RectangleCollider2D;
@@ -38,16 +40,26 @@ namespace Doom {
 		friend class World;
 
 	public:
+
 		Transform();
 		~Transform() {}
-		glm::vec3 rotation = glm::vec3(0.0);
+
+		glm::vec3 GetRotation();
 		glm::vec3 GetPosition();
 		glm::vec3 GetScale();
-		void Move(float speedX = 0, float speedY = 0, float speedZ = 0);
+
+		void Move(glm::vec3 dir);
+		void Rotate(glm::vec3 angles);
+		void Scale(glm::vec3 scale);
+		void Translate(glm::vec3 pos);
+		void RotateOnce(glm::vec3 angles, bool isRad = false);
+
+		void Move(float x = 0, float y = 0, float z = 0);
 		void Rotate(float x, float y, float z );
-		void Scale(float scaleX, float scaleY,float scaleZ = 0);
+		void Scale(float x, float y,float z = 0);
 		void Translate(float x = 0, float y = 0,float z = 0);
 		void RotateOnce(float x,float y, float z,bool isRad = false);
+
 		void RotateOnce(glm::vec3 direction, glm::vec3 axis);
 	};
 

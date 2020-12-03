@@ -10,8 +10,8 @@
 #else
 #define DOOM_API __declspec(dllimport)
 #endif
-static int HEIGHT = 1080;
-static int WIDTH = 1080;
+static int g_Height = 1080;
+static int g_Width = 1080;
 
 static void GlClearError() {
 	while (glGetError() != 0);

@@ -6,13 +6,13 @@
 
 void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 {
-	if (isTransparent)
+	if (m_IsTransparent)
 		return;
-	renderTechnic = rt;
-	if (renderTechnic == RenderTechnic::Instancing) {
+	m_RenderTechnic = rt;
+	if (m_RenderTechnic == RenderTechnic::Instancing) {
 		for (auto i = Instancing::Instance()->instancedObjects.begin(); i != Instancing::Instance()->instancedObjects.end(); i++)
 		{
-			if (i->first == mesh) {
+			if (i->first == m_Mesh) {
 				i->second.push_back(this);
 				auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), this);
 				if (iter != Renderer::objects3d.end())
@@ -20,10 +20,10 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 			}
 		}
 	}
-	else if (renderTechnic == RenderTechnic::Forward) {
+	else if (m_RenderTechnic == RenderTechnic::Forward) {
 		auto iter = std::find(Renderer::objects3d.begin(), Renderer::objects3d.end(), this);
 		if (iter == Renderer::objects3d.end()) {
-			shader = Shader::Get("Default3D");
+			m_Shader = Shader::Get("Default3D");
 			Renderer::objects3d.push_back(this);
 		}
 	}
@@ -31,19 +31,19 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 
 void Doom::Renderer3D::LoadMesh(Mesh * _mesh)
 {
-	tr = owner->GetComponentManager()->GetComponent<Transform>();
+	m_Tr = m_Owner->GetComponentManager()->GetComponent<Transform>();
 	EraseFromInstancing();
-	mesh = _mesh;
+	m_Mesh = _mesh;
 	ChangeRenderTechnic(RenderTechnic::Forward);
-	if (!isSkyBox) {
-		CubeCollider3D* cc = owner->GetComponentManager()->GetComponent<CubeCollider3D>();
+	if (!m_IsSkyBox) {
+		CubeCollider3D* cc = m_Owner->GetComponentManager()->GetComponent<CubeCollider3D>();
 		if (cc == nullptr) {
-			cc = owner->GetComponentManager()->AddComponent<CubeCollider3D>();
-			cc->isBoundingBox = true;
+			cc = m_Owner->GetComponentManager()->AddComponent<CubeCollider3D>();
+			cc->m_IsBoundingBox = true;
 		}
-		cc->minP = mesh->theLowestPoint;
-		cc->maxP = mesh->theHighestPoint;
-		cc->offset = (cc->maxP - (glm::abs(cc->minP) + glm::abs(cc->maxP)) * 0.5f);
+		cc->m_MinP = m_Mesh->theLowestPoint;
+		cc->m_MaxP = m_Mesh->theHighestPoint;
+		cc->m_Offset = (cc->m_MaxP - (glm::abs(cc->m_MinP) + glm::abs(cc->m_MaxP)) * 0.5f);
 	}
 	//std::cout << "offset " << cc->offset.x << " " << cc->offset.y << " " << cc->offset.z << "\n";
 	//std::cout << "the highest " << mesh->theHighestPoint.x << " " << mesh->theHighestPoint.y << " " << mesh->theHighestPoint.z << "\n";
@@ -52,14 +52,14 @@ void Doom::Renderer3D::LoadMesh(Mesh * _mesh)
 
 void Doom::Renderer3D::EraseFromInstancing()
 {
-	if (renderTechnic == RenderTechnic::Instancing) {
+	if (m_RenderTechnic == RenderTechnic::Instancing) {
 		for (auto i = Instancing::Instance()->instancedObjects.begin(); i != Instancing::Instance()->instancedObjects.end(); i++)
 		{
-			if (mesh != nullptr) {
+			if (m_Mesh != nullptr) {
 				auto iter = std::find(i->second.begin(), i->second.end(), this);
 				if (iter != i->second.end()) {
 					i->second.erase(iter);
-					mesh = nullptr;
+					m_Mesh = nullptr;
 				}
 			}
 		}
@@ -68,10 +68,10 @@ void Doom::Renderer3D::EraseFromInstancing()
 
 Doom::Renderer3D::Renderer3D()
 {
-	renderType = RenderType::TYPE_3D;
+	m_RenderType = RenderType::TYPE_3D;
 	//SetType(ComponentType::RENDER3D);
-	shader = Shader::Get("Default3D");
-	if(isTransparent)
+	m_Shader = Shader::Get("Default3D");
+	if(m_IsTransparent)
 		Renderer::objects3dTransparent.push_back(this);
 	else
 		Renderer::objects3d.push_back(this);
@@ -80,10 +80,10 @@ Doom::Renderer3D::Renderer3D()
 Doom::Renderer3D::~Renderer3D()
 {
 	CubeCollider3D* cc = GetOwnerOfComponent()->GetComponentManager()->GetComponent<CubeCollider3D>();
-	if (cc != nullptr && cc->isBoundingBox) {
+	if (cc != nullptr && cc->m_IsBoundingBox) {
 		GetOwnerOfComponent()->GetComponentManager()->RemoveComponent(cc);
 	}
-	if (isTransparent) {
+	if (m_IsTransparent) {
 		auto iter = std::find(Renderer::objects3dTransparent.begin(), Renderer::objects3dTransparent.end(), this);
 		if (iter != Renderer::objects3dTransparent.end()) {
 			Renderer::objects3dTransparent.erase(iter);
@@ -102,24 +102,24 @@ Doom::Renderer3D::~Renderer3D()
 
 void Doom::Renderer3D::BakeShadows()
 {
-	if (isCastingShadows && mesh != nullptr) {
-		if (!isSkyBox) {
+	if (m_IsCastingShadows && m_Mesh != nullptr) {
+		if (!m_IsSkyBox) {
 			Shader* bakeShader = Shader::Get("BakeShadows");
 			bakeShader->Bind();
-			glBindTextureUnit(0, diffuseTexture->m_RendererID);
-			bakeShader->SetUniformMat4f("u_Model", tr->pos);
+			glBindTextureUnit(0, m_DiffuseTexture->m_RendererID);
+			bakeShader->SetUniformMat4f("u_Model", m_Tr->m_PosMat4);
 			bakeShader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
-			bakeShader->SetUniformMat4f("u_Scale", tr->scale);
-			bakeShader->SetUniformMat4f("u_View", tr->view);
+			bakeShader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
+			bakeShader->SetUniformMat4f("u_View", m_Tr->m_ViewMat4);
 			bakeShader->Bind();
-			mesh->va->Bind();
-			mesh->ib->Bind();
-			mesh->vb->Bind();
-			Renderer::Vertices += mesh->indicesSize;
+			m_Mesh->va->Bind();
+			m_Mesh->ib->Bind();
+			m_Mesh->vb->Bind();
+			Renderer::Vertices += m_Mesh->indicesSize;
 			Renderer::DrawCalls++;
-			glDrawElements(GL_TRIANGLES, mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, m_Mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 			bakeShader->UnBind();
-			mesh->ib->UnBind();
+			m_Mesh->ib->UnBind();
 			glBindTextureUnit(0, Texture::WhiteTexture->m_RendererID);
 		}
 	}
@@ -133,7 +133,7 @@ void Doom::Renderer3D::MakeTransparent()
 		ChangeRenderTechnic(RenderTechnic::Forward);
 		Renderer::objects3d.erase(iter);
 		Renderer::objects3dTransparent.push_back(this);
-		isTransparent = true;
+		m_IsTransparent = true;
 	}
 }
 
@@ -144,20 +144,20 @@ void Doom::Renderer3D::MakeSolid()
 		Renderer::objects3dTransparent.erase(iter);
 		Renderer::objects3d.push_back(this);
 		ChangeRenderTechnic(RenderTechnic::Forward);
-		isTransparent = false;
+		m_IsTransparent = false;
 	}
 }
 
 void Doom::Renderer3D::Render()
 {
-	if (renderTechnic == RenderTechnic::Forward) {
-		if (isWireMesh) {
+	if (m_RenderTechnic == RenderTechnic::Forward) {
+		if (m_IsWireMesh) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			ForwardRender(tr->pos, tr->view, tr->scale, color);
+			ForwardRender(m_Tr->m_PosMat4, m_Tr->m_ViewMat4, m_Tr->m_ScaleMat4, m_Color);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 		else {
-			ForwardRender(tr->pos, tr->view, tr->scale, color);
+			ForwardRender(m_Tr->m_PosMat4, m_Tr->m_ViewMat4, m_Tr->m_ScaleMat4, m_Color);
 		}
 			
 	}
@@ -165,68 +165,68 @@ void Doom::Renderer3D::Render()
 
 void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
 {
-	if (mesh != nullptr) {
-		if (!isSkyBox) {
-			shader->Bind();
-			glBindTextureUnit(0, diffuseTexture->m_RendererID);
-			shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-			shader->SetUniformMat4f("u_Model", pos);
-			shader->SetUniformMat4f("u_View", view);
-			shader->SetUniformMat4f("u_Scale", scale);
-			shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
+	if (m_Mesh != nullptr) {
+		if (!m_IsSkyBox) {
+			m_Shader->Bind();
+			glBindTextureUnit(0, m_DiffuseTexture->m_RendererID);
+			m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+			m_Shader->SetUniformMat4f("u_Model", pos);
+			m_Shader->SetUniformMat4f("u_View", view);
+			m_Shader->SetUniformMat4f("u_Scale", scale);
+			m_Shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
 			AdditionalUniformsLoad();
 			int dlightSize = DirectionalLight::dirLights.size();
-			shader->SetUniform1i("dLightSize", dlightSize);
+			m_Shader->SetUniform1i("dLightSize", dlightSize);
 			for (int i = 0; i < dlightSize; i++)
 			{
 				char buffer[64];
 				DirectionalLight* dl = DirectionalLight::dirLights[i];
-				dl->dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->view * glm::vec4(0, 0, -1, 1);
+				dl->m_Dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->m_ViewMat4 * glm::vec4(0, 0, -1, 1);
 				sprintf(buffer, "dirLights[%i].dir", i);
-				shader->SetUniform3fv(buffer, dl->dir);
+				m_Shader->SetUniform3fv(buffer, dl->m_Dir);
 				sprintf(buffer, "dirLights[%i].color", i);
-				shader->SetUniform3fv(buffer, dl->color);
+				m_Shader->SetUniform3fv(buffer, dl->m_Color);
 			}
 
 			int plightSize = PointLight::pLights.size();
-			shader->SetUniform1i("pLightSize", plightSize);
+			m_Shader->SetUniform1i("pLightSize", plightSize);
 			char buffer[64];
 			for (int i = 0; i < plightSize; i++)
 			{
 				PointLight* pl = PointLight::pLights[i];
 				sprintf(buffer, "pointLights[%i].position", i);
-				shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
+				m_Shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
 				sprintf(buffer, "pointLights[%i].color", i);
-				shader->SetUniform3fv(buffer, pl->color);
+				m_Shader->SetUniform3fv(buffer, pl->color);
 				sprintf(buffer, "pointLights[%i].constant", i);
-				shader->SetUniform1f(buffer, pl->constant);
+				m_Shader->SetUniform1f(buffer, pl->m_Constant);
 				sprintf(buffer, "pointLights[%i]._linear", i);
-				shader->SetUniform1f(buffer, pl->linear);
+				m_Shader->SetUniform1f(buffer, pl->m_Linear);
 				sprintf(buffer, "pointLights[%i].quadratic", i);
-				shader->SetUniform1f(buffer, pl->quadratic);
+				m_Shader->SetUniform1f(buffer, pl->m_Quadratic);
 			}
-			shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
-			shader->SetUniform1f("u_Ambient", mat.ambient);
-			shader->SetUniform1f("u_Specular", mat.specular);
-			shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
-			shader->SetUniform1i("u_DiffuseTexture", 0);
+			m_Shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
+			m_Shader->SetUniform1f("u_Ambient", m_Material.m_Ambient);
+			m_Shader->SetUniform1f("u_Specular", m_Material.m_Specular);
+			m_Shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
+			m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 			glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
-			shader->SetUniform1i("u_ShadowTexture", 2);
-			shader->SetUniform1f("u_DrawShadows", Instancing::Instance()->drawShadows);
-			if (useNormalMap) {
-				glBindTextureUnit(1, normalMapTexture->m_RendererID);
-				shader->SetUniform1i("u_NormalMapTexture", 1);
+			m_Shader->SetUniform1i("u_ShadowTexture", 2);
+			m_Shader->SetUniform1f("u_DrawShadows", Instancing::Instance()->drawShadows);
+			if (m_IsUsingNormalMap) {
+				glBindTextureUnit(1, m_NormalMapTexture->m_RendererID);
+				m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 			}
-			shader->SetUniform1i("u_isNormalMapping", useNormalMap);
-			shader->Bind();
-			mesh->va->Bind();
-			mesh->ib->Bind();
-			mesh->vb->Bind();
-			Renderer::Vertices += mesh->ib->GetCount();
+			m_Shader->SetUniform1i("u_isNormalMapping", m_IsUsingNormalMap);
+			m_Shader->Bind();
+			m_Mesh->va->Bind();
+			m_Mesh->ib->Bind();
+			m_Mesh->vb->Bind();
+			Renderer::Vertices += m_Mesh->ib->GetCount();
 			Renderer::DrawCalls++;
-			glDrawElements(GL_TRIANGLES, mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
-			shader->UnBind();
-			mesh->ib->UnBind();
+			glDrawElements(GL_TRIANGLES, m_Mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+			m_Shader->UnBind();
+			m_Mesh->ib->UnBind();
 			glBindTextureUnit(0, Texture::WhiteTexture->m_RendererID);
 		}
 		else {
@@ -234,25 +234,25 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 			glDepthFunc(GL_LEQUAL);
 			glActiveTexture(GL_TEXTURE0);
 			glDisable(GL_CULL_FACE);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, diffuseTexture->m_RendererID);
-			shader->Bind();
+			glBindTexture(GL_TEXTURE_CUBE_MAP, m_DiffuseTexture->m_RendererID);
+			m_Shader->Bind();
 			Window::GetCamera().RecalculateViewMatrix();
-			shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetProjectionMatrix());
-			shader->SetUniformMat4f("u_Model", tr->pos);
-			shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetCamera().GetViewMatrix())));
-			shader->SetUniformMat4f("u_Scale", tr->scale);
-			shader->SetUniform1i("u_DiffuseTexture", 0);
-			shader->Bind();
-			mesh->va->Bind();
-			mesh->ib->Bind();
-			mesh->vb->Bind();
-			Renderer::Vertices += mesh->ib->GetCount();
+			m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetProjectionMatrix());
+			m_Shader->SetUniformMat4f("u_Model", m_Tr->m_PosMat4);
+			m_Shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetCamera().GetViewMatrix())));
+			m_Shader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
+			m_Shader->SetUniform1i("u_DiffuseTexture", 0);
+			m_Shader->Bind();
+			m_Mesh->va->Bind();
+			m_Mesh->ib->Bind();
+			m_Mesh->vb->Bind();
+			Renderer::Vertices += m_Mesh->ib->GetCount();
 			Renderer::DrawCalls++;
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			glBindVertexArray(0);
-			shader->UnBind();
-			mesh->ib->UnBind();
-			diffuseTexture->UnBind();
+			m_Shader->UnBind();
+			m_Mesh->ib->UnBind();
+			m_DiffuseTexture->UnBind();
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
 		}
@@ -261,9 +261,9 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 
 void Doom::Renderer3D::AdditionalUniformsLoad()
 {
-	for (auto i = floatUniforms.begin(); i != floatUniforms.end(); i++)
+	for (auto i = m_FloatUniforms.begin(); i != m_FloatUniforms.end(); i++)
 	{
-		shader->SetUniform1f(i->first, i->second);
+		m_Shader->SetUniform1f(i->first, i->second);
 	}
 }
 

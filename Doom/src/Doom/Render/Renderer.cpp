@@ -25,27 +25,27 @@ void Doom::Renderer::SortTransparentObjects()
 		GameObject* go1 = r2->GetOwnerOfComponent();
 		CubeCollider3D* cc0 = nullptr;
 		CubeCollider3D* cc1 = nullptr;
-		if (r1->mesh != nullptr)
+		if (r1->m_Mesh != nullptr)
 			cc0 = go0->GetComponentManager()->GetComponent<CubeCollider3D>();
 		else
 			return false;
-		if (r2->mesh != nullptr)
+		if (r2->m_Mesh != nullptr)
 			cc1 = go1->GetComponentManager()->GetComponent<CubeCollider3D>();
 		else
 			return false;
 		glm::vec3 camPos = Window::GetCamera().GetPosition();
 		glm::vec3 pos0 = go0->GetPosition();
 		glm::vec3 pos1 = go1->GetPosition();
-		float d1 = glm::distance(camPos, pos0 + cc0->minP);
-		float d2 = glm::distance(camPos, pos0 + cc0->maxP);
+		float d1 = glm::distance(camPos, pos0 + cc0->m_MinP);
+		float d2 = glm::distance(camPos, pos0 + cc0->m_MaxP);
 		float r1d = 0;
 		float r2d = 0;
 		if (d1 < d2)
 			r1d = d1;
 		else
 			r1d = d2;
-		d1 = glm::distance(camPos, pos1 + cc1->minP);
-		d2 = glm::distance(camPos, pos1 + cc1->maxP);
+		d1 = glm::distance(camPos, pos1 + cc1->m_MinP);
+		d2 = glm::distance(camPos, pos1 + cc1->m_MaxP);
 		if (d1 < d2)
 			r2d = d1;
 		else
@@ -94,7 +94,7 @@ void Doom::Renderer::Render2DObjects()
 			batch->BeginGameObjects();
 			for (size_t i = 0; i < size;i++) {
 				SpriteRenderer* r = Renderer::objects2d[i];
-				if (r->GetOwnerOfComponent()->Enable == true)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
+				if (r->GetOwnerOfComponent()->m_Enable == true)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
 					r->Render();
 				}
@@ -124,7 +124,7 @@ void Doom::Renderer::Render3DObjects()
 	
 	for each (Renderer3D* r in Renderer::objects3d)
 	{
-		if (r->GetOwnerOfComponent()->Enable == true)
+		if (r->GetOwnerOfComponent()->m_Enable == true)
 		{
 			r->Render();
 		}
@@ -140,14 +140,14 @@ void Doom::Renderer::BakeShadows()
 {
 	for each (Renderer3D* r in Renderer::objects3d)
 	{
-		if (r->GetOwnerOfComponent()->Enable == true)
+		if (r->GetOwnerOfComponent()->m_Enable == true)
 		{
 			r->BakeShadows();
 		}
 	}
 	for each (Renderer3D* r in Renderer::objects3dTransparent)
 	{
-		if (r->GetOwnerOfComponent()->Enable == true)
+		if (r->GetOwnerOfComponent()->m_Enable == true)
 		{
 			r->BakeShadows();
 		}
@@ -168,14 +168,14 @@ void Doom::Renderer::RenderCollision3D()
 	if (size > 0) {
 		for (size_t i = 0; i < size; i++)
 		{
-			if (!CubeCollider3D::colliders[i]->isBoundingBox && RectangleCollider2D::IsVisible)
+			if (!CubeCollider3D::colliders[i]->m_IsBoundingBox && RectangleCollider2D::IsVisible)
 				CubeCollider3D::colliders[i]->Render();
 		}
 	}
 	if (size > 0) {
 		for (size_t i = 0; i < size; i++)
 		{
-			if (CubeCollider3D::colliders[i]->isBoundingBox && Editor::GetInstance()->isBoundingBoxesVisible)
+			if (CubeCollider3D::colliders[i]->m_IsBoundingBox && Editor::GetInstance()->isBoundingBoxesVisible)
 				CubeCollider3D::colliders[i]->Render();
 		}
 	}
@@ -218,7 +218,7 @@ void Doom::Renderer::RenderTransparent()
 {
 	for each (Renderer3D* r in Renderer::objects3dTransparent)
 	{
-		if (r->GetOwnerOfComponent()->Enable == true)
+		if (r->GetOwnerOfComponent()->m_Enable == true)
 		{
 			r->Render();
 		}

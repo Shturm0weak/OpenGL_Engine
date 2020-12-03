@@ -9,8 +9,8 @@ namespace Doom {
 		float length = 50;
 	public:
 		GridLayOut() {
-			this->name = "Grid";
-			this->Enable = false;
+			this->m_Name = "Grid";
+			this->m_Enable = false;
 			//GetComponentManager()->RemoveComponent<Irenderer>();
 
 			Line::width = 3;
@@ -37,7 +37,7 @@ namespace Doom {
 			lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half, 0.5f, -half + 5)));
 			lines.back()->color = COLORS::Blue;
 			World::PopBack();
-			World::obj_id--;
+			World::m_ObjId--;
 		}
 
 	};

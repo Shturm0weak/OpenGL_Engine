@@ -7,15 +7,16 @@ namespace Doom {
 
 	class DOOM_API DirectionalLight : public Component {
 	private:
+
 		glm::mat4 lightSpaceMatrix;
 	public:
+
 		static std::vector<DirectionalLight*> dirLights;
 
-		vec3 dir;
-		float intensity = 1.0;
-		glm::vec3 color = { 1.0f,1.0f,1.0f };
-
-		glm::mat4 lightProjection;
+		glm::mat4 m_LightProjection;
+		glm::vec3 m_Color = { 1.0f,1.0f,1.0f };
+		vec3 m_Dir;
+		float m_Intensity = 1.0;
 	
 		static glm::mat4 GetLightSpaceMatrix();
 		void UpdateLightMatrix();

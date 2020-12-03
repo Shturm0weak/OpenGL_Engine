@@ -4,9 +4,9 @@
 
 void Doom::ScriptComponent::AssignScript(const char* filePath)
 {
-	lState = new LuaState(filePath);
-	lState->go = GetOwnerOfComponent();
-	LuaState::RegisterFunction(lState);
+	m_LState = new LuaState(filePath);
+	m_LState->go = GetOwnerOfComponent();
+	LuaState::RegisterFunction(m_LState);
 }
 
 Doom::ScriptComponent::ScriptComponent()
@@ -16,7 +16,7 @@ Doom::ScriptComponent::ScriptComponent()
 
 Doom::ScriptComponent::~ScriptComponent()
 {
-	if (lState != nullptr) {
-		delete lState;
+	if (m_LState != nullptr) {
+		delete m_LState;
 	}
 }

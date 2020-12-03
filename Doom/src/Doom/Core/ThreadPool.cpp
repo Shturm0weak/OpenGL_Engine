@@ -6,7 +6,7 @@ using namespace Doom;
 
 ThreadPool::ThreadPool(int n)
 {
-	num_Threads = n;
+	m_NumThreads = n;
 	Infinite_loop_function();
 	
 }
@@ -18,44 +18,44 @@ ThreadPool::~ThreadPool()
 
 void ThreadPool::Infinite_loop_function()
 {
-	for (unsigned int i = 0u; i < num_Threads; ++i)
+	for (unsigned int i = 0u; i < m_NumThreads; ++i)
 	{
 		m_Threads.emplace_back([=] {
 				while (true) {
-					if (main == std::this_thread::get_id())
+					if (m_MainId == std::this_thread::get_id())
 						return;
-					auto iter = isThreadBusy.find(std::this_thread::get_id());
+					auto iter = m_IsThreadBusy.find(std::this_thread::get_id());
 					
 					Task task;
 					{
-						std::unique_lock <std::mutex> umutex(m_mutex);
-						m_condition_var.wait(umutex, [=] { return m_stopping || !m_Tasks.empty(); });
-						if (m_Tasks.empty() && m_stopping){
+						std::unique_lock <std::mutex> umutex(m_Mutex);
+						m_CondVar.wait(umutex, [=] { return m_IsStoped || !m_Tasks.empty(); });
+						if (m_Tasks.empty() && m_IsStoped){
 							break;
 						}
 
 						task = std::move(m_Tasks.front());
 						m_Tasks.pop(); 
 
-						if (iter != isThreadBusy.end())
+						if (iter != m_IsThreadBusy.end())
 							iter->second = true;
 						//std::cout << std::this_thread::get_id() << std::endl;
 					}
    					task();
-					if (iter != isThreadBusy.end())
+					if (iter != m_IsThreadBusy.end())
 						iter->second = false;
 				}
 		});
-		isThreadBusy.insert(std::make_pair(m_Threads.back().get_id(),false));
+		m_IsThreadBusy.insert(std::make_pair(m_Threads.back().get_id(),false));
 	}
 }
 void ThreadPool::Shutdown() noexcept
 {
 	{
-		std::unique_lock <std::mutex> umutex(m_mutex);
-		m_stopping = true;
+		std::unique_lock <std::mutex> umutex(m_Mutex);
+		m_IsStoped = true;
 	}
-	m_condition_var.notify_all();
+	m_CondVar.notify_all();
 	for (thread& thread : m_Threads) {
 		thread.detach();
 	}
@@ -63,18 +63,18 @@ void ThreadPool::Shutdown() noexcept
 
 void ThreadPool::Init()
 {
-	if (initialized == false) {
+	if (m_IsInitialized == false) {
 		thread_pool = new ThreadPool(thread::hardware_concurrency());
 		std::cout << BOLDGREEN << "Initialized Thread pool" << RESET << std::endl;
-		initialized = true;
+		m_IsInitialized = true;
 	}
 }
 
 void ThreadPool::Enqueue(Task task)
 {
 	{
-		std::unique_lock<std::mutex> lock{ m_mutex };
+		std::unique_lock<std::mutex> lock{ m_Mutex };
 		m_Tasks.emplace(std::move(task));
 	}
-	m_condition_var.notify_one();
+	m_CondVar.notify_one();
 }

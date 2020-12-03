@@ -6,23 +6,23 @@
 using namespace Doom;
 
 GameObject::GameObject(const std::string name,float x, float y,float z) {
-	this->name = name;
-	layer = World::objects.size();
-	id = World::obj_id;
-	World::obj_id++;
-	component_manager = new ComponentManager(this, this->name);
-	transform = component_manager->AddComponent<Transform>();
-	transform->Translate(x, y, z);
+	this->m_Name = name;
+	m_Layer = World::objects.size();
+	m_Id = World::m_ObjId;
+	World::m_ObjId++;
+	m_ComponentManager = new ComponentManager(this, this->m_Name);
+	m_Transform = m_ComponentManager->AddComponent<Transform>();
+	m_Transform->Translate(x, y, z);
 	World::objects.push_back(this);
 }
 
 Doom::GameObject::~GameObject()
 {
 #ifdef _DEBUG
-	std::cout << "GameObject: <" << NAMECOLOR << name << RESET << "> has been destroyed\n";
+	std::cout << "GameObject: <" << NAMECOLOR << m_Name << RESET << "> has been destroyed\n";
 #endif
 	EventSystem::GetInstance()->UnregisterAll(this);
-	delete component_manager;
+	delete m_ComponentManager;
 }
 
 //void GameObject::operator=(GameObject& go) {
@@ -47,19 +47,19 @@ Doom::GameObject::~GameObject()
 #include "../Core/Utils.h"
 
 glm::vec3 GameObject::GetPosition() {
-	return Utils::GetPosition(transform->pos);
+	return Utils::GetPosition(m_Transform->m_PosMat4);
 }
 
 void Doom::GameObject::RemoveChild(void * child)
 {
-	for (size_t i = 0; i < Childs.size(); i++)
+	for (size_t i = 0; i < m_Childs.size(); i++)
 	{
-		if (Childs[i] == child) {
-			Childs.erase(Childs.begin() + i);
+		if (m_Childs[i] == child) {
+			m_Childs.erase(m_Childs.begin() + i);
 			return;
 		}
 	}
 }
 glm::vec3 GameObject::GetScale() {
-	return Utils::GetScale(transform->scale);
+	return Utils::GetScale(m_Transform->m_ScaleMat4);
 }

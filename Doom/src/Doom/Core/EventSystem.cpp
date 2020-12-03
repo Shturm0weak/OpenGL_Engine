@@ -10,7 +10,7 @@ bool EventSystem::AlreadyRegistered(EventType eventId, Listener* client) {
 	pair<multimap<EventType, Listener*>::iterator,
 		multimap<EventType, Listener*>::iterator> range;
 
-	range = database.equal_range(eventId);
+	range = m_Database.equal_range(eventId);
 
 	
 	for (multimap<EventType, Listener*>::iterator iter = range.first;
@@ -25,9 +25,9 @@ bool EventSystem::AlreadyRegistered(EventType eventId, Listener* client) {
 }
 
 void EventSystem::DispatchEvent(Event* _event) {
-	range = database.equal_range((EventType)_event->GetEventId());
-	for (iter = range.first;iter != range.second; iter++) {
-		(*iter).second->HandleEvent(_event);
+	m_Range = m_Database.equal_range((EventType)_event->GetEventId());
+	for (m_Iter = m_Range.first;m_Iter != m_Range.second; m_Iter++) {
+		(*m_Iter).second->HandleEvent(_event);
 		if (_event->GetEventId() != EventType::ONUPDATE) {
 			return;
 		}
@@ -44,31 +44,31 @@ void EventSystem::RegisterClient(EventType event, Listener* client) {
 		return;
 	}
 
-	client->registeredEvents.push_back((int)event);
-	database.insert(std::make_pair(event, client));
+	client->m_RegisteredEvents.push_back((int)event);
+	m_Database.insert(std::make_pair(event, client));
 }
 
 void EventSystem::UnregisterClient(EventType event, Listener* client) {
 	pair<multimap<EventType, Listener*>::iterator,
 		multimap<EventType, Listener*>::iterator> range;
 
-	range = database.equal_range(event);
+	range = m_Database.equal_range(event);
 
 	for (multimap<EventType, Listener*>::iterator iter = range.first;
 		iter != range.second; iter++) {
 		if ((*iter).second == client) {
-			iter = database.erase(iter);
+			iter = m_Database.erase(iter);
 			break;
 		}
 	}
 }
 
 void EventSystem::UnregisterAll(Listener* client) {
-	if (database.size() > 0) {
-		multimap<EventType, Listener*>::iterator iter = database.begin();
-		while (iter != database.end()) {
+	if (m_Database.size() > 0) {
+		multimap<EventType, Listener*>::iterator iter = m_Database.begin();
+		while (iter != m_Database.end()) {
 			if ((*iter).second == client) {
-				iter = database.erase(iter);
+				iter = m_Database.erase(iter);
 			}
 			else {
 				iter++;
@@ -79,9 +79,9 @@ void EventSystem::UnregisterAll(Listener* client) {
 
 void EventSystem::SendEvent(EventType eventId, Listener* sender, void* data)
 {
-	if (eventId != EventType::ONWINDOWRESIZE && eventId != EventType::ONMAINTHREADPROCESS && process_events == false)
+	if (eventId != EventType::ONWINDOWRESIZE && eventId != EventType::ONMAINTHREADPROCESS && m_IsProcessingEvents == false)
 		return;
-	mtx1.lock();
+	m_Mtx1.lock();
 	/*for (auto i = database.begin(); i != database.end(); i++)
 	{
 		if (i->first == eventId) {
@@ -92,33 +92,33 @@ void EventSystem::SendEvent(EventType eventId, Listener* sender, void* data)
 		}
 	}*/
 	std::unique_ptr<Event> newEvent(new Event(eventId, sender, data));
-	currentEvents.push(*newEvent);
-	mtx1.unlock();
+	m_CurrentEvents.push(*newEvent);
+	m_Mtx1.unlock();
 }
 
 void EventSystem::ProcessEvents() {
-	if (process_events == false)
+	if (m_IsProcessingEvents == false)
 		return;
-	std::unique_lock<std::mutex> lck(mtx);
-	while (currentEvents.size() > 0) {
-		Event newEvent = currentEvents.front();
-		currentEvents.pop();
+	std::unique_lock<std::mutex> lck(m_Mtx);
+	while (m_CurrentEvents.size() > 0) {
+		Event newEvent = m_CurrentEvents.front();
+		m_CurrentEvents.pop();
 		DispatchEvent(&newEvent);
 	}
 	lck.unlock();
 }
 
 void EventSystem::StopProcessEvents(bool value) {
-	process_events = !value;
+	m_IsProcessingEvents = !value;
 }
 
 void EventSystem::ClearEvents() {
-	while (currentEvents.size() > 0) {
-		currentEvents.pop();
+	while (m_CurrentEvents.size() > 0) {
+		m_CurrentEvents.pop();
 	}
 }
 
 void EventSystem::Shutdown() {
-	database.clear();
+	m_Database.clear();
 	ClearEvents();
 }

@@ -5,82 +5,82 @@
 using namespace Doom;
 
 Doom::Gizmos::Gizmos(float x, float y,float z) : GameObject("Gizmos", x, y) {
-	Enable = false;
-	GameObject::Enable = false;
+	m_Enable = false;
+	GameObject::m_Enable = false;
 	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
 	World::PopBack();
-	World::obj_id--;
+	World::m_ObjId--;
 
 	for (size_t i = 0; i < 3; i++)
 	{
-		faces.push_back(new GameObject("Face" + std::to_string(i),x,y,z));
-		faces.back()->GetComponentManager()->AddComponent<SpriteRenderer>();
-		faces.back()->SetOwner((void*)this);
-		AddChild((void*)faces.back());
-		axis.push_back(new Line(glm::vec3(0),glm::vec3(0)));
-		faces.back()->Enable = false;
+		m_Faces.push_back(new GameObject("Face" + std::to_string(i),x,y,z));
+		m_Faces.back()->GetComponentManager()->AddComponent<SpriteRenderer>();
+		m_Faces.back()->SetOwner((void*)this);
+		AddChild((void*)m_Faces.back());
+		m_Axis.push_back(new Line(glm::vec3(0),glm::vec3(0)));
+		m_Faces.back()->m_Enable = false;
 		World::PopBack();
-		World::obj_id--;
+		World::m_ObjId--;
 		Line::lines.pop_back();
 	}
-	tr = GetComponent<Transform>();
+	m_Tr = GetComponent<Transform>();
 }
 
 void Doom::Gizmos::OnUpdate()
 {
-	isHovered = false;
-	if (blockFrame == true && Input::IsMouseReleased(Keycode::MOUSE_BUTTON_1)){
-		blockFrame = false;
+	m_IsHovered = false;
+	if (m_BlockFrame == true && Input::IsMouseReleased(Keycode::MOUSE_BUTTON_1)){
+		m_BlockFrame = false;
 		return;
 	}
-	else if (blockFrame == true && !Input::IsMouseReleased(Keycode::MOUSE_BUTTON_1)) {
+	else if (m_BlockFrame == true && !Input::IsMouseReleased(Keycode::MOUSE_BUTTON_1)) {
 		return;
 	}
 
-	if (obj == nullptr) {
-		Enable = false;
+	if (m_Obj == nullptr) {
+		m_Enable = false;
 		return;
 	}
 	else
-		Enable = true;
+		m_Enable = true;
 
-	tr->Translate(obj->GetPosition().x, obj->GetPosition().y, obj->GetPosition().z);
+	m_Tr->Translate(m_Obj->GetPosition().x, m_Obj->GetPosition().y, m_Obj->GetPosition().z);
 	glm::vec3 pos = Window::GetCamera().GetPosition();
-	glm::vec3 v = (pos - tr->GetPosition());
+	glm::vec3 v = (pos - m_Tr->GetPosition());
 	float d = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	d *= 0.1;
-	tr->Scale(d, d, d);
+	m_Tr->Scale(d, d, d);
 
-	axis[0]->SetStartPoint(tr->GetPosition());
-	axis[0]->SetEndPoint(tr->GetPosition().x + d * 1.5, tr->GetPosition().y, tr->GetPosition().z);
-	axis[0]->color = COLORS::Red;
-	axis[1]->SetStartPoint(tr->GetPosition());
-	axis[1]->SetEndPoint(tr->GetPosition().x, tr->GetPosition().y + d * 1.5, tr->GetPosition().z);
-	axis[1]->color = COLORS::Green;
-	axis[2]->SetStartPoint(tr->GetPosition());
-	axis[2]->SetEndPoint(tr->GetPosition().x, tr->GetPosition().y, tr->GetPosition().z + d * 1.5);
-	axis[2]->color = COLORS::Blue;
+	m_Axis[0]->SetStartPoint(m_Tr->GetPosition());
+	m_Axis[0]->SetEndPoint(m_Tr->GetPosition().x + d * 1.5, m_Tr->GetPosition().y, m_Tr->GetPosition().z);
+	m_Axis[0]->color = COLORS::Red;
+	m_Axis[1]->SetStartPoint(m_Tr->GetPosition());
+	m_Axis[1]->SetEndPoint(m_Tr->GetPosition().x, m_Tr->GetPosition().y + d * 1.5, m_Tr->GetPosition().z);
+	m_Axis[1]->color = COLORS::Green;
+	m_Axis[2]->SetStartPoint(m_Tr->GetPosition());
+	m_Axis[2]->SetEndPoint(m_Tr->GetPosition().x, m_Tr->GetPosition().y, m_Tr->GetPosition().z + d * 1.5);
+	m_Axis[2]->color = COLORS::Blue;
 
 	Transform* trO = nullptr;
-	faces[0]->GetComponent<SpriteRenderer>()->color = COLORS::Red;
-	trO = faces[0]->GetComponent<Transform>();
-	trO->Translate(tr->GetPosition().x, tr->GetPosition().y + d, tr->GetPosition().z + d);
+	m_Faces[0]->GetComponent<SpriteRenderer>()->m_Color = COLORS::Red;
+	trO = m_Faces[0]->GetComponent<Transform>();
+	trO->Translate(m_Tr->GetPosition().x, m_Tr->GetPosition().y + d, m_Tr->GetPosition().z + d);
 	if (pos.x > trO->GetPosition().x)
 		trO->RotateOnce(0, -90, 0, false);
 	else
 		trO->RotateOnce(0, 90, 0, false);
 
-	faces[1]->GetComponent<SpriteRenderer>()->color = COLORS::Green;
-	trO = faces[1]->GetComponent<Transform>();
-	trO->Translate(tr->GetPosition().x + d, tr->GetPosition().y, tr->GetPosition().z + d);
+	m_Faces[1]->GetComponent<SpriteRenderer>()->m_Color = COLORS::Green;
+	trO = m_Faces[1]->GetComponent<Transform>();
+	trO->Translate(m_Tr->GetPosition().x + d, m_Tr->GetPosition().y, m_Tr->GetPosition().z + d);
 	if (pos.y < trO->GetPosition().y)
 		trO->RotateOnce(-90, 0, 0, false);
 	else
 		trO->RotateOnce(90, 0, 0, false);
 
-	faces[2]->GetComponent<SpriteRenderer>()->color = COLORS::Blue;
-	trO = faces[2]->GetComponent<Transform>();
-	trO->Translate(tr->GetPosition().x + d, tr->GetPosition().y + d, tr->GetPosition().z);
+	m_Faces[2]->GetComponent<SpriteRenderer>()->m_Color = COLORS::Blue;
+	trO = m_Faces[2]->GetComponent<Transform>();
+	trO->Translate(m_Tr->GetPosition().x + d, m_Tr->GetPosition().y + d, m_Tr->GetPosition().z);
 	if (pos.z < trO->GetPosition().z)
 		trO->RotateOnce(180, 0, 0, false);
 	else
@@ -89,14 +89,14 @@ void Doom::Gizmos::OnUpdate()
 	glm::vec3 dir = Window::GetCamera().GetMouseDirVec();
 	if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 		IntersectPlane(dir);
-		if (f == nullptr)
+		if (m_F == nullptr)
 			IntersectLine(dir, d * 0.1f);
 	}
 	else if (!Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
 		IntersectPlane(dir);
 		IntersectLine(dir, d * 0.1f);
-		l = nullptr;
-		f = nullptr;
+		m_L = nullptr;
+		m_F = nullptr;
 	}
 }
 
@@ -144,11 +144,11 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 	glm::vec3 start = Window::GetCamera().GetPosition();
 	std::pair<float, Line*> pair;
 	float dist = 0;
-	if (l != nullptr)
+	if (m_L != nullptr)
 		scale *= 100;
 	for (size_t i = 0; i < 3; i++)
 	{
-		Line* line = axis[i];
+		Line* line = m_Axis[i];
 		if (!line->Enable)
 			continue;
 		float tMin = 1e300;
@@ -183,55 +183,55 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 		else {
 			pair = std::make_pair(0.0f, nullptr);
 		}
-		l = pair.second;
+		m_L = pair.second;
 		dist = pair.first;
 
-	if (l != nullptr && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
-		l->color = COLORS::Orange;
-		isHovered = true;
-		glm::vec3 diff = glm::vec3(l->mesh2D[3], l->mesh2D[4], l->mesh2D[5]) - glm::vec3(l->mesh2D[0], l->mesh2D[1], l->mesh2D[2]);
+	if (m_L != nullptr && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
+		m_L->color = COLORS::Orange;
+		m_IsHovered = true;
+		glm::vec3 diff = glm::vec3(m_L->mesh2D[3], m_L->mesh2D[4], m_L->mesh2D[5]) - glm::vec3(m_L->mesh2D[0], m_L->mesh2D[1], m_L->mesh2D[2]);
 		float transform;
-		if (l == axis[0]) {
-			if (roundTransform)
+		if (m_L == m_Axis[0]) {
+			if (m_RoundTransform)
 				transform = glm::round(Window::GetCamera().GetPosition().x + dir.x * dist - diff.x * 0.5f);
 			else
 				transform = Window::GetCamera().GetPosition().x + dir.x * dist - diff.x * 0.5f;
-			obj->GetComponent<Transform>()->Translate(transform, obj->GetPosition().y, obj->GetPosition().z);
-			faces[0]->Enable = false;
-			faces[1]->Enable = false;
-			faces[2]->Enable = false;
-			axis[1]->Enable = false;
-			axis[2]->Enable = false;
+			m_Obj->GetComponent<Transform>()->Translate(transform, m_Obj->GetPosition().y, m_Obj->GetPosition().z);
+			m_Faces[0]->m_Enable = false;
+			m_Faces[1]->m_Enable = false;
+			m_Faces[2]->m_Enable = false;
+			m_Axis[1]->Enable = false;
+			m_Axis[2]->Enable = false;
 		}
-		else if (l == axis[1]) {
-			if (roundTransform)
+		else if (m_L == m_Axis[1]) {
+			if (m_RoundTransform)
 				transform = glm::round(Window::GetCamera().GetPosition().y + dir.y * dist - diff.y * 0.5f);
 			else
 				transform = Window::GetCamera().GetPosition().y + dir.y * dist - diff.y * 0.5f;
-			obj->GetComponent<Transform>()->Translate(obj->GetPosition().x, transform, obj->GetPosition().z);
-			faces[0]->Enable = false;
-			faces[1]->Enable = false;
-			faces[2]->Enable = false;
-			axis[0]->Enable = false;
-			axis[2]->Enable = false;
+			m_Obj->GetComponent<Transform>()->Translate(m_Obj->GetPosition().x, transform, m_Obj->GetPosition().z);
+			m_Faces[0]->m_Enable = false;
+			m_Faces[1]->m_Enable = false;
+			m_Faces[2]->m_Enable = false;
+			m_Axis[0]->Enable = false;
+			m_Axis[2]->Enable = false;
 		}
-		else if (l == axis[2]) {
-			if (roundTransform)
+		else if (m_L == m_Axis[2]) {
+			if (m_RoundTransform)
 				transform = glm::round(Window::GetCamera().GetPosition().z + dir.z * dist - diff.z * 0.5f);
 			else
 				transform = Window::GetCamera().GetPosition().z + dir.z * dist - diff.z * 0.5f;
-			obj->GetComponent<Transform>()->Translate(obj->GetPosition().x, obj->GetPosition().y, transform);
-			faces[0]->Enable = false;
-			faces[1]->Enable = false;
-			faces[2]->Enable = false;
-			axis[1]->Enable = false;
-			axis[0]->Enable = false;
+			m_Obj->GetComponent<Transform>()->Translate(m_Obj->GetPosition().x, m_Obj->GetPosition().y, transform);
+			m_Faces[0]->m_Enable = false;
+			m_Faces[1]->m_Enable = false;
+			m_Faces[2]->m_Enable = false;
+			m_Axis[1]->Enable = false;
+			m_Axis[0]->Enable = false;
 		}
 	}
 	else {
 		for (size_t i = 0; i < 3; i++)
 		{
-			axis[i]->Enable = true;
+			m_Axis[i]->Enable = true;
 		}
 	}
 }
@@ -241,17 +241,17 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 	std::map<float, GameObject*> d;
 	glm::vec3 start = Window::GetCamera().GetPosition();
 	glm::vec4 scale = glm::vec4(1);
-	if (f != nullptr)
+	if (m_F != nullptr)
 		scale = glm::vec4(100);
 	for (size_t i = 0; i < 3; i++)
 	{
-		GameObject* c = faces[i];
-		if (!c->Enable)
+		GameObject* c = m_Faces[i];
+		if (!c->m_Enable)
 			continue;
 		Transform* tr = c->GetComponent<Transform>();
 		float tMin = 1e300;
 		glm::vec3 pos = c->GetPosition();
-		glm::mat4 viewXscale = tr->view * tr->scale;
+		glm::mat4 viewXscale = tr->m_ViewMat4 * tr->m_ScaleMat4;
 		glm::vec4 transformedBMin = viewXscale * (glm::vec4(-0.5f, -0.5f, 0, 0) * scale);
 		glm::vec4 transformedBMax = viewXscale * (glm::vec4(0.5f, 0.5f, 0, 0)* scale);
 		glm::vec3 bMin = pos + (glm::vec3)transformedBMin;
@@ -277,20 +277,20 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 		pair = std::make_pair(0.0f, nullptr);
 	}
 	GameObject* go = pair.second;
-	f = go;
+	m_F = go;
 	float dist = pair.first;
 	if (go != nullptr && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
-		go->GetComponent<SpriteRenderer>()->color = COLORS::Orange;
-		isHovered = true;
-		glm::vec3 diff = go->GetPosition() - obj->GetPosition();
+		go->GetComponent<SpriteRenderer>()->m_Color = COLORS::Orange;
+		m_IsHovered = true;
+		glm::vec3 diff = go->GetPosition() - m_Obj->GetPosition();
 		for (size_t i = 0; i < 3; i++)
 		{
-			axis[i]->Enable = false;
+			m_Axis[i]->Enable = false;
 		}
 		glm::vec3 transform = glm::vec3(Window::GetCamera().GetPosition().x + translation.x * dist
 		, Window::GetCamera().GetPosition().y + translation.y * dist
 		, Window::GetCamera().GetPosition().z + translation.z * dist);
-		if (roundTransform) {
+		if (m_RoundTransform) {
 			transform.x = glm::round(transform.x);
 			transform.y = glm::round(transform.y);
 			transform.z = glm::round(transform.z);
@@ -298,39 +298,39 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 			diff.y = glm::round(diff.y);
 			diff.z = glm::round(diff.z);
 		}
-		if (go->name == "Face0") {
+		if (go->m_Name == "Face0") {
 			go->GetComponent<Transform>()->Translate(go->GetPosition().x, transform.y, transform.z);
-			obj->GetComponent<Transform>()->Translate(obj->GetPosition().x, transform.y - diff.y, transform.z - diff.z);
-			faces[1]->Enable = false;
-			faces[2]->Enable = false;
+			m_Obj->GetComponent<Transform>()->Translate(m_Obj->GetPosition().x, transform.y - diff.y, transform.z - diff.z);
+			m_Faces[1]->m_Enable = false;
+			m_Faces[2]->m_Enable = false;
 		}
-		else if (go->name == "Face1") {
+		else if (go->m_Name == "Face1") {
 			go->GetComponent<Transform>()->Translate(transform.x, go->GetPosition().y, transform.z);
-			obj->GetComponent<Transform>()->Translate(transform.x - diff.x, obj->GetPosition().y, transform.z - diff.z);
-			faces[0]->Enable = false;
-			faces[2]->Enable = false;
+			m_Obj->GetComponent<Transform>()->Translate(transform.x - diff.x, m_Obj->GetPosition().y, transform.z - diff.z);
+			m_Faces[0]->m_Enable = false;
+			m_Faces[2]->m_Enable = false;
 		}
-		else if (go->name == "Face2") {
+		else if (go->m_Name == "Face2") {
 			go->GetComponent<Transform>()->Translate(transform.x, transform.y, go->GetPosition().z);
-			obj->GetComponent<Transform>()->Translate(transform.x - diff.x, transform.y - diff.y, obj->GetPosition().z);
-			faces[0]->Enable = false;
-			faces[1]->Enable = false;
+			m_Obj->GetComponent<Transform>()->Translate(transform.x - diff.x, transform.y - diff.y, m_Obj->GetPosition().z);
+			m_Faces[0]->m_Enable = false;
+			m_Faces[1]->m_Enable = false;
 		}
 	}
 	else {
 		for (size_t i = 0; i < 3; i++)
 		{
-			faces[i]->Enable = true;
+			m_Faces[i]->m_Enable = true;
 		}
 	}
 }
 
 void Doom::Gizmos::Render()
 {
-	if (obj == nullptr) {
-		faces[0]->Enable = false;
-		faces[1]->Enable = false;
-		faces[2]->Enable = false;
+	if (m_Obj == nullptr) {
+		m_Faces[0]->m_Enable = false;
+		m_Faces[1]->m_Enable = false;
+		m_Faces[2]->m_Enable = false;
 		return;
 	}
 
@@ -338,7 +338,7 @@ void Doom::Gizmos::Render()
 	std::map<float,GameObject*> d;
 	for (size_t i = 0; i < 3; i++)
 	{
-		d.insert(std::make_pair(glm::distance(pos, faces[i]->GetPosition()),faces[i]));
+		d.insert(std::make_pair(glm::distance(pos, m_Faces[i]->GetPosition()),m_Faces[i]));
 	}
 	
 	Batch::GetInstance()->Gindexcount = 0;
@@ -347,7 +347,7 @@ void Doom::Gizmos::Render()
 	}
 	for (auto i = d.rbegin(); i != d.rend(); i++)
 	{
-		if(i->second->Enable)
+		if(i->second->m_Enable)
 			Batch::GetInstance()->Submit(*i->second->GetComponent<SpriteRenderer>());
 	}
 	Batch::GetInstance()->EndGameObjects();
@@ -356,8 +356,8 @@ void Doom::Gizmos::Render()
 	Batch::GetInstance()->BeginLines();
 	for (size_t i = 0; i < 3; i++)
 	{
-		if (axis[i]->Enable)
-			Batch::GetInstance()->Submit(*axis[i]);
+		if (m_Axis[i]->Enable)
+			Batch::GetInstance()->Submit(*m_Axis[i]);
 	}
 	Batch::GetInstance()->EndLines();
 

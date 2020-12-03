@@ -15,21 +15,18 @@ namespace Doom {
 	class DOOM_API SpriteRenderer : public Irenderer {
 	private:
 
-		std::mutex updateLock;
-
-		static unsigned int indeces2D[6];
-		float mesh2D[16] = {
+		static unsigned int m_Indices2D[6];
+		float m_Mesh2D[16] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,
 		 0.5f,  0.5f, 1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
 
-		Transform* tr = nullptr;
+		Transform* m_Tr = nullptr;
 
-
-		inline std::string GetPathToTexture() const { return this->pathToTexture; };
-		std::string pathToTexture = ("None");
+		inline std::string GetPathToTexture() const { return this->m_PathToTexture; };
+		std::string m_PathToTexture = ("None");
 
 		friend class Transform;
 		friend class GameObject;
@@ -39,28 +36,29 @@ namespace Doom {
 		friend class ComponentManager;
 	
 	public:
-		Texture* texture = Texture::WhiteTexture;
-		SpriteRenderer();
-		~SpriteRenderer();
 
-		virtual void Update(glm::vec3 pos) override;
-		virtual void Render() override;
-
-		float WorldVertexPositions[8] = {
+		float m_WorldVertexPositions[8] = {
 			-0.5f, -0.5f,
 			 0.5f, -0.5f,
 			 0.5f,  0.5f,
 			-0.5f,  0.5f
 		};
 
-		inline int GetTexture() { return texture->m_RendererID; }
-		inline Texture* GetTexturePointer() { return texture; }
+		Texture* m_Texture = Texture::WhiteTexture;
+
+		SpriteRenderer();
+		~SpriteRenderer();
+
+		virtual void Update(glm::vec3 pos) override;
+		virtual void Render() override;
+
+		inline int GetTexture() { return m_Texture->m_RendererID; }
+		inline Texture* GetTexturePointer() { return m_Texture; }
 		double GetWidth() const;
 		double GetHeight() const;
 
 		float* GetUVs() const;
 		
-
 		//Only in int size from 0 to 1 !!!
 		void ReversedUvs();
 		void OriginalUvs();

@@ -3,20 +3,23 @@
 namespace Doom {
 
 	class DOOM_API SphereCollider : public Component {
+	private:
+
+		Mesh* m_Mesh = nullptr;
+		Shader* m_Shader = Shader::Get("CubeCollider");
+		glm::vec4 m_Color = COLORS::Green;
+
+		friend class ComponentManager;
 	public:
-		float radius = 1.0;
+
+		static std::vector<SphereCollider*> spheres;
+		glm::vec3 m_Offset = { 0,0,0 };
+		float m_Radius = 1.0;
+		bool m_IsInBoundingBox = true;
+		
 		SphereCollider();
 		~SphereCollider();
-	private:
-		friend class ComponentManager;
 
-		Mesh* mesh = nullptr;
-		glm::vec4 color = COLORS::Green;
-		Shader* shader = Shader::Get("CubeCollider");
-	public:
-		bool isInBoundingBox = true;
-		glm::vec3 offset = { 0,0,0 };
-		static std::vector<SphereCollider*> spheres;
 		void Render();
 		bool IntersectSphereToSphere(SphereCollider* sp);
 	};

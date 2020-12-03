@@ -189,7 +189,7 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	}
 
 	float ratio = aRatio;
-	float _size = (HEIGHT * 2);
+	float _size = (g_Height * 2);
 	Batch::GetInstance()->Submit(vertecies, this->btnColor,texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (edgeRadius / (_size) * ratio));
 
 	if (str.length() > 0) {
@@ -232,7 +232,7 @@ void Doom::Gui::Panel(std::string label,float x, float y, float width, float hei
 	currentPanelCoods[6] = -tempX + pos.x;  currentPanelCoods[7] = -tempY + pos.y;
 
 	float ratio = aRatio;
-	float _size = (HEIGHT * 2);
+	float _size = (g_Height * 2);
 
 	bool isHovered = IsPanelHovered();
 
@@ -402,7 +402,7 @@ void Doom::Gui::Image(float x, float y, float width, float height, Texture * tex
 	verteces[6] = -tempX + pos.x;  verteces[7] = -tempY + pos.y;
 
 	float ratio = aRatio;
-	float _size = (HEIGHT * 2);
+	float _size = (g_Height * 2);
 
 	Batch::GetInstance()->Submit(verteces, color, texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (edgeRadius / (_size)* ratio));
 	
@@ -432,7 +432,7 @@ bool Doom::Gui::CollapsingHeader(std::string label, float x, float y,glm::vec4 c
 	verteces[6] = -tempX + pos.x;  verteces[7] = -tempY + pos.y;
 
 	float ratio = aRatio;
-	float _size = (HEIGHT * 2);
+	float _size = (g_Height * 2);
 
 	if (isInteracting == false) {
 		glm::dvec2 mousePos = ViewPort::GetInstance()->GetStaticMousePosition();
@@ -563,7 +563,7 @@ void Doom::Gui::ApplyRelatedToPanelProperties(float * x, float * y)
 void Doom::Gui::RecalculateProjectionMatrix()
 {
 	float aspectRatio = Window::GetCamera().GetAspectRatio();
-	ViewProjecTionRelatedToCamera = glm::ortho(-aspectRatio * (float)WIDTH, aspectRatio * (float)WIDTH, (float)-HEIGHT, (float)HEIGHT, -1.0f, 1.0f);
+	ViewProjecTionRelatedToCamera = glm::ortho(-aspectRatio * (float)g_Width, aspectRatio * (float)g_Width, (float)-g_Height, (float)g_Height, -1.0f, 1.0f);
 }
 
 void Doom::Gui::ShutDown() {

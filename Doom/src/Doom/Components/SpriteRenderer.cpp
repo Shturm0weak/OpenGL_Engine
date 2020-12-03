@@ -7,22 +7,22 @@
 using namespace Doom;
 
 void SpriteRenderer::SetTexture(Texture* texture) {
-	tr = owner->GetComponentManager()->GetComponent<Transform>();
+	m_Tr = m_Owner->GetComponentManager()->GetComponent<Transform>();
 	if (texture == nullptr) {
-		pathToTexture = "None";
-		this->texture = nullptr;
-		this->texture = texture;
+		m_PathToTexture = "None";
+		this->m_Texture = nullptr;
+		this->m_Texture = texture;
 		return;
 	}
-	this->texture = nullptr;
-	this->texture = texture;
-	pathToTexture = texture->GetFilePath();
+	this->m_Texture = nullptr;
+	this->m_Texture = texture;
+	m_PathToTexture = texture->GetFilePath();
 }
 
 Doom::SpriteRenderer::SpriteRenderer()
 {
 	//SetType(ComponentType::SPRITERENDERER);
-	shader = Shader::Get("Default2D");
+	m_Shader = Shader::Get("Default2D");
 	Renderer::objects2d.push_back(this);
 }
 
@@ -39,25 +39,25 @@ void Doom::SpriteRenderer::Update(glm::vec3 pos)
 	ThreadPool::GetInstance()->Enqueue([=]{
 		Transform* tr = this->GetOwnerOfComponent()->GetComponentManager()->GetComponent<Transform>();
 		float WorldVerPos[16];
-		glm::mat4 scaleXview = tr->view * tr->scale;
+		glm::mat4 scaleXview = tr->m_ViewMat4 * tr->m_ScaleMat4;
 		float* pSource;
 		pSource = (float*)glm::value_ptr(scaleXview);
 		for (unsigned int i = 0; i < 4; i++) {
 			for (unsigned int j = 0; j < 4; j++) {
 				WorldVerPos[i * 4 + j] = 0;
 				for (unsigned int k = 0; k < 4; k++) {
-					WorldVerPos[i * 4 + j] += mesh2D[i * 4 + k] * pSource[k * 4 + j];
+					WorldVerPos[i * 4 + j] += m_Mesh2D[i * 4 + k] * pSource[k * 4 + j];
 				}
 			}
 		}
-		WorldVertexPositions[0] = WorldVerPos[0];
-		WorldVertexPositions[1] = WorldVerPos[1];
-		WorldVertexPositions[2] = WorldVerPos[4];
-		WorldVertexPositions[3] = WorldVerPos[5];
-		WorldVertexPositions[4] = WorldVerPos[8];
-		WorldVertexPositions[5] = WorldVerPos[9];
-		WorldVertexPositions[6] = WorldVerPos[12];
-		WorldVertexPositions[7] = WorldVerPos[13];
+		m_WorldVertexPositions[0] = WorldVerPos[0];
+		m_WorldVertexPositions[1] = WorldVerPos[1];
+		m_WorldVertexPositions[2] = WorldVerPos[4];
+		m_WorldVertexPositions[3] = WorldVerPos[5];
+		m_WorldVertexPositions[4] = WorldVerPos[8];
+		m_WorldVertexPositions[5] = WorldVerPos[9];
+		m_WorldVertexPositions[6] = WorldVerPos[12];
+		m_WorldVertexPositions[7] = WorldVerPos[13];
 		pSource = nullptr;
 });
 }
@@ -69,81 +69,81 @@ void Doom::SpriteRenderer::Render()
 
 void SpriteRenderer::ReverseUVs()
 {
-	float v1 = mesh2D[2];
-	float v2 = mesh2D[3];
-	float v3 = mesh2D[6];
-	float v4 = mesh2D[7];
-	float v5 = mesh2D[10];
-	float v6 = mesh2D[11];
-	float v7 = mesh2D[14];
-	float v8 = mesh2D[15];
-	mesh2D[2] = v3;
-	mesh2D[3] = v4;
-	mesh2D[6] = v1;
-	mesh2D[7] = v2;
-	mesh2D[10] = v7;
-	mesh2D[11] = v8;
-	mesh2D[14] = v5;
-	mesh2D[15] = v6;
+	float v1 = m_Mesh2D[2];
+	float v2 = m_Mesh2D[3];
+	float v3 = m_Mesh2D[6];
+	float v4 = m_Mesh2D[7];
+	float v5 = m_Mesh2D[10];
+	float v6 = m_Mesh2D[11];
+	float v7 = m_Mesh2D[14];
+	float v8 = m_Mesh2D[15];
+	m_Mesh2D[2] = v3;
+	m_Mesh2D[3] = v4;
+	m_Mesh2D[6] = v1;
+	m_Mesh2D[7] = v2;
+	m_Mesh2D[10] = v7;
+	m_Mesh2D[11] = v8;
+	m_Mesh2D[14] = v5;
+	m_Mesh2D[15] = v6;
 }
 
 void SpriteRenderer::ReversedUvs()
 {
-	mesh2D[2] = 1.f;
-	mesh2D[3] = 0.f;
-	mesh2D[6] = 0.f;
-	mesh2D[7] = 0.f;
-	mesh2D[10] = 0.f;
-	mesh2D[11] = 1.f;
-	mesh2D[14] = 1.f;
-	mesh2D[15] = 1.f;
+	m_Mesh2D[2] = 1.f;
+	m_Mesh2D[3] = 0.f;
+	m_Mesh2D[6] = 0.f;
+	m_Mesh2D[7] = 0.f;
+	m_Mesh2D[10] = 0.f;
+	m_Mesh2D[11] = 1.f;
+	m_Mesh2D[14] = 1.f;
+	m_Mesh2D[15] = 1.f;
 }
 
 void SpriteRenderer::OriginalUvs()
 {
-	mesh2D[2] = 0.f;
-	mesh2D[3] = 0.f;
-	mesh2D[6] = 1.f;
-	mesh2D[7] = 0.f;
-	mesh2D[10] = 1.f;
-	mesh2D[11] = 1.f;
-	mesh2D[14] = 0.f;
-	mesh2D[15] = 1.f;
+	m_Mesh2D[2] = 0.f;
+	m_Mesh2D[3] = 0.f;
+	m_Mesh2D[6] = 1.f;
+	m_Mesh2D[7] = 0.f;
+	m_Mesh2D[10] = 1.f;
+	m_Mesh2D[11] = 1.f;
+	m_Mesh2D[14] = 0.f;
+	m_Mesh2D[15] = 1.f;
 }
 
 void SpriteRenderer::SetUVs(float* uvs)
 {
-	mesh2D[2] = uvs[0];
-	mesh2D[3] = uvs[1];
-	mesh2D[6] = uvs[2];
-	mesh2D[7] = uvs[3];
-	mesh2D[10] = uvs[4];
-	mesh2D[11] = uvs[5];
-	mesh2D[14] = uvs[6];
-	mesh2D[15] = uvs[7];
+	m_Mesh2D[2] = uvs[0];
+	m_Mesh2D[3] = uvs[1];
+	m_Mesh2D[6] = uvs[2];
+	m_Mesh2D[7] = uvs[3];
+	m_Mesh2D[10] = uvs[4];
+	m_Mesh2D[11] = uvs[5];
+	m_Mesh2D[14] = uvs[6];
+	m_Mesh2D[15] = uvs[7];
 }
 
 double Doom::SpriteRenderer::GetWidth() const
 {
-	return owner->GetScale()[0] * mesh2D[4] * 2;
+	return m_Owner->GetScale()[0] * m_Mesh2D[4] * 2;
 }
 
 double Doom::SpriteRenderer::GetHeight() const
 {
-	return owner->GetScale()[1] * mesh2D[9] * 2;
+	return m_Owner->GetScale()[1] * m_Mesh2D[9] * 2;
 }
 
 float * SpriteRenderer::GetUVs() const
 {
 	float uvs[8];
-	uvs[0] = mesh2D[2];
-	uvs[1] = mesh2D[3];
-	uvs[2] = mesh2D[6];
-	uvs[3] = mesh2D[7];
-	uvs[4] = mesh2D[10];
-	uvs[5] = mesh2D[11];
-	uvs[6] = mesh2D[14];
-	uvs[7] = mesh2D[15];
+	uvs[0] = m_Mesh2D[2];
+	uvs[1] = m_Mesh2D[3];
+	uvs[2] = m_Mesh2D[6];
+	uvs[3] = m_Mesh2D[7];
+	uvs[4] = m_Mesh2D[10];
+	uvs[5] = m_Mesh2D[11];
+	uvs[6] = m_Mesh2D[14];
+	uvs[7] = m_Mesh2D[15];
 	return uvs;
 }
 
@@ -151,14 +151,14 @@ void SpriteRenderer::Setlayer(int layer)
 {
 	unsigned int size = World::objects.size();
 #ifdef _DEBUG
-	std::cout << owner->name << " is set from layer " << owner->id << " to " << layer << std::endl;
+	std::cout << m_Owner->m_Name << " is set from layer " << m_Owner->m_Id << " to " << layer << std::endl;
 #endif
-	World::objects.erase(World::objects.begin() + owner->id);
-	World::objects.insert(World::objects.begin() + layer, owner);
+	World::objects.erase(World::objects.begin() + m_Owner->m_Id);
+	World::objects.insert(World::objects.begin() + layer, m_Owner);
 	for (unsigned int i = 0; i < World::objects.size(); i++)
 	{
-		World::objects[i]->id = i;
-		World::objects[i]->layer = i;
+		World::objects[i]->m_Id = i;
+		World::objects[i]->m_Layer = i;
 	}
 	return;
 }

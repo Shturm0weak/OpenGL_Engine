@@ -125,8 +125,8 @@ glm::vec3 Doom::Camera::GetRotation()
 glm::vec3 Doom::Camera::GetMouseDirVec()
 {
 	glm::vec2 pos;
-	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetCamera().GetAspectRatio() * HEIGHT);
-	pos.y = ViewPort::GetInstance()->GetStaticMousePosition().y / (HEIGHT);
+	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetCamera().GetAspectRatio() * g_Height);
+	pos.y = ViewPort::GetInstance()->GetStaticMousePosition().y / (g_Height);
 	glm::vec4 clipCoords = glm::vec4(pos.x, pos.y, -1.0f, 1.0f);
 	glm::vec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMatrix);
 	eyeCoords.z = -1.0f; eyeCoords.w = 0.0f;
@@ -207,7 +207,7 @@ void Camera::CameraMovement() {
 		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
 			speed *= 10;
 		}
-		forwardV *= speed * DeltaTime::deltatime;
+		forwardV *= speed * DeltaTime::m_Deltatime;
 		if (Input::IsKeyDown(Keycode::KEY_W)) {
 			MovePosition(glm::vec3(-forwardV.x, forwardV.y, -forwardV.z));
 		}
@@ -215,12 +215,12 @@ void Camera::CameraMovement() {
 			MovePosition(glm::vec3(forwardV.x, -forwardV.y, forwardV.z));
 		}
 		if (Input::IsKeyDown(Keycode::SPACE)) {
-			MovePosition(glm::vec3(0, 5.0f * DeltaTime::deltatime, 0));
+			MovePosition(glm::vec3(0, 5.0f * DeltaTime::m_Deltatime, 0));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_C)) {
-			MovePosition(glm::vec3(0, -5.0f * DeltaTime::deltatime, 0));
+			MovePosition(glm::vec3(0, -5.0f * DeltaTime::m_Deltatime, 0));
 		}
-		if (ViewPort::GetInstance()->IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
+		if (ViewPort::GetInstance()->m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
 			delta *= 0.2;
@@ -238,7 +238,7 @@ void Camera::CameraMovement() {
 		if (isinf(rightVec.x))
 			rightVec = {1,0};
 		rightVec *= (1.f / sqrt(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
-		rightVec *= DeltaTime::deltatime * speed;
+		rightVec *= DeltaTime::m_Deltatime * speed;
 		double angle = (yaw * 360.0f) / (2 * 3.14159f);
 		if (Input::IsKeyDown(Keycode::KEY_D)) {
 			if (angle > 0 && angle < 180)

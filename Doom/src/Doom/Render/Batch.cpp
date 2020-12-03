@@ -337,10 +337,10 @@ void Batch::Submit(SpriteRenderer & c)
 	}
 	GtextureIndex = 0.0f;
 
-	if (c.texture != nullptr) {
+	if (c.m_Texture != nullptr) {
 		for (unsigned int i = 0; i < maxTextureSlots; i++)
 		{
-			if (GtextureSlots[i] == c.texture->m_RendererID) {
+			if (GtextureSlots[i] == c.m_Texture->m_RendererID) {
 				GtextureIndex = (float)i;
 				break;
 			}
@@ -348,7 +348,7 @@ void Batch::Submit(SpriteRenderer & c)
 		}
 		if (GtextureIndex == 0.0f) {
 			GtextureIndex = (float)GtextureSlotsIndex;
-			GtextureSlots[GtextureSlotsIndex] = c.texture->m_RendererID;
+			GtextureSlots[GtextureSlotsIndex] = c.m_Texture->m_RendererID;
 			GtextureSlotsIndex++;
 		}
 		//c.texture->Bind();
@@ -357,68 +357,68 @@ void Batch::Submit(SpriteRenderer & c)
 	Transform* trOfR = c.GetOwnerOfComponent()->GetComponent<Transform>();
 	
 	//GtextureIndex = 0;
-	glm::vec2 scale = c.owner->GetScale();
-	Gbuffer->vertex = glm::vec2(c.mesh2D[0] * scale[0], c.mesh2D[1] * scale[1]);
-	Gbuffer->textcoords = glm::vec2(c.mesh2D[2], c.mesh2D[3]);
-	Gbuffer->m_color = c.color;
+	glm::vec2 scale = c.m_Owner->GetScale();
+	Gbuffer->vertex = glm::vec2(c.m_Mesh2D[0] * scale[0], c.m_Mesh2D[1] * scale[1]);
+	Gbuffer->textcoords = glm::vec2(c.m_Mesh2D[2], c.m_Mesh2D[3]);
+	Gbuffer->m_color = c.m_Color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = trOfR->view[0];
-	Gbuffer->rotationMat1 = trOfR->view[1];
-	Gbuffer->rotationMat2 = trOfR->view[2];
-	Gbuffer->rotationMat3 = trOfR->view[3];
-	Gbuffer->posMat0 = trOfR->pos[0];
-	Gbuffer->posMat1 = trOfR->pos[1];
-	Gbuffer->posMat2 = trOfR->pos[2];
-	Gbuffer->posMat3 = trOfR->pos[3];
+	Gbuffer->rotationMat0 = trOfR->m_ViewMat4[0];
+	Gbuffer->rotationMat1 = trOfR->m_ViewMat4[1];
+	Gbuffer->rotationMat2 = trOfR->m_ViewMat4[2];
+	Gbuffer->rotationMat3 = trOfR->m_ViewMat4[3];
+	Gbuffer->posMat0 = trOfR->m_PosMat4[0];
+	Gbuffer->posMat1 = trOfR->m_PosMat4[1];
+	Gbuffer->posMat2 = trOfR->m_PosMat4[2];
+	Gbuffer->posMat3 = trOfR->m_PosMat4[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[4] * scale[0], c.mesh2D[5] * scale[1]);
-	Gbuffer->textcoords = glm::vec2(c.mesh2D[6], c.mesh2D[7]);
-	Gbuffer->m_color = c.color;
+	Gbuffer->vertex = glm::vec2(c.m_Mesh2D[4] * scale[0], c.m_Mesh2D[5] * scale[1]);
+	Gbuffer->textcoords = glm::vec2(c.m_Mesh2D[6], c.m_Mesh2D[7]);
+	Gbuffer->m_color = c.m_Color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = trOfR->view[0];
-	Gbuffer->rotationMat1 = trOfR->view[1];
-	Gbuffer->rotationMat2 = trOfR->view[2];
-	Gbuffer->rotationMat3 = trOfR->view[3];
-	Gbuffer->posMat0 = trOfR->pos[0];
-	Gbuffer->posMat1 = trOfR->pos[1];
-	Gbuffer->posMat2 = trOfR->pos[2];
-	Gbuffer->posMat3 = trOfR->pos[3];
+	Gbuffer->rotationMat0 = trOfR->m_ViewMat4[0];
+	Gbuffer->rotationMat1 = trOfR->m_ViewMat4[1];
+	Gbuffer->rotationMat2 = trOfR->m_ViewMat4[2];
+	Gbuffer->rotationMat3 = trOfR->m_ViewMat4[3];
+	Gbuffer->posMat0 = trOfR->m_PosMat4[0];
+	Gbuffer->posMat1 = trOfR->m_PosMat4[1];
+	Gbuffer->posMat2 = trOfR->m_PosMat4[2];
+	Gbuffer->posMat3 = trOfR->m_PosMat4[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[8] * scale[0], c.mesh2D[9] * scale[1]);
-	Gbuffer->textcoords = glm::vec2(c.mesh2D[10], c.mesh2D[11]);
-	Gbuffer->m_color = c.color;
+	Gbuffer->vertex = glm::vec2(c.m_Mesh2D[8] * scale[0], c.m_Mesh2D[9] * scale[1]);
+	Gbuffer->textcoords = glm::vec2(c.m_Mesh2D[10], c.m_Mesh2D[11]);
+	Gbuffer->m_color = c.m_Color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = trOfR->view[0];
-	Gbuffer->rotationMat1 = trOfR->view[1];
-	Gbuffer->rotationMat2 = trOfR->view[2];
-	Gbuffer->rotationMat3 = trOfR->view[3];
-	Gbuffer->posMat0 = trOfR->pos[0];
-	Gbuffer->posMat1 = trOfR->pos[1];
-	Gbuffer->posMat2 = trOfR->pos[2];
-	Gbuffer->posMat3 = trOfR->pos[3];
+	Gbuffer->rotationMat0 = trOfR->m_ViewMat4[0];
+	Gbuffer->rotationMat1 = trOfR->m_ViewMat4[1];
+	Gbuffer->rotationMat2 = trOfR->m_ViewMat4[2];
+	Gbuffer->rotationMat3 = trOfR->m_ViewMat4[3];
+	Gbuffer->posMat0 = trOfR->m_PosMat4[0];
+	Gbuffer->posMat1 = trOfR->m_PosMat4[1];
+	Gbuffer->posMat2 = trOfR->m_PosMat4[2];
+	Gbuffer->posMat3 = trOfR->m_PosMat4[3];
 	Gbuffer++;
 
-	Gbuffer->vertex = glm::vec2(c.mesh2D[12] * scale[0], c.mesh2D[13] * scale[1]);
-	Gbuffer->textcoords = glm::vec2(c.mesh2D[14], c.mesh2D[15]);
-	Gbuffer->m_color = c.color;
+	Gbuffer->vertex = glm::vec2(c.m_Mesh2D[12] * scale[0], c.m_Mesh2D[13] * scale[1]);
+	Gbuffer->textcoords = glm::vec2(c.m_Mesh2D[14], c.m_Mesh2D[15]);
+	Gbuffer->m_color = c.m_Color;
 	Gbuffer->texIndex = GtextureIndex;
-	Gbuffer->rotationMat0 = trOfR->view[0];
-	Gbuffer->rotationMat1 = trOfR->view[1];
-	Gbuffer->rotationMat2 = trOfR->view[2];
-	Gbuffer->rotationMat3 = trOfR->view[3];
-	Gbuffer->posMat0 = trOfR->pos[0];
-	Gbuffer->posMat1 = trOfR->pos[1];
-	Gbuffer->posMat2 = trOfR->pos[2];
-	Gbuffer->posMat3 = trOfR->pos[3];
+	Gbuffer->rotationMat0 = trOfR->m_ViewMat4[0];
+	Gbuffer->rotationMat1 = trOfR->m_ViewMat4[1];
+	Gbuffer->rotationMat2 = trOfR->m_ViewMat4[2];
+	Gbuffer->rotationMat3 = trOfR->m_ViewMat4[3];
+	Gbuffer->posMat0 = trOfR->m_PosMat4[0];
+	Gbuffer->posMat1 = trOfR->m_PosMat4[1];
+	Gbuffer->posMat2 = trOfR->m_PosMat4[2];
+	Gbuffer->posMat3 = trOfR->m_PosMat4[3];
 	Gbuffer++;
 
 	Gindexcount += 6;
 }
 
 void Batch::Submit(RectangleCollider2D& c) {
-	glm::mat4 mvp = c.owner->GetComponentManager()->GetComponent<Transform>()->pos * c.owner->GetComponentManager()->GetComponent<Transform>()->view;
+	glm::mat4 mvp = c.m_Owner->GetComponentManager()->GetComponent<Transform>()->m_PosMat4 * c.m_Owner->GetComponentManager()->GetComponent<Transform>()->m_ViewMat4;
 	if (GtextureSlotsIndex > maxTextureSlots - 1) {
 		EndGameObjects();
 		flushGameObjects(shader);
@@ -428,7 +428,7 @@ void Batch::Submit(RectangleCollider2D& c) {
 
 	GtextureIndex = 0.0f;
 	//std::cout << "Batch " << c.position.x << "	" << c.position.y << std::endl;
-	glm::vec3 scaleVal = c.owner->GetScale();
+	glm::vec3 scaleVal = c.m_Owner->GetScale();
 	Gbuffer->vertex = glm::vec2(c.positions[0] * scaleVal[0], c.positions[1] * scaleVal[1]);
 	Gbuffer->textcoords = glm::vec2(c.positions[2], c.positions[3]);
 	Gbuffer->m_static = c.Static;

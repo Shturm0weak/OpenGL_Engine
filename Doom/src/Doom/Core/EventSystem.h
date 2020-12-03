@@ -33,56 +33,45 @@ namespace Doom {
 	class DOOM_API EventSystem {
 	private:
 
-		multimap<EventType, Listener*> database;
+		multimap<EventType, Listener*> m_Database;
 
 		pair<multimap<EventType, Listener*>::iterator,
-			multimap<EventType, Listener*>::iterator> range;
+			multimap<EventType, Listener*>::iterator> m_Range;
 
-		multimap<EventType, Listener*>::iterator iter;
+		multimap<EventType, Listener*>::iterator m_Iter;
 
-		std::queue<Event> currentEvents;
-		mutable std::mutex mtx, mtx1;
-		std::condition_variable cond;
-		bool process_events = true;
+		std::queue<Event> m_CurrentEvents;
+		mutable std::mutex m_Mtx, m_Mtx1;
+		std::condition_variable m_CondVar;
+		bool m_IsProcessingEvents = true;
 
 		void DispatchEvent(Event* event);
-
-		EventSystem() {}
-
 		EventSystem& operator=(const EventSystem& rhs) { return *this; }
 
+		EventSystem() {}
+		
 	public:
 
-		void StopProcessEvents(bool value);
-
-		int GetAmountOfEvents() { return currentEvents.size(); }
-
-		bool AlreadyRegistered(EventType eventId, Listener* client);
-
 		EventSystem(EventSystem& rhs) {}
-
 		~EventSystem() { this->Shutdown(); }
 
+		int GetAmountOfEvents() { return m_CurrentEvents.size(); }
+		bool AlreadyRegistered(EventType eventId, Listener* client);
 		static EventSystem* GetInstance();
-
+		void StopProcessEvents(bool value);
 		void RegisterClient(EventType event, Listener* client);
-
 		void UnregisterClient(EventType event, Listener* client);
-
 		void UnregisterAll(Listener* client);
-
 		void SendEvent(EventType eventId, Listener* sender, void* data = 0);
-
 		void ProcessEvents();
-
 		void ClearEvents();
-
 		void Shutdown();
 	};
 
 	class DOOM_API MainThread : Listener {
 	private:
-		Task task;
+
+		Task m_Task;
 	public:
 		
 		MainThread() {
@@ -98,8 +87,8 @@ namespace Doom {
 		}
 
 		virtual void OnMainThreadProcess(void* _task) override {
-			task = *static_cast<Task*>(_task);
-			task();
+			m_Task = *static_cast<Task*>(_task);
+			m_Task();
 			delete _task;
 		}
 	};

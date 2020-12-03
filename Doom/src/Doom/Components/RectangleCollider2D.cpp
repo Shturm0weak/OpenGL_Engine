@@ -7,9 +7,9 @@ using namespace Doom;
 
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 	//SetType(ComponentType::COLLISION);
-	this->owner = owner;
-	id = World::col_id;
-	World::col_id++;
+	this->m_Owner = owner;
+	id = World::m_ColId;
+	World::m_ColId++;
 	Renderer::collision2d.push_back(this);
 	if (owner != nullptr) {
 		position.x = owner->GetPosition().x;
@@ -39,7 +39,7 @@ RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 Doom::RectangleCollider2D::~RectangleCollider2D()
 {
 	Renderer::collision2d.erase(GetId() + Renderer::collision2d.begin());
-	World::col_id--;
+	World::m_ColId--;
 	unsigned int size = Renderer::collision2d.size();
 	if (GetId() != size) {
 		for (unsigned int i = GetId(); i < size; i++)
@@ -47,7 +47,7 @@ Doom::RectangleCollider2D::~RectangleCollider2D()
 			Renderer::collision2d[i]->SetId(i);
 		}
 	}
-	owner->GetComponent<Transform>()->col = nullptr;
+	m_Owner->GetComponent<Transform>()->col = nullptr;
 }
 void RectangleCollider2D::UpdateCollision(double x, double y,glm::mat4 pos,glm::mat4 view,glm::mat4 scale)
 {
@@ -207,7 +207,7 @@ void RectangleCollider2D::IsCollidedSAT() {
 						if (ShapeOverlap_SAT(*this, *col)) {
 							isCollided = true;
 							collidedObject = col;
-							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::GetInstance(),EventType::ONCOLLSION, (Listener*)(owner), (void*)this->collidedObject);
+							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::GetInstance(),EventType::ONCOLLSION, (Listener*)(m_Owner), (void*)this->collidedObject);
 							std::function<void()>* f1 = new std::function<void()>(f2);
 							EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
 							//EventSystem::Instance()->SendEvent("OnCollision", (Listener*)(owner), (void*)this->collidedObject);
@@ -273,8 +273,8 @@ void RectangleCollider2D::IsCollidedDIAGS()
 							}
 						}
 						if (IsTrigger == false) {
-							trans = owner->component_manager->GetComponent<Transform>();
-							trans->Translate(owner->GetPosition().x - displacement.x, owner->GetPosition().y - displacement.y);
+							trans = m_Owner->m_ComponentManager->GetComponent<Transform>();
+							trans->Translate(m_Owner->GetPosition().x - displacement.x, m_Owner->GetPosition().y - displacement.y);
 							trans = nullptr;
 						}
 						
@@ -338,9 +338,9 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 
 	// If we got here, the objects have collided, we will displace r1
 	// by overlap along the vector between the two object centers
-	Transform* trans1 = r1.owner->component_manager->GetComponent<Transform>();
-	Transform* trans2 = r2.owner->component_manager->GetComponent<Transform>();
-	glm::vec2 d = glm::vec2(r2.owner->GetPosition().x - r1.owner->GetPosition().x, r2.owner->GetPosition().y - r1.owner->GetPosition().y);
+	Transform* trans1 = r1.m_Owner->m_ComponentManager->GetComponent<Transform>();
+	Transform* trans2 = r2.m_Owner->m_ComponentManager->GetComponent<Transform>();
+	glm::vec2 d = glm::vec2(r2.m_Owner->GetPosition().x - r1.m_Owner->GetPosition().x, r2.m_Owner->GetPosition().y - r1.m_Owner->GetPosition().y);
 	double s = sqrtf(d.x*d.x + d.y*d.y);
 
 	//If displacement.x is set then even with 0 angle 	
@@ -349,13 +349,13 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 	//so it needs to be overthought either do we need continues collision detection or not
 	glm::vec2 posToTranslate = glm::vec2(0,0);
 	
-	posToTranslate.x = r1.owner->GetPosition().x;
-	if ((r2.positions[9] * r2.owner->GetScale()[1]) + r2.owner->GetPosition().y - 0.15 > (r1.positions[1] * r1.owner->GetScale()[1]) + r1.owner->GetPosition().y)
-		posToTranslate.x = r1.owner->GetPosition().x - (overlap * d.x / s);
+	posToTranslate.x = r1.m_Owner->GetPosition().x;
+	if ((r2.positions[9] * r2.m_Owner->GetScale()[1]) + r2.m_Owner->GetPosition().y - 0.15 > (r1.positions[1] * r1.m_Owner->GetScale()[1]) + r1.m_Owner->GetPosition().y)
+		posToTranslate.x = r1.m_Owner->GetPosition().x - (overlap * d.x / s);
 		
-	posToTranslate.y = r1.owner->GetPosition().y - (overlap * d.y / s);
+	posToTranslate.y = r1.m_Owner->GetPosition().y - (overlap * d.y / s);
 	trans1->Translate(posToTranslate.x, posToTranslate.y);
-	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(owner), &r2);
+	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(m_Owner), &r2);
 	std::function<void()>* f1 = new std::function<void()>(f2);
 	EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
 	return false;

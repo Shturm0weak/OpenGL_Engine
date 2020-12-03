@@ -6,10 +6,12 @@ namespace Doom {
 
 	class DOOM_API SceneSerializer {
 	public:
-		static std::string currentSceneFilePath;
+
+		static std::string m_CurrentSceneFilePath;
 		static void Serialize(const std::string& filePath);
 		static void DeSerialize(const std::string& filePath);
 	private:
+
 		static void DeSerializeGameObject(YAML::detail::iterator_value& go, std::map<GameObject*, std::vector<int>>& childs);
 		static void DeSerializeTextureAtlas(YAML::detail::iterator_value& ta);
 		static void SerializeTextureAtlas(YAML::Emitter& out, TextureAtlas* ta);

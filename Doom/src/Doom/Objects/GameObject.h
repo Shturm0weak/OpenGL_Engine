@@ -14,11 +14,9 @@ namespace Doom {
 	{
 	private:
 
-		std::vector<void*> Childs;
-		void* Owner = nullptr;
-		const char** items = nullptr;
-
-		ComponentManager* component_manager = nullptr;
+		std::vector<void*> m_Childs;
+		ComponentManager* m_ComponentManager = nullptr;
+		void* m_Owner = nullptr;
 
 		friend class Doom::Transform;
 		friend class Doom::RectangleCollider2D;
@@ -31,35 +29,32 @@ namespace Doom {
 
 	public:
 
-		Transform* transform = nullptr;
+		Transform* m_Transform = nullptr;
 
-		int id = 0;
-		int layer = 0;
-		bool Enable = true;
-		bool isSerializable = true;
-		bool isParticle = false;
+		std::string m_Name;
+		int m_Id = 0;
+		int m_Layer = 0;
+		bool m_Enable = true;
+		bool m_IsSerializable = true;
+		bool m_IsParticle = false;
 
-		std::string name;
-
-		std::vector<void*> GetChilds() const { return Childs; }
-		void* GetOwner() const { return Owner; }
-		void AddChild(void* child) { Childs.push_back(child); }
-		void SetOwner(void* owner) { this->Owner = owner; }
+		std::vector<void*> GetChilds() const { return m_Childs; }
+		glm::vec3 GetScale();
+		glm::vec3 GetPosition();
+		ComponentManager* GetComponentManager() const { return m_ComponentManager; };
+		inline int& GetLayer() { return m_Layer; }
+		void* GetOwner() const { return m_Owner; }
+		void AddChild(void* child) { m_Childs.push_back(child); }
+		void SetOwner(void* owner) { this->m_Owner = owner; }
 		void RemoveChild(void* child);
 
 		template <typename T>
 		T* GetComponent() {
-			return component_manager->GetComponent<T>();
+			return m_ComponentManager->GetComponent<T>();
 		}
 
 		virtual ~GameObject();
 		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0,float z = 0);
-		
-		glm::vec3 GetScale();
-		glm::vec3 GetPosition();
-		ComponentManager* GetComponentManager() const { return component_manager; };
-		inline int& GetLayer() { return layer; }
-		
 	};
 
 }

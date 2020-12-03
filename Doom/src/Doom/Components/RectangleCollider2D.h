@@ -74,7 +74,7 @@ namespace Doom {
 		bool Collided_side_top = false;
 		bool Collided_side_bottom = false;
 	public:
-		void SetOwner(GameObject* _owner) { owner = _owner; }
+		void SetOwner(GameObject* _owner) { m_Owner = _owner; }
 
 		inline glm::vec2 GetPositions() const {
 			return position;

@@ -14,7 +14,7 @@ namespace Doom {
 	class DOOM_API Renderer3D : public Irenderer {
 	public:
 
-		std::map<std::string, float> floatUniforms;
+		std::map<std::string, float> m_FloatUniforms;
 
 		enum class RenderTechnic {
 			Forward,
@@ -22,47 +22,41 @@ namespace Doom {
 		};
 
 		struct Material {
-			float ambient = 0.2f;
-			float specular = 0.2f;
+			float m_Ambient = 0.2f;
+			float m_Specular = 0.2f;
 		};
 
-		void ChangeRenderTechnic(RenderTechnic rt);
-		void LoadMesh(Mesh* mesh);
-		bool useNormalMap = false;
-		Texture* diffuseTexture = Texture::WhiteTexture;
-		Texture* normalMapTexture = Texture::Get("InvalidTexture");
-
-		void EraseFromInstancing();
-
-		Transform* tr = nullptr;
-
-		Mesh* mesh = nullptr;
+		Material m_Material;
+		Texture* m_DiffuseTexture = Texture::WhiteTexture;
+		Texture* m_NormalMapTexture = Texture::Get("InvalidTexture");
+		Transform* m_Tr = nullptr;
+		Mesh* m_Mesh = nullptr;
+		bool m_IsCastingShadows = true;
+		bool m_IsWireMesh = false;
+		bool m_IsUsingNormalMap = false;
 
 		Renderer3D();
 		~Renderer3D();
 
-		Material mat;
-		bool isCastingShadows = true;
-		bool isWireMesh = false;
+		void EraseFromInstancing();
+		void ChangeRenderTechnic(RenderTechnic rt);
+		void LoadMesh(Mesh* mesh);
 		void BakeShadows();
 		void MakeTransparent();
 		void MakeSolid();
 		virtual void Render() override;
 	private:
 
-	
-
 		//TODO ??? Upload in shader, calculate the angle between the normal and light dir if angle > 90 then shadow should not be drawn!!! ???
 		//TODO Make bake shadows strength depending on alpha channel of color for transparent object!!!
-		bool isTransparent = false;
-		bool isSkyBox = false;
+		bool m_IsTransparent = false;
+		bool m_IsSkyBox = false;
+		RenderTechnic m_RenderTechnic = RenderTechnic::Forward;
 
 		void ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color);
 		void AdditionalUniformsLoad();
 
-		RenderTechnic renderTechnic = RenderTechnic::Forward;
-
-		friend class SceneSerializer;
+		friend class Doom::SceneSerializer;
 		friend class Doom::EntryPoint;
 		friend class Doom::SkyBox;
 		friend class Doom::MeshManager;

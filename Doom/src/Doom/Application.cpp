@@ -2,7 +2,7 @@
 
 void Doom::Application::Init() const
 {
-	ImGui::SetCurrentContext(Window::imGuiContext);
+	ImGui::SetCurrentContext(Window::m_ImGuiContext);
 	ImGuiStyle* style = &ImGui::GetStyle();
 	ImVec4* colors = style->Colors;
 

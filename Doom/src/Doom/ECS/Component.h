@@ -10,22 +10,26 @@ namespace Doom {
 
 	class DOOM_API Component {
 	private:
+
 		int m_Id;
 		size_t m_Type;
 	protected:
-		GameObject* owner = nullptr;
+
+		GameObject* m_Owner = nullptr;
+
 		inline void SetType(const size_t type)  { m_Type = type; }
 		inline int GetComponentId() const { return m_Id; }
 	public:
-		inline size_t GetComponentType() const { return m_Type; }
-		inline GameObject* GetOwnerOfComponent() const { return owner; }
-		inline int GetComponentID() const { return m_Id; }
-		
-		friend class ComponentManager;
 
+		inline size_t GetComponentType() const { return m_Type; }
+		inline GameObject* GetOwnerOfComponent() const { return m_Owner; }
+		inline int GetComponentID() const { return m_Id; }
 		void RemoveComponent();
 
+		Component() {}
 		~Component() {}
+
+		friend class ComponentManager;
 	};
 
 }

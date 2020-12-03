@@ -22,23 +22,26 @@
 namespace Doom {
 
 	class DOOM_API ComponentManager {
-		GameObject* owner = nullptr;
-		std::string owner_name;
-		const char** namesOfMembers = nullptr;
-		std::vector <Component*> components;
+	private:
+
+		GameObject* m_Owner = nullptr;
+		std::string m_OwnerName;
+		const char** m_NamesOfMembers = nullptr;
+		std::vector <Component*> m_Components;
 
 		friend class Component;
 
 	public:
+
 		ComponentManager::ComponentManager(GameObject* owner, std::string& owner_name) {
-			this->owner = owner;
-			this->owner_name = owner_name;
+			this->m_Owner = owner;
+			this->m_OwnerName = owner_name;
 		}
 
-		inline int GetAmountOfComponents() { return components.size(); }
+		inline int GetAmountOfComponents() { return m_Components.size(); }
 
 		~ComponentManager() {
-			delete[] namesOfMembers;
+			delete[] m_NamesOfMembers;
 			RemoveComponent<RectangleCollider2D>();
 			RemoveComponent<Animator>();
 			RemoveComponent<CubeCollider3D>();
@@ -57,19 +60,19 @@ namespace Doom {
 		}
 
 		const char** GetItems() {
-			if (namesOfMembers != nullptr)
-				delete[] namesOfMembers;
-			namesOfMembers = new const char* [components.size()];
-			for (unsigned int i = 0; i < components.size(); i++)
+			if (m_NamesOfMembers != nullptr)
+				delete[] m_NamesOfMembers;
+			m_NamesOfMembers = new const char* [m_Components.size()];
+			for (unsigned int i = 0; i < m_Components.size(); i++)
 			{
-				namesOfMembers[i] = std::to_string((int)components[i]->GetComponentType()).c_str();
+				m_NamesOfMembers[i] = std::to_string((int)m_Components[i]->GetComponentType()).c_str();
 			}
-			return namesOfMembers;
+			return m_NamesOfMembers;
 		}
 
 		std::vector<ScriptComponent*> GetScripts() {
 			std::vector<ScriptComponent*> scripts;
-			for (Component* com : components) {
+			for (Component* com : m_Components) {
 				if (com->m_Type == sizeof(ScriptComponent))
 					scripts.push_back(static_cast<ScriptComponent*>(com));
 			}
@@ -83,13 +86,13 @@ namespace Doom {
 			if (com == nullptr)
 				return;
 			int _id = com->m_Id;
-			if (com->m_Id < components.size())
-				components.erase(components.begin() + com->m_Id);
-			unsigned int _size = components.size();
+			if (com->m_Id < m_Components.size())
+				m_Components.erase(m_Components.begin() + com->m_Id);
+			unsigned int _size = m_Components.size();
 			if (com->m_Id != _size) {
 				for (unsigned int i = com->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;
+					m_Components[i]->m_Id = i;
 				}
 			}
 			delete com;
@@ -100,13 +103,13 @@ namespace Doom {
 			if (com == nullptr)
 				return;
 			int _id = com->m_Id;
-			if (com->m_Id < components.size())
-				components.erase(components.begin() + com->m_Id);
-			unsigned int _size = components.size();
+			if (com->m_Id < m_Components.size())
+				m_Components.erase(m_Components.begin() + com->m_Id);
+			unsigned int _size = m_Components.size();
 			if (com->m_Id != _size) {
 				for (unsigned int i = com->m_Id; i < _size; i++)
 				{
-					components[i]->m_Id = i;
+					m_Components[i]->m_Id = i;
 				}
 			}
 			delete com;
@@ -116,7 +119,7 @@ namespace Doom {
 		template<class T>
 		T* GetComponent()
 		{
-			for (auto com : components) {
+			for (auto com : m_Components) {
 				if (com->GetComponentType() == sizeof(T)) {
 					return static_cast<T*>(com);
 				}
@@ -128,13 +131,13 @@ namespace Doom {
 		T* AddComponent() {
 			if ((GetComponent<T>() != nullptr && GetComponent<T>()->m_Type == sizeof(ScriptComponent)) || GetComponent<T>() == nullptr) {
 				T* object = new T();
-				object->owner = (this->owner);
+				object->m_Owner = (this->m_Owner);
 				object->SetType(sizeof(T));
-				object->m_Id = components.size();
-				components.push_back(object);
+				object->m_Id = m_Components.size();
+				m_Components.push_back(object);
 #ifdef _DEBUG
 				
-				std::cout << NAMECOLOR << (int)object->m_Type << RESET << ": has been added to GameObject <" NAMECOLOR << owner_name << RESET << ">" << std::endl;
+				std::cout << NAMECOLOR << (int)object->m_Type << RESET << ": has been added to GameObject <" NAMECOLOR << m_OwnerName << RESET << ">" << std::endl;
 #endif
 				return object;
 			}

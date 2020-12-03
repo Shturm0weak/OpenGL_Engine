@@ -48,7 +48,7 @@ void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
 	bool FirstFrame = true;
-	SceneSerializer::DeSerialize(SceneSerializer::currentSceneFilePath);
+	SceneSerializer::DeSerialize(SceneSerializer::m_CurrentSceneFilePath);
 	app->OnStart();
 	EventSystem::GetInstance()->SendEvent(EventType::ONSTART, nullptr);
 
@@ -59,7 +59,7 @@ void EntryPoint::Run()
 		DeltaTime::calculateDeltaTime();
 
 		if (FirstFrame) {
-			DeltaTime::deltatime = 0.000001;
+			DeltaTime::m_Deltatime = 0.000001;
 			FirstFrame = false;
 		}
 
@@ -131,17 +131,17 @@ void EntryPoint::Run()
 		ViewPort::GetInstance()->Update();
 
 		if (Input::IsKeyPressed(Keycode::KEY_BACKSPACE)) {
-			if (Editor::GetInstance()->gizmo->obj != nullptr) {
-				World::DeleteObject(Editor::GetInstance()->gizmo->obj->id);
+			if (Editor::GetInstance()->gizmo->m_Obj != nullptr) {
+				World::DeleteObject(Editor::GetInstance()->gizmo->m_Obj->m_Id);
 				if (World::objects.size() > 0)
-					Editor::GetInstance()->gizmo->obj = World::objects[World::objects.size() - 1];
+					Editor::GetInstance()->gizmo->m_Obj = World::objects[World::objects.size() - 1];
 				else
-					Editor::GetInstance()->gizmo->obj = nullptr;
-				Editor::GetInstance()->go = Editor::GetInstance()->gizmo->obj;
+					Editor::GetInstance()->gizmo->m_Obj = nullptr;
+				Editor::GetInstance()->go = Editor::GetInstance()->gizmo->m_Obj;
 			}
 		}
 
-		if (ViewPort::GetInstance()->viewportResized) {
+		if (ViewPort::GetInstance()->m_IsViewportResized) {
 			Window::GetCamera().frameBufferColor->Resize(ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y);
 		}
 
@@ -152,7 +152,7 @@ void EntryPoint::Run()
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}
-	SceneSerializer::Serialize(SceneSerializer::currentSceneFilePath);
+	SceneSerializer::Serialize(SceneSerializer::m_CurrentSceneFilePath);
 	app->OnClose();
 }
 

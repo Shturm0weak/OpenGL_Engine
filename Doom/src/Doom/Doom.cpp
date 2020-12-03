@@ -34,8 +34,8 @@ DOOM_API bool Renderer::PolygonMode = false;
 DOOM_API int Renderer::DrawCalls = 0;
 DOOM_API int Renderer::Vertices = 0;
 
-DOOM_API int World::obj_id = 0;
-DOOM_API int World::col_id = 0;
+DOOM_API int World::m_ObjId = 0;
+DOOM_API int World::m_ColId = 0;
 
 DOOM_API std::vector<std::string> Editor::texturesPath;
 DOOM_API std::vector<Texture*> Editor::texture;
@@ -49,23 +49,23 @@ DOOM_API Texture* Texture::WhiteTexture;
 DOOM_API double Texture::VRAMused = 0;
 DOOM_API std::map<std::string, Texture*> Texture::textures;
 
-DOOM_API double Timer::start;
+DOOM_API double Timer::m_Start;
 
 DOOM_API ThreadPool* ThreadPool::thread_pool = nullptr;
-DOOM_API bool ThreadPool::initialized;
+DOOM_API bool ThreadPool::m_IsInitialized;
 
 DOOM_API Input* Input::s_Instance = new WindowsInput();
 
-DOOM_API GLFWwindow* Window::m_window = nullptr;
-DOOM_API ImGuiIO* Window::io = nullptr;
-DOOM_API ImGuiContext* Window::imGuiContext = nullptr;
-DOOM_API float Window::scrollYOffset = 0;
-DOOM_API Camera* Window::m_camera = new Camera();
+DOOM_API GLFWwindow* Window::m_Window = nullptr;
+DOOM_API ImGuiIO* Window::m_ImGuiIO = nullptr;
+DOOM_API ImGuiContext* Window::m_ImGuiContext = nullptr;
+DOOM_API float Window::m_ScrollYOffset = 0;
+DOOM_API Camera* Window::m_Camera = new Camera();
 
-DOOM_API float DeltaTime::time;
-DOOM_API float DeltaTime::lasttime = (float)glfwGetTime();
-DOOM_API float DeltaTime::deltatime = 0.0000001;
-DOOM_API std::mutex DeltaTime::mtx;
+DOOM_API float DeltaTime::m_Time;
+DOOM_API float DeltaTime::m_Lasttime = (float)glfwGetTime();
+DOOM_API float DeltaTime::m_Deltatime = 0.0000001;
+DOOM_API std::mutex DeltaTime::m_Mtx;
 
 DOOM_API bool RectangleCollider2D::IsVisible;
 
@@ -108,6 +108,6 @@ DOOM_API std::vector<DirectionalLight*> DirectionalLight::dirLights;
 DOOM_API std::vector <GameObject*> World::objects;
 
 DOOM_API unsigned int Character::indeces2D[6] = { 0,1,2,3,2,0 };
-DOOM_API unsigned int SpriteRenderer::indeces2D[6] = { 0,1,2,3,2,0 };
+DOOM_API unsigned int SpriteRenderer::m_Indices2D[6] = { 0,1,2,3,2,0 };
 
-DOOM_API std::string SceneSerializer::currentSceneFilePath = "src/Scenes/scene.yaml";
+DOOM_API std::string SceneSerializer::m_CurrentSceneFilePath = "src/Scenes/scene.yaml";

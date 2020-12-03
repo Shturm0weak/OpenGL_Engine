@@ -6,11 +6,11 @@ using namespace Doom;
 ParticleSystem::ParticleSystem(float x, float y ,int amount,double lifeTime,float speed,float maxSize,float minSize,float radiusToSpawn, double minTimeToSpawn, double maxTimeToSpawn,Texture* texture) :
 	AmountOfParticles(amount),lifeTime(lifeTime),speedMultiplier(speed),maxSize(maxSize),minSize(minSize), radiusToSpawn(radiusToSpawn),minTimeToSpawn(minTimeToSpawn),maxTimeToSpawn(maxTimeToSpawn),texture(texture)
 {
-	name = "ParticleSystem";
+	m_Name = "ParticleSystem";
 	glm::vec2 position;
 	position.x = x;
 	position.y = y;
-	Enable = false;
+	m_Enable = false;
 	particlesPool = new Particle[AmountOfParticles];
 	std::random_device rd;
 	std::mt19937 e2(rd());
@@ -52,8 +52,8 @@ void ParticleSystem::Play() {
 				Restart();
 		}
 		if (particlesPool[i].Enable) {
-			particlesPool[i].x += (particlesPool[i].speeddirx * speedMultiplier) * DeltaTime::deltatime;
-			particlesPool[i].y += (particlesPool[i].speeddiry * speedMultiplier - gravityAcceleration) * DeltaTime::deltatime;
+			particlesPool[i].x += (particlesPool[i].speeddirx * speedMultiplier) * DeltaTime::m_Deltatime;
+			particlesPool[i].y += (particlesPool[i].speeddiry * speedMultiplier - gravityAcceleration) * DeltaTime::m_Deltatime;
 
 			particlesPool[i].pos = glm::translate(glm::mat4(1.f), glm::vec3(particlesPool[i].x, particlesPool[i].y, 0));
 

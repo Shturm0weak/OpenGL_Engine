@@ -83,5 +83,5 @@ void Line::SetStartPoint(float x, float y,float z)
 
 void Line::Rotate(float angle)
 {
-	view = glm::rotate(view, angle * DeltaTime::deltatime, glm::vec3(0, 0, 1));
+	view = glm::rotate(view, angle * DeltaTime::m_Deltatime, glm::vec3(0, 0, 1));
 }

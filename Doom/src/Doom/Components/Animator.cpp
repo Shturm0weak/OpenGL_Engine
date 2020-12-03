@@ -10,42 +10,42 @@ void Doom::Animator::SetAnimation(const std::string path)
 		size_t _index = 0;
 		std::vector<Texture*> text;
 		for (const auto & entry : fs::directory_iterator(_entry.path().string())) {
-			texturesPath.push_back(entry.path().string());
+			m_TexturesPath.push_back(entry.path().string());
 			size_t index = 0;
 			for (int i = 0; i < 2; i++)
 			{
-				index = texturesPath.back().find("\\", index);
-				texturesPath.back().replace(index, 1, "/");	
+				index = m_TexturesPath.back().find("\\", index);
+				m_TexturesPath.back().replace(index, 1, "/");	
 			}
-			text.push_back(Texture::Create(texturesPath.back(), 1));
+			text.push_back(Texture::Create(m_TexturesPath.back(), 1));
 		}
-		amount++;
+		m_Amount++;
 		animations.insert(std::make_pair(_entry.path().string(),text));
-		texturesPath.clear();
+		m_TexturesPath.clear();
 	}
 }
 
 void Doom::Animator::PlayAnim(std::vector<Texture*>& text) {
-	if (isPlayingAnim == false)
+	if (m_IsPlayingAnim == false)
 		return;
-	timer += DeltaTime::GetDeltaTime();
-	counter = timer * speed;
-	if (counter < text.size()) {
-		static_cast<SpriteRenderer*>(owner->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(text[counter]);
+	m_Timer += DeltaTime::GetDeltaTime();
+	m_Counter = m_Timer * m_Speed;
+	if (m_Counter < text.size()) {
+		static_cast<SpriteRenderer*>(m_Owner->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(text[m_Counter]);
 		//if (owner->ShaderType::SHADER_TEXTURE != owner->shadertype)
 		//	owner->SetShader(GameObject::SHADER_TEXTURE);
 		//owner->shader->Bind();
 		//owner->texture->Bind(owner->texture->m_RendererID);
 		//owner->shader->SetUniform1i("u_Texture", owner->texture->m_RendererID);
 	}
-	if (counter >= text.size())
-		timer = 0;
+	if (m_Counter >= text.size())
+		m_Timer = 0;
 }
 
 const char** Doom::Animator::GetAnimations() {
 	if(items != nullptr)
 	delete[] items;
-	items = new const char*[amount];
+	items = new const char*[m_Amount];
 	int i = 0;
 	for (auto itr = animations.begin(); itr != animations.end(); itr++){
 		items[i] = itr->first.c_str();

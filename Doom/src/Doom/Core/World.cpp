@@ -10,7 +10,7 @@ void Doom::World::ProccessLuaStates()
 {
 	for(auto l : LuaState::luaStates)
 	{
-		l->OnUpdate(DeltaTime::deltatime);
+		l->OnUpdate(DeltaTime::m_Deltatime);
 	}
 }
 
@@ -28,20 +28,20 @@ void Doom::World::DeleteAll() {
 		delete(World::objects[i]);
 	}
 	World::objects.clear();
-	World::col_id = 0;
-	World::obj_id = 0;
+	World::m_ColId = 0;
+	World::m_ObjId = 0;
 }
 
 void Doom::World::DeleteObject(int id) {
 	GameObject* go = World::objects[id];
 	World::objects.erase(World::objects.begin() + id);
-	World::obj_id--;
+	World::m_ObjId--;
 	unsigned int size = World::objects.size();
 	if (id != size) {
 		for (unsigned int i = 0; i < size; i++)
 		{
-			World::objects[i]->id = (i);
-			World::objects[i]->layer = i;
+			World::objects[i]->m_Id = (i);
+			World::objects[i]->m_Layer = i;
 		}
 	}
 	unsigned int childsAmount = go->GetChilds().size();
@@ -54,7 +54,7 @@ void Doom::World::DeleteObject(int id) {
 		GameObject* owner = static_cast<GameObject*>(go->GetOwner());
 		owner->RemoveChild(go);
 	}
-	if (go->GetComponent<Irenderer>() != nullptr && go->GetComponent<Irenderer>()->renderType == TYPE_3D) {
+	if (go->GetComponent<Irenderer>() != nullptr && go->GetComponent<Irenderer>()->m_RenderType == TYPE_3D) {
 		go->GetComponent<Renderer3D>()->EraseFromInstancing();
 	}
 	delete go;
@@ -68,10 +68,10 @@ GameObject* Doom::World::SelectObject()
 		GameObject* go = static_cast<GameObject*>(World::objects[i]);
 		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
 		p.clear();
-		p.push_back(glm::vec2(sr->WorldVertexPositions[0] + go->GetPosition().x, sr->WorldVertexPositions[1] + go->GetPosition().y));
-		p.push_back(glm::vec2(sr->WorldVertexPositions[2] + go->GetPosition().x, sr->WorldVertexPositions[3] + go->GetPosition().y));
-		p.push_back(glm::vec2(sr->WorldVertexPositions[4] + go->GetPosition().x, sr->WorldVertexPositions[5] + go->GetPosition().y));
-		p.push_back(glm::vec2(sr->WorldVertexPositions[6] + go->GetPosition().x, sr->WorldVertexPositions[7] + go->GetPosition().y));
+		p.push_back(glm::vec2(sr->m_WorldVertexPositions[0] + go->GetPosition().x, sr->m_WorldVertexPositions[1] + go->GetPosition().y));
+		p.push_back(glm::vec2(sr->m_WorldVertexPositions[2] + go->GetPosition().x, sr->m_WorldVertexPositions[3] + go->GetPosition().y));
+		p.push_back(glm::vec2(sr->m_WorldVertexPositions[4] + go->GetPosition().x, sr->m_WorldVertexPositions[5] + go->GetPosition().y));
+		p.push_back(glm::vec2(sr->m_WorldVertexPositions[6] + go->GetPosition().x, sr->m_WorldVertexPositions[7] + go->GetPosition().y));
 		if (ObjectCollided(p, i)) {
 			if (Editor::GetInstance()->go != go) {
 				Editor::GetInstance()->go = go;
@@ -104,21 +104,21 @@ void Doom::World::PopBack()
 
 void Doom::World::SelectObject3D()
 {
-	if (!Editor::GetInstance()->gizmo->isHovered && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
+	if (!Editor::GetInstance()->gizmo->m_IsHovered && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 		Ray3D::Hit hit;
 		glm::vec3 pos = Window::GetCamera().GetPosition();
 		glm::vec3 forward = Window::GetCamera().GetMouseDirVec();
-		std::map<float, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 1000, false);
+		std::map<float, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 10000, false);
 		for (auto i = d.begin(); i != d.end(); i++)
 		{
 			if (i->second != nullptr) {
 				GameObject* go = i->second->GetOwnerOfComponent();
 				Transform* tr = go->GetComponent<Transform>();
-				glm::mat4 model = tr->pos;
-				glm::mat4 view = tr->view;
-				glm::mat4 scale = tr->scale;
+				glm::mat4 model = tr->m_PosMat4;
+				glm::mat4 view = tr->m_ViewMat4;
+				glm::mat4 scale = tr->m_ScaleMat4;
 				Ray3D::Hit hit1;
-				Mesh* mesh = go->GetComponentManager()->GetComponent<Renderer3D>()->mesh;
+				Mesh* mesh = go->GetComponentManager()->GetComponent<Renderer3D>()->m_Mesh;
 				//new Line(pos, forward * 1000.f);
 				for (uint32_t i = 0; i < mesh->meshSize; i += (14 * 3))
 				{
@@ -130,7 +130,7 @@ void Doom::World::SelectObject3D()
 					b = glm::vec3(model * view * scale * glm::vec4(b, 1.0f));
 					c = glm::vec3(model * view * scale * glm::vec4(c, 1.0f));
 					n = glm::vec3(view * glm::vec4(n, 1.0f));
-					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 1000, a, b, c, n)) {
+					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 10000, a, b, c, n)) {
 						//GameObject* go0 = new GameObject("p1", a.x, a.y, a.z);
 						//go0->GetComponentManager()->AddComponent<SpriteRenderer>();
 						//GameObject* go1 = new GameObject("p2", b.x, b.y, b.z);
@@ -140,9 +140,9 @@ void Doom::World::SelectObject3D()
 						/*new Line(a, b);
 						new Line(a, c);
 						new Line(c, b);*/
-						if (go != Editor::GetInstance()->gizmo->obj) {
-							Editor::GetInstance()->gizmo->blockFrame = true;
-							Editor::GetInstance()->gizmo->obj = go;
+						if (go != Editor::GetInstance()->gizmo->m_Obj) {
+							Editor::GetInstance()->gizmo->m_BlockFrame = true;
+							Editor::GetInstance()->gizmo->m_Obj = go;
 						}
 						return;
 					}

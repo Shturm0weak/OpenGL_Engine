@@ -7,8 +7,10 @@ namespace Doom {
 	class DOOM_API ScriptComponent : public Component
 	{
 	private:
-		LuaState* lState = nullptr;
+
+		LuaState* m_LState = nullptr;
 	public:
+
 		void AssignScript(const char* filePath);
 		ScriptComponent();
 		~ScriptComponent();

@@ -39,7 +39,7 @@ void Doom::Instancing::Render()
 			continue;
 		
 		shader->Bind();
-		glBindTextureUnit(0, iter->second[0]->diffuseTexture->m_RendererID);
+		glBindTextureUnit(0, iter->second[0]->m_DiffuseTexture->m_RendererID);
 		shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 		shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
 
@@ -49,13 +49,13 @@ void Doom::Instancing::Render()
 		for (int i = 0; i < dlightSize; i++)
 		{	
 			DirectionalLight* dl = DirectionalLight::dirLights[i];
-			dl->dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->view * glm::vec4(0, 0, -1, 1);
+			dl->m_Dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->m_ViewMat4 * glm::vec4(0, 0, -1, 1);
 			sprintf(buffer, "dirLights[%i].dir", i);
-			shader->SetUniform3fv(buffer, dl->dir);
+			shader->SetUniform3fv(buffer, dl->m_Dir);
 			sprintf(buffer, "dirLights[%i].color", i);
-			shader->SetUniform3fv(buffer, dl->color);
+			shader->SetUniform3fv(buffer, dl->m_Color);
 			sprintf(buffer, "dirLights[%i].intensity", i);
-			shader->SetUniform1f(buffer, dl->intensity);
+			shader->SetUniform1f(buffer, dl->m_Intensity);
 		}
 
 		int plightSize = PointLight::pLights.size();
@@ -68,19 +68,19 @@ void Doom::Instancing::Render()
 			sprintf(buffer, "pointLights[%i].color", i);
 			shader->SetUniform3fv(buffer, pl->color);
 			sprintf(buffer, "pointLights[%i].constant", i);
-			shader->SetUniform1f(buffer, pl->constant);
+			shader->SetUniform1f(buffer, pl->m_Constant);
 			sprintf(buffer, "pointLights[%i]._linear", i);
-			shader->SetUniform1f(buffer, pl->linear);
+			shader->SetUniform1f(buffer, pl->m_Linear);
 			sprintf(buffer, "pointLights[%i].quadratic", i);
-			shader->SetUniform1f(buffer, pl->quadratic);
+			shader->SetUniform1f(buffer, pl->m_Quadratic);
 		}
 
 		shader->SetUniform1i("u_DiffuseTexture", 0);
-		if (iter->second[0]->useNormalMap) {
-			glBindTextureUnit(1, iter->second[0]->normalMapTexture->m_RendererID);
+		if (iter->second[0]->m_IsUsingNormalMap) {
+			glBindTextureUnit(1, iter->second[0]->m_NormalMapTexture->m_RendererID);
 			shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
-		shader->SetUniform1i("u_isNormalMapping", iter->second[0]->useNormalMap);
+		shader->SetUniform1i("u_isNormalMapping", iter->second[0]->m_IsUsingNormalMap);
 
 		shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		shader->SetUniform1f("u_DrawShadows", drawShadows);
@@ -240,10 +240,10 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(posPtr, &owner->GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
 				//r->color = color;
-				memcpy(&posPtr[6], &r->color[0], 16);
-				posPtr[10] = r->mat.ambient;
-				posPtr[11] = r->mat.specular;
-				float* view = glm::value_ptr(owner->GetComponent<Transform>()->view);
+				memcpy(&posPtr[6], &r->m_Color[0], 16);
+				posPtr[10] = r->m_Material.m_Ambient;
+				posPtr[11] = r->m_Material.m_Specular;
+				float* view = glm::value_ptr(owner->GetComponent<Transform>()->m_ViewMat4);
 				memcpy(&posPtr[12], view, 64);
 			}
 			{
@@ -266,10 +266,10 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(posPtr, &owner->GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
 				//r->color = COLORS::Blue;
-				memcpy(&posPtr[6], &r->color[0], 16);
-				posPtr[10] = r->mat.ambient;
-				posPtr[11] = r->mat.specular;
-				float* view = glm::value_ptr(owner->GetComponent<Transform>()->view);
+				memcpy(&posPtr[6], &r->m_Color[0], 16);
+				posPtr[10] = r->m_Material.m_Ambient;
+				posPtr[11] = r->m_Material.m_Specular;
+				float* view = glm::value_ptr(owner->GetComponent<Transform>()->m_ViewMat4);
 				memcpy(&posPtr[12], view, 64);
 			}
 			{
