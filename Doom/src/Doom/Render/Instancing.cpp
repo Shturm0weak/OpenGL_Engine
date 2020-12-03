@@ -84,7 +84,7 @@ void Doom::Instancing::Render()
 
 		shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		shader->SetUniform1f("u_DrawShadows", drawShadows);
-		glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
+		glBindTextureUnit(2, Window::GetCamera().m_FrameBufferShadowMap->texture);
 		shader->SetUniform1i("u_ShadowMap", 2);
 
 		Renderer::Vertices += gliter->first->indicesSize * objsSize;

@@ -4,7 +4,7 @@
 bool Doom::LuaState::CL(int error)
 {
 	if (error) {
-		std::cout << RED "<" << NAMECOLOR << filePath << RED << "> LUA::ERROR::STATE::" << lua_tostring(l, -1) << "\n" << RESET;
+		std::cout << RED "<" << NAMECOLOR << m_FilePath << RED << "> LUA::ERROR::STATE::" << lua_tostring(m_L, -1) << "\n" << RESET;
 		return false;
 	}
 	return true;
@@ -13,7 +13,7 @@ bool Doom::LuaState::CL(int error)
 bool Doom::LuaState::CL(LuaState* l, int error)
 {
 	if (error) {
-		std::cout << RED "<" << NAMECOLOR << l->filePath << RED << "> LUA::ERROR::STATE::" << lua_tostring(l->l, -1) << "\n" << RESET;
+		std::cout << RED "<" << NAMECOLOR << l->m_FilePath << RED << "> LUA::ERROR::STATE::" << lua_tostring(l->m_L, -1) << "\n" << RESET;
 		return false;
 	}
 	return true;
@@ -21,23 +21,23 @@ bool Doom::LuaState::CL(LuaState* l, int error)
 
 void Doom::LuaState::RegisterFunction(LuaState* l)
 {
-	lua_pushlightuserdata(l->l, l->go);
-	lua_setglobal(l->l, GetLuaGlobalName(l->go));
+	lua_pushlightuserdata(l->m_L, l->m_Go);
+	lua_setglobal(l->m_L, GetLuaGlobalName(l->m_Go));
 
-	lua_pushcfunction(l->l,LuaGetPosition);
-	lua_setglobal(l->l , "cpp_GetPosition");
-	lua_pushcfunction(l->l, LuaTranslate);
-	lua_setglobal(l->l, "cpp_Translate");
+	lua_pushcfunction(l->m_L,LuaGetPosition);
+	lua_setglobal(l->m_L , "cpp_GetPosition");
+	lua_pushcfunction(l->m_L, LuaTranslate);
+	lua_setglobal(l->m_L, "cpp_Translate");
 
-	lua_pushcfunction(l->l, LuaGetScale);
-	lua_setglobal(l->l, "cpp_GetScale");
-	lua_pushcfunction(l->l, LuaScale);
-	lua_setglobal(l->l, "cpp_Scale");
+	lua_pushcfunction(l->m_L, LuaGetScale);
+	lua_setglobal(l->m_L, "cpp_GetScale");
+	lua_pushcfunction(l->m_L, LuaScale);
+	lua_setglobal(l->m_L, "cpp_Scale");
 }
 
 int Doom::LuaState::LuaGetPosition(lua_State* l)
 {
-	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->go));
+	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->m_Go));
 	GameObject* go = static_cast<GameObject*>(lua_touserdata(l, -1));
 	glm::vec3 pos = go->GetPosition();
 	lua_pushnumber(l, pos.x);
@@ -48,7 +48,7 @@ int Doom::LuaState::LuaGetPosition(lua_State* l)
 
 int Doom::LuaState::LuaGetScale(lua_State* l)
 {
-	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->go));
+	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->m_Go));
 	GameObject* go = static_cast<GameObject*>(lua_touserdata(l, -1));
 	glm::vec3 scale = go->GetScale();
 	lua_pushnumber(l, scale.x);
@@ -59,7 +59,7 @@ int Doom::LuaState::LuaGetScale(lua_State* l)
 
 int Doom::LuaState::LuaScale(lua_State* l)
 {
-	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->go));
+	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->m_Go));
 	GameObject* go = static_cast<GameObject*>(lua_touserdata(l, -1));
 	glm::vec3 scale;
 	scale.x = lua_tonumber(l, 3);
@@ -71,7 +71,7 @@ int Doom::LuaState::LuaScale(lua_State* l)
 
 int Doom::LuaState::LuaTranslate(lua_State* l)
 {
-	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->go));
+	lua_getglobal(l, GetLuaGlobalName(GetLuaOwner(l)->m_Go));
 	GameObject* go = static_cast<GameObject*>(lua_touserdata(l, -1));
 	glm::vec3 pos;
 	pos.x = lua_tonumber(l, 3);
@@ -83,30 +83,30 @@ int Doom::LuaState::LuaTranslate(lua_State* l)
 
 void Doom::LuaState::OnUpdate(float dt)
 {
-	lua_getglobal(l,"OnUpdate");
-	if(lua_isfunction(l,-1)){
-		lua_pushnumber(l, DeltaTime::m_Deltatime);
-		CL(lua_pcall(l,1,0,0));
+	lua_getglobal(m_L,"OnUpdate");
+	if(lua_isfunction(m_L,-1)){
+		lua_pushnumber(m_L, DeltaTime::m_Deltatime);
+		CL(lua_pcall(m_L,1,0,0));
 	}
 }
 
 void Doom::LuaState::OnStart()
 {
-	lua_getglobal(l, "OnStart");
-	CL(lua_pcall(l, 0, 0, 0));
+	lua_getglobal(m_L, "OnStart");
+	CL(lua_pcall(m_L, 0, 0, 0));
 }
 
 Doom::LuaState::LuaState(const char* filePath)
 {
-	l = luaL_newstate();
-	luaL_openlibs(l);
-	CL(luaL_dofile(l, filePath));
+	m_L = luaL_newstate();
+	luaL_openlibs(m_L);
+	CL(luaL_dofile(m_L, filePath));
 	luaStates.push_back(this);
 }
 
 Doom::LuaState::~LuaState()
 {
-	lua_close(l);
+	lua_close(m_L);
 	auto iter = std::find(luaStates.begin(), luaStates.end(), this);
 	if (iter != luaStates.end()) {
 		luaStates.erase(iter);
@@ -123,7 +123,7 @@ const char* Doom::LuaState::GetLuaGlobalName(GameObject* go)
 Doom::LuaState* Doom::LuaState::GetLuaOwner(lua_State* l)
 {
 	auto iter = std::find_if(luaStates.begin(), luaStates.end(), [=] (LuaState* luaState) {
-		return (luaState->l == l);
+		return (luaState->m_L == l);
 		});
 	if (iter != luaStates.end()) {
 		LuaState* l = *iter;

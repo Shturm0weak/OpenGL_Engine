@@ -210,7 +210,7 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 			m_Shader->SetUniform1f("u_Specular", m_Material.m_Specular);
 			m_Shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 			m_Shader->SetUniform1i("u_DiffuseTexture", 0);
-			glBindTextureUnit(2, Window::GetCamera().frameBufferShadowMap->texture);
+			glBindTextureUnit(2, Window::GetCamera().m_FrameBufferShadowMap->texture);
 			m_Shader->SetUniform1i("u_ShadowTexture", 2);
 			m_Shader->SetUniform1f("u_DrawShadows", Instancing::Instance()->drawShadows);
 			if (m_IsUsingNormalMap) {

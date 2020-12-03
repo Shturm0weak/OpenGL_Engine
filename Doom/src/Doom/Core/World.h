@@ -4,6 +4,7 @@ namespace Doom {
 
 	class DOOM_API World {
 	public:
+
 		static std::vector <GameObject*> objects;
 
 		static int m_ObjId;

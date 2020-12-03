@@ -4,8 +4,9 @@ namespace Doom {
 
 	class DOOM_API LuaState {
 	public:
-		lua_State* l = nullptr;
-		std::string filePath;
+
+		lua_State* m_L = nullptr;
+		std::string m_FilePath;
 	
 		//Check Lua
 		bool CL(int error); 
@@ -16,19 +17,19 @@ namespace Doom {
 
 		static int LuaGetScale(lua_State* l);
 		static int LuaScale(lua_State* l);
-
 	public:
-		static void RegisterFunction(LuaState* l);
-		GameObject* go = nullptr;
+
+		GameObject* m_Go = nullptr;
 		static std::vector<LuaState*> luaStates;
 
-		void OnUpdate(float dt);
-		void OnStart();
-		LuaState(const char* filePath);
-		~LuaState();
-		
 		static const char* GetLuaGlobalName(GameObject* go);
 		static LuaState* GetLuaOwner(lua_State* l);
+		static void RegisterFunction(LuaState* l);
+		void OnUpdate(float dt);
+		void OnStart();
+
+		LuaState(const char* filePath);
+		~LuaState();
 	};
 
 }

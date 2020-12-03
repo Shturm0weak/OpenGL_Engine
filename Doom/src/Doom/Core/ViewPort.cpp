@@ -15,7 +15,7 @@ void Doom::ViewPort::Update()
 	GetMousePositionToWorldSpaceImpl();
 	GetStaticMousePositionImpl();
 
-	void* tex = reinterpret_cast<void*>(Window::GetCamera().frameBufferColor->texture);
+	void* tex = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferColor->texture);
 
 	ImGui::Begin("ViewPort", &ViewPort::GetInstance()->m_IsToolOpen, ImGuiWindowFlags_NoScrollbar);
 	if (ImGui::IsWindowFocused())

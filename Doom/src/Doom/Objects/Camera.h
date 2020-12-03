@@ -8,17 +8,17 @@
 namespace Doom {
 
 	class DOOM_API Camera : public Listener {
-
 	public:
+
 		enum CameraTypes {
 			ORTHOGRAPHIC = 0,
 			PERSPECTIVE = 1,
 		};
 
-		CameraTypes type = ORTHOGRAPHIC;
+		CameraTypes m_Type = ORTHOGRAPHIC;
 
-		FrameBuffer* frameBufferColor = nullptr;
-		FrameBuffer* frameBufferShadowMap = nullptr;
+		FrameBuffer* m_FrameBufferColor = nullptr;
+		FrameBuffer* m_FrameBufferShadowMap = nullptr;
 
 		Camera();
 		~Camera() {}
@@ -27,11 +27,11 @@ namespace Doom {
 		glm::vec3 GetMouseDirVec();
 
 		inline glm::vec3 GetPosition() const { return m_Position; }
-		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
-		inline float GetAspectRatio() const { return ratio; }
-		inline double GetZoomLevel() const { return zoomlevel; }
+		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMat4; }
+		inline const glm::mat4& GetViewMatrix() const { return m_ViewMat4; }
+		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMat4; }
+		inline float GetAspectRatio() const { return m_Ratio; }
+		inline double GetZoomLevel() const { return m_ZoomLevel; }
 
 		void OnWindowResize(void* _props);
 		void WindowResize();
@@ -49,36 +49,34 @@ namespace Doom {
 
 		float GetRationWH() const;
 		float GetRationHW() const;
-		float GetFOV() { return fovy; }
+		float GetFOV() { return m_Fov; }
 
 		friend class Editor;
 		friend class Batch;
 	private:
-		float zfar = 10;
-		float znear = 0.1f;
-		float fovy = 1;
-		float ratio = 0;
-		float zoomlevel = 1.0f;
+
+		std::mutex m_Mtx;
 		glm::vec3 m_Position = glm::vec3(0);
-		glm::mat4 m_ProjectionMatrix;
-		glm::mat4 m_ViewMatrix;
-		glm::mat4 m_ViewProjectionMatrix;
-		glm::mat4 rot;
-		float roll = 0.0f;
-		float pitch = 0.0f;
-		float yaw = 0.0f;
-		float aspectratio[4]; 
-		int* props = nullptr;
-		bool IsWindowResized = false;
+		glm::mat4 m_ProjectionMat4;
+		glm::mat4 m_ViewMat4;
+		glm::mat4 m_ViewProjectionMat4;
+		float m_Zfar = 10;
+		float m_Znear = 0.1f;
+		float m_Fov = 1;
+		float m_Ratio = 0;
+		float m_ZoomLevel = 1.0f;
+		float m_Roll = 0.0f;
+		float m_Pitch = 0.0f;
+		float m_Yaw = 0.0f;
+		float m_AspectRatio[4]; 
+		int* m_Props = nullptr;
+		bool m_IsWindowResized = false;
+	public:
 
-		std::mutex mtx;
-
-		public:
-			glm::vec3 forwardV = { 0,0,-1 };
-			float znears = -50.0f;
-			float zfars = 50.0f;
-			float rationprojections = 50.0f;
-
+		glm::vec3 forwardV = { 0,0,-1 };
+		float m_ZnearSM = -50.0f;
+		float m_ZfarSM = 50.0f;
+		float m_RationProjectionSM = 50.0f;
 	};
 
 }

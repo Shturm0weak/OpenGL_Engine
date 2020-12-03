@@ -53,7 +53,7 @@ void Editor::EditorUpdate()
 
 	CreateTextureAtlas();
 
-	ImGui::SliderFloat("Zoom", &Window::GetCamera().zoomlevel, 0.1f, 100.f);
+	ImGui::SliderFloat("Zoom", &Window::GetCamera().m_ZoomLevel, 0.1f, 100.f);
 	Window::GetCamera().Zoom(abs(Window::GetCamera().GetZoomLevel()));
 	ImGui::End();
 
@@ -902,9 +902,9 @@ void Doom::Editor::Debug()
 	ImGui::SliderAngle("X", &Window::GetCamera().pitch);
 	ImGui::SliderAngle("Y", &Window::GetCamera().yaw);
 	ImGui::SliderAngle("Z", &Window::GetCamera().roll);
-	if (Window::GetCamera().type == Window::GetCamera().PERSPECTIVE) {
-		ImGui::SliderAngle("fov", &Window::GetCamera().fovy, 60, 180);
-		Window::GetCamera().SetFov(Window::GetCamera().fovy);
+	if (Window::GetCamera().m_Type == Window::GetCamera().PERSPECTIVE) {
+		ImGui::SliderAngle("fov", &Window::GetCamera().m_Fov, 60, 180);
+		Window::GetCamera().SetFov(Window::GetCamera().m_Fov);
 	}
 	ImGui::Text("Position");
 	ImGui::Text("x: %f y: %f z: %f", Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y, Window::GetCamera().GetPosition().z);
@@ -1036,7 +1036,7 @@ void Doom::Editor::EditorUpdateMyGui()
 		}
 		if (g->CollapsingHeader("Shadow map", 0, 0, COLORS::DarkGray * 0.7f)) {
 			Texture* shadowMap = new Texture;
-			shadowMap->m_RendererID = Window::GetCamera().frameBufferShadowMap->texture;
+			shadowMap->m_RendererID = Window::GetCamera().m_FrameBufferShadowMap->texture;
 			glm::vec2 size{256,256};
 			g->Image(size.x / 2, -size.y / 2, size.x, size.y, shadowMap);
 			g->SliderFloat("Znear", &Window::GetCamera().znears, -500, 500, 0, 0, 200, 25);

@@ -18,7 +18,6 @@ namespace Doom {
 		GameObject* m_Owner = nullptr;
 
 		inline void SetType(const size_t type)  { m_Type = type; }
-		inline int GetComponentId() const { return m_Id; }
 	public:
 
 		inline size_t GetComponentType() const { return m_Type; }

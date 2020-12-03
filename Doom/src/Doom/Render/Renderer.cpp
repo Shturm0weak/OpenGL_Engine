@@ -55,7 +55,7 @@ void Doom::Renderer::SortTransparentObjects()
 }
 
 void Renderer::Render() {
-	if (Window::GetCamera().type == Camera::CameraTypes::ORTHOGRAPHIC) {
+	if (Window::GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
 		Render2DObjects();

@@ -497,7 +497,7 @@ void Batch::flushGameObjects(Shader * shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().m_ViewProjectionMatrix);
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().m_ViewProjectionMat4);
 
 	glDrawElements(GL_TRIANGLES, Gindexcount, GL_UNSIGNED_INT, NULL);
 	Renderer::DrawCalls++;

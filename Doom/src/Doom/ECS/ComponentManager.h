@@ -136,7 +136,6 @@ namespace Doom {
 				object->m_Id = m_Components.size();
 				m_Components.push_back(object);
 #ifdef _DEBUG
-				
 				std::cout << NAMECOLOR << (int)object->m_Type << RESET << ": has been added to GameObject <" NAMECOLOR << m_OwnerName << RESET << ">" << std::endl;
 #endif
 				return object;

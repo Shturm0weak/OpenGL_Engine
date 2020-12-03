@@ -1,9 +1,13 @@
 #pragma once
 #include <random>
 
+//!!!@Deprecated!!!\\
+
 namespace Doom {
 
 	struct DOOM_API Particle {
+	private:
+
 		float x = 0; float y = 0;
 		glm::mat4 pos = glm::mat4(1.f);
 		glm::mat4 view = glm::mat4(1.f);
@@ -27,6 +31,7 @@ namespace Doom {
 
 	class DOOM_API ParticleSystem : public GameObject{
 	public:
+
 		glm::vec4 color;
 		unsigned int AmountOfParticles = 10;
 		float maxSize = 0.5f, minSize = 0.1f;
@@ -44,22 +49,18 @@ namespace Doom {
 		Texture* texture = nullptr;
 
 		ParticleSystem(float x, float y, int amount, double lifeTime, float speed, float maxSize, float minSize, float radiusToSpawn, double minTimeToSpawn, double maxTimeToSpawn, Texture* texture = nullptr);
-
 		~ParticleSystem();
 
 		void Play();
-
 		void Restart();
-
 		void SetPosition(float x, float y) { GetComponentManager()->GetComponent<Transform>()->Translate(x, y); }
-
 		void ChangeOpacity(float opacity); //from 0 to 1
 	private:
+
 		float opacity = 1;
 		float gravityAcceleration = 0;
 		double timer = 0;
-		
-
+	
 		Particle* particlesPool = nullptr;
 	};
 

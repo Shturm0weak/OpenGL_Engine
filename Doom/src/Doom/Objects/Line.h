@@ -4,29 +4,27 @@ using namespace Doom;
 
 class DOOM_API Line {
 public:
-	bool UsePosMat = true;
-	bool Static = false;
-	bool Enable = true;
-	float angle;
-	float maxLength = 100;
-	glm::vec3 start;
-	glm::vec3 end;
-	glm::vec3 direction;
-	const unsigned int indeces[2] = { 0,1 };
-	float mesh2D[6] = {
+
+	Shader* m_Shader = nullptr;
+	glm::vec3 m_Start;
+	glm::vec3 m_End;
+	glm::vec3 m_Dir;
+	glm::vec4 m_Color = COLORS::Red;
+	glm::mat4 m_PosMat4 = glm::mat4(1.f);
+	glm::mat4 m_ViewMat4 = glm::mat4(1.f);
+	bool m_IsUsingPosMat4 = true;
+	bool m_Static = false;
+	bool m_Enable = true;
+	float m_Angle;
+	float m_MaxLength = 100;
+	const unsigned int m_Indices[2] = { 0,1 };
+	float m_Verteces[6] = {
 		0,0,0,
 		0,0,0
 	};
 
 	static float width;
 	static std::vector<Line*> lines;
-
-	Shader* shader = nullptr;
-
-	glm::vec4 color = COLORS::Red;
-	glm::mat4 pos = glm::mat4(1.f);
-	glm::mat4 MVP = glm::mat4(1.f);
-	glm::mat4 view = glm::mat4(1.f);
 
 	Line(glm::vec3 start,glm::vec3 end);
 	Line(glm::vec3 start,glm::vec3 direction,float maxLength);

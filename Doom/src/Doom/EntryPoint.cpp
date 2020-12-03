@@ -36,8 +36,8 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Gui::GetInstance()->LoadStandartFonts();
 	Batch::Init();
 	SoundManager::Init();
-	Window::GetCamera().frameBufferColor = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB,GL_UNSIGNED_BYTE,false, GL_COLOR_ATTACHMENT0,true,true,true);
-	Window::GetCamera().frameBufferShadowMap = new FrameBuffer(4096 * 2, 4096 * 2, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
+	Window::GetCamera().m_FrameBufferColor = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB,GL_UNSIGNED_BYTE,false, GL_COLOR_ATTACHMENT0,true,true,true);
+	Window::GetCamera().m_FrameBufferShadowMap = new FrameBuffer(4096 * 2, 4096 * 2, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
 	if (this->app->type == TYPE_3D) {
 		GridLayOut* grid = new GridLayOut();
 		Editor::GetInstance()->gizmo = new Gizmos;
@@ -100,7 +100,7 @@ void EntryPoint::Run()
 		Renderer::Vertices = 0;
 
 		if (Instancing::Instance()->drawShadows > 0.5f) {
-			FrameBuffer* shadowMap = Window::GetCamera().frameBufferShadowMap;
+			FrameBuffer* shadowMap = Window::GetCamera().m_FrameBufferShadowMap;
 			glfwGetWindowSize(Window::GetWindow(), &size[0], &size[1]);
 			glViewport(0, 0, shadowMap->size.x, shadowMap->size.y);
 			shadowMap->Bind();
@@ -120,7 +120,7 @@ void EntryPoint::Run()
 		}
 
 		glViewport(0, 0, size[0], size[1]);
-		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().frameBufferColor->fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().m_FrameBufferColor->fbo);
 		Renderer::Clear();
 		Renderer::Render();
 		Window::GetScrollYOffset() = 0;
@@ -142,7 +142,7 @@ void EntryPoint::Run()
 		}
 
 		if (ViewPort::GetInstance()->m_IsViewportResized) {
-			Window::GetCamera().frameBufferColor->Resize(ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y);
+			Window::GetCamera().m_FrameBufferColor->Resize(ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y);
 		}
 
 		ImGui::EndFrame();

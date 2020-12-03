@@ -6,9 +6,9 @@ namespace Doom {
 	public:
 
 		struct Hit {
-			glm::vec3 point;
-			CubeCollider3D* Object = nullptr;
-			float distance = 0;
+			glm::vec3 m_Point;
+			CubeCollider3D* m_Object = nullptr;
+			float m_Distance = 0;
 		};
 
 		static void sortMap(std::map<float, CubeCollider3D*>& M);

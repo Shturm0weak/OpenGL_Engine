@@ -3,42 +3,41 @@
 namespace Doom {
 
 	class DOOM_API GridLayOut : public GameObject {
+	private:
 
-		std::vector<Line*> lines;
-		int32_t linesSize = 51;
-		float length = 50;
+		std::vector<Line*> m_Lines;
+		int32_t m_LinesSize = 51;
+		float m_Length = 50;
 	public:
+
 		GridLayOut() {
 			this->m_Name = "Grid";
 			this->m_Enable = false;
-			//GetComponentManager()->RemoveComponent<Irenderer>();
-
 			Line::width = 3;
 			glm::vec4 color = glm::vec4(0.5, 0.5, 0.5, 0.2);
 
-			int32_t half = linesSize * 0.5f;
+			int32_t half = m_LinesSize * 0.5f;
 
 			for (int32_t i = -half; i < half + 1; i++)
 			{
-				lines.push_back(new Line(glm::vec3(i, 0, -half), glm::vec3(i, 0, -half + length)));
-				lines.back()->color = color;
+				m_Lines.push_back(new Line(glm::vec3(i, 0, -half), glm::vec3(i, 0, -half + m_Length)));
+				m_Lines.back()->color = color;
 			}
 
 			for (int32_t i = -half; i < half + 1; i++)
 			{
-				lines.push_back(new Line(glm::vec3(-half, 0, i), glm::vec3(-half + length, 0, i)));
-				lines.back()->color = color;
+				m_Lines.push_back(new Line(glm::vec3(-half, 0, i), glm::vec3(-half + m_Length, 0, i)));
+				m_Lines.back()->color = color;
 			}
 
-			lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half + 5, 0.5f, -half)));
-			lines.back()->color = COLORS::Red;
-			lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half, 0.5f + 5, -half)));
-			lines.back()->color = COLORS::Green;
-			lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half, 0.5f, -half + 5)));
-			lines.back()->color = COLORS::Blue;
+			m_Lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half + 5, 0.5f, -half)));
+			m_Lines.back()->color = COLORS::Red;
+			m_Lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half, 0.5f + 5, -half)));
+			m_Lines.back()->color = COLORS::Green;
+			m_Lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half, 0.5f, -half + 5)));
+			m_Lines.back()->color = COLORS::Blue;
 			World::PopBack();
 			World::m_ObjId--;
 		}
-
 	};
 }

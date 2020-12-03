@@ -5,7 +5,7 @@
 void Doom::ScriptComponent::AssignScript(const char* filePath)
 {
 	m_LState = new LuaState(filePath);
-	m_LState->go = GetOwnerOfComponent();
+	m_LState->m_Go = GetOwnerOfComponent();
 	LuaState::RegisterFunction(m_LState);
 }
 

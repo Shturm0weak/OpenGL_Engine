@@ -16,21 +16,21 @@ Camera::Camera(){
 
 void Camera::RecalculateViewMatrix() {
 	ThreadPool::GetInstance()->Enqueue([=] {
-	std::lock_guard<std::mutex> lock(mtx);
-	rot = glm::rotate(glm::mat4(1.0f), roll, glm::vec3(0, 0, 1))
-					* glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0))
-					* glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(1, 0, 0));
+	std::lock_guard<std::mutex> lock(m_Mtx);
+	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), m_Roll, glm::vec3(0, 0, 1))
+					* glm::rotate(glm::mat4(1.0f), m_Yaw, glm::vec3(0, 1, 0))
+					* glm::rotate(glm::mat4(1.0f), m_Pitch, glm::vec3(1, 0, 0));
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f),m_Position)
 		* rot;
 
-	float cosPitch = cos(pitch);
+	float cosPitch = cos(m_Pitch);
 
-	forwardV.z = cos(yaw) * cosPitch;
-	forwardV.x = sin(yaw) * cosPitch;
-	forwardV.y = sin(pitch);
+	forwardV.z = cos(m_Yaw) * cosPitch;
+	forwardV.x = sin(m_Yaw) * cosPitch;
+	forwardV.y = sin(m_Pitch);
 
-	m_ViewMatrix = glm::inverse(transform);
-	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	m_ViewMat4 = glm::inverse(transform);
+	m_ViewProjectionMat4 = m_ProjectionMat4 * m_ViewMat4;
 	});
 }
 
@@ -46,20 +46,20 @@ void Doom::Camera::MovePosition(const glm::vec3 position)
 }
 
 void Camera::WindowResize() {
-	if (IsWindowResized) {
-		if (props == nullptr)
+	if (m_IsWindowResized) {
+		if (m_Props == nullptr)
 			return;
-		if (props[0] == 0 || props[1] == 0)
+		if (m_Props[0] == 0 || m_Props[1] == 0)
 			return;
-		glViewport(0, 0, props[0], props[1]);
-		ratio = ViewPort::GetInstance()->GetSize().x / ViewPort::GetInstance()->GetSize().y;
-		switch (type)
+		glViewport(0, 0, m_Props[0], m_Props[1]);
+		m_Ratio = ViewPort::GetInstance()->GetSize().x / ViewPort::GetInstance()->GetSize().y;
+		switch (m_Type)
 		{
 		case Doom::Camera::ORTHOGRAPHIC:
-			SetOrthographic(ratio);
+			SetOrthographic(m_Ratio);
 			break;
 		case Doom::Camera::PERSPECTIVE:
-			SetPerspective(fovy, props[0], props[1], znear, zfar);
+			SetPerspective(m_Fov, m_Props[0], m_Props[1], m_Znear, m_Zfar);
 			break;
 		default:
 			break;
@@ -69,7 +69,7 @@ void Camera::WindowResize() {
 		//glBindTexture(GL_TEXTURE_2D, frameBuffer->texture);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, props[0], props[1], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		//glBindTexture(GL_TEXTURE_2D, 0);
-		IsWindowResized = false;
+		m_IsWindowResized = false;
 	}
 }
 
@@ -85,41 +85,41 @@ void Doom::Camera::SetPosition(const glm::vec3 position)
 
 void Doom::Camera::SetPerspective(float fovy, float width, float height, float znear, float zfar)
 {
-	this->ratio = width / height;
-	aspectratio[0] = -width;
-	aspectratio[1] = width;
-	aspectratio[2] = height;
-	aspectratio[3] = -height;
-	this->zfar = (zfar);
-	this->znear = (znear);
-	this->fovy = (fovy);
-	m_ProjectionMatrix = glm::perspective(fovy, width / height, znear, zfar);
-	type = PERSPECTIVE;
+	this->m_Ratio = width / height;
+	m_AspectRatio[0] = -width;
+	m_AspectRatio[1] = width;
+	m_AspectRatio[2] = height;
+	m_AspectRatio[3] = -height;
+	this->m_Zfar = (zfar);
+	this->m_Znear = (znear);
+	this->m_Fov = (fovy);
+	m_ProjectionMat4 = glm::perspective(fovy, width / height, znear, zfar);
+	m_Type = PERSPECTIVE;
 }
 
 void Doom::Camera::SetFov(float fov)
 {
-	m_ProjectionMatrix = glm::perspective(fovy, (aspectratio[1]) / (aspectratio[2]), znear, zfar);
+	m_ProjectionMat4 = glm::perspective(m_Fov, (m_AspectRatio[1]) / (m_AspectRatio[2]), m_Znear, m_Zfar);
 	RecalculateViewMatrix();
-	type = PERSPECTIVE;
+	m_Type = PERSPECTIVE;
 }
 
 void Doom::Camera::SetOrthographic(float ratio)
 {
-	this->ratio = ratio;
-	znear = -1.0;
-	zfar = 100;
-	aspectratio[0] = -ratio;
-	aspectratio[1] = ratio;
-	aspectratio[2] = 1;
-	aspectratio[3] = -1;
-	m_ProjectionMatrix = glm::ortho(aspectratio[0] * zoomlevel, aspectratio[1] * zoomlevel, aspectratio[3] * zoomlevel, aspectratio[2] * zoomlevel, znear, zfar);
-	type = ORTHOGRAPHIC;
+	this->m_Ratio = ratio;
+	m_Znear = -1.0;
+	m_Zfar = 100;
+	m_AspectRatio[0] = -ratio;
+	m_AspectRatio[1] = ratio;
+	m_AspectRatio[2] = 1;
+	m_AspectRatio[3] = -1;
+	m_ProjectionMat4 = glm::ortho(m_AspectRatio[0] * m_ZoomLevel, m_AspectRatio[1] * m_ZoomLevel, m_AspectRatio[3] * m_ZoomLevel, m_AspectRatio[2] * m_ZoomLevel, m_Znear, m_Zfar);
+	m_Type = ORTHOGRAPHIC;
 }
 
 glm::vec3 Doom::Camera::GetRotation()
 {
-	return glm::vec3(pitch, yaw, roll);
+	return glm::vec3(m_Pitch, m_Yaw, m_Roll);
 }
 
 glm::vec3 Doom::Camera::GetMouseDirVec()
@@ -128,32 +128,32 @@ glm::vec3 Doom::Camera::GetMouseDirVec()
 	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetCamera().GetAspectRatio() * g_Height);
 	pos.y = ViewPort::GetInstance()->GetStaticMousePosition().y / (g_Height);
 	glm::vec4 clipCoords = glm::vec4(pos.x, pos.y, -1.0f, 1.0f);
-	glm::vec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMatrix);
+	glm::vec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMat4);
 	eyeCoords.z = -1.0f; eyeCoords.w = 0.0f;
-	glm::vec3 mouseRay = (glm::vec3)(glm::inverse(m_ViewMatrix) * eyeCoords);
+	glm::vec3 mouseRay = (glm::vec3)(glm::inverse(m_ViewMat4) * eyeCoords);
 	return glm::vec3(glm::normalize(mouseRay));
 }
 
 void Doom::Camera::SetRotation(glm::vec3 rot)
 {
-	pitch = rot.x; yaw = rot.y; roll = rot.z;
+	m_Pitch = rot.x; m_Yaw = rot.y; m_Roll = rot.z;
 	RecalculateViewMatrix();
 }
 
 void Camera::Zoom(float zoomlevel)
 {
-	this->zoomlevel = zoomlevel;
-	if(type == ORTHOGRAPHIC)
-		m_ProjectionMatrix = glm::ortho(aspectratio[0] * zoomlevel,aspectratio[1] * zoomlevel,aspectratio[3] * zoomlevel,aspectratio[2] * zoomlevel,znear,zfar);
-	else if(type == PERSPECTIVE)
-		m_ProjectionMatrix = glm::perspective(fovy, abs(aspectratio[0]) / abs(aspectratio[3]),znear,zfar);
-	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	this->m_ZoomLevel = zoomlevel;
+	if(m_Type == ORTHOGRAPHIC)
+		m_ProjectionMat4 = glm::ortho(m_AspectRatio[0] * zoomlevel,m_AspectRatio[1] * zoomlevel,m_AspectRatio[3] * zoomlevel,m_AspectRatio[2] * zoomlevel,m_Znear,m_Zfar);
+	else if(m_Type == PERSPECTIVE)
+		m_ProjectionMat4 = glm::perspective(m_Fov, abs(m_AspectRatio[0]) / abs(m_AspectRatio[3]),m_Znear,m_Zfar);
+	m_ViewProjectionMat4 = m_ProjectionMat4 * m_ViewMat4;
 }
 
 void Camera::OnWindowResize(void * _props)
 {
-	props = static_cast<int*>(_props);
-	IsWindowResized = true;
+	m_Props = static_cast<int*>(_props);
+	m_IsWindowResized = true;
 }
 
 void Camera::Increase() {
@@ -176,24 +176,24 @@ void Camera::SetOnStart() {
 }
 
 void Camera::CameraMovement() {
-	if (type == ORTHOGRAPHIC) {
+	if (m_Type == ORTHOGRAPHIC) {
 		if (Input::IsKeyDown(Keycode::KEY_UP)) {
-			MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
+			MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_DOWN)) {
-			MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0));
+			MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_RIGHT)) {
-			MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
+			MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_LEFT)) {
-			MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * zoomlevel), 0, 0));
+			MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_BACKSPACE)) {
-			MovePosition(glm::vec3(0, 0, -(20.f * DeltaTime::GetDeltaTime() * zoomlevel)));
+			MovePosition(glm::vec3(0, 0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
-			MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * zoomlevel)));
+			MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_G)) {
 			if (Editor::GetInstance()->go != nullptr) {
@@ -224,11 +224,11 @@ void Camera::CameraMovement() {
 			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
 			delta *= 0.2;
-			SetRotation(glm::vec3((pitch + delta.y * (2 * 3.14159f) / 360.0f), (yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
-			if (yaw > glm::two_pi<float>() || yaw < -glm::two_pi<float>())
-				yaw = 0;
-			if (pitch > glm::two_pi<float>() || pitch < -glm::two_pi<float>())
-				pitch = 0;
+			SetRotation(glm::vec3((m_Pitch + delta.y * (2 * 3.14159f) / 360.0f), (m_Yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
+			if (m_Yaw > glm::two_pi<float>() || m_Yaw < -glm::two_pi<float>())
+				m_Yaw = 0;
+			if (m_Pitch > glm::two_pi<float>() || m_Pitch < -glm::two_pi<float>())
+				m_Pitch = 0;
 		}
 		else {
 			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -239,7 +239,7 @@ void Camera::CameraMovement() {
 			rightVec = {1,0};
 		rightVec *= (1.f / sqrt(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
 		rightVec *= DeltaTime::m_Deltatime * speed;
-		double angle = (yaw * 360.0f) / (2 * 3.14159f);
+		double angle = (m_Yaw * 360.0f) / (2 * 3.14159f);
 		if (Input::IsKeyDown(Keycode::KEY_D)) {
 			if (angle > 0 && angle < 180)
 				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
