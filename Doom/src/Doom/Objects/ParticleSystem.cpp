@@ -52,8 +52,8 @@ void ParticleSystem::Play() {
 				Restart();
 		}
 		if (particlesPool[i].Enable) {
-			particlesPool[i].x += (particlesPool[i].speeddirx * speedMultiplier) * DeltaTime::m_Deltatime;
-			particlesPool[i].y += (particlesPool[i].speeddiry * speedMultiplier - gravityAcceleration) * DeltaTime::m_Deltatime;
+			particlesPool[i].x += (particlesPool[i].speeddirx * speedMultiplier) * DeltaTime::s_Deltatime;
+			particlesPool[i].y += (particlesPool[i].speeddiry * speedMultiplier - gravityAcceleration) * DeltaTime::s_Deltatime;
 
 			particlesPool[i].pos = glm::translate(glm::mat4(1.f), glm::vec3(particlesPool[i].x, particlesPool[i].y, 0));
 

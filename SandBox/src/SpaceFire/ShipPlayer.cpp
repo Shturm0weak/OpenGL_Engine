@@ -70,7 +70,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 {
 	SoundManager::CreateSoundAsset("fire", fireSound);
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
-	bulletsPlaceHolder->Enable = false;
+	bulletsPlaceHolder->m_Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
 	bulletsPlaceHolder->SetOwner((void*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
@@ -90,7 +90,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 		bullets[i]->isActive = false;
 		bullets[i]->SetOwner((void*)bulletsPlaceHolder);
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
-		bullets[i]->Enable = false;
+		bullets[i]->m_Enable = false;
 		bullets[i]->col->Enable = false;
 		bullets[i]->damage = 15.f;
 	}
@@ -98,7 +98,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 
 void ShipPlayer::Death()
 {
-	Enable = false;
+	m_Enable = false;
 	col->Enable = false;
 	isDead = true;
 }
@@ -108,7 +108,7 @@ void ShipPlayer::Respawn()
 	timerFire = 0;
 	ammo = 100;
 	hp = 100;
-	Enable = true;
+	m_Enable = true;
 	col->Enable = true;
 	isDead = false;
 	tr->Translate(0, 0);
@@ -153,7 +153,7 @@ void ShipPlayer::OnCollision(void * _col)
 		Ammo* a = static_cast<Ammo*>(__col->GetOwnerOfComponent());
 		ammo += a->GetAmmo();
 		SoundManager::Play(SoundManager::GetSound("pickUp"));
-		World::DeleteObject(a->id);
+		World::DeleteObject(a->m_Id);
 	}
 }
 
@@ -162,8 +162,8 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 		timerFire = 0;
 		int amount = currentStage;
 		if (currentStage != ZERO) {
-			xOffset = sr->WorldVertexPositions[0] * 0.3f;
-			yOffset = sr->WorldVertexPositions[1] * 0.3f;
+			xOffset = sr->m_WorldVertexPositions[0] * 0.3f;
+			yOffset = sr->m_WorldVertexPositions[1] * 0.3f;
 		}
 		for (size_t i = 0; i < amount; i++)
 		{
@@ -173,15 +173,15 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 				usedBulletCounter = 0;
 			bullets[usedBulletCounter]->SetMoveDirection(dir);
 			bullets[usedBulletCounter]->tr->Translate(GetPosition().x + xOffset, GetPosition().y + yOffset);
-			bullets[usedBulletCounter]->Enable = true;
+			bullets[usedBulletCounter]->m_Enable = true;
 			bullets[usedBulletCounter]->col->Enable = true;
 			bullets[usedBulletCounter]->isActive = true;
 			bullets[usedBulletCounter]->lifeTimer = 0;
 			usedBulletCounter++;
 			ammo--;
 			if (amount == 2) {
-				xOffset = sr->WorldVertexPositions[2] * 0.3f;
-				yOffset = sr->WorldVertexPositions[3] * 0.3f;
+				xOffset = sr->m_WorldVertexPositions[2] * 0.3f;
+				yOffset = sr->m_WorldVertexPositions[3] * 0.3f;
 			}
 			else if (amount == 3) {
 				if (i == 0) {
@@ -189,12 +189,12 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 					yOffset = 0;
 				}
 				else if (i == 1) {
-					xOffset = sr->WorldVertexPositions[2] * 0.3f;
-					yOffset = sr->WorldVertexPositions[3] * 0.3f;
+					xOffset = sr->m_WorldVertexPositions[2] * 0.3f;
+					yOffset = sr->m_WorldVertexPositions[3] * 0.3f;
 				}
 			}
 		}
 		SoundManager::Play(fireSound);
 	}
-	timerFire += DeltaTime::deltatime;
+	timerFire += DeltaTime::m_Deltatime;
 }

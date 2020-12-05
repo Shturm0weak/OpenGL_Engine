@@ -85,7 +85,7 @@ void Doom::LuaState::OnUpdate(float dt)
 {
 	lua_getglobal(m_L,"OnUpdate");
 	if(lua_isfunction(m_L,-1)){
-		lua_pushnumber(m_L, DeltaTime::m_Deltatime);
+		lua_pushnumber(m_L, DeltaTime::s_Deltatime);
 		CL(lua_pcall(m_L,1,0,0));
 	}
 }
@@ -101,15 +101,15 @@ Doom::LuaState::LuaState(const char* filePath)
 	m_L = luaL_newstate();
 	luaL_openlibs(m_L);
 	CL(luaL_dofile(m_L, filePath));
-	luaStates.push_back(this);
+	s_LuaStates.push_back(this);
 }
 
 Doom::LuaState::~LuaState()
 {
 	lua_close(m_L);
-	auto iter = std::find(luaStates.begin(), luaStates.end(), this);
-	if (iter != luaStates.end()) {
-		luaStates.erase(iter);
+	auto iter = std::find(s_LuaStates.begin(), s_LuaStates.end(), this);
+	if (iter != s_LuaStates.end()) {
+		s_LuaStates.erase(iter);
 	}
 }
 
@@ -122,10 +122,10 @@ const char* Doom::LuaState::GetLuaGlobalName(GameObject* go)
 
 Doom::LuaState* Doom::LuaState::GetLuaOwner(lua_State* l)
 {
-	auto iter = std::find_if(luaStates.begin(), luaStates.end(), [=] (LuaState* luaState) {
+	auto iter = std::find_if(s_LuaStates.begin(), s_LuaStates.end(), [=] (LuaState* luaState) {
 		return (luaState->m_L == l);
 		});
-	if (iter != luaStates.end()) {
+	if (iter != s_LuaStates.end()) {
 		LuaState* l = *iter;
 		return l;
 	}

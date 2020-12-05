@@ -8,12 +8,12 @@ public:
 	float u_GlowStrength = 10;
 	Obj() : GameObject() {
 		GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
-		GetComponent<Renderer3D>()->shader = Shader::Get("Tron");
+		GetComponent<Renderer3D>()->m_Shader = Shader::Get("Tron");
 		Renderer3D* r = GetComponentManager()->GetComponent<Renderer3D>();
-		r->floatUniforms.insert(std::make_pair("u_EdgeThickness", u_EdgeThickness));
-		r->floatUniforms.insert(std::make_pair("u_EdgeSharpness", u_EdgeSharpness));
-		r->floatUniforms.insert(std::make_pair("u_EdgeSubstruct", u_EdgeSubstruct));
-		r->floatUniforms.insert(std::make_pair("u_GlowStrength", u_GlowStrength));
+		r->m_FloatUniforms.insert(std::make_pair("u_EdgeThickness", u_EdgeThickness));
+		r->m_FloatUniforms.insert(std::make_pair("u_EdgeSharpness", u_EdgeSharpness));
+		r->m_FloatUniforms.insert(std::make_pair("u_EdgeSubstruct", u_EdgeSubstruct));
+		r->m_FloatUniforms.insert(std::make_pair("u_GlowStrength", u_GlowStrength));
 	}
 };
 
@@ -27,17 +27,15 @@ public:
 	GameObject* moon;
 	BlankProject(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
 	std::vector<std::string> faces = {
-				"src/SkyBox/right.png",
-				"src/SkyBox/left.png",
-				"src/SkyBox/top.png",
-				"src/SkyBox/bottom.png",
-				"src/SkyBox/front.png",
-				"src/SkyBox/back.png",
-
-
+				"src/SkyBox/skyBox1/back.png",
+				"src/SkyBox/skyBox1/front.png",
+				"src/SkyBox/skyBox1/top.png",
+				"src/SkyBox/skyBox1/bottom.png",
+				"src/SkyBox/skyBox1/left.png",
+				"src/SkyBox/skyBox1/right.png",
 	};
 	virtual void OnStart() {
-		ImGui::SetCurrentContext(Window::imGuiContext);
+		ImGui::SetCurrentContext(Window::s_ImGuiContext);
 		//shader = Shader::Get("Tron");
 		//GameObject* dirLight = new GameObject("Directional Light", 0, 0, 0);
 		//dirLight->GetComponentManager()->AddComponent<DirectionalLight>();
@@ -80,9 +78,9 @@ public:
 	}
 
 	virtual void OnGuiRender() {
-		Gui* g = Gui::GetInstance();
-		g->xAlign = g->XCENTER;
-		g->Text("FPS %f",1,850,500,40,COLORS::White,3,Window::GetFPS());
+		//Gui* g = Gui::GetInstance();
+		//g->m_XAlign = g->XCENTER;
+		//g->Text("FPS %f",1,0,0, 40,COLORS::White,3,Window::GetFPS());
 	}
 
 };

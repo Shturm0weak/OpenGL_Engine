@@ -7,7 +7,6 @@
 #include <ImGui/examples/imgui_impl_opengl3.h>
 #include "../Render/Renderer.h"
 #include <mutex>
-#include "../ImGuizmo/Gizmos.h"
 
 namespace Doom {
 
@@ -44,15 +43,14 @@ namespace Doom {
 		char mesh[128];
 		char pathToTextureFolder[64];
 		float colOffset[2] = { 0,0 };
-		static std::vector<Texture*> texture;
-		static std::vector<std::string> texturesPath;
+		static std::vector<Texture*> s_Texture;
+		static std::vector<std::string> s_TexturesPath;
 		float uvsOffset[2];
 		Editor& operator=(const Editor& rhs) { return *this; }
 		void CreateTextureAtlas();
 
 		float TextColor[4] = {1,1,1,1};
 		float shadowOffset[2] = {0,0};
-		std::vector<Line*> normals;
 
 		void MenuRenderer3D();
 		void MenuCubeCollider3D();
@@ -67,7 +65,6 @@ namespace Doom {
 
 		template<class T>
 		bool MenuRemoveComponent();
-
 		bool MenuRemoveScript(ScriptComponent* sc);
 		void MeshPicker();
 		void TexturePicker();
@@ -75,14 +72,15 @@ namespace Doom {
 		void DrawNode(GameObject* go, ImGuiTreeNodeFlags flags);
 		void DrawChilds(GameObject* go);
 		void ShaderMenu();
+		void MenuShadowMap();
 
 	public:
 		bool drawNormals = false;
-		Gizmos* gizmo = nullptr;
-		static std::vector<Texture*> textureVecTemp;
+		static std::vector<Texture*> s_TextureVecTemp;
 		GameObject* go = nullptr;
 		bool isItemActive = false;
 		static Editor* GetInstance();
+		void ShortCuts();
 		void MenuBar();
 		void EditorUpdateMyGui();
 		void EditorUpdate();
@@ -93,7 +91,7 @@ namespace Doom {
 		void Threads();
 		void Debug();
 		void TextProps();
-		void UpdateNormals(); //Deprecated
+		void UpdateNormals(); //@Deprecated
 	};
 }
 #endif

@@ -16,7 +16,7 @@ namespace Doom {
 		IndexBuffer* m_Ib = nullptr;
 	public:
 
-		static std::vector<CubeCollider3D*> colliders;
+		static std::vector<CubeCollider3D*> s_Colliders;
 		glm::vec3 m_MinP = { -1,-1,-1 };
 		glm::vec3 m_MaxP = {  1, 1, 1 };
 		glm::vec3 m_Offset = {0,0,0};

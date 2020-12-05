@@ -9,6 +9,7 @@
 #include "src/SpaceFire/SpaceFire.h"
 #include "src/Minecraft/Minecraft.h"
 #include "src/game/BlankProject.h"
+#include "FEM/FEM.h"
 
 int main(){
 	BlankProject app;

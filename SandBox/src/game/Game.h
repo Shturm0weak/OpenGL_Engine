@@ -50,7 +50,7 @@ public:
 		ray = new Ray2D(glm::vec2(0, 0), glm::vec2(3,3) , 10);
 		Sound* coinSound = new Sound("src/Sounds/Coin.wav");
 		SoundManager::CreateSoundAsset("coin", coinSound);
-		ray->ignoreMask.push_back("Player");
+		ray->m_IgnoreMask.push_back("Player");
 		for (unsigned int i = 0; i < 5; i++)
 		{
 			coins.push_back(new Coin());
@@ -61,14 +61,14 @@ public:
 		Window::GetCamera().MovePosition(glm::vec3(0, 5.5, 0));
 		Window::GetCamera().Zoom(15.8);
 		line = new Line(glm::vec3(-5, -5, 0), glm::vec3(-5, 5, 0));
-		line->width = 5.f;
-		line->Enable = false;
+		line->s_Width = 5.f;
+		line->m_Enable = false;
 	}
 
 	virtual void OnUpdate() override {
 		EventSystem::GetInstance()->StopProcessEvents(pause);
 		Window::GetCamera().CameraMovement();
-		time += DeltaTime::deltatime;
+		time += DeltaTime::s_Deltatime;
 		if (delay > 0.1) {
 			if (Input::IsKeyPressed(Keycode::KEY_ESCAPE)) {
 				if (pause)
@@ -78,7 +78,7 @@ public:
 				delay = 0;
 			}
 		}
-		delay += DeltaTime::deltatime;
+		delay += DeltaTime::s_Deltatime;
 		if (go->isDead) {
 			pause = true;
 			if (Input::IsKeyPressed(Keycode::KEY_ENTER)) {
@@ -89,7 +89,7 @@ public:
 				}
 				for (unsigned int i = 0; i < 3; i++)
 				{
-					hp->hearts[i]->Enable = true;
+					hp->hearts[i]->m_Enable = true;
 				}
 				bomb->Randomize();
 				go->hp = 3;
@@ -104,43 +104,43 @@ public:
 		else if (!pause) {
 			{
 				if (fireTimer > 2.99 && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
-					Hit hit;
+					Ray2D::Hit hit;
 					glm::vec2 direction = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x - go->GetPosition().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y - go->GetPosition().y);
 					Ray2D::Normilize(direction);
-					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPosition().x, go->GetPosition().y), direction, ray->ignoreMask)) {
-						if (hit.Object->GetTag() == "Coin") {
-							Coin* coin = (Coin*)hit.Object->GetOwnerOfComponent();
+					if (ray->Raycast(hit, 30.f, glm::vec2(go->GetPosition().x, go->GetPosition().y), direction, ray->m_IgnoreMask)) {
+						if (hit.m_Object->GetTag() == "Coin") {
+							Coin* coin = (Coin*)hit.m_Object->GetOwnerOfComponent();
 							coin->OnCollision(go->col);
 						}
-						else if (hit.Object->GetTag() == "Bomb") {
-							Bomb* bomb = (Bomb*)hit.Object->GetOwnerOfComponent();
+						else if (hit.m_Object->GetTag() == "Bomb") {
+							Bomb* bomb = (Bomb*)hit.m_Object->GetOwnerOfComponent();
 							go->col->SetTag("Land");
 							bomb->OnCollision(go->col);
 							go->col->SetTag("Player");
 						}
-						line->Enable = true;
-						line->SetStartPoint(ray->start.x, ray->start.y);
-						line->SetEndPoint(hit.point.x,hit.point.y);
+						line->m_Enable = true;
+						line->SetStartPoint(ray->m_Start.x, ray->m_Start.y);
+						line->SetEndPoint(hit.m_Point.x,hit.m_Point.y);
 						fireTimer = 0;
 					}
 					else {
-						line->Enable = true;
-						line->SetStartPoint(ray->start.x, ray->start.y);
-						line->SetEndPoint(ray->end.x, ray->end.y);
+						line->m_Enable = true;
+						line->SetStartPoint(ray->m_Start.x, ray->m_Start.y);
+						line->SetEndPoint(ray->m_End.x, ray->m_End.y);
 						fireTimer = 0;
 					}
 				}
-				if (line->Enable) {
-					timerFadeOut += DeltaTime::deltatime;
+				if (line->m_Enable) {
+					timerFadeOut += DeltaTime::s_Deltatime;
 				}
-				if (timerFadeOut > 0.5 && line->Enable) {
-					line->Enable = false;
+				if (timerFadeOut > 0.5 && line->m_Enable) {
+					line->m_Enable = false;
 					timerFadeOut = 0;
 				}
-				fireTimer += DeltaTime::deltatime;
+				fireTimer += DeltaTime::s_Deltatime;
 				if (fireTimer > 3.0)
 					fireTimer = 3.0;
-				fps = 1000.f / (DeltaTime::deltatime * 1000.f);
+				fps = 1000.f / (DeltaTime::s_Deltatime * 1000.f);
 				if (fps > max)
 					max = fps;
 				else if (fps < lowest)
@@ -160,20 +160,18 @@ public:
 
 		if (!pause) {
 			Gui::GetInstance()->RelateToPanel();
-			Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
+			Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
 			Gui::GetInstance()->Panel("",500, 400, 450, 200, COLORS::DarkGray * 0.0f);
 			Gui::GetInstance()->Text("FPS : %f", true, 0, 0, 25, COLORS::Red, 0, fps);
 			Gui::GetInstance()->Text("Mouse X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 			Gui::GetInstance()->Text("Camera X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
 			Gui::GetInstance()->Text("Player X : %f   Y : %f", true, 0, 0, 25, COLORS::Red, 2, go->GetPosition().x, go->GetPosition().y);
-			Gui::GetInstance()->Text("Textures: %d", true, 0, 0, 25, COLORS::Red, 0, Texture::bindedAmount);
 			Gui::GetInstance()->Text("Collisions: %d", true, 0, 0, 25, COLORS::Red, 0, Renderer::GetAmountOfCollisions());
-			Gui::GetInstance()->Text("VRAM used: %f MB", true, 0, 0, 25, COLORS::Red, 3, Texture::VRAMused);
 			Gui::GetInstance()->Text("Time since start: %f", true, 0, 0, 25, COLORS::Red, 3, time);
 			Gui::GetInstance()->UnRelateToPanel();
 
 			Gui::GetInstance()->RelateToPanel();
-			Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
+			Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
 			Gui::GetInstance()->Panel("",600, -450, 450, 200, COLORS::DarkGray * 0.0f);
 			Gui::GetInstance()->Text("Score: %d", true, 0, 0, 40, COLORS::White, 0, go->scores);
 			Gui::GetInstance()->Text("Missed: %d", true, 0, 0, 40, COLORS::White, 0, go->missed);
@@ -195,7 +193,7 @@ public:
 				}
 				for (unsigned int i = 0; i < 3; i++)
 				{
-					hp->hearts[i]->Enable = true;
+					hp->hearts[i]->m_Enable = true;
 				}
 				bomb->Randomize();
 				go->hp = 3;

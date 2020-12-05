@@ -5,6 +5,8 @@
 #include "../Core/ViewPort.h"
 #include "../Core/Timer.h"
 #include "../Core/Utils.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/quaternion.hpp"
 
 using namespace Doom;
 
@@ -39,6 +41,11 @@ glm::vec3 Doom::Transform::GetScale()
 	return Utils::GetScale(m_ScaleMat4);
 }
 
+glm::mat4 Doom::Transform::GetTransform()
+{
+	return m_PosMat4  * m_ViewMat4 * m_ScaleMat4;
+}
+
 void Transform::Move(float speedX,float speedY,float speedZ) {
 	glm::vec3 position = Utils::GetPosition(m_PosMat4);
 	position.x += speedX * DeltaTime::GetDeltaTime();
@@ -66,20 +73,17 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 
 void Transform::RotateOnce(float x, float y, float z,bool isRad) {
 	sr = m_Owner->GetComponentManager()->GetComponent<Irenderer>();
-		if (isRad) {
-			m_Rotation.x = x;
-			m_Rotation.y = y;
-			m_Rotation.z = z;
+	m_Rotation.x = x;
+	m_Rotation.y = y;
+	m_Rotation.z = z;
+		if (!isRad) {
+			m_Rotation = glm::radians(m_Rotation);
 		}
-		else {
-			m_Rotation.x = (-x * (2 * 3.14159f) / 360.0f);
-			m_Rotation.y = (-y * (2 * 3.14159f) / 360.0f);
-			m_Rotation.z = (-z * (2 * 3.14159f) / 360.0f);
-		}
-		m_ViewMat4 = glm::mat4(1.0f);
-		m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
-		m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
-		m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
+		//m_ViewMat4 = glm::mat4(1.0f);
+		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
+		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
+		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
+		m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
 		RealVertexPositions();
 		if (col == nullptr) {
 			col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
@@ -130,13 +134,17 @@ void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 tempAxis)
 	}*/
 }
 
-void Transform::Rotate(float x, float y, float z) {
-	m_Rotation.x = (-x * (2 * 3.14159f) / 360.0f);
-	m_Rotation.y = (-y * (2 * 3.14159f) / 360.0f);
-	m_Rotation.z = (-z * (2 * 3.14159f) / 360.0f);
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
+void Transform::Rotate(float x, float y, float z, bool isRad) {
+	m_Rotation.x = x;
+	m_Rotation.y = y;
+	m_Rotation.z = z;
+	if (!isRad) {
+		m_Rotation = glm::radians(m_Rotation);
+	}
+	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
 	RealVertexPositions();
 	if (col == nullptr) {
 		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
@@ -233,19 +241,16 @@ void Transform::Move(glm::vec3 vdir) {
 void Transform::RotateOnce(glm::vec3 vangles, bool isRad) {
 	sr = m_Owner->GetComponentManager()->GetComponent<Irenderer>();
 	if (isRad) {
-		m_Rotation.x = vangles.x;
-		m_Rotation.y = vangles.y;
-		m_Rotation.z = vangles.z;
+		m_Rotation = vangles;
 	}
 	else {
-		m_Rotation.x = (-vangles.x * (2 * 3.14159f) / 360.0f);
-		m_Rotation.y = (-vangles.y * (2 * 3.14159f) / 360.0f);
-		m_Rotation.z = (-vangles.z * (2 * 3.14159f) / 360.0f);
+		m_Rotation = glm::radians(vangles);
 	}
-	m_ViewMat4 = glm::mat4(1.0f);
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
+	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
+	//m_ViewMat4 = glm::mat4(1.0f);
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
 	RealVertexPositions();
 	if (col == nullptr) {
 		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
@@ -266,13 +271,17 @@ void Transform::RotateOnce(glm::vec3 vangles, bool isRad) {
 	}*/
 }
 
-void Transform::Rotate(glm::vec3 vangles) {
-	m_Rotation.x = (-vangles.x * (2 * 3.14159f) / 360.0f);
-	m_Rotation.y = (-vangles.y * (2 * 3.14159f) / 360.0f);
-	m_Rotation.z = (-vangles.z * (2 * 3.14159f) / 360.0f);
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
-	m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
+void Transform::Rotate(glm::vec3 vangles, bool isRad) {
+	if (isRad) {
+		m_Rotation = vangles;
+	}
+	else {
+		m_Rotation = glm::radians(vangles);
+	}
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
+	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
+	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
 	RealVertexPositions();
 	if (col == nullptr) {
 		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();

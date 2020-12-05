@@ -27,7 +27,7 @@ namespace Doom {
 		};
 
 		Material m_Material;
-		Texture* m_DiffuseTexture = Texture::WhiteTexture;
+		Texture* m_DiffuseTexture = Texture::s_WhiteTexture;
 		Texture* m_NormalMapTexture = Texture::Get("InvalidTexture");
 		Transform* m_Tr = nullptr;
 		Mesh* m_Mesh = nullptr;

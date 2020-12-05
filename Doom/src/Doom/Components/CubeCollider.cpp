@@ -47,8 +47,8 @@ void Doom::CubeCollider3D::InitMesh()
 	for (size_t i = 0; i < 36; i++)
 		indices[i] = i;
 	Mesh* mesh = new Mesh("CubeCollider","src/Mesh/Primitives/cube.fbx");
-	mesh->mesh = vertices;
-	mesh->indices = indices;
+	mesh->m_VertAttrib = vertices;
+	mesh->m_Indices = indices;
 	MeshManager::AddMesh(mesh);
 }
 
@@ -57,25 +57,25 @@ Doom::CubeCollider3D::~CubeCollider3D()
 	delete m_Vb;
 	delete m_Ib;
 	delete m_Va;
-	auto iter = std::find(colliders.begin(), colliders.end(), this);
-	if (iter != colliders.end()) {
-		colliders.erase(iter);
+	auto iter = std::find(s_Colliders.begin(), s_Colliders.end(), this);
+	if (iter != s_Colliders.end()) {
+		s_Colliders.erase(iter);
 	}
 }
 
 CubeCollider3D::CubeCollider3D() {
 	m_Mesh = MeshManager::GetMesh("CubeCollider");
 	m_Layout = new VertexBufferLayout();
-	m_Vb = new VertexBuffer(m_Mesh->mesh, 36 * 3 * sizeof(float));
+	m_Vb = new VertexBuffer(m_Mesh->m_VertAttrib, 36 * 3 * sizeof(float));
 	m_Va = new VertexArray();
-	m_Ib = new IndexBuffer(m_Mesh->indices, 36);
+	m_Ib = new IndexBuffer(m_Mesh->m_Indices, 36);
 	m_Layout->Push<float>(3);
 	m_Va->AddBuffer(*this->m_Vb, *this->m_Layout);
 	m_Va->UnBind();
 	m_Shader->UnBind();
 	m_Vb->UnBind();
 	m_Ib->UnBind();
-	colliders.push_back(this);
+	s_Colliders.push_back(this);
 	//SetType(ComponentType::CUBECOLLIDER3D);
 }
 
@@ -91,7 +91,7 @@ void Doom::CubeCollider3D::Render()
 	m_Va->Bind();
 	m_Ib->Bind();
 	m_Vb->Bind();
-	Renderer::DrawCalls++;
+	Renderer::s_DrawCalls++;
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);

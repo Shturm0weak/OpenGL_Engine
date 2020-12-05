@@ -20,7 +20,7 @@ namespace Doom {
 	public:
 
 		GameObject* m_Go = nullptr;
-		static std::vector<LuaState*> luaStates;
+		static std::vector<LuaState*> s_LuaStates;
 
 		static const char* GetLuaGlobalName(GameObject* go);
 		static LuaState* GetLuaOwner(lua_State* l);

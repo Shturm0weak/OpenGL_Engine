@@ -46,7 +46,7 @@ public:
 		RectangleCollider2D* col = static_cast<RectangleCollider2D*>(_col);
 		if (col->GetTag() == "Player") {
 			SoundManager::Play(bombSound);
-			Enable = false;
+			m_Enable = false;
 			this->col->Enable = false;
 			Player* player = dynamic_cast<Player*>(col->GetOwnerOfComponent());
 			player->missed += 3;
@@ -60,7 +60,7 @@ public:
 		}
 		else if (col->GetTag() == "Land") {
 			SoundManager::Play(bombSound);
-			Enable = false;
+			m_Enable = false;
 			this->col->Enable = false;
 			particle->SetPosition(GetPosition().x, GetPosition().y);
 			particlePlay = true;
@@ -70,7 +70,7 @@ public:
 	}
 
 	void Randomize() {
-		Enable = true;
+		m_Enable = true;
 		this->col->Enable = true;
 		std::random_device rd;
 		std::mt19937 e2(rd());

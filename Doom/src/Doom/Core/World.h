@@ -5,10 +5,10 @@ namespace Doom {
 	class DOOM_API World {
 	public:
 
-		static std::vector <GameObject*> objects;
+		static std::vector <GameObject*> s_GameObjects;
 
-		static int m_ObjId;
-		static int m_ColId;
+		static int s_ObjId;
+		static int s_ColId;
 
 		static void ProccessLuaStates();
 		static void StartLuaStates();

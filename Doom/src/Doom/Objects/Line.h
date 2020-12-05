@@ -23,8 +23,8 @@ public:
 		0,0,0
 	};
 
-	static float width;
-	static std::vector<Line*> lines;
+	static float s_Width;
+	static std::vector<Line*> s_Lines;
 
 	Line(glm::vec3 start,glm::vec3 end);
 	Line(glm::vec3 start,glm::vec3 direction,float maxLength);

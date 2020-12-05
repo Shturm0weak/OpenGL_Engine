@@ -87,7 +87,7 @@ namespace Doom {
 		void SetId(int id) { this->id = id; }
 		int GetId() const { return id; }
 
-		static bool IsVisible;
+		static bool s_IsVisible;
 		bool Enable = true;
 		bool isCollided = false;
 		bool IsTrigger = false;

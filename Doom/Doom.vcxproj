@@ -148,7 +148,7 @@
     <ClInclude Include="src\Doom\FbxLoader\fbxproperty.h" />
     <ClInclude Include="src\Doom\FbxLoader\fbxutil.h" />
     <ClInclude Include="src\Doom\FileDialogs\FileDialogs.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="src\Doom\Input\Input.h" />
     <ClInclude Include="src\Doom\Input\WindowsInput.h" />
     <ClInclude Include="src\Doom\Lua\LuaState.h" />
@@ -269,7 +269,7 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxproperty.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
     <ClCompile Include="src\Doom\FileDialogs\FileDialogs.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\Doom\Input\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Lua\LuaState.cpp" />
     <ClCompile Include="src\Doom\Objects\Camera.cpp" />

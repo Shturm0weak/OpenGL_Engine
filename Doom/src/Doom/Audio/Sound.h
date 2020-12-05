@@ -20,26 +20,27 @@ namespace Doom {
 
 	class DOOM_API Sound {
 	private:
-		std::string m_fileName;
-		ALuint buffer;
-		ALuint source;
-		int channels;
-		int sampleRate;
+
+		std::string m_FileName;
+		ALuint m_Buffer;
+		ALuint m_Source;
+		AudioState m_State;
+		int m_Channels;
+		int m_SampleRate;
 		short* soundBuffer;
 		int numberOfSamples;
-		AudioState state;
-		float volume;
-		bool loop;
+		float m_Volume;
+		bool m_IsLooped;
 
 		friend class SoundManager;
 	public:
 		
-		void SetVolume(float volume);
 		Sound(std::string filename);
 		~Sound();
 
-		inline int GetState() { return state; }
-		inline ALuint GetId() { return source; }
+		void SetVolume(float volume);
+		inline int GetState() { return m_State; }
+		inline ALuint GetId() { return m_Source; }
 	};
 
 }

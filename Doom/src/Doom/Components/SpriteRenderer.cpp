@@ -23,14 +23,14 @@ Doom::SpriteRenderer::SpriteRenderer()
 {
 	//SetType(ComponentType::SPRITERENDERER);
 	m_Shader = Shader::Get("Default2D");
-	Renderer::objects2d.push_back(this);
+	Renderer::s_Objects2d.push_back(this);
 }
 
 Doom::SpriteRenderer::~SpriteRenderer()
 {
-	auto iter = std::find(Renderer::objects2d.begin(), Renderer::objects2d.end(), this);
-	if (iter != Renderer::objects2d.end()) {
-		Renderer::objects2d.erase(iter);
+	auto iter = std::find(Renderer::s_Objects2d.begin(), Renderer::s_Objects2d.end(), this);
+	if (iter != Renderer::s_Objects2d.end()) {
+		Renderer::s_Objects2d.erase(iter);
 	}
 }
 
@@ -149,16 +149,16 @@ float * SpriteRenderer::GetUVs() const
 
 void SpriteRenderer::Setlayer(int layer)
 {
-	unsigned int size = World::objects.size();
+	unsigned int size = World::s_GameObjects.size();
 #ifdef _DEBUG
 	std::cout << m_Owner->m_Name << " is set from layer " << m_Owner->m_Id << " to " << layer << std::endl;
 #endif
-	World::objects.erase(World::objects.begin() + m_Owner->m_Id);
-	World::objects.insert(World::objects.begin() + layer, m_Owner);
-	for (unsigned int i = 0; i < World::objects.size(); i++)
+	World::s_GameObjects.erase(World::s_GameObjects.begin() + m_Owner->m_Id);
+	World::s_GameObjects.insert(World::s_GameObjects.begin() + layer, m_Owner);
+	for (unsigned int i = 0; i < World::s_GameObjects.size(); i++)
 	{
-		World::objects[i]->m_Id = i;
-		World::objects[i]->m_Layer = i;
+		World::s_GameObjects[i]->m_Id = i;
+		World::s_GameObjects[i]->m_Layer = i;
 	}
 	return;
 }

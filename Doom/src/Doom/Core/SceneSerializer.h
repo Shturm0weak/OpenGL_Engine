@@ -7,7 +7,7 @@ namespace Doom {
 	class DOOM_API SceneSerializer {
 	public:
 
-		static std::string m_CurrentSceneFilePath;
+		static std::string s_CurrentSceneFilePath;
 		static void Serialize(const std::string& filePath);
 		static void DeSerialize(const std::string& filePath);
 	private:

@@ -14,6 +14,8 @@ namespace Doom {
 		glm::vec2 m_ViewportPos = glm::vec2(0, 0);
 		glm::vec2 m_Size = glm::vec2(0, 0);
 
+		int m_GizmoOperation = -1;
+
 		void GetMousePositionToWorldSpaceImpl();
 		void GetStaticMousePositionImpl();
 		void GetMousePositionToScreenSpaceImpl();
@@ -41,6 +43,8 @@ namespace Doom {
 		inline void SetViewPortPos(float x, float y) { m_ViewportPos.x = x; m_ViewportPos.y = y; }
 		inline void SetViewPortPos(glm::vec2 viewportPos) { m_ViewportPos = viewportPos; }
 		inline float GetAspectRatio() {return m_Size.x / m_Size.y;}
+
+		friend class Doom::Editor;
 	};
 
 }

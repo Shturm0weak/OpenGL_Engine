@@ -84,7 +84,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec4& v) {
 
 void Doom::SceneSerializer::Serialize(const std::string & filePath)
 {
-	m_CurrentSceneFilePath = filePath;
+	s_CurrentSceneFilePath = filePath;
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene";
@@ -103,17 +103,17 @@ void Doom::SceneSerializer::Serialize(const std::string & filePath)
 	out << YAML::Key << "GameObjects";
 	out << YAML::Value << YAML::BeginSeq;
 
-	for (uint32_t i = 0; i < World::objects.size(); i++)
+	for (uint32_t i = 0; i < World::s_GameObjects.size(); i++)
 	{
-		if(World::objects[i]->m_IsSerializable)
-			SerializeGameObject(out, World::objects[i]);
+		if(World::s_GameObjects[i]->m_IsSerializable)
+			SerializeGameObject(out, World::s_GameObjects[i]);
 	}
 
 	out << YAML::EndSeq;
 
 	out << YAML::Key << "Texture atlases";
 	out << YAML::Value << YAML::BeginSeq;
-	for (auto iter = TextureAtlas::textureAtlases.begin(); iter != TextureAtlas::textureAtlases.end(); iter++)
+	for (auto iter = TextureAtlas::s_TextureAtlases.begin(); iter != TextureAtlas::s_TextureAtlases.end(); iter++)
 	{
 		SerializeTextureAtlas(out, iter->second);
 	}
@@ -127,7 +127,7 @@ void Doom::SceneSerializer::Serialize(const std::string & filePath)
 
 void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
 {
-	m_CurrentSceneFilePath = filePath;
+	s_CurrentSceneFilePath = filePath;
 	std::ifstream stream(filePath);
 	std::stringstream strStream;
 
@@ -172,7 +172,7 @@ void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
 	{
 		for (uint32_t i = 0; i < iter->second.size(); i++)
 		{
-			GameObject* ch = World::objects[iter->second[i]];
+			GameObject* ch = World::s_GameObjects[iter->second[i]];
 			ch->SetOwner((void*)iter->first);
 			iter->first->AddChild((void*)ch);
 		}
@@ -229,7 +229,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		std::string diffuse = textures["Diffuse"].as<std::string>();
 		std::string normal = textures["Normal"].as<std::string>();
 		if (diffuse == "InvalidTexture")
-			r->m_DiffuseTexture = Texture::WhiteTexture;
+			r->m_DiffuseTexture = Texture::s_WhiteTexture;
 		else {
 			Texture::GetAsync(obj, [=] {
 				Texture* t = Texture::Get(diffuse);
@@ -331,7 +331,7 @@ void Doom::SceneSerializer::DeSerializeTextureAtlas(YAML::detail::iterator_value
 void Doom::SceneSerializer::SerializeTextureAtlas(YAML::Emitter & out, TextureAtlas * ta)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "Texture atlas" << YAML::Value << ta->name;
+	out << YAML::Key << "Texture atlas" << YAML::Value << ta->m_Name;
 	out << YAML::Key << "Texture" << YAML::Value << ta->GetTexture()->GetFilePath();
 	out << YAML::Key << "Sprite width" << YAML::Value << ta->GetSpriteWidth();
 	out << YAML::Key << "Sprite height" << YAML::Value << ta->GetSpriteHeight();
@@ -412,7 +412,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 				out << YAML::Key << "Faces";
 				out << YAML::BeginMap;
 				out << YAML::Flow;
-				out << YAML::BeginSeq << sb->faces[0] << sb->faces[1] << sb->faces[2] << sb->faces[3] << sb->faces[4] << sb->faces[5] << YAML::EndSeq;
+				out << YAML::BeginSeq << sb->m_Faces[0] << sb->m_Faces[1] << sb->m_Faces[2] << sb->m_Faces[3] << sb->m_Faces[4] << sb->m_Faces[5] << YAML::EndSeq;
 				out << YAML::EndMap;
 			}
 
@@ -431,8 +431,8 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 
 			out << YAML::Key << "Mesh";
 			out << YAML::BeginMap;
-			out << YAML::Key << "Mesh" << YAML::Value << (r->m_Mesh != nullptr ? r->m_Mesh->filePath : "InvalidMesh");
-			out << YAML::Key << "Mesh Id" << YAML::Value << (r->m_Mesh != nullptr ? r->m_Mesh->idOfMeshInFile : 0);
+			out << YAML::Key << "Mesh" << YAML::Value << (r->m_Mesh != nullptr ? r->m_Mesh->m_FilePath : "InvalidMesh");
+			out << YAML::Key << "Mesh Id" << YAML::Value << (r->m_Mesh != nullptr ? r->m_Mesh->m_IdOfMeshInFile : 0);
 			out << YAML::EndMap;
 
 			out << YAML::EndMap;

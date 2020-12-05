@@ -20,7 +20,7 @@ public:
 		{
 			hearts.push_back(new GameObject());
 			SpriteRenderer* sr = static_cast<SpriteRenderer*>(hearts[i]->GetComponentManager()->GetComponent<Irenderer>());
-			hearts[i]->name = ("HP");
+			hearts[i]->m_Name = ("HP");
 			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Scale(2,2);
 			hearts[i]->GetComponentManager()->GetComponent<Transform>()->Translate(x + (i * (sr->GetWidth() + 1)),y);
 			sr->Setlayer(i);

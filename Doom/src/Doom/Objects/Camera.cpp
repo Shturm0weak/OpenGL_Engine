@@ -59,7 +59,7 @@ void Camera::WindowResize() {
 			SetOrthographic(m_Ratio);
 			break;
 		case Doom::Camera::PERSPECTIVE:
-			SetPerspective(m_Fov, m_Props[0], m_Props[1], m_Znear, m_Zfar);
+			SetPerspective(m_Fov, ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y, m_Znear, m_Zfar);
 			break;
 		default:
 			break;
@@ -176,6 +176,7 @@ void Camera::SetOnStart() {
 }
 
 void Camera::CameraMovement() {
+	if (ViewPort::GetInstance()->m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 	if (m_Type == ORTHOGRAPHIC) {
 		if (Input::IsKeyDown(Keycode::KEY_UP)) {
 			MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
@@ -207,7 +208,7 @@ void Camera::CameraMovement() {
 		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
 			speed *= 10;
 		}
-		forwardV *= speed * DeltaTime::m_Deltatime;
+		forwardV *= speed * DeltaTime::s_Deltatime;
 		if (Input::IsKeyDown(Keycode::KEY_W)) {
 			MovePosition(glm::vec3(-forwardV.x, forwardV.y, -forwardV.z));
 		}
@@ -215,12 +216,12 @@ void Camera::CameraMovement() {
 			MovePosition(glm::vec3(forwardV.x, -forwardV.y, forwardV.z));
 		}
 		if (Input::IsKeyDown(Keycode::SPACE)) {
-			MovePosition(glm::vec3(0, 5.0f * DeltaTime::m_Deltatime, 0));
+			MovePosition(glm::vec3(0, 5.0f * DeltaTime::s_Deltatime, 0));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_C)) {
-			MovePosition(glm::vec3(0, -5.0f * DeltaTime::m_Deltatime, 0));
+			MovePosition(glm::vec3(0, -5.0f * DeltaTime::s_Deltatime, 0));
 		}
-		if (ViewPort::GetInstance()->m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
+		
 			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
 			delta *= 0.2;
@@ -229,16 +230,13 @@ void Camera::CameraMovement() {
 				m_Yaw = 0;
 			if (m_Pitch > glm::two_pi<float>() || m_Pitch < -glm::two_pi<float>())
 				m_Pitch = 0;
-		}
-		else {
-			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
+	
 		glm::vec2 rightVec;
 		rightVec = { -(forwardV.z * 1) / (forwardV.x) ,1 };
 		if (isinf(rightVec.x))
 			rightVec = {1,0};
 		rightVec *= (1.f / sqrt(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
-		rightVec *= DeltaTime::m_Deltatime * speed;
+		rightVec *= DeltaTime::s_Deltatime * speed;
 		double angle = (m_Yaw * 360.0f) / (2 * 3.14159f);
 		if (Input::IsKeyDown(Keycode::KEY_D)) {
 			if (angle > 0 && angle < 180)
@@ -261,6 +259,10 @@ void Camera::CameraMovement() {
 			else
 				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
 		}
+	}
+	}
+	else {
+		glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 	SetOnStart();
 }

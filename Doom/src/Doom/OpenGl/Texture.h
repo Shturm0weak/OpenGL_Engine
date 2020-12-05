@@ -8,28 +8,31 @@ namespace Doom {
 
 	class DOOM_API Texture {
 	private:
-		static std::map<std::string, Texture*> textures;
-		static bool textureAdded;
+
 		std::string m_FilePath;
 		std::string m_Name;
+		static std::map<std::string, Texture*> s_Textures;
+		static bool s_IsTextureAdded;
 		unsigned char* m_LocalBuffer = nullptr;
 		int m_width = 0, m_height = 0, m_BPP = 0;
+
 		Texture(const std::string& path, int flip = 1,bool repeat = false);
 		Texture();
+
 		static void DispatchLoadedTextures();
+
 		friend class SkyBox;
 		friend class Editor;
 		friend class EntryPoint;
-
 	public:
-		static std::map<void*, std::function<Texture*()>> waitingForTextures;
-		static std::mutex lockTextureLoading;
-		static std::vector<Texture*> loadedTextures;
-		~Texture();
+
+		static std::map<void*, std::function<Texture*()>> s_WaitingForTextures;
+		static std::mutex s_LockTextureLoadingMtx;
+		static std::vector<Texture*> s_LoadedTextures;
+		static Texture* s_WhiteTexture;
+
 		unsigned int m_RendererID = -1;
-		static int bindedAmount;
-		static Texture* WhiteTexture;
-		static double VRAMused;
+		
 		void Bind(unsigned int slot = 0) const;
 		void UnBind() const;
 
@@ -49,7 +52,7 @@ namespace Doom {
 		static void LoadTextureInVRAM(const std::string& filePath, bool unloadFromRam = true);
 		static unsigned int LoadCubeMap(std::vector<std::string> faces);
 
-		friend class Editor;
+		~Texture();
 	};
 
 }

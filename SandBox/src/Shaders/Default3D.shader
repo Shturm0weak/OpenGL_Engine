@@ -175,6 +175,10 @@ vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 Camera
 }
 
 void main() {
+	vec4 texColor = texture(u_DiffuseTexture, v_textcoords);
+	if (texColor.a < 0.1)
+		discard;
+
 	if (u_DrawShadows > 0.5) {
 		shadow = ShadowCalculation(FragPosLightSpace);
 	}

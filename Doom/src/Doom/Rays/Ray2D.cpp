@@ -5,28 +5,28 @@
 using namespace Doom;
 
 Ray2D::Ray2D(glm::vec2 start, glm::vec2 direction, float length)
-	: start(start),length(length)
+	: m_Start(start),m_Length(length)
 {
-	this->direction = direction;
-	Normilize(this->direction);
-	this->end = start + (direction * length);
+	this->m_Dir = direction;
+	Normilize(this->m_Dir);
+	this->m_End = start + (direction * length);
 }
 
 bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, std::vector<std::string> ignoreMask)
 {
-	this->start = start;
-	this->direction = direction;
-	end = (this->direction * length) + start;
+	this->m_Start = start;
+	this->m_Dir = direction;
+	m_End = (this->m_Dir * length) + start;
 	
 	std::vector<glm::vec2> corners;
 	std::multimap<RectangleCollider2D*,glm::vec2*> points;
-	unsigned int size = Renderer::collision2d.size();
+	unsigned int size = Renderer::s_Collision2d.size();
 
 	bool ignoreFlag = false;
 
 	for (unsigned int i = 0; i < size; i++)
 	{
-		RectangleCollider2D* col = Renderer::collision2d[i];
+		RectangleCollider2D* col = Renderer::s_Collision2d[i];
 
 		unsigned int ignoreMaskSize = ignoreMask.size();
 		for (unsigned int i = 0; i < ignoreMaskSize; i++)
@@ -48,16 +48,16 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 			corners.push_back(glm::vec2(col->ScaledVerPos[12], col->ScaledVerPos[13]));
 
 			glm::vec2* result = nullptr;
-			result = LineIntersect(corners[3] + glm::vec2(col->position.x, col->position.y), corners[0] + glm::vec2(col->position.x, col->position.y), start, end);
+			result = LineIntersect(corners[3] + glm::vec2(col->position.x, col->position.y), corners[0] + glm::vec2(col->position.x, col->position.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
-			result = LineIntersect(corners[0] + glm::vec2(col->position.x, col->position.y), corners[1] + glm::vec2(col->position.x, col->position.y), start, end);
+			result = LineIntersect(corners[0] + glm::vec2(col->position.x, col->position.y), corners[1] + glm::vec2(col->position.x, col->position.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
-			result = LineIntersect(corners[1] + glm::vec2(col->position.x, col->position.y), corners[2] + glm::vec2(col->position.x, col->position.y), start, end);
+			result = LineIntersect(corners[1] + glm::vec2(col->position.x, col->position.y), corners[2] + glm::vec2(col->position.x, col->position.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
-			result = LineIntersect(corners[2] + glm::vec2(col->position.x, col->position.y), corners[3] + glm::vec2(col->position.x, col->position.y), start, end);
+			result = LineIntersect(corners[2] + glm::vec2(col->position.x, col->position.y), corners[3] + glm::vec2(col->position.x, col->position.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
 		}
@@ -72,8 +72,8 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 			
 			if (distance <= min) {
 				min = distance;
-				hit.point = glm::vec3(itr->second->x, itr->second->y,0);
-				hit.Object = itr->first;
+				hit.m_Point = glm::vec3(itr->second->x, itr->second->y,0);
+				hit.m_Object = itr->first;
 			}
 			delete itr->second;
 		}
@@ -111,16 +111,16 @@ void Doom::Ray2D::Normilize(glm::vec2 & vector)
 void Doom::Ray2D::Rotate(float angle)
 {
 	float theta = (-angle * (2 * 3.14159f) / 360.0f);
-	direction = glm::vec2(cos(theta) * direction.x - sin(theta) * direction.y,
-		sin(theta) * direction.x + cos(theta) * direction.y);
-	this->end = start + (direction * length);
+	m_Dir = glm::vec2(cos(theta) * m_Dir.x - sin(theta) * m_Dir.y,
+		sin(theta) * m_Dir.x + cos(theta) * m_Dir.y);
+	this->m_End = m_Start + (m_Dir * m_Length);
 }
 
 void Ray2D::SetStart(glm::vec2 start) {
-	this->start = start;
+	this->m_Start = start;
 }
 
 void Ray2D::SetDirection(glm::vec2 direction) {
-	this->direction = direction;
-	Normilize(this->direction);
+	this->m_Dir = direction;
+	Normilize(this->m_Dir);
 }

@@ -8,8 +8,9 @@ namespace Doom {
 		uint32_t m_RendererID;
 	public:
 
+		std::vector<std::string> m_Faces;
+
 		SkyBox(std::vector<std::string> faces,Mesh* mesh);
-		std::vector<std::string> faces;
 	};
 
 }

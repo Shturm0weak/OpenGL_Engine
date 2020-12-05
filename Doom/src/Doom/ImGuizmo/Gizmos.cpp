@@ -9,7 +9,7 @@ Doom::Gizmos::Gizmos(float x, float y,float z) : GameObject("Gizmos", x, y) {
 	GameObject::m_Enable = false;
 	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
 	World::PopBack();
-	World::m_ObjId--;
+	World::s_ObjId--;
 
 	for (size_t i = 0; i < 3; i++)
 	{
@@ -20,8 +20,8 @@ Doom::Gizmos::Gizmos(float x, float y,float z) : GameObject("Gizmos", x, y) {
 		m_Axis.push_back(new Line(glm::vec3(0),glm::vec3(0)));
 		m_Faces.back()->m_Enable = false;
 		World::PopBack();
-		World::m_ObjId--;
-		Line::lines.pop_back();
+		World::s_ObjId--;
+		Line::s_Lines.pop_back();
 	}
 	m_Tr = GetComponent<Transform>();
 }
@@ -53,13 +53,13 @@ void Doom::Gizmos::OnUpdate()
 
 	m_Axis[0]->SetStartPoint(m_Tr->GetPosition());
 	m_Axis[0]->SetEndPoint(m_Tr->GetPosition().x + d * 1.5, m_Tr->GetPosition().y, m_Tr->GetPosition().z);
-	m_Axis[0]->color = COLORS::Red;
+	m_Axis[0]->m_Color = COLORS::Red;
 	m_Axis[1]->SetStartPoint(m_Tr->GetPosition());
 	m_Axis[1]->SetEndPoint(m_Tr->GetPosition().x, m_Tr->GetPosition().y + d * 1.5, m_Tr->GetPosition().z);
-	m_Axis[1]->color = COLORS::Green;
+	m_Axis[1]->m_Color = COLORS::Green;
 	m_Axis[2]->SetStartPoint(m_Tr->GetPosition());
 	m_Axis[2]->SetEndPoint(m_Tr->GetPosition().x, m_Tr->GetPosition().y, m_Tr->GetPosition().z + d * 1.5);
-	m_Axis[2]->color = COLORS::Blue;
+	m_Axis[2]->m_Color = COLORS::Blue;
 
 	Transform* trO = nullptr;
 	m_Faces[0]->GetComponent<SpriteRenderer>()->m_Color = COLORS::Red;
@@ -149,11 +149,11 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 	for (size_t i = 0; i < 3; i++)
 	{
 		Line* line = m_Axis[i];
-		if (!line->Enable)
+		if (!line->m_Enable)
 			continue;
 		float tMin = 1e300;
-		glm::vec3 bMin = glm::vec3(line->mesh2D[0], line->mesh2D[1], line->mesh2D[2]);
-		glm::vec3 bMax = glm::vec3(line->mesh2D[3], line->mesh2D[4], line->mesh2D[5]);
+		glm::vec3 bMin = glm::vec3(line->m_Verteces[0], line->m_Verteces[1], line->m_Verteces[2]);
+		glm::vec3 bMax = glm::vec3(line->m_Verteces[3], line->m_Verteces[4], line->m_Verteces[5]);
 		if (i == 1) {
 			bMin[2] -= scale;
 			bMax[2] += scale;
@@ -187,9 +187,9 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 		dist = pair.first;
 
 	if (m_L != nullptr && Input::IsMouseDown(Keycode::MOUSE_BUTTON_1)) {
-		m_L->color = COLORS::Orange;
+		m_L->m_Color = COLORS::Orange;
 		m_IsHovered = true;
-		glm::vec3 diff = glm::vec3(m_L->mesh2D[3], m_L->mesh2D[4], m_L->mesh2D[5]) - glm::vec3(m_L->mesh2D[0], m_L->mesh2D[1], m_L->mesh2D[2]);
+		glm::vec3 diff = glm::vec3(m_L->m_Verteces[3], m_L->m_Verteces[4], m_L->m_Verteces[5]) - glm::vec3(m_L->m_Verteces[0], m_L->m_Verteces[1], m_L->m_Verteces[2]);
 		float transform;
 		if (m_L == m_Axis[0]) {
 			if (m_RoundTransform)
@@ -200,8 +200,8 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 			m_Faces[0]->m_Enable = false;
 			m_Faces[1]->m_Enable = false;
 			m_Faces[2]->m_Enable = false;
-			m_Axis[1]->Enable = false;
-			m_Axis[2]->Enable = false;
+			m_Axis[1]->m_Enable = false;
+			m_Axis[2]->m_Enable = false;
 		}
 		else if (m_L == m_Axis[1]) {
 			if (m_RoundTransform)
@@ -212,8 +212,8 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 			m_Faces[0]->m_Enable = false;
 			m_Faces[1]->m_Enable = false;
 			m_Faces[2]->m_Enable = false;
-			m_Axis[0]->Enable = false;
-			m_Axis[2]->Enable = false;
+			m_Axis[0]->m_Enable = false;
+			m_Axis[2]->m_Enable = false;
 		}
 		else if (m_L == m_Axis[2]) {
 			if (m_RoundTransform)
@@ -224,14 +224,14 @@ void Doom::Gizmos::IntersectLine(glm::vec3 dir,float scale)
 			m_Faces[0]->m_Enable = false;
 			m_Faces[1]->m_Enable = false;
 			m_Faces[2]->m_Enable = false;
-			m_Axis[1]->Enable = false;
-			m_Axis[0]->Enable = false;
+			m_Axis[1]->m_Enable = false;
+			m_Axis[0]->m_Enable = false;
 		}
 	}
 	else {
 		for (size_t i = 0; i < 3; i++)
 		{
-			m_Axis[i]->Enable = true;
+			m_Axis[i]->m_Enable = true;
 		}
 	}
 }
@@ -285,7 +285,7 @@ void Doom::Gizmos::IntersectPlane(glm::vec3 translation)
 		glm::vec3 diff = go->GetPosition() - m_Obj->GetPosition();
 		for (size_t i = 0; i < 3; i++)
 		{
-			m_Axis[i]->Enable = false;
+			m_Axis[i]->m_Enable = false;
 		}
 		glm::vec3 transform = glm::vec3(Window::GetCamera().GetPosition().x + translation.x * dist
 		, Window::GetCamera().GetPosition().y + translation.y * dist
@@ -341,7 +341,7 @@ void Doom::Gizmos::Render()
 		d.insert(std::make_pair(glm::distance(pos, m_Faces[i]->GetPosition()),m_Faces[i]));
 	}
 	
-	Batch::GetInstance()->Gindexcount = 0;
+	Batch::GetInstance()->m_GIndexCount = 0;
 	{
 		Batch::GetInstance()->BeginGameObjects();
 	}
@@ -352,18 +352,18 @@ void Doom::Gizmos::Render()
 	}
 	Batch::GetInstance()->EndGameObjects();
 
-	Batch::GetInstance()->Lindexcount = 0;
+	Batch::GetInstance()->m_LIndexCount = 0;
 	Batch::GetInstance()->BeginLines();
 	for (size_t i = 0; i < 3; i++)
 	{
-		if (m_Axis[i]->Enable)
+		if (m_Axis[i]->m_Enable)
 			Batch::GetInstance()->Submit(*m_Axis[i]);
 	}
 	Batch::GetInstance()->EndLines();
 
-	Texture::WhiteTexture->Bind();
+	Texture::s_WhiteTexture->Bind();
 	glDisable(GL_DEPTH_TEST);
-	Batch::GetInstance()->flushLines(Batch::GetInstance()->LineShader);
-	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->BasicShader);
+	Batch::GetInstance()->flushLines(Batch::GetInstance()->m_LineShader);
+	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->m_BasicShader);
 	glEnable(GL_DEPTH_TEST);
 }

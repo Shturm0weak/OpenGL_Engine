@@ -5,34 +5,30 @@
 namespace Doom {
 
 	class DOOM_API TextureAtlas {
-		Texture* m_texture = nullptr;
-		
-		float UVs[8];
-		static const char** items;
+	private:
+
+		Texture* m_Texture = nullptr;
+		float m_UVs[8];
+		static const char** s_NamesOfTextureAtlases;
+
 		TextureAtlas(std::string name, float spriteWidth, float spriteHeight, std::string texturePath);
 		TextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture* texture);
 		~TextureAtlas();
 	public:
-		std::string name;
-		float spriteWidth; float spriteHeight;
-		static std::map<std::string,TextureAtlas*> textureAtlases;
+
+		std::string m_Name;
+		float m_SpriteWidth; float m_SpriteHeight;
+		static std::map<std::string,TextureAtlas*> s_TextureAtlases;
 
 		static TextureAtlas* CreateTextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture* texture);
-
-		float* GetSpriteUVs(float x, float y);
-
 		static TextureAtlas* GetTextureAtlas(std::string name);
 		static TextureAtlas* GetTextureAtlas(int id);
-
-		inline Texture* GetTexture() const { return m_texture; }
-
-		inline unsigned int GetSpriteHeight() const { return spriteHeight; }
-
-		inline unsigned int GetSpriteWidth() const { return spriteWidth; }
-
 		static const char** GetTextureAtlases();
-
-		void SetSpriteSize(float spriteWidth, float spriteHeight) { this->spriteHeight = spriteHeight; this->spriteWidth = spriteWidth; }
+		inline Texture* GetTexture() const { return m_Texture; }
+		inline unsigned int GetSpriteHeight() const { return m_SpriteHeight; }
+		inline unsigned int GetSpriteWidth() const { return m_SpriteWidth; }
+		float* GetSpriteUVs(float x, float y);
+		void SetSpriteSize(float spriteWidth, float spriteHeight) { this->m_SpriteHeight = spriteHeight; this->m_SpriteWidth = spriteWidth; }
 
 		friend class Renderer;
 	};

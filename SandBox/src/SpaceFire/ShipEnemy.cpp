@@ -18,7 +18,7 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 {
 	SoundManager::CreateSoundAsset("explosion",explosionSound);
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
-	bulletsPlaceHolder->Enable = false;
+	bulletsPlaceHolder->m_Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
 	bulletsPlaceHolder->SetOwner((void*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
@@ -39,7 +39,7 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 		bullets[i]->isActive = false;
 		bullets[i]->SetOwner((void*)bulletsPlaceHolder);
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
-		bullets[i]->Enable = false;
+		bullets[i]->m_Enable = false;
 		bullets[i]->col->Enable = false;
 		bullets[i]->damage = 10;
 	}
@@ -53,7 +53,7 @@ void ShipEnemy::OnUpdate() {
 	if (psPlay)
 		ps->Play();
 
-	if (Enable == false)
+	if (m_Enable == false)
 		return;
 
 	if (hp <= 0) {
@@ -74,7 +74,7 @@ void ShipEnemy::OnUpdate() {
 void ShipEnemy::Spawn()
 {
 	hp = 100;
-	Enable = true;
+	m_Enable = true;
 	col->Enable = true;
 	isDead = false;
 	tr->Translate(GetPosition().x, 20);
@@ -83,7 +83,7 @@ void ShipEnemy::Spawn()
 void ShipEnemy::Death()
 {
 	pl->kills++;
-	Enable = false;
+	m_Enable = false;
 	col->Enable = false;
 	isDead = true;
 	SoundManager::Play(explosionSound);
@@ -112,11 +112,11 @@ void ShipEnemy::Fire() {
 			usedBulletCounter = 0;
 		bullets[usedBulletCounter]->SetMoveDirection(glm::vec3(0,-1,0));
 		bullets[usedBulletCounter]->tr->Translate(GetPosition().x, GetPosition().y);
-		bullets[usedBulletCounter]->Enable = true;
+		bullets[usedBulletCounter]->m_Enable = true;
 		bullets[usedBulletCounter]->col->Enable = true;
 		bullets[usedBulletCounter]->isActive = true;
 		bullets[usedBulletCounter]->lifeTimer = 0;
 		usedBulletCounter++;
 	}
-	timerFire += DeltaTime::deltatime;
+	timerFire += DeltaTime::m_Deltatime;
 }

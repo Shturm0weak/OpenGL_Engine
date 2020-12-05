@@ -4,20 +4,20 @@ using namespace Doom;
 
 void SoundManager::CreateSoundAsset(std::string name,Sound * sound)
 {
-	alGenBuffers(1, &sound->buffer);
-	alBufferData(sound->buffer, AL_FORMAT_STEREO16, sound->soundBuffer, sound->numberOfSamples * sound->channels * 2, sound->sampleRate);
-	alGenSources(1, &sound->source);
-	alSourcei(sound->source, AL_BUFFER, sound->buffer);
-	sounds.insert(std::make_pair(name,sound));
-	sound->volume = 1;
-	sound->state = STOPPED;
+	alGenBuffers(1, &sound->m_Buffer);
+	alBufferData(sound->m_Buffer, AL_FORMAT_STEREO16, sound->soundBuffer, sound->numberOfSamples * sound->m_Channels * 2, sound->m_SampleRate);
+	alGenSources(1, &sound->m_Source);
+	alSourcei(sound->m_Source, AL_BUFFER, sound->m_Buffer);
+	s_Sounds.insert(std::make_pair(name,sound));
+	sound->m_Volume = 1;
+	sound->m_State = STOPPED;
 }
 
 void SoundManager::Init()
 {
-	alcDevice = alcOpenDevice(NULL);
-	alcContext = alcCreateContext(alcDevice, NULL);
-	alcMakeContextCurrent(alcContext);
+	s_AlcDevice = alcOpenDevice(NULL);
+	s_AlcContext = alcCreateContext(s_AlcDevice, NULL);
+	alcMakeContextCurrent(s_AlcContext);
 	std::cout << BOLDGREEN << "Initialized SoundManager\n" << RESET;
 }
 
@@ -51,8 +51,8 @@ void Doom::SoundManager::Stop(Sound * sound)
 
 Sound* SoundManager::GetSound(std::string name)
 {
-	auto sound = sounds.find(name);
-	if (sound != sounds.end())
+	auto sound = s_Sounds.find(name);
+	if (sound != s_Sounds.end())
 		return sound->second;
 	return nullptr;
 }
@@ -64,7 +64,7 @@ void Doom::SoundManager::SetVolume(float volume)
 
 void Doom::SoundManager::UpdateSourceState()
 {
-	for (auto i = sounds.begin(); i != sounds.end(); i++)
+	for (auto i = s_Sounds.begin(); i != s_Sounds.end(); i++)
 	{
 		ALint state;
 		alGetSourcei(i->second->GetId(), AL_SOURCE_STATE, &state);
@@ -72,17 +72,17 @@ void Doom::SoundManager::UpdateSourceState()
 		switch (state)
 		{
 		case AL_PAUSED:
-			i->second->state = PAUSED;
+			i->second->m_State = PAUSED;
 			break;
 		case AL_PLAYING:
-			i->second->state = PLAYING;
+			i->second->m_State = PLAYING;
 			break;
 		case AL_INITIAL:
 		case AL_STOPPED:
-			i->second->state = STOPPED;
+			i->second->m_State = STOPPED;
 			break;
 		default:
-			i->second->state = STOPPED;
+			i->second->m_State = STOPPED;
 			break;
 		}
 	}
@@ -90,9 +90,9 @@ void Doom::SoundManager::UpdateSourceState()
 
 void SoundManager::ShutDown()
 {
-	for (auto i = sounds.begin(); i != sounds.end(); i++)
+	for (auto i = s_Sounds.begin(); i != s_Sounds.end(); i++)
 	{
 		delete i->second;
 	}
-	sounds.clear();
+	s_Sounds.clear();
 }

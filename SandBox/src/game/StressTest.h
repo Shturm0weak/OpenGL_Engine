@@ -18,7 +18,7 @@ public:
 	void OnStart() {
 		gameobj = new GameObject();
 		gameobj->GetComponent<RectangleCollider2D>();
-		ImGui::SetCurrentContext(Window::imGuiContext);
+		ImGui::SetCurrentContext(Window::s_ImGuiContext);
 		textureAtlas = TextureAtlas::CreateTextureAtlas("TileMap",128, 128, Texture::Create("src/GameRPG/Textures/RPGpack_sheet_2X.png"));
 		std::unordered_map<char, glm::vec2> textures;
 		const char* map =
@@ -39,7 +39,7 @@ public:
 	}
 
 	void OnUpdate() {
-		hp -= 10.0f * DeltaTime::deltatime;
+		hp -= 10.0f * DeltaTime::s_Deltatime;
 		if (hp < 0)
 			hp = 100;
 

@@ -17,57 +17,53 @@
 
 using namespace Doom;
 
-DOOM_API std::vector<LuaState*> LuaState::luaStates;
+DOOM_API std::vector<LuaState*> LuaState::s_LuaStates;
 
-DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::colliders;
-DOOM_API std::vector<SphereCollider*> SphereCollider::spheres;
+DOOM_API std::vector<CubeCollider3D*> CubeCollider3D::s_Colliders;
+DOOM_API std::vector<SphereCollider*> SphereCollider::s_Spheres;
 
-DOOM_API std::vector <SpriteRenderer*> Renderer::objects2d;
-DOOM_API std::vector <Renderer3D*> Renderer::objects3d;
-DOOM_API std::vector <Renderer3D*> Renderer::objects3dTransparent;
+DOOM_API std::vector <SpriteRenderer*> Renderer::s_Objects2d;
+DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3d;
+DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
 
-DOOM_API std::vector <RectangleCollider2D*> Renderer::collision2d;
-DOOM_API Batch* Batch::instance;
-DOOM_API std::mutex Renderer::mtx;
-DOOM_API std::condition_variable Renderer::condVar;
-DOOM_API bool Renderer::PolygonMode = false;
-DOOM_API int Renderer::DrawCalls = 0;
-DOOM_API int Renderer::Vertices = 0;
+DOOM_API std::vector <RectangleCollider2D*> Renderer::s_Collision2d;
+DOOM_API Batch* Batch::s_Instance;
+DOOM_API bool Renderer::s_PolygonMode = false;
+DOOM_API int Renderer::s_DrawCalls = 0;
+DOOM_API int Renderer::s_Vertices = 0;
 
-DOOM_API int World::m_ObjId = 0;
-DOOM_API int World::m_ColId = 0;
+DOOM_API int World::s_ObjId = 0;
+DOOM_API int World::s_ColId = 0;
 
-DOOM_API std::vector<std::string> Editor::texturesPath;
-DOOM_API std::vector<Texture*> Editor::texture;
-DOOM_API std::vector<Texture*> Editor::textureVecTemp;
-DOOM_API int Texture::bindedAmount = 0;
-DOOM_API std::vector<Texture*> Texture::loadedTextures;
-DOOM_API bool Texture::textureAdded = false;
-DOOM_API std::map<void*, std::function<Texture*()>> Texture::waitingForTextures;
-DOOM_API std::mutex Texture::lockTextureLoading;
-DOOM_API Texture* Texture::WhiteTexture;
-DOOM_API double Texture::VRAMused = 0;
-DOOM_API std::map<std::string, Texture*> Texture::textures;
+DOOM_API std::vector<std::string> Editor::s_TexturesPath;
+DOOM_API std::vector<Texture*> Editor::s_Texture;
+DOOM_API std::vector<Texture*> Editor::s_TextureVecTemp;
+DOOM_API std::vector<Texture*> Texture::s_LoadedTextures;
+DOOM_API bool Texture::s_IsTextureAdded = false;
+DOOM_API std::map<void*, std::function<Texture*()>> Texture::s_WaitingForTextures;
+DOOM_API std::mutex Texture::s_LockTextureLoadingMtx;
+DOOM_API Texture* Texture::s_WhiteTexture;
+DOOM_API std::map<std::string, Texture*> Texture::s_Textures;
 
 DOOM_API double Timer::m_Start;
 
-DOOM_API ThreadPool* ThreadPool::thread_pool = nullptr;
+DOOM_API ThreadPool* ThreadPool::s_Instance = nullptr;
 DOOM_API bool ThreadPool::m_IsInitialized;
 
 DOOM_API Input* Input::s_Instance = new WindowsInput();
 
-DOOM_API GLFWwindow* Window::m_Window = nullptr;
-DOOM_API ImGuiIO* Window::m_ImGuiIO = nullptr;
-DOOM_API ImGuiContext* Window::m_ImGuiContext = nullptr;
-DOOM_API float Window::m_ScrollYOffset = 0;
-DOOM_API Camera* Window::m_Camera = new Camera();
+DOOM_API GLFWwindow* Window::s_Window = nullptr;
+DOOM_API ImGuiIO* Window::s_ImGuiIO = nullptr;
+DOOM_API ImGuiContext* Window::s_ImGuiContext = nullptr;
+DOOM_API float Window::s_ScrollYOffset = 0;
+DOOM_API Camera* Window::s_Camera = new Camera();
 
-DOOM_API float DeltaTime::m_Time;
-DOOM_API float DeltaTime::m_Lasttime = (float)glfwGetTime();
-DOOM_API float DeltaTime::m_Deltatime = 0.0000001;
-DOOM_API std::mutex DeltaTime::m_Mtx;
+DOOM_API float DeltaTime::s_Time;
+DOOM_API float DeltaTime::s_Lasttime = (float)glfwGetTime();
+DOOM_API float DeltaTime::s_Deltatime = 1.0 / 1e8;
+DOOM_API std::mutex DeltaTime::s_Mtx;
 
-DOOM_API bool RectangleCollider2D::IsVisible;
+DOOM_API bool RectangleCollider2D::s_IsVisible;
 
 DOOM_API vec4 COLORS::Red(0.9, 0, 0, 1);
 DOOM_API vec4 COLORS::Yellow(1, 1, 0, 1);
@@ -80,34 +76,34 @@ DOOM_API vec4 COLORS::Gray(0.86, 0.86, 0.86, 1);
 DOOM_API vec4 COLORS::Silver(0.75, 0.75, 0.75, 1);
 DOOM_API vec4 COLORS::DarkGray(0.4, 0.4, 0.4, 1);
 
-DOOM_API std::vector<Line*> Line::lines;
-DOOM_API float Line::width = 1.0f;
+DOOM_API std::vector<Line*> Line::s_Lines;
+DOOM_API float Line::s_Width = 1.0f;
 
-DOOM_API std::map<std::string, TextureAtlas*> TextureAtlas::textureAtlases;
-DOOM_API const char** TextureAtlas::items;
+DOOM_API std::map<std::string, TextureAtlas*> TextureAtlas::s_TextureAtlases;
+DOOM_API const char** TextureAtlas::s_NamesOfTextureAtlases;
 
-DOOM_API std::map<std::string,Shader*> Shader::shaders;
+DOOM_API std::map<std::string,Shader*> Shader::s_Shaders;
 
-DOOM_API std::vector<Particle*> Particle::particles;
+DOOM_API std::vector<Particle*> Particle::s_Particles;
 
-DOOM_API ALCdevice* SoundManager::alcDevice = nullptr;
-DOOM_API ALCcontext* SoundManager::alcContext = nullptr;
-DOOM_API std::map<std::string,Sound*> SoundManager::sounds;
+DOOM_API ALCdevice* SoundManager::s_AlcDevice = nullptr;
+DOOM_API ALCcontext* SoundManager::s_AlcContext = nullptr;
+DOOM_API std::map<std::string,Sound*> SoundManager::s_Sounds;
 
-DOOM_API std::map<std::string, Mesh*> MeshManager::Meshes;
-DOOM_API std::multimap<std::string, void*> MeshManager::meshQueue;
-DOOM_API std::vector <Mesh*> MeshManager::needToInitMeshes;
-DOOM_API const char** MeshManager::listOfMeshes;
-DOOM_API Shader* Font::shader = nullptr;
-DOOM_API const char** Shader::listOfShaders;
+DOOM_API std::map<std::string, Mesh*> MeshManager::s_Meshes;
+DOOM_API std::multimap<std::string, void*> MeshManager::s_MeshQueue;
+DOOM_API std::vector <Mesh*> MeshManager::s_NeedToInitMeshes;
+DOOM_API const char** MeshManager::s_NamesOfMeshes;
+DOOM_API Shader* Font::s_Shader = nullptr;
+DOOM_API const char** Shader::s_NamesOfShaders;
 
-DOOM_API std::vector<PointLight*> PointLight::pLights;
-DOOM_API std::vector<DirectionalLight*> DirectionalLight::dirLights;
+DOOM_API std::vector<PointLight*> PointLight::s_PointLights;
+DOOM_API std::vector<DirectionalLight*> DirectionalLight::s_DirLights;
 
 //storage of all references to our objects in the scene
-DOOM_API std::vector <GameObject*> World::objects;
+DOOM_API std::vector <GameObject*> World::s_GameObjects;
 
-DOOM_API unsigned int Character::indeces2D[6] = { 0,1,2,3,2,0 };
-DOOM_API unsigned int SpriteRenderer::m_Indices2D[6] = { 0,1,2,3,2,0 };
+DOOM_API unsigned int Character::s_Indices2D[6] = { 0,1,2,3,2,0 };
+DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 
-DOOM_API std::string SceneSerializer::m_CurrentSceneFilePath = "src/Scenes/scene.yaml";
+DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/scene.yaml";

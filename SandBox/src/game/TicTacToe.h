@@ -140,19 +140,19 @@ public:
 		}
 
 
-		timer += DeltaTime::deltatime;
+		timer += DeltaTime::s_Deltatime;
 
 		if (amountOfNonEmpty >= 9) {
 			end = true;
 			turn = 0;
 			Gui::GetInstance()->Begin();
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
-			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::YCENTER;
+			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
+			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::YCENTER;
 			Gui::GetInstance()->Text("Draw", true, 0, 0, 40, COLORS::Yellow);
 			Gui::GetInstance()->Text("Press Enter to restart", true, 0, -80, 40, COLORS::Yellow);
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
-			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
-			Batch::GetInstance()->End();
+			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
+			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
+			Batch::GetInstance()->EndText();
 
 			if (Input::IsKeyPressed(Keycode::KEY_ENTER))
 				Restart();
@@ -207,12 +207,12 @@ public:
 
 	void OnGuiRender() {
 		if (whowin > -1) {
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
-			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::YCENTER;
+			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
+			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::YCENTER;
 			Gui::GetInstance()->Text("Player %d won!!!", true, -0, 0, 40, COLORS::Yellow, 0, whowin);
 			Gui::GetInstance()->Text("Press Enter to restart", true, -0, -80, 40, COLORS::Yellow, 0, whowin);
-			Gui::GetInstance()->xAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
-			Gui::GetInstance()->yAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
+			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
+			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
 		}
 	}
 

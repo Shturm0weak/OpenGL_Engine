@@ -7,13 +7,13 @@ using namespace Doom;
 
 GameObject::GameObject(const std::string name,float x, float y,float z) {
 	this->m_Name = name;
-	m_Layer = World::objects.size();
-	m_Id = World::m_ObjId;
-	World::m_ObjId++;
+	m_Layer = World::s_GameObjects.size();
+	m_Id = World::s_ObjId;
+	World::s_ObjId++;
 	m_ComponentManager = new ComponentManager(this, this->m_Name);
 	m_Transform = m_ComponentManager->AddComponent<Transform>();
 	m_Transform->Translate(x, y, z);
-	World::objects.push_back(this);
+	World::s_GameObjects.push_back(this);
 }
 
 Doom::GameObject::~GameObject()

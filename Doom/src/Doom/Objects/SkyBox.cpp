@@ -4,7 +4,7 @@
 using namespace Doom;
 
 SkyBox::SkyBox(std::vector<std::string> faces,Mesh* mesh) {
-	this->faces = faces;
+	this->m_Faces = faces;
 	m_Name = "SkyBox";
 	Renderer3D* r = GetComponentManager()->AddComponent<Renderer3D>();
 	r->m_IsSkyBox = true;

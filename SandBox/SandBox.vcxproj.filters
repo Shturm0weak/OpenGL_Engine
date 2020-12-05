@@ -19,75 +19,33 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="src\2Dshootergame\PlayerCharacter.h">
-      <Filter>src\2Dshootergame</Filter>
-    </ClInclude>
-    <ClInclude Include="src\2Dshootergame\ShooterGame.h">
-      <Filter>src\2Dshootergame</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Minecraft\Minecraft.h">
-      <Filter>src\Minecraft</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SpaceFire\Ammo.h">
-      <Filter>src\SpaceFire</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SpaceFire\Bullet.h">
-      <Filter>src\SpaceFire</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SpaceFire\ShipEnemy.h">
-      <Filter>src\SpaceFire</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SpaceFire\ShipPlayer.h">
-      <Filter>src\SpaceFire</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SpaceFire\SpaceFire.h">
-      <Filter>src\SpaceFire</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\BlankProject.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\Bomb.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\Coin.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\DrawLines.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\Game.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\HP.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\Player.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\RayCastTest.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\StressTest.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\TestImGui.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\TicTacToe.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
+    <ClInclude Include="src\FEM\FEM.h" />
+    <ClInclude Include="src\FEM\MathFunctions.h" />
+    <ClInclude Include="src\FEM\Matrix.h" />
+    <ClInclude Include="src\FEM\Vector.h" />
+    <ClInclude Include="src\game\BlankProject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="src\2Dshootergame\PlayerCharacter.cpp">
-      <Filter>src\2Dshootergame</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp">
-      <Filter>src\SpaceFire</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp">
-      <Filter>src\SpaceFire</Filter>
-    </ClCompile>
+    <ClCompile Include="src\FEM\FEM.cpp" />
+    <ClCompile Include="src\FEM\MathFunctions.cpp" />
+    <ClCompile Include="src\FEM\Matrix.cpp" />
+    <ClCompile Include="src\FEM\Vector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shaders\BakeShadows.shader" />
+    <None Include="src\Shaders\BakeShadowsInstancing.shader" />
+    <None Include="src\Shaders\Collision2D.shader" />
+    <None Include="src\Shaders\CubeCollider.shader" />
+    <None Include="src\Shaders\Default2D.shader" />
+    <None Include="src\Shaders\Default3D.shader" />
+    <None Include="src\Shaders\DepthBuffer.shader" />
+    <None Include="src\Shaders\Font.shader" />
+    <None Include="src\Shaders\Instancing3D.shader" />
+    <None Include="src\Shaders\Line.shader" />
+    <None Include="src\Shaders\LineSimple.shader" />
+    <None Include="src\Shaders\SkyBox.shader" />
+    <None Include="src\Shaders\Tron.shader" />
   </ItemGroup>
 </Project>

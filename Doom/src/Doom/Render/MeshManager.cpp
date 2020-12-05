@@ -11,16 +11,16 @@ void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t mesh
 {
 	if (meshId > 0)
 		name = name.append(std::to_string(meshId));
-	auto iter = Meshes.find(name);
-	if (iter != Meshes.end())
+	auto iter = s_Meshes.find(name);
+	if (iter != s_Meshes.end())
 		return;
 	std::string subStr = filepath.substr(filepath.size() - 3, 3);
 	if (subStr == "fbx") {
 		fbx::FBXDocument doc;
-		Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath,meshId)));
+		s_Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath,meshId)));
 	}
 	else if (subStr == "stl") {
-		Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
+		s_Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
 	}
 	else {
 		return;
@@ -28,9 +28,10 @@ void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t mesh
 	std::vector<Renderer3D*> New;
 	#define	_LOAD_MESH_
 	Mesh* mesh = GetMesh(name);
+	mesh->m_IdOfMeshInFile = meshId;
 	#undef _LOAD_MESH_
 	mesh->Init();
-	Instancing::Instance()->instancedObjects.insert(std::make_pair(mesh,New));
+	Instancing::Instance()->m_InstancedObjects.insert(std::make_pair(mesh,New));
 	Instancing::Instance()->Create(mesh);
 	std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN  << "> has been loaded\n" << RESET;
 }
@@ -44,30 +45,30 @@ void Doom::MeshManager::LoadScene(std::string filepath)
 void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId)
 {
 	Doom::ThreadPool::GetInstance()->Enqueue([=] {
-		auto iter = Meshes.find(name);
-		if (iter != Meshes.end())
+		auto iter = s_Meshes.find(name);
+		if (iter != s_Meshes.end())
 			return;
 		std::string subStr = filepath.substr(filepath.size() - 3, 3);
 		if (subStr == "fbx") {
 			fbx::FBXDocument doc;
-			Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath, meshId)));
+			s_Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath, meshId)));
 		}
 		else if (subStr == "stl") {
-			Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
+			s_Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
 		}
 		else {
 			return;
 		}
 		Mesh* mesh = GetMesh(name);
-		needToInitMeshes.push_back(mesh);
+		s_NeedToInitMeshes.push_back(mesh);
 		std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
 	});
 }
 
 Mesh * MeshManager::GetMesh(std::string name)
 {
-	auto iter = Meshes.find(name);
-	if (iter != Meshes.end()) {
+	auto iter = s_Meshes.find(name);
+	if (iter != s_Meshes.end()) {
 		return iter->second;
 	}
 	else {
@@ -80,21 +81,21 @@ Mesh * MeshManager::GetMesh(std::string name)
 
 const char ** Doom::MeshManager::GetListOfMeshes()
 {
-	if (listOfMeshes != nullptr)
-		delete[] listOfMeshes;
-	listOfMeshes = new const char*[Meshes.size()];
+	if (s_NamesOfMeshes != nullptr)
+		delete[] s_NamesOfMeshes;
+	s_NamesOfMeshes = new const char*[s_Meshes.size()];
 	uint32_t i = 0;
-	for (auto mesh = Meshes.begin(); mesh != Meshes.end(); mesh++) {
-		listOfMeshes[i] = mesh->first.c_str();
+	for (auto mesh = s_Meshes.begin(); mesh != s_Meshes.end(); mesh++) {
+		s_NamesOfMeshes[i] = mesh->first.c_str();
 		i++;
 	}
-	return listOfMeshes;
+	return s_NamesOfMeshes;
 }
 
 void Doom::MeshManager::AddMesh(Mesh * mesh)
 {
 	if (mesh != nullptr) {
-		Meshes.insert(std::make_pair(mesh->name, mesh));
+		s_Meshes.insert(std::make_pair(mesh->m_Name, mesh));
 	}
 }
 
@@ -102,7 +103,7 @@ void MeshManager::GetMeshWhenLoaded(std::string name, void* r)
 {
 	//auto iter = Meshes.find(name);
 	//if (iter == Meshes.end()) {
-		meshQueue.insert(std::make_pair(name, r));
+		s_MeshQueue.insert(std::make_pair(name, r));
 	//}
 	//else {
 	//	Renderer3D* render = static_cast<Renderer3D*>(r);
@@ -112,50 +113,50 @@ void MeshManager::GetMeshWhenLoaded(std::string name, void* r)
 
 void MeshManager::DeleteMesh(std::string name)
 {
-	auto iter = Meshes.find(name);
-	if (iter != Meshes.end()) {
+	auto iter = s_Meshes.find(name);
+	if (iter != s_Meshes.end()) {
 		Mesh* mesh = iter->second;
-		Meshes.erase(iter);
+		s_Meshes.erase(iter);
 		delete mesh;
 	}
 }
 
 void MeshManager::DeleteMesh(Mesh * mesh)
 {
-	DeleteMesh(mesh->name);
+	DeleteMesh(mesh->m_Name);
 }
 
 void MeshManager::ShutDown()
 {
-	for (auto i = Meshes.begin(); i != Meshes.end(); i++)
+	for (auto i = s_Meshes.begin(); i != s_Meshes.end(); i++)
 	{
 		Mesh* mesh = i->second;
 		delete mesh;
 	}
-	Meshes.clear();
+	s_Meshes.clear();
 }
 
 void MeshManager::DispatchLoadedMeshes()
 {
-	uint32_t size = needToInitMeshes.size();
+	uint32_t size = s_NeedToInitMeshes.size();
 	if (size > 0) {
 		for (uint32_t i = 0; i < size; i++)
 		{
-			needToInitMeshes[i]->Init();
+			s_NeedToInitMeshes[i]->Init();
 			std::vector<Renderer3D*> New;
-			Instancing::Instance()->instancedObjects.insert(std::make_pair(needToInitMeshes[i], New));
-			Instancing::Instance()->Create(needToInitMeshes[i]);
+			Instancing::Instance()->m_InstancedObjects.insert(std::make_pair(s_NeedToInitMeshes[i], New));
+			Instancing::Instance()->Create(s_NeedToInitMeshes[i]);
 		}
-		needToInitMeshes.clear();
+		s_NeedToInitMeshes.clear();
 	}
-	if (meshQueue.size() > 0) {
-		for (auto i = meshQueue.begin(); i != meshQueue.end();)
+	if (s_MeshQueue.size() > 0) {
+		for (auto i = s_MeshQueue.begin(); i != s_MeshQueue.end();)
 		{
-			auto iter = Meshes.find(i->first);
-			if (iter != Meshes.end()) {
+			auto iter = s_Meshes.find(i->first);
+			if (iter != s_Meshes.end()) {
 				Renderer3D* r = static_cast<Renderer3D*>(i->second);
 				r->LoadMesh(iter->second);
-				meshQueue.erase(i++);
+				s_MeshQueue.erase(i++);
 			}
 			else
 				i++;

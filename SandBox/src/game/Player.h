@@ -29,7 +29,7 @@ public:
 		anim = GetComponentManager()->AddComponent<Animator>();
 		anim->SetAnimation("src/Animations");
 		tr->Scale(4,5);
-		anim->isPlayingAnim = true;
+		anim->m_IsPlayingAnim = true;
 		
 	}
 
@@ -49,8 +49,8 @@ public:
 			if (missed >= 3) {
 				missed -= 3;
 				hp--;
-				if (HpBar->hearts[hp]->Enable == true) {
-					HpBar->hearts[hp]->Enable = false;
+				if (HpBar->hearts[hp]->m_Enable == true) {
+					HpBar->hearts[hp]->m_Enable = false;
 					HpBar->Shake();
 					return;
 				}
@@ -82,7 +82,7 @@ public:
 			tr->Move(0, -5 + speedy, 0);
 			if (!isLanded)
 				if (speedy > 1) {
-					speedy -= 20 * DeltaTime::deltatime;
+					speedy -= 20 * DeltaTime::s_Deltatime;
 					if (prevKey == Keycode::KEY_D) {
 						auto iter = anim->animations.find(anim->GetAnimations()[7]);
 						anim->PlayAnim(iter->second);
@@ -93,7 +93,7 @@ public:
 					}
 				}
 				else if (speedy <= 1) {
-					speedy -= 40 * DeltaTime::deltatime;
+					speedy -= 40 * DeltaTime::s_Deltatime;
 					if (prevKey == Keycode::KEY_D) {
 						auto iter = anim->animations.find(anim->GetAnimations()[9]);
 						anim->PlayAnim(iter->second);

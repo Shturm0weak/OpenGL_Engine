@@ -5,22 +5,22 @@ using namespace Doom;
 
 Shader::Shader(const std::string& name, const std::string& filepath) : m_Name(name),m_FilePath(filepath), m_RendererID(0) {
 	ShaderProgramSource source = Parseshader(filepath);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+	m_RendererID = CreateShader(source.m_VertexSource, source.m_FragmentSource);
 	std::cout << BOLDGREEN << "Shader: <" << NAMECOLOR << name << BOLDGREEN << "> has been created" << RESET << std::endl;
 }
 
 Shader::~Shader() {
 	glDeleteProgram(m_RendererID);
-	auto iter = shaders.find(this->m_Name);
-	if(iter != shaders.end())
-		shaders.erase(iter);
+	auto iter = s_Shaders.find(this->m_Name);
+	if(iter != s_Shaders.end())
+		s_Shaders.erase(iter);
 }
 
 Shader* Doom::Shader::Create(const std::string& name, const std::string& path)
 {
-	auto iter = shaders.find(name);
-	if (iter == shaders.end()) {
-		shaders.insert(std::make_pair(name, new Shader(name, path)));
+	auto iter = s_Shaders.find(name);
+	if (iter == s_Shaders.end()) {
+		s_Shaders.insert(std::make_pair(name, new Shader(name, path)));
 		return Get(name);
 	}
 	else {
@@ -33,8 +33,8 @@ Shader* Doom::Shader::Create(const std::string& name, const std::string& path)
 
 Shader * Doom::Shader::Get(const std::string& name)
 {
-	auto iter = shaders.find(name);
-	if (iter != shaders.end())
+	auto iter = s_Shaders.find(name);
+	if (iter != s_Shaders.end())
 		return iter->second;
 	else {
 		std::cout << BOLDYELLOW << "Shader: <" << NAMECOLOR << name << BOLDYELLOW << "> doesn't exist!" << RESET << std::endl;
@@ -92,21 +92,21 @@ void Doom::Shader::Reload()
 {
 	glDeleteProgram(m_RendererID);
 	ShaderProgramSource source = Parseshader(m_FilePath);
-	m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
+	m_RendererID = CreateShader(source.m_VertexSource, source.m_FragmentSource);
 	std::cout << BOLDGREEN << "Shader: <" << NAMECOLOR << m_Name << BOLDGREEN << "> has been updated" << RESET << std::endl;
 }
 
 const char ** Doom::Shader::GetListOfShaders()
 {
-	if (listOfShaders != nullptr)
-		delete[] listOfShaders;
-	listOfShaders = new const char*[shaders.size()];
+	if (s_NamesOfShaders != nullptr)
+		delete[] s_NamesOfShaders;
+	s_NamesOfShaders = new const char*[s_Shaders.size()];
 	uint32_t i = 0;
-	for (auto mesh = shaders.begin(); mesh != shaders.end(); mesh++) {
-		listOfShaders[i] = mesh->first.c_str();
+	for (auto mesh = s_Shaders.begin(); mesh != s_Shaders.end(); mesh++) {
+		s_NamesOfShaders[i] = mesh->first.c_str();
 		i++;
 	}
-	return listOfShaders;
+	return s_NamesOfShaders;
 }
 
 void Shader::SetUniform2fv(const std::string& name, const glm::vec2& vec2) {

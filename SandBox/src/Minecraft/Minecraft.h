@@ -62,7 +62,7 @@ public:
 
 		MeshManager::LoadMesh("kompas", "src/Mesh/model.stl");
 
-		ImGui::SetCurrentContext(Window::imGuiContext);
+		ImGui::SetCurrentContext(Window::s_ImGuiContext);
 		dirtImg = Texture::Create("src/Minecraft/Textures/dirtImg.png");
 		//float* seed = new float[width * height];
 		//float* noise = new float[width * height];
@@ -184,9 +184,9 @@ public:
 		{
 			Line* l = new Line(lD.find(iter->first)->second, lD.find(iter->second)->second);
 			if(con % 2 == 0)
-				l->color = COLORS::Green;
+				l->m_Color = COLORS::Green;
 			else
-				l->color = COLORS::Yellow;
+				l->m_Color = COLORS::Yellow;
 			con++;
 		}
 
@@ -223,8 +223,8 @@ public:
 	}
 
 	void Intersect(std::vector<glm::vec3>& dots, glm::vec3& pos, glm::vec3& scale, glm::vec2& a, glm::vec2& b, Mesh* m, uint32_t s, uint32_t e) {
-		glm::vec3 start(m->mesh[s + 0], m->mesh[s + 1], m->mesh[s + 2]);
-		glm::vec3 end(m->mesh[e + 0], m->mesh[e + 1], m->mesh[e + 2]);
+		glm::vec3 start(m->m_VertAttrib[s + 0], m->m_VertAttrib[s + 1], m->m_VertAttrib[s + 2]);
+		glm::vec3 end(m->m_VertAttrib[e + 0], m->m_VertAttrib[e + 1], m->m_VertAttrib[e + 2]);
 		start = start * scale + pos;
 		end = end * scale + pos;
 		glm::vec2 c(start.x, start.z);
@@ -245,11 +245,11 @@ public:
 	}
 
 	void CrossSection(std::vector<glm::vec3>& dots, glm::vec2 a,glm::vec2 b) {
-		Mesh* m = gladiator->GetComponent<Renderer3D>()->mesh;
+		Mesh* m = gladiator->GetComponent<Renderer3D>()->m_Mesh;
 		glm::vec3 pos = gladiator->GetPosition();
 		glm::vec3 scale = gladiator->GetScale();
 		uint32_t counter = 0;
-		for (uint32_t i = 0; i < m->meshSize - 14; i += (14 * 3))
+		for (uint32_t i = 0; i < m->m_VertAttribSize - 14; i += (14 * 3))
 		{
 			Intersect(dots,pos, scale, a, b, m, i, i + 14);
 			Intersect(dots,pos, scale, a, b, m, i + 14, i + 2 * 14);
@@ -262,25 +262,25 @@ public:
 	}
 
 	virtual void OnUpdate() override {
-		time += DeltaTime::deltatime;
+		time += DeltaTime::s_Deltatime;
 		glm::vec3 forward = glm::vec3(-Window::GetCamera().forwardV.x, Window::GetCamera().forwardV.y, -Window::GetCamera().forwardV.z);
 		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward, &hit, 100);
-		if(hit.Object != nullptr){
+		if(hit.m_Object != nullptr){
 			if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 				if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
-					if (hit.Object != nullptr) {
-						int id = hit.Object->GetOwnerOfComponent()->id;
+					if (hit.m_Object != nullptr) {
+						int id = hit.m_Object->GetOwnerOfComponent()->m_Id;
 						World::DeleteObject(id);
-						hit.Object = nullptr;
+						hit.m_Object = nullptr;
 						dirtCount++;
 					}
 				}
 				else if (Input::IsKeyPressed(Keycode::KEY_G)) {
 					if (dirtCount == 0)
 						return;
-					glm::vec3 pos = hit.Object->GetOwnerOfComponent()->GetPosition();
+					glm::vec3 pos = hit.m_Object->GetOwnerOfComponent()->GetPosition();
 					glm::vec3 camPos = Window::GetCamera().GetPosition();
-					glm::vec3 place = camPos + forward * hit.distance;
+					glm::vec3 place = camPos + forward * hit.m_Distance;
 					glm::vec3 newPlace(0);
 					if (place.x > pos.x + 0.4999)
 						newPlace.x = pos.x + 1;
@@ -332,9 +332,9 @@ public:
 		cube.back()->GetComponentManager()->RemoveComponent<Irenderer>();
 		cube.back()->GetComponentManager()->AddComponent<Renderer3D>();
 		MeshManager::GetMeshWhenLoaded("cube", (void*)cube.back()->GetComponent<Renderer3D>());
-		cube.back()->GetComponent<Renderer3D>()->mat.ambient = 0.4f;
+		cube.back()->GetComponent<Renderer3D>()->m_Material.m_Ambient = 0.4f;
 		cube.back()->GetComponent<Renderer3D>()->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
-		cube.back()->GetComponent<Renderer3D>()->diffuseTexture = Texture::Create("src/Minecraft/Textures/minecraft_dirt.png");
+		cube.back()->GetComponent<Renderer3D>()->m_DiffuseTexture = Texture::Create("src/Minecraft/Textures/minecraft_dirt.png");
 		cube.back()->GetComponent<Transform>()->RotateOnce(0, 0, -90);
 		cube.back()->GetComponent<Transform>()->Scale(0.5, 0.5, 0.5);
 		cube.back()->GetComponentManager()->AddComponent<CubeCollider3D>();

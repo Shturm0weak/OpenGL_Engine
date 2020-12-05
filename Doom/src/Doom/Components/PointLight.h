@@ -7,7 +7,7 @@ namespace Doom {
 
 	class DOOM_API PointLight : public Component {
 	public:
-		static std::vector<PointLight*> pLights;
+		static std::vector<PointLight*> s_PointLights;
 		
 		glm::vec3 color = { 1.0f,1.0f,1.0f };
 

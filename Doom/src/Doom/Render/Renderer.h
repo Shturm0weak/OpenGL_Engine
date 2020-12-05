@@ -11,9 +11,11 @@ namespace Doom {
 
 	class DOOM_API Renderer {
 	public:
-		static int Vertices;
-		static bool PolygonMode;
-		static int DrawCalls;
+
+		static int s_Vertices;
+		static bool s_PolygonMode;
+		static int s_DrawCalls;
+
 		static void Render2DObjects();
 		static void Render3DObjects();
 		static void BakeShadows();
@@ -26,16 +28,13 @@ namespace Doom {
 		static void RenderCollision();
 		static void Clear();
 		static void SortTransparentObjects();
-		inline static unsigned int GetAmountOfCollisions() { return collision2d.size(); }
-		static const char** items;
-
+		inline static unsigned int GetAmountOfCollisions() { return s_Collision2d.size(); }
 	private:
-		static std::vector <RectangleCollider2D*> collision2d;
-		static std::vector <SpriteRenderer*> objects2d;
-		static std::vector <Renderer3D*> objects3d;
-		static std::vector <Renderer3D*> objects3dTransparent;
-		static std::mutex mtx;
-		static std::condition_variable condVar;
+
+		static std::vector <RectangleCollider2D*> s_Collision2d;
+		static std::vector <SpriteRenderer*> s_Objects2d;
+		static std::vector <Renderer3D*> s_Objects3d;
+		static std::vector <Renderer3D*> s_Objects3dTransparent;
 
 		friend class Renderer2DLayer;
 		friend class GameObject;

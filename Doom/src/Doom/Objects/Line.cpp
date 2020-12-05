@@ -3,85 +3,85 @@
 
 Line::Line(glm::vec3 start, glm::vec3 end)
 {
-	UsePosMat = false;
-	this->mesh2D[0] = start.x;
-	this->mesh2D[1] = start.y;
-	this->mesh2D[2] = start.z;
-	this->mesh2D[3] = end.x;
-	this->mesh2D[4] = end.y;
-	this->mesh2D[5] = end.z;
-	this->lines.push_back(this);
+	m_IsUsingPosMat4 = false;
+	this->m_Verteces[0] = start.x;
+	this->m_Verteces[1] = start.y;
+	this->m_Verteces[2] = start.z;
+	this->m_Verteces[3] = end.x;
+	this->m_Verteces[4] = end.y;
+	this->m_Verteces[5] = end.z;
+	this->s_Lines.push_back(this);
 }
 
 Line::Line(glm::vec3 start, glm::vec3 direction, float maxLength)
 {
-	this->pos = translate(glm::mat4(1.f), glm::vec3(start.x, start.y, 0));
-	this->maxLength = maxLength;
-	this->direction = glm::vec3(direction * (1.f / sqrt(direction.x * direction.x + direction.y * direction.y)));
-	this->mesh2D[2] = this->direction.x * maxLength;
-	this->mesh2D[3] = this->direction.y * maxLength;
-	this->lines.push_back(this);
+	this->m_PosMat4 = translate(glm::mat4(1.f), glm::vec3(start.x, start.y, 0));
+	this->m_MaxLength = maxLength;
+	this->m_Dir = glm::vec3(direction * (1.f / sqrt(direction.x * direction.x + direction.y * direction.y)));
+	this->m_Verteces[2] = this->m_Dir.x * maxLength;
+	this->m_Verteces[3] = this->m_Dir.y * maxLength;
+	this->s_Lines.push_back(this);
 }
 
 Line::Line(glm::vec3 start, float angle, float maxLength)
 {
-	this->angle = -angle;
-	this->pos = translate(glm::mat4(1.f), glm::vec3(start.x, start.y,0));
-	this->maxLength = maxLength;
-	this->view = glm::rotate(glm::mat4(1.f),(-angle * (2 * 3.14159f) / 360.0f), glm::vec3(0,0,1));
-	this->mesh2D[3] = maxLength;
-	this->lines.push_back(this);
+	this->m_Angle = -angle;
+	this->m_PosMat4 = translate(glm::mat4(1.f), glm::vec3(start.x, start.y,0));
+	this->m_MaxLength = maxLength;
+	this->m_ViewMat4 = glm::rotate(glm::mat4(1.f),(-angle * (2 * 3.14159f) / 360.0f), glm::vec3(0,0,1));
+	this->m_Verteces[3] = maxLength;
+	this->s_Lines.push_back(this);
 }
 
 void Line::SetEndPoint(glm::vec3 pos)
 {
-	mesh2D[3] = pos[0];
-	mesh2D[4] = pos[1];
-	mesh2D[5] = pos[2];
+	m_Verteces[3] = pos[0];
+	m_Verteces[4] = pos[1];
+	m_Verteces[5] = pos[2];
 }
 
 void Line::SetEndPoint(float * pos)
 {
-	mesh2D[3] = pos[0];
-	mesh2D[4] = pos[1];
-	mesh2D[5] = pos[2];
+	m_Verteces[3] = pos[0];
+	m_Verteces[4] = pos[1];
+	m_Verteces[5] = pos[2];
 }
 
 void Line::SetEndPoint(float x, float y,float z)
 {
-	mesh2D[3] = x;
-	mesh2D[4] = y;
-	mesh2D[5] = z;
+	m_Verteces[3] = x;
+	m_Verteces[4] = y;
+	m_Verteces[5] = z;
 }
 
 void Line::SetStartPoint(float * pos)
 {
-	mesh2D[0] = pos[0];
-	mesh2D[1] = pos[1];
-	mesh2D[2] = pos[2];
-	if(UsePosMat)
-		this->pos = translate(glm::mat4(1.f), glm::vec3(pos[0], pos[1], pos[2]));
+	m_Verteces[0] = pos[0];
+	m_Verteces[1] = pos[1];
+	m_Verteces[2] = pos[2];
+	if(m_IsUsingPosMat4)
+		this->m_PosMat4 = translate(glm::mat4(1.f), glm::vec3(pos[0], pos[1], pos[2]));
 }
 
 void Line::SetStartPoint(glm::vec3 pos)
 {
-	mesh2D[0] = pos[0];
-	mesh2D[1] = pos[1];
-	mesh2D[2] = pos[2];
-	if (UsePosMat)
-		this->pos = translate(glm::mat4(1.f), glm::vec3(pos[0], pos[1], pos[2]));
+	m_Verteces[0] = pos[0];
+	m_Verteces[1] = pos[1];
+	m_Verteces[2] = pos[2];
+	if (m_IsUsingPosMat4)
+		this->m_PosMat4 = translate(glm::mat4(1.f), glm::vec3(pos[0], pos[1], pos[2]));
 }
 
 void Line::SetStartPoint(float x, float y,float z)
 {
-	mesh2D[0] = x;
-	mesh2D[1] = y;
-	mesh2D[2] = z;
-		if (UsePosMat)
-	this->pos = translate(glm::mat4(1.f), glm::vec3(x, y, z));
+	m_Verteces[0] = x;
+	m_Verteces[1] = y;
+	m_Verteces[2] = z;
+		if (m_IsUsingPosMat4)
+	this->m_PosMat4 = translate(glm::mat4(1.f), glm::vec3(x, y, z));
 }
 
 void Line::Rotate(float angle)
 {
-	view = glm::rotate(view, angle * DeltaTime::m_Deltatime, glm::vec3(0, 0, 1));
+	m_ViewMat4 = glm::rotate(m_ViewMat4, angle * DeltaTime::s_Deltatime, glm::vec3(0, 0, 1));
 }

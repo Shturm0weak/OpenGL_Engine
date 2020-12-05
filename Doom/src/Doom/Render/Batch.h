@@ -14,103 +14,92 @@ namespace Doom {
 #define RENDERER_BUFFER_SIZE   RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES
 #define RENDERER_INDICES_SIZE  RENDERER_MAX_SPRITES * 6
 
-	struct DOOM_API Vertex {
-		glm::vec2 vertex;
-		glm::vec2 textcoords;
-		int m_static;
-		glm::vec4 m_color;
-		float isGui;
-		float texIndex;
-		glm::vec4 rotationMat0;
-		glm::vec4 rotationMat1;
-		glm::vec4 rotationMat2;
-		glm::vec4 rotationMat3;
-		glm::vec4 posMat0;
-		glm::vec4 posMat1;
-		glm::vec4 posMat2;
-		glm::vec4 posMat3;
-		glm::vec2 pos;
-		glm::vec2 size;
-		glm::vec2 viewportSize;
-		float raduis;
-		glm::vec2 panelSize;
-		glm::vec2 panelPos;
-		int relatedToPanel;
-	};
-
-	struct DOOM_API VertexLine {
-		glm::vec3 m_vertex;
-		glm::vec4 m_color;
-		glm::vec4 rotationMat0;
-		glm::vec4 rotationMat1;
-		glm::vec4 rotationMat2;
-		glm::vec4 rotationMat3;
-		glm::vec4 MVPMat0;
-		glm::vec4 MVPMat1;
-		glm::vec4 MVPMat2;
-		glm::vec4 MVPMat3;
-	};
-
 	class DOOM_API Batch {
-		bool isBegan = false;
-		std::mutex mtx;
+	private:
 
-		Texture* whitetexture = Texture::WhiteTexture;
+		struct Vertex {
+			glm::vec2 vertex;
+			glm::vec2 textcoords;
+			int m_static;
+			glm::vec4 m_color;
+			float isGui;
+			float texIndex;
+			glm::vec4 rotationMat0;
+			glm::vec4 rotationMat1;
+			glm::vec4 rotationMat2;
+			glm::vec4 rotationMat3;
+			glm::vec4 posMat0;
+			glm::vec4 posMat1;
+			glm::vec4 posMat2;
+			glm::vec4 posMat3;
+			glm::vec2 pos;
+			glm::vec2 size;
+			glm::vec2 viewportSize;
+			float raduis;
+			glm::vec2 panelSize;
+			glm::vec2 panelPos;
+			int relatedToPanel;
+		};
+
+		struct VertexLine {
+			glm::vec3 m_vertex;
+			glm::vec4 m_color;
+			glm::vec4 rotationMat0;
+			glm::vec4 rotationMat1;
+			glm::vec4 rotationMat2;
+			glm::vec4 rotationMat3;
+			glm::vec4 MVPMat0;
+			glm::vec4 MVPMat1;
+			glm::vec4 MVPMat2;
+			glm::vec4 MVPMat3;
+		};
+
+		struct VertAttribWrapper {
+			std::array<uint32_t, 32> m_TextureSlots;
+			unsigned int m_TextureSlotsIndex = 2;
+			float m_TextureIndex = 0;
+
+			VertexLine* m_BufferL = nullptr;
+			VertexLine* m_BufferPtrL = nullptr;
+			Vertex* m_Buffer = nullptr;
+			Vertex* m_BufferPtr = nullptr;
+			GLuint m_Vao;
+			GLuint m_Vbo;
+			IndexBuffer* m_Ibo;
+
+			~VertAttribWrapper() {
+				delete m_Ibo;
+				glDeleteBuffers(1, &m_Vbo);
+			}
+		};
+
+		VertAttribWrapper m_TextB;
+		VertAttribWrapper m_GoB;
+		VertAttribWrapper m_LinesB;
+
+		Shader* m_Shader = nullptr;
+		static Batch* s_Instance;
+		const unsigned int maxTextureSlots = 32;
+		bool m_IsBegan = false;
 		void initText();
 		void initGameObjects();
 		void initLines();
-
-		const unsigned int maxTextureSlots = 32;
-		std::array<uint32_t, 32> textureSlots;
-		unsigned int textureSlotsIndex = 1;
-		float textureIndex = 0;
-
-		//for text
-		Vertex* buffer = nullptr;
-		Vertex* bufferPtr = nullptr;
-		GLuint vao;
-		GLuint vbo;
-		IndexBuffer* ibo;
-
-
-		std::array<uint32_t, 32> GtextureSlots;
-		unsigned int GtextureSlotsIndex = 2;
-		float GtextureIndex = 0;
-
-		//for object
-		Vertex* Gbuffer = nullptr;
-		Vertex* GbufferPtr = nullptr;
-		GLuint Gvao;
-		GLuint Gvbo;
-		IndexBuffer* Gibo;
-
-		//for line
-		VertexLine* Lbuffer = nullptr;
-		VertexLine* LbufferPtr = nullptr;
-		GLuint Lvao;
-		GLuint Lvbo;
-		IndexBuffer* Libo;
-
-		static Batch* instance;
-
-		Shader* shader = nullptr;
 	public:
 
-		static void Init();
+		Shader* m_TextShader = Shader::Get("Font");
+		Shader* m_BasicShader = Shader::Get("Default2D");
+		Shader* m_CollisionShader = Shader::Get("Collision2D");
+		Shader* m_LineShader = Shader::Get("Line");
+		GLsizei m_TIndexCount = 0;
+		GLsizei m_GIndexCount = 0;
+		GLsizei m_LIndexCount = 0;
 
-		GLsizei indexcount = 0;
-
-		GLsizei Gindexcount = 0;
-
-		GLsizei Lindexcount = 0;
-
-		inline static Batch* GetInstance() { return instance; }
-		Shader* TextShader = Shader::Get("Font");
-		Shader* BasicShader = Shader::Get("Default2D");
-		Shader* CollisionShader = Shader::Get("Collision2D");
-		Shader* LineShader = Shader::Get("Line");
 		Batch();
 		~Batch();
+
+		static void Init();
+		inline static Batch* GetInstance() { return s_Instance; }
+
 		void Submit(Character* character);
 		void Submit(glm::mat4 pos,glm::mat4 view, glm::vec4 color,glm::vec2 scale, Texture* texture = nullptr);
 		void Submit(float* mesh2D, glm::vec4 color,Texture* texture = nullptr,glm::vec2 size = glm::vec2(0), glm::vec2 pos = glm::vec2(0),float raduis = 0);
@@ -122,10 +111,10 @@ namespace Doom {
 		void flushCollision(Shader* shader);
 		void flushText(Shader* shader);
 		void flushLines(Shader* shader);
-		bool isValidBuffer() { return (Gbuffer != nullptr && isBegan && Gbuffer != (void*)0x00000000); }
+		bool isValidBuffer() { return (m_GoB.m_Buffer != nullptr && m_IsBegan && m_GoB.m_Buffer != (void*)0x00000000); }
 
-		void Begin();
-		void End();
+		void BeginText();
+		void EndText();
 		void BeginGameObjects();
 		void EndGameObjects();
 		void BeginLines();

@@ -11,7 +11,7 @@ namespace Doom {
 		glm::mat4 lightSpaceMatrix;
 	public:
 
-		static std::vector<DirectionalLight*> dirLights;
+		static std::vector<DirectionalLight*> s_DirLights;
 
 		glm::mat4 m_LightProjection;
 		glm::vec3 m_Color = { 1.0f,1.0f,1.0f };

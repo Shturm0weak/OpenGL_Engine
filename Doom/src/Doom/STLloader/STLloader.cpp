@@ -55,18 +55,18 @@ Mesh* Doom::StlLoader::ReadFromSTLASCII(std::string name, std::string filePath)
 	}
 	in.close();
 	Mesh* mesh = new Mesh(name,filePath);
-	mesh->meshSize = verteces.size();
-	mesh->mesh = new float[mesh->meshSize];
-	mesh->indicesSize = indicesSize;
-	mesh->indices = new uint32_t[mesh->indicesSize];
-	for (uint32_t i = 0; i < mesh->meshSize; i++)
+	mesh->m_VertAttribSize = verteces.size();
+	mesh->m_VertAttrib = new float[mesh->m_VertAttribSize];
+	mesh->m_IndicesSize = indicesSize;
+	mesh->m_Indices = new uint32_t[mesh->m_IndicesSize];
+	for (uint32_t i = 0; i < mesh->m_VertAttribSize; i++)
 	{
-		mesh->mesh[i] = verteces[i];
+		mesh->m_VertAttrib[i] = verteces[i];
 		
 	}
 	for (uint32_t i = 0; i < indicesSize; i++)
 	{
-		mesh->indices[i] = i;
+		mesh->m_Indices[i] = i;
 	}
 	verteces.clear();
 	normals.clear();

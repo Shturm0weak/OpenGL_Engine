@@ -8,9 +8,9 @@ Texture::Texture(const std::string& path, int flip,bool repeat)
 	:m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr),
 	m_height(0), m_width(0), m_BPP(0)
 {
-	auto iter = textures.find(path);
-	if(iter == textures.end())
-		textures.insert(std::make_pair(path, this));
+	auto iter = s_Textures.find(path);
+	if(iter == s_Textures.end())
+		s_Textures.insert(std::make_pair(path, this));
 	else {
 #ifdef _DEBUG
 		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << path << BOLDYELLOW << "> has already existed\n" << RESET;
@@ -37,9 +37,7 @@ Texture::Texture(const std::string& path, int flip,bool repeat)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	if (m_LocalBuffer)
 		UnloadFromRAM(m_FilePath);
-	bindedAmount++;
-	VRAMused += (m_height * m_width * 4 * 4) * 0.000001;
-	textureAdded = true;
+	s_IsTextureAdded = true;
 }
 
 Texture::Texture()
@@ -48,20 +46,20 @@ Texture::Texture()
 
 void Doom::Texture::DispatchLoadedTextures()
 {
-	std::lock_guard<std::mutex> lock(lockTextureLoading);
-	for (uint32_t i = 0; i < loadedTextures.size(); i++)
+	std::lock_guard<std::mutex> lock(s_LockTextureLoadingMtx);
+	for (uint32_t i = 0; i < s_LoadedTextures.size(); i++)
 	{
-		LoadTextureInVRAM(loadedTextures[i]->m_FilePath,true);
+		LoadTextureInVRAM(s_LoadedTextures[i]->m_FilePath,true);
 	}
-	loadedTextures.clear();
-	if (textureAdded) {
-		textureAdded = false;
-		for (auto i = waitingForTextures.begin(); i != waitingForTextures.end();)
+	s_LoadedTextures.clear();
+	if (s_IsTextureAdded) {
+		s_IsTextureAdded = false;
+		for (auto i = s_WaitingForTextures.begin(); i != s_WaitingForTextures.end();)
 		{
 			std::function<Texture*()> f = i->second;
 			Texture* t = f();
 			if (t != nullptr) {
-				waitingForTextures.erase(i++);
+				s_WaitingForTextures.erase(i++);
 			}
 			else {
 				++i;
@@ -71,12 +69,11 @@ void Doom::Texture::DispatchLoadedTextures()
 }
 
 Texture::~Texture() {
-	auto it = textures.find(m_FilePath);
-	if (it != textures.end()) {
-		textures.erase(it);
+	auto it = s_Textures.find(m_FilePath);
+	if (it != s_Textures.end()) {
+		s_Textures.erase(it);
 		UnloadFromRAM(m_FilePath);
 		UnloadFromVRAM(m_FilePath);
-		bindedAmount--;
 	}
 }
 
@@ -92,11 +89,11 @@ void Texture::UnBind() const{
 void Doom::Texture::ShutDown()
 {
 	std::vector<Texture*> ts;
-	for (auto i = textures.begin(); i != textures.end(); i++)
+	for (auto i = s_Textures.begin(); i != s_Textures.end(); i++)
 	{
 		ts.push_back(i->second);
 	}
-	textures.clear();
+	s_Textures.clear();
 	for (uint32_t i = 0; i < ts.size(); i)
 	{
 		delete ts[i];
@@ -109,16 +106,16 @@ void Doom::Texture::AsyncLoadTexture(const std::string & filePath)
 	ThreadPool::GetInstance()->Enqueue([=] {
 		LoadTextureInRAM(filePath, true);
 		{
-			std::lock_guard<std::mutex> lock(lockTextureLoading);
-			loadedTextures.push_back(Texture::Get(filePath));
+			std::lock_guard<std::mutex> lock(s_LockTextureLoadingMtx);
+			s_LoadedTextures.push_back(Texture::Get(filePath));
 		}
 	});
 }
 
 Texture* Doom::Texture::Get(std::string filePath,bool showErrors)
 {
-	auto iter = textures.find(filePath);
-	if (iter != textures.end()) {
+	auto iter = s_Textures.find(filePath);
+	if (iter != s_Textures.end()) {
 		return iter->second;
 	}
 	else {
@@ -129,14 +126,14 @@ Texture* Doom::Texture::Get(std::string filePath,bool showErrors)
 }
 
 void Texture::GetAsync(void* ptr, std::function<Texture*()> f) {
-	waitingForTextures.insert(std::make_pair(ptr, f));
+	s_WaitingForTextures.insert(std::make_pair(ptr, f));
 }
 
 void Doom::Texture::RemoveFromGetAsync(void * ptr)
 {
-	auto iter = waitingForTextures.find(ptr);
-	if (iter != waitingForTextures.end())
-		waitingForTextures.erase(iter);
+	auto iter = s_WaitingForTextures.find(ptr);
+	if (iter != s_WaitingForTextures.end())
+		s_WaitingForTextures.erase(iter);
 }
 
 void Doom::Texture::UnloadFromRAM(const std::string& filePath)
@@ -152,7 +149,6 @@ void Doom::Texture::UnloadFromVRAM(const std::string& filePath)
 {
 	Texture* t = Get(filePath,false);
 	if (t != nullptr || t != NULL) {
-		VRAMused -= (t->m_height * t->m_width * 4 * 4) * 0.000001;
 		glDeleteTextures(1, &t->m_RendererID);
 		t->m_RendererID = -1;
 	}
@@ -160,15 +156,15 @@ void Doom::Texture::UnloadFromVRAM(const std::string& filePath)
 
 Texture * Doom::Texture::ColoredTexture(const std::string& name, uint32_t color)
 {
-	auto iter = textures.find(name);
-	if (iter != textures.end()) {
+	auto iter = s_Textures.find(name);
+	if (iter != s_Textures.end()) {
 #ifdef _DEBUG
 		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << name << BOLDYELLOW << "> has already existed\n" << RESET;
 #endif
 		return iter->second;
 	}
 	Texture* t = new Texture();
-	textureAdded = true;
+	s_IsTextureAdded = true;
 	t->m_FilePath = name;
 	glGenTextures(1, &t->m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, t->m_RendererID);
@@ -179,8 +175,7 @@ Texture * Doom::Texture::ColoredTexture(const std::string& name, uint32_t color)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	VRAMused += 0.000004;
-	textures.insert(std::make_pair(t->m_FilePath, t));
+	s_Textures.insert(std::make_pair(t->m_FilePath, t));
 	return t;
 }
 
@@ -196,13 +191,13 @@ Texture * Doom::Texture::Create(const std::string& filePath,bool flip,bool repea
 void Doom::Texture::LoadTextureInRAM(const std::string& filePath, bool flip)
 {
 	Texture* t = nullptr;
-	auto iter = textures.find(filePath);
-	if (iter == textures.end()) {
+	auto iter = s_Textures.find(filePath);
+	if (iter == s_Textures.end()) {
 		t = new Texture();
-		textureAdded = true;
+		s_IsTextureAdded = true;
 		t->m_FilePath = filePath;
-		std::lock_guard<std::mutex> lock(Texture::lockTextureLoading);
-		textures.insert(std::make_pair(t->m_FilePath, t));
+		std::lock_guard<std::mutex> lock(Texture::s_LockTextureLoadingMtx);
+		s_Textures.insert(std::make_pair(t->m_FilePath, t));
 	}
 	else {
 		t = iter->second;
@@ -248,8 +243,6 @@ void Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFr
 	if (unloadFromRam) {
 		UnloadFromRAM(t->m_FilePath);
 	}
-	bindedAmount++;
-	VRAMused += (t->m_height * t->m_width * 4 * 4) * 0.000001;
 }
 
 unsigned int Doom::Texture::LoadCubeMap(std::vector<std::string> faces)

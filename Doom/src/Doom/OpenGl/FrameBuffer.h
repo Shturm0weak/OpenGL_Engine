@@ -3,13 +3,12 @@
 namespace Doom {
 
 	class DOOM_API FrameBuffer {
-	private:
 	public:
-		unsigned int rbo = 0;
-		unsigned int fbo = 0;
-		unsigned int texture = 0;
 
 		glm::vec2 size;
+		unsigned int m_Rbo = 0;
+		unsigned int m_Fbo = 0;
+		unsigned int m_Texture = 0;
 
 		FrameBuffer(int width, int height, int TextureParameterinternalFormat, int TextureParametertextureType, bool TextureParameterClampBorder, int FrameBufferAttachment, bool NeedRBO, bool ReadBuffer, bool DrawBuffer);
 		~FrameBuffer();
@@ -18,4 +17,5 @@ namespace Doom {
 		void Bind();
 		void UnBind();
 	};
+
 }

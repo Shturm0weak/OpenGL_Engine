@@ -30,7 +30,7 @@ public:
 		backSound->SetVolume(0.03f);
 		SoundManager::Loop(backSound);
 		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PEAK]);
-		ImGui::SetCurrentContext(Window::imGuiContext);
+		ImGui::SetCurrentContext(Window::s_ImGuiContext);
 		ammoTexture = Texture::Create("src/SpaceFire/Images/Ammo.png");
 		backgroundTexture = Texture::Create("src/SpaceFire/Images/SpaceBack.png");
 		background1 = new GameObject("BackGround1");
@@ -58,9 +58,9 @@ public:
 		double y = 0;
 
 		Gui::GetInstance()->RelateToPanel();
-		Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
-		Gui::GetInstance()->relatedPanelProperties.padding.y = 20;
-		Gui::GetInstance()->relatedPanelProperties.margin = glm::vec2(50,40);
+		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
+		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 20;
+		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin = glm::vec2(50,40);
 		Gui::GetInstance()->Panel("",x, y, 450, 200, COLORS::DarkGray * 0.8f);
 		if (Gui::GetInstance()->Button("Exit", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			Window::Exit();
@@ -70,7 +70,7 @@ public:
 			pause = false;
 			spawnTimer = 16;
 		}
-		Gui::GetInstance()->relatedPanelProperties.autoAllignment = false;
+		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = false;
 		Gui::GetInstance()->UnRelateToPanel();
 		if (Input::IsKeyPressed(Keycode::KEY_ENTER)) {
 			pl->Respawn();
@@ -94,12 +94,12 @@ public:
 		else {
 			Debug();
 			//Gui::GetInstance()->Text("HP %f", true,1350, -800, fontSize, COLORS::White, 0, pl->hp);
-			Gui::GetInstance()->Bar(WIDTH * 0.7, -HEIGHT / Window::GetCamera().GetAspectRatio() * 0.8, pl->hp, 100, COLORS::Red, COLORS::DarkGray, 200, 25);
-			Gui::GetInstance()->Text("Kills %d", true, WIDTH * 0.7, -HEIGHT / Window::GetCamera().GetAspectRatio() * 0.9, fontSize, COLORS::White, 0, pl->kills);
-			Gui::GetInstance()->yAlign = Gui::AlignVertically::YCENTER;
-			Gui::GetInstance()->Text("%d", true, -WIDTH * 0.85, -HEIGHT / Window::GetCamera().GetAspectRatio() * 0.8, fontSize, COLORS::White, 0, pl->ammo);
-			Gui::GetInstance()->yAlign = Gui::AlignVertically::TOP;
-			Gui::GetInstance()->Image(-WIDTH * 0.9, -HEIGHT / Window::GetCamera().GetAspectRatio() * 0.8, 100, 100, ammoTexture, COLORS::White);
+			Gui::GetInstance()->Bar(g_Width * 0.7, -g_Height / Window::GetCamera().GetAspectRatio() * 0.8, pl->hp, 100, COLORS::Red, COLORS::DarkGray, 200, 25);
+			Gui::GetInstance()->Text("Kills %d", true, g_Width * 0.7, -g_Height / Window::GetCamera().GetAspectRatio() * 0.9, fontSize, COLORS::White, 0, pl->kills);
+			Gui::GetInstance()->m_YAlign = Gui::AlignVertically::YCENTER;
+			Gui::GetInstance()->Text("%d", true, -g_Width * 0.85, -g_Height / Window::GetCamera().GetAspectRatio() * 0.8, fontSize, COLORS::White, 0, pl->ammo);
+			Gui::GetInstance()->m_YAlign = Gui::AlignVertically::TOP;
+			Gui::GetInstance()->Image(-g_Width * 0.9, -g_Height / Window::GetCamera().GetAspectRatio() * 0.8, 100, 100, ammoTexture, COLORS::White);
 		}
 
 		if (Input::IsKeyPressed(Keycode::KEY_ESCAPE) && !pl->isDead) {
@@ -114,8 +114,8 @@ public:
 		if (background2->GetPosition().y <= -100)
 			background2->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
 		if (!pause){
-			background1->GetComponentManager()->GetComponent<Transform>()->Move(0, -100 * DeltaTime::deltatime, 0);
-			background2->GetComponentManager()->GetComponent<Transform>()->Move(0, -100 * DeltaTime::deltatime, 0);
+			background1->GetComponentManager()->GetComponent<Transform>()->Move(0, -100 * DeltaTime::s_Deltatime, 0);
+			background2->GetComponentManager()->GetComponent<Transform>()->Move(0, -100 * DeltaTime::s_Deltatime, 0);
 		}
 
 		if (spawnTimer > 15) {
@@ -126,29 +126,27 @@ public:
 			}
 		}
 
-		textRenderTimer += DeltaTime::deltatime;
-		spawnTimer += DeltaTime::deltatime;
+		textRenderTimer += DeltaTime::s_Deltatime;
+		spawnTimer += DeltaTime::s_Deltatime;
 	}
 
 	void OnClose() {
 	}
 
 	void Debug() {
-		fps = 1000.f / (DeltaTime::deltatime * 1000.f);
-		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::LEFT;
+		fps = 1000.f / (DeltaTime::s_Deltatime * 1000.f);
+		Gui::GetInstance()->m_XAlign = Gui::AlignHorizontally::LEFT;
 		Gui::GetInstance()->RelateToPanel();
-		Gui::GetInstance()->relatedPanelProperties.autoAllignment = true;
-		Gui::GetInstance()->relatedPanelProperties.padding.y = 10;
-		Gui::GetInstance()->Panel("",WIDTH * 0.5, HEIGHT / Window::GetCamera().GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
+		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
+		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 10;
+		Gui::GetInstance()->Panel("",g_Width * 0.5, g_Height / Window::GetCamera().GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
 		Gui::GetInstance()->Text("FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
 		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
 		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
 		Gui::GetInstance()->Text("Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetPosition().x, pl->GetPosition().y);
 		Gui::GetInstance()->Text("Collisions: %d", true, 0, 0, fontSize, COLORS::White, 0, Renderer::GetAmountOfCollisions());
-		Gui::GetInstance()->Text("Textures: %d", true, 0, 0, fontSize, COLORS::White, 0, Texture::bindedAmount);
-		Gui::GetInstance()->Text("VRAM used: %f MB", true, 0, 0, fontSize, COLORS::White, 3, Texture::VRAMused);
-		Gui::GetInstance()->xAlign = Gui::AlignHorizontally::LEFT;
-		Gui::GetInstance()->relatedPanelProperties.autoAllignment = false;
+		Gui::GetInstance()->m_XAlign = Gui::AlignHorizontally::LEFT;
+		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = false;
 		Gui::GetInstance()->UnRelateToPanel();
 	}
 };

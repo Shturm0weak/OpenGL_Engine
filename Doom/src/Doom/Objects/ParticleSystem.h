@@ -7,7 +7,6 @@ namespace Doom {
 
 	struct DOOM_API Particle {
 	private:
-
 		float x = 0; float y = 0;
 		glm::mat4 pos = glm::mat4(1.f);
 		glm::mat4 view = glm::mat4(1.f);
@@ -21,12 +20,13 @@ namespace Doom {
 		Texture* texture = nullptr;
 		float scaleX = 1;
 		float scaleY = 1;
-		static std::vector<Particle*> particles;
+		static std::vector<Particle*> s_Particles;
 		Particle() {
-			particles.push_back(this);
+			s_Particles.push_back(this);
 		}
 
 		friend class Renderer;
+		friend class ParticleSystem;
 	};
 
 	class DOOM_API ParticleSystem : public GameObject{

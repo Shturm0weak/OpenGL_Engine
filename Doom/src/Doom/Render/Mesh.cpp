@@ -5,27 +5,27 @@ using namespace Doom;
 
 void Mesh::Init()
 {
-	layout = new VertexBufferLayout();
-	vb = new VertexBuffer(mesh, meshSize * sizeof(float));
-	va = new VertexArray();
-	ib = new IndexBuffer(indices, indicesSize);
-	layout->Push<float>(3);
-	layout->Push<float>(3);
-	layout->Push<float>(2);
-	layout->Push<float>(3);
-	layout->Push<float>(3);
-	va->AddBuffer(*this->vb, *this->layout);
-	va->UnBind();
-	vb->UnBind();
-	ib->UnBind();
+	m_Layout = new VertexBufferLayout();
+	m_Vb = new VertexBuffer(m_VertAttrib, m_VertAttribSize * sizeof(float));
+	m_Va = new VertexArray();
+	m_Ib = new IndexBuffer(m_Indices, m_IndicesSize);
+	m_Layout->Push<float>(3);
+	m_Layout->Push<float>(3);
+	m_Layout->Push<float>(2);
+	m_Layout->Push<float>(3);
+	m_Layout->Push<float>(3);
+	m_Va->AddBuffer(*this->m_Vb, *this->m_Layout);
+	m_Va->UnBind();
+	m_Vb->UnBind();
+	m_Ib->UnBind();
 }
 
 Mesh::~Mesh()
 {
-	delete[] mesh;
-	delete[] indices;
-	delete layout;
-	delete vb;
-	delete va;
-	delete ib;
+	delete[] m_VertAttrib;
+	delete[] m_Indices;
+	delete m_Layout;
+	delete m_Vb;
+	delete m_Va;
+	delete m_Ib;
 }

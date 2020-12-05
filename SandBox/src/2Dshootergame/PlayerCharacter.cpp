@@ -16,7 +16,7 @@ PlayerCharacter::PlayerCharacter(const std::string name, float x, float y) :Game
 	anim->SetAnimation("src/ShooterAnimation");
 	tr->Scale(3, 3);
 	col->Scale(3,3);
-	anim->isPlayingAnim = true;
+	anim->m_IsPlayingAnim = true;
 	muzzleFlashObj = new GameObject("MuzzleFlashObj",GetPosition().x, GetPosition().x);
 	muzzleFlashObj->SetOwner(this);
 	AddChild(muzzleFlashObj);
@@ -37,12 +37,12 @@ PlayerCharacter::~PlayerCharacter()
 
 void PlayerCharacter::OnStart()
 {
-	checkGround->ignoreMask.push_back("Player");
+	checkGround->m_IgnoreMask.push_back("Player");
 }
 
 void PlayerCharacter::OnUpdate()
 {
-	fireRateTimer += DeltaTime::deltatime;
+	fireRateTimer += DeltaTime::m_Deltatime;
 	muzzleFlashObj->GetComponentManager()->GetComponent<Transform>()->Translate(GetPosition().x + flashOffset.x, GetPosition().y + flashOffset.y);
 	PlayerMovement();
 	SpriteRenderer* sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
@@ -53,11 +53,11 @@ void PlayerCharacter::OnUpdate()
 		Hit hit;
 		count = 0;
 		glm::vec2 resultV;
-		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[0] + GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->ignoreMask)) {
-			if (hit.Object->GetTag() == "Land") {
- 				x = ((abs(sr->WorldVertexPositions[1] + GetPosition().y)) - abs(hit.point.y));
-				test1->SetStartPoint(checkGround->start.x, checkGround->start.y);
-				test1->SetEndPoint(hit.point.x, hit.point.y);
+		if (checkGround->Raycast(hit, 150, glm::vec2(sr->m_WorldVertexPositions[0] + GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->m_IgnoreMask)) {
+			if (hit.m_Object->GetTag() == "Land") {
+ 				x = ((abs(sr->m_WorldVertexPositions[1] + GetPosition().y)) - abs(hit.m_Point.y));
+				test1->SetStartPoint(checkGround->m_Start.x, checkGround->m_Start.y);
+				test1->SetEndPoint(hit.m_Point.x, hit.m_Point.y);
 				if (x < 0.05 && x > -0.15) {
 					isLanded = true;
 					count++;
@@ -68,12 +68,12 @@ void PlayerCharacter::OnUpdate()
 		}
 
 		
-		if (checkGround->Raycast(hit, 150, glm::vec2(sr->WorldVertexPositions[2] + GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->ignoreMask)) {
-			if (hit.Object->GetTag() == "Land") {
+		if (checkGround->Raycast(hit, 150, glm::vec2(sr->m_WorldVertexPositions[2] + GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->m_IgnoreMask)) {
+			if (hit.m_Object->GetTag() == "Land") {
 
-				x = ((abs(sr->WorldVertexPositions[3] + GetPosition().y)) - abs(hit.point.y));
-				test2->SetStartPoint(checkGround->start.x, checkGround->start.y);
-				test2->SetEndPoint(hit.point.x, hit.point.y);
+				x = ((abs(sr->m_WorldVertexPositions[3] + GetPosition().y)) - abs(hit.m_Point.y));
+				test2->SetStartPoint(checkGround->m_Start.x, checkGround->m_Start.y);
+				test2->SetEndPoint(hit.m_Point.x, hit.m_Point.y);
 				if (x < 0.05 && x > -0.15) {
 					isLanded = true;
 					count++;
@@ -83,11 +83,11 @@ void PlayerCharacter::OnUpdate()
 			}
 		}
 
-		if (checkGround->Raycast(hit, 150, glm::vec2(GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->ignoreMask)) {
-			if (hit.Object->GetTag() == "Land") {
-				x = ((abs(sr->WorldVertexPositions[3] + GetPosition().y)) - abs(hit.point.y));
-				test3->SetStartPoint(checkGround->start.x, checkGround->start.y);
-				test3->SetEndPoint(hit.point.x, hit.point.y);
+		if (checkGround->Raycast(hit, 150, glm::vec2(GetPosition().x, GetPosition().y), glm::vec2(0, -1), checkGround->m_IgnoreMask)) {
+			if (hit.m_Object->GetTag() == "Land") {
+				x = ((abs(sr->m_WorldVertexPositions[3] + GetPosition().y)) - abs(hit.m_Point.y));
+				test3->SetStartPoint(checkGround->m_Start.x, checkGround->m_Start.y);
+				test3->SetEndPoint(hit.m_Point.x, hit.m_Point.y);
 				if (x < 0.05 && x > -0.15) {
 					isLanded = true;
 					count++;
@@ -121,16 +121,16 @@ void PlayerCharacter::PlayerMovement()
 			direction = glm::vec2(1,0);
 		else if(turnSide == 1)
 			direction = glm::vec2(-1, 0);
-		rayfire->Raycast(hit, 15, glm::vec2(GetPosition().x, GetPosition().y) , direction , rayfire->ignoreMask);
+		rayfire->Raycast(hit, 15, glm::vec2(GetPosition().x, GetPosition().y) , direction , rayfire->m_IgnoreMask);
 		fireRateTimer = 0.0f;
-		muzzleFlashObj->Enable = true;
-		line->SetStartPoint(rayfire->start.x,rayfire->start.y);
-		line->SetEndPoint(rayfire->end.x, rayfire->end.y);
-		line->Enable = true;
+		muzzleFlashObj->m_Enable = true;
+		line->SetStartPoint(rayfire->m_Start.x,rayfire->m_Start.y);
+		line->SetEndPoint(rayfire->m_End.x, rayfire->m_End.y);
+		line->m_Enable = true;
 	}
 	else {
-		line->Enable = false;
-		muzzleFlashObj->Enable = false;
+		line->m_Enable = false;
+		muzzleFlashObj->m_Enable = false;
 	}
 	if (Input::IsKeyDown(Keycode::KEY_D)) {
 		tr->Move(speed, 0,0);
@@ -155,7 +155,7 @@ void PlayerCharacter::PlayerMovement()
 	if (!isLanded) {
 		animIndex = 2;
 		if(jump > 0){
-			jump -= 30 * DeltaTime::deltatime;
+			jump -= 30 * DeltaTime::m_Deltatime;
 		}
 	}
 	auto iter = anim->animations.find(anim->GetAnimations()[animIndex]);

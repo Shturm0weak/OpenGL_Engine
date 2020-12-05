@@ -1,89 +1,65 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [8.62700939, 15.1601276, 17.5861702]
-    Rotation: [-0.685029209, 0.200385585, 0]
+    Position: [-3.70552278, 1.91893864, -7.49339676]
+    Rotation: [-0.202797249, -2.54655576, 0]
   FOV: 1
 GameObjects:
   - GameObject: 0
-    Name: Unnamed
+    Name: Sun
     Transform:
-      Position: [-0.755957842, 2.405756, 2.09952831]
+      Position: [27.5802002, 11.961463, -25.1115665]
       Scale: [1, 1, 1]
-      Rotation: [1.65806293, 0.628318548, 0]
+      Rotation: [1.29154372, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1
+        Specular: 0.200000003
+        Color: [1, 0.969744503, 0.38269031, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: false
+      Casting shadows: false
+      Wire mesh: false
+      Use normal map: false
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/sphere.fbx
+        Mesh Id: 0
     Directional light:
       Intensity: 1
-      Color: [1, 0.999989986, 0.999989986]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
+      Color: [0.0432382822, 0.0432378501, 0.0432378501]
+    Cube collider:
+      Bounding box: true
     Registered events:
       []
   - GameObject: 1
-    Name: Scene
-    Transform:
-      Position: [5.04130697, 0, 2.42566872]
-      Scale: [1, 1, 1]
-      Rotation: [0, 0, 0]
-    Registered events:
-      []
-  - GameObject: 2
     Name: Scene
     Transform:
       Position: [0, 0, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Childs id:
+      - 2
       - 3
       - 4
       - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
-      - 15
-      - 16
-      - 17
-      - 18
-      - 19
-      - 20
-      - 21
     Registered events:
       []
-  - GameObject: 3
-    Name: Highrise_1
+  - GameObject: 2
+    Name: Plane.001
     Transform:
-      Position: [4.46551418, 1.01604438, -0.751568973]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
+      Position: [3.31254625, -1.54518139, 5.00998116]
+      Scale: [1, 1, 5.68599987]
+      Rotation: [1.57079637, -0, -0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [0.691345155, 0.691338241, 0.691338241, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -95,51 +71,23 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 0
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 4
-    Name: Highrise_2
-    Transform:
-      Position: [3.34541893, 0.929874122, -0.913707733]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, -1.57079482, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
+        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
         Mesh Id: 1
     Cube collider:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 5
-    Name: Highrise_3
+  - GameObject: 3
+    Name: Cube.002
     Transform:
-      Position: [6.4047575, 0.853343368, -0.699919939]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [7.54978657e-08, -1.57079482, -0]
+      Position: [3.36703658, -1.60833645, 1.13234639]
+      Scale: [0.899997532, 0.899999797, 0.900006235]
+      Rotation: [1.52420104, -0.454295814, -3.07992268]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [1, 0, 0, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -151,23 +99,23 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
+        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
         Mesh Id: 2
     Cube collider:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 6
-    Name: Highrise_4
+  - GameObject: 4
+    Name: Cube.001
     Transform:
-      Position: [8.51298141, 1.15906525, -0.71012336]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
+      Position: [0, -2.17000008, 0]
+      Scale: [1, 1, 1]
+      Rotation: [-1.57079637, 0, -0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [1, 0.767614484, 0.51199162, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -179,23 +127,23 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
+        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
         Mesh Id: 3
     Cube collider:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 7
-    Name: Highrise_5
+  - GameObject: 5
+    Name: Cube.003
     Transform:
-      Position: [5.46989012, 0.97413671, -0.618984222]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [7.54978657e-08, -1.57079482, -0]
+      Position: [0, -2.17000008, 0]
+      Scale: [1, 1, 1]
+      Rotation: [-1.57079637, 0, -0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [0.619981289, 1, 0.340980172, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -207,23 +155,23 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
+        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
         Mesh Id: 4
     Cube collider:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 8
-    Name: Highrise_6
+  - GameObject: 6
+    Name: Unnamed
     Transform:
-      Position: [-0.234173775, 0.797937989, -0.93509084]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
+      Position: [0, -1.85770237, 0.809699774]
+      Scale: [100, 0.00999999978, 100]
+      Rotation: [0, 0, 0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [1, 0.944733977, 0.557872772, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -235,23 +183,23 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 5
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
     Cube collider:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 9
-    Name: Highrise_7
+  - GameObject: 7
+    Name: Unnamed
     Transform:
-      Position: [0.912077188, 1.16450119, -0.846463442]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
+      Position: [63.1589394, -0.467922449, 20.0073853]
+      Scale: [49.9999886, 0.099999994, 99.9999924]
+      Rotation: [0, -0.366518915, 0.191986009]
     Renderer3D:
       Material:
         Ambient: 0.200000003
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [1, 0.945098042, 0.556862772, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -263,23 +211,85 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 6
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 8
+    Name: SkyBox
+    Transform:
+      Position: [0, 0, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/SkyBox.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: true
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Faces:
+        [src/SkyBox/skyBox1/back.png, src/SkyBox/skyBox1/front.png, src/SkyBox/skyBox1/top.png, src/SkyBox/skyBox1/bottom.png, src/SkyBox/skyBox1/left.png, src/SkyBox/skyBox1/right.png]
+      Textures:
+        Diffuse: ""
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Registered events:
+      []
+  - GameObject: 9
+    Name: Lamp1
+    Transform:
+      Position: [5.93248081, 0.0166039467, 0.0635010004]
+      Scale: [0.100000001, 0.100000001, 0.100000001]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1
+        Specular: 50
+        Color: [1, 0.941331804, 0.420229435, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cylinder.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [1, 0.994752765, 0.816007376]
+      Attenuation:
+        Constant: 0.838999987
+        Linear: 0.100000001
+        Quadratic: 0.100000001
     Cube collider:
       Bounding box: true
     Registered events:
       []
   - GameObject: 10
-    Name: Highrise_8
+    Name: Lamp2
     Transform:
-      Position: [9.68628883, 0.509222686, -0.949933827]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
+      Position: [4.8117156, 0, 5.75174713]
+      Scale: [0.100000001, 0.100000001, 0.100000001]
+      Rotation: [0, 0, 0]
     Renderer3D:
       Material:
-        Ambient: 0.200000003
+        Ambient: 1
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [0.578727841, 1, 0.874621272, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -291,23 +301,29 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 7
+        Mesh: src/Mesh/Primitives/cylinder.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.576816916, 1, 0.907732785]
+      Attenuation:
+        Constant: 0.754999995
+        Linear: 0.100000001
+        Quadratic: 0.100000001
     Cube collider:
       Bounding box: true
     Registered events:
       []
   - GameObject: 11
-    Name: Highrise_9
+    Name: Lamp3
     Transform:
-      Position: [7.43439102, 0.739616156, -0.945644975]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
+      Position: [0, 0, 0]
+      Scale: [0.100000001, 0.100000001, 0.100000001]
+      Rotation: [0, 0, 0]
     Renderer3D:
       Material:
-        Ambient: 0.200000003
+        Ambient: 1
         Specular: 0.200000003
-        Color: [1, 1, 1, 1]
+        Color: [1, 0.461939514, 0.983986616, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
       Transparent: false
@@ -319,288 +335,14 @@ GameObjects:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
       Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 8
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 12
-    Name: Highrise_10
-    Transform:
-      Position: [2.0703373, 1.22696948, -0.786452651]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 9
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 13
-    Name: Highrise_11
-    Transform:
-      Position: [10.9128304, 1.51146209, -0.841014564]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-4.37113563e-08, -0.0141112115, -4.02937709e-17]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 10
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 14
-    Name: Highrise_12
-    Transform:
-      Position: [-11.1328821, 1.05318809, -0.795562148]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [7.54978657e-08, -1.57079482, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 11
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 15
-    Name: highrise_13
-    Transform:
-      Position: [-8.99300575, 1.18242288, -0.771792829]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-4.37112035e-08, -1.55563784, 1.38462118e-13]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 12
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 16
-    Name: Highrise_14
-    Transform:
-      Position: [-6.75520754, 1.21251893, -0.907699406]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [7.54978657e-08, -1.57079482, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 13
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 17
-    Name: Highrise_15
-    Transform:
-      Position: [-5.23579407, 1.26166499, -0.827124119]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 14
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 18
-    Name: Highrise_16
-    Transform:
-      Position: [-4.19609928, 1.5234319, -0.807863057]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [7.54978657e-08, 1.57079482, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 15
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 19
-    Name: Highrise_17
-    Transform:
-      Position: [-3.45433807, 1.41171551, -0.779830217]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-7.54978373e-08, 3.14159012, -1.50995675e-07]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 16
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 20
-    Name: Highrise_18
-    Transform:
-      Position: [-2.60715151, 1.31114578, -0.819435477]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 17
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 21
-    Name: Highrise_19
-    Transform:
-      Position: [-1.40335846, 1.1577394, -0.892304361]
-      Scale: [0.00487837521, 0.00487837521, 0.00487837521]
-      Rotation: [-1.62920557e-07, 0, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 1, 1, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\untitled.fbx
-        Mesh Id: 18
+        Mesh: src/Mesh/Primitives/cylinder.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [1, 0.58417666, 0.976665199]
+      Attenuation:
+        Constant: 0.748000026
+        Linear: 0.100000001
+        Quadratic: 0.100000001
     Cube collider:
       Bounding box: true
     Registered events:

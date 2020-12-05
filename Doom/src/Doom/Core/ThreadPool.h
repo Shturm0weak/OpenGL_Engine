@@ -13,7 +13,7 @@ namespace Doom {
 	class DOOM_API ThreadPool {
 	private:
 
-		static ThreadPool* thread_pool;
+		static ThreadPool* s_Instance;
 		std::vector<std::thread> m_Threads;
 		std::map <std::thread::id,bool> m_IsThreadBusy;
 		std::mutex m_Mutex;
@@ -34,7 +34,7 @@ namespace Doom {
 		inline uint32_t GetAmountOfThreads() { return m_Threads.size(); }
 		void Shutdown()noexcept;
 		void Enqueue(Task task);
-		static ThreadPool* GetInstance() { return thread_pool; }
+		static ThreadPool* GetInstance() { return s_Instance; }
 		static void Init();
 
 		friend class Editor;

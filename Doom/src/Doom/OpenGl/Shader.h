@@ -6,29 +6,34 @@
 namespace Doom {
 
 	struct DOOM_API ShaderProgramSource {
-		std::string VertexSource;
-		std::string FragmentSource;
+		std::string m_VertexSource;
+		std::string m_FragmentSource;
 	};
 
 	class DOOM_API Shader {
 	private:
-		static std::map<std::string,Shader*> shaders;
-		static const char** listOfShaders;
-		std::string m_FilePath;
-		unsigned int m_RendererID;
-		std::string m_Name;
-		int GetUniformLocation(const std::string& name);
+
 		std::unordered_map<std::string, int> m_UniformLocationCache;
+		static std::map<std::string,Shader*> s_Shaders;
+		std::string m_Name;
+		std::string m_FilePath;
+		static const char** s_NamesOfShaders;
+		unsigned int m_RendererID;
+
+		int GetUniformLocation(const std::string& name);
+		
 		Shader(const std::string& name,const std::string& filepath);
 		~Shader();
-
 	public:
+
+		static const char** GetListOfShaders();
 		static Shader* Create(const std::string& name, const std::string& path);
 		static Shader* Get(const std::string& name);
 		inline std::string& GetName() { return m_Name; }
 		inline std::string& GetFilePath() { return m_FilePath; }
 		void Bind() const;
 		void UnBind() const;
+		void Reload();
 
 		ShaderProgramSource Parseshader(const std::string& filepath);
 		unsigned int CreateShader(const std::string& vertexShader, const std::string& FragmentShader);
@@ -47,10 +52,6 @@ namespace Doom {
 		void SetUniform1f(const std::string& name, float v0);
 
 		void SetUniformMat4f(const std::string& name,const glm::mat4& matrix);
-	
-		void Reload();
-
-		static const char** GetListOfShaders();
 
 		friend class Editor;
 	};

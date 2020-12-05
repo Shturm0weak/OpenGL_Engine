@@ -12,7 +12,7 @@ namespace Doom {
 		friend class ComponentManager;
 	public:
 
-		static std::vector<SphereCollider*> spheres;
+		static std::vector<SphereCollider*> s_Spheres;
 		glm::vec3 m_Offset = { 0,0,0 };
 		float m_Radius = 1.0;
 		bool m_IsInBoundingBox = true;

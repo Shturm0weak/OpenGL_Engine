@@ -4,28 +4,28 @@
 std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length, bool AABB)
 {
 	std::map<float, CubeCollider3D*> d;
-	for (size_t i = 0; i < CubeCollider3D::colliders.size(); i++)
+	for (size_t i = 0; i < CubeCollider3D::s_Colliders.size(); i++)
 	{
 		bool isIntersected = false;
 		if(AABB)
-			isIntersected = IntersectBoxAABB(start, dir, hit, length, CubeCollider3D::colliders[i]);
+			isIntersected = IntersectBoxAABB(start, dir, hit, length, CubeCollider3D::s_Colliders[i]);
 		else
-			isIntersected = IntersectBoxOBB(start, dir, hit, length, CubeCollider3D::colliders[i]);
+			isIntersected = IntersectBoxOBB(start, dir, hit, length, CubeCollider3D::s_Colliders[i]);
 		if (isIntersected)
-			d.insert(std::make_pair(hit->distance, hit->Object));
+			d.insert(std::make_pair(hit->m_Distance, hit->m_Object));
 	}
 
 	Doom::Ray3D::sortMap(d);
 
 	if(d.size() > 0){
-		hit->Object = d.begin()->second;
-		hit->point = dir * d.begin()->first;
-		hit->distance = d.begin()->first;
+		hit->m_Object = d.begin()->second;
+		hit->m_Point = dir * d.begin()->first;
+		hit->m_Distance = d.begin()->first;
 	}
 	else {
-		hit->Object = nullptr;
-		hit->point = glm::vec3(0.0f);
-		hit->distance = 0;
+		hit->m_Object = nullptr;
+		hit->m_Point = glm::vec3(0.0f);
+		hit->m_Distance = 0;
 	}
 	return d;
 }
@@ -44,7 +44,7 @@ bool Doom::Ray3D::IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit * hit, f
 	float wp = glm::dot(rayToPlaneDelta, planeNorm);
 	float t = wp / vp;
 	glm::vec3 iPos = rayDelta * t + start;
-	hit->point = iPos;
+	hit->m_Point = iPos;
 
 	glm::vec3 edge0 = b - a;
 	glm::vec3 edge1 = c - b;
@@ -106,9 +106,9 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, fl
 	if (tMin > tzMax || tzMin > tMax) return false;
 	if (tzMin > tMin) tMin = tzMin;
 	if (tzMax < tMax) tMax = tzMax;
-	hit->distance = tMin;
-	hit->Object = c;
-	hit->point = tMin * dir + start;
+	hit->m_Distance = tMin;
+	hit->m_Object = c;
+	hit->m_Point = tMin * dir + start;
 	return true;
 }
 
@@ -152,9 +152,9 @@ bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, flo
 		else if (-nomLen + bounds0[i] > 0 || -nomLen + bounds1[i] < 0) return false;
 	}
 
-	hit->distance = tMin;
-	hit->Object = c;
-	hit->point = tMin * dir + start;
+	hit->m_Distance = tMin;
+	hit->m_Object = c;
+	hit->m_Point = tMin * dir + start;
 	return true;
 }
 

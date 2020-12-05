@@ -100,33 +100,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\FEM\FEM.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="src\2Dshootergame\PlayerCharacter.h" />
-    <ClInclude Include="src\2Dshootergame\ShooterGame.h" />
-    <ClInclude Include="src\Minecraft\Minecraft.h" />
-    <ClInclude Include="src\SpaceFire\Ammo.h" />
-    <ClInclude Include="src\SpaceFire\Bullet.h" />
-    <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
-    <ClInclude Include="src\SpaceFire\ShipPlayer.h" />
-    <ClInclude Include="src\SpaceFire\SpaceFire.h" />
+    <ClInclude Include="src\FEM\MathFunctions.h" />
+    <ClInclude Include="src\FEM\Matrix.h" />
+    <ClInclude Include="src\FEM\Vector.h" />
     <ClInclude Include="src\game\BlankProject.h" />
-    <ClInclude Include="src\game\Bomb.h" />
-    <ClInclude Include="src\game\Coin.h" />
-    <ClInclude Include="src\game\DrawLines.h" />
-    <ClInclude Include="src\game\Game.h" />
-    <ClInclude Include="src\game\HP.h" />
-    <ClInclude Include="src\game\Player.h" />
-    <ClInclude Include="src\game\RayCastTest.h" />
-    <ClInclude Include="src\game\StressTest.h" />
-    <ClInclude Include="src\game\TestImGui.h" />
-    <ClInclude Include="src\game\TicTacToe.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FEM\FEM.cpp" />
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="src\2Dshootergame\PlayerCharacter.cpp" />
-    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
-    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
+    <ClCompile Include="src\FEM\MathFunctions.cpp" />
+    <ClCompile Include="src\FEM\Matrix.cpp" />
+    <ClCompile Include="src\FEM\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doom\Doom.vcxproj">
@@ -135,6 +122,21 @@
     <ProjectReference Include="..\vendor\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shaders\BakeShadows.shader" />
+    <None Include="src\Shaders\BakeShadowsInstancing.shader" />
+    <None Include="src\Shaders\Collision2D.shader" />
+    <None Include="src\Shaders\CubeCollider.shader" />
+    <None Include="src\Shaders\Default2D.shader" />
+    <None Include="src\Shaders\Default3D.shader" />
+    <None Include="src\Shaders\DepthBuffer.shader" />
+    <None Include="src\Shaders\Font.shader" />
+    <None Include="src\Shaders\Instancing3D.shader" />
+    <None Include="src\Shaders\Line.shader" />
+    <None Include="src\Shaders\LineSimple.shader" />
+    <None Include="src\Shaders\SkyBox.shader" />
+    <None Include="src\Shaders\Tron.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

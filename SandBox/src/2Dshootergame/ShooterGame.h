@@ -13,7 +13,7 @@ class ShooterGame : public Application {
 			timer = 0;
 			World::SelectObject();
 		}
-		timer += DeltaTime::deltatime;
+		timer += DeltaTime::s_Deltatime;
 
 		EventSystem::GetInstance()->SendEvent(EventType::ONUPDATE, nullptr);
 		EventSystem::GetInstance()->ProcessEvents();

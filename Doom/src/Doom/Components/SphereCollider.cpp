@@ -5,15 +5,15 @@ using namespace Doom;
 
 Doom::SphereCollider::~SphereCollider()
 {
-	auto iter = std::find(spheres.begin(), spheres.end(), this);
-	if (iter != spheres.end()) {
-		spheres.erase(iter);
+	auto iter = std::find(s_Spheres.begin(), s_Spheres.end(), this);
+	if (iter != s_Spheres.end()) {
+		s_Spheres.erase(iter);
 	}
 }
 
 SphereCollider::SphereCollider() {
 	m_Mesh = MeshManager::GetMesh("sphere");
-	spheres.push_back(this);
+	s_Spheres.push_back(this);
 	//SetType(ComponentType::SPHERECOLLIDER);
 }
 
@@ -31,17 +31,17 @@ void Doom::SphereCollider::Render()
 	this->m_Shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), glm::vec3(m_Radius, m_Radius, m_Radius)));
 	this->m_Shader->SetUniformMat4f("u_View", GetOwnerOfComponent()->m_Transform->m_ViewMat4);
 	this->m_Shader->SetUniform4fv("u_Color", m_Color);
-	m_Mesh->va->Bind();
-	m_Mesh->ib->Bind();
-	m_Mesh->vb->Bind();
-	Renderer::DrawCalls++;
+	m_Mesh->m_Va->Bind();
+	m_Mesh->m_Ib->Bind();
+	m_Mesh->m_Vb->Bind();
+	Renderer::s_DrawCalls++;
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, m_Mesh->ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_CULL_FACE);
 	m_Shader->UnBind();
-	m_Mesh->ib->UnBind();
+	m_Mesh->m_Ib->UnBind();
 }
 
 bool Doom::SphereCollider::IntersectSphereToSphere(SphereCollider* sp) {

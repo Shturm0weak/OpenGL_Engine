@@ -12,19 +12,19 @@ namespace Doom {
 	class DOOM_API Window {
 	private:
 
-		static GLFWwindow* m_Window;
-		static Camera* m_Camera;
-		static float m_ScrollYOffset;
+		static GLFWwindow* s_Window;
+		static Camera* s_Camera;
+		static float s_ScrollYOffset;
 
 		Window() {}
 
 	public:
 
-		static ImGuiContext* m_ImGuiContext;
-		static ImGuiIO* m_ImGuiIO;
+		static ImGuiContext* s_ImGuiContext;
+		static ImGuiIO* s_ImGuiIO;
 
 		static Camera& GetCamera() {
-			return *m_Camera;
+			return *s_Camera;
 		}
 
 		static int* GetSize() {
@@ -36,7 +36,7 @@ namespace Doom {
 			glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE);
 		}
 
-		static float& GetScrollYOffset() { return m_ScrollYOffset; }
+		static float& GetScrollYOffset() { return s_ScrollYOffset; }
 
 		static int Init(const char* Label,float width, float height,bool vsync) {
 			if (!glfwInit())
@@ -44,7 +44,7 @@ namespace Doom {
 			GetSize()[0] = width;
 			GetSize()[1] = height;
 
-			m_Window = glfwCreateWindow(width, height, Label, NULL, NULL);
+			s_Window = glfwCreateWindow(width, height, Label, NULL, NULL);
 			if (!GetWindow())
 			{
 				glfwTerminate();
@@ -71,9 +71,9 @@ namespace Doom {
 				props[1] = height;
 				EventSystem::GetInstance()->SendEvent(EventType::ONWINDOWRESIZE, nullptr, props);
 			});
-			m_ImGuiContext = ImGui::CreateContext();
-			m_ImGuiIO = &ImGui::GetIO();
-			(void)m_ImGuiIO;
+			s_ImGuiContext = ImGui::CreateContext();
+			s_ImGuiIO = &ImGui::GetIO();
+			(void)s_ImGuiIO;
 			ImGui_ImplGlfw_InitForOpenGL(Window::GetWindow(), true);
 			ImGui_ImplOpenGL3_Init("#version 330");
 
@@ -82,7 +82,7 @@ namespace Doom {
 			return 0;
 		}
 
-		inline static GLFWwindow* GetWindow() { return m_Window; }
+		inline static GLFWwindow* GetWindow() { return s_Window; }
 	
 		static float GetFPS() {
 			ImGui_ImplOpenGL3_NewFrame();

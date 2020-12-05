@@ -7,8 +7,10 @@ namespace Doom {
 
 	class DOOM_API VertexArray {
 	private:
+
 		unsigned int m_RendererID;
 	public:
+
 		VertexArray();
 		~VertexArray();
 

@@ -15,7 +15,7 @@ namespace Doom {
 	class DOOM_API SpriteRenderer : public Irenderer {
 	private:
 
-		static unsigned int m_Indices2D[6];
+		static unsigned int s_Indices2D[6];
 		float m_Mesh2D[16] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,
@@ -44,7 +44,7 @@ namespace Doom {
 			-0.5f,  0.5f
 		};
 
-		Texture* m_Texture = Texture::WhiteTexture;
+		Texture* m_Texture = Texture::s_WhiteTexture;
 
 		SpriteRenderer();
 		~SpriteRenderer();

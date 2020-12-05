@@ -185,9 +185,6 @@
     <ClInclude Include="src\Doom\FileDialogs\FileDialogs.h">
       <Filter>FileDialogs</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\ImGuizmo\Gizmos.h">
-      <Filter>ImGuizmo</Filter>
-    </ClInclude>
     <ClInclude Include="src\Doom\Input\Input.h">
       <Filter>Input</Filter>
     </ClInclude>
@@ -207,9 +204,6 @@
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Objects\Line.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Objects\ParticleSystem.h">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Objects\SkyBox.h">
@@ -453,6 +447,8 @@
     <ClInclude Include="src\Doom\yaml-cpp\yaml.h">
       <Filter>yaml-cpp</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\Objects\ParticleSystem.h" />
+    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -536,9 +532,6 @@
     <ClCompile Include="src\Doom\FileDialogs\FileDialogs.cpp">
       <Filter>FileDialogs</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\ImGuizmo\Gizmos.cpp">
-      <Filter>ImGuizmo</Filter>
-    </ClCompile>
     <ClCompile Include="src\Doom\Input\WindowsInput.cpp">
       <Filter>Input</Filter>
     </ClCompile>
@@ -552,9 +545,6 @@
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Objects\Line.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Objects\ParticleSystem.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Objects\SkyBox.cpp">
@@ -711,5 +701,7 @@
     <ClCompile Include="src\Doom\yaml-cpp\src\tag.cpp">
       <Filter>yaml-cpp\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Doom\Objects\ParticleSystem.cpp" />
+    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
   </ItemGroup>
 </Project>

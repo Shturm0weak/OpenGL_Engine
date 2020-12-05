@@ -32,13 +32,13 @@ namespace fbx {
 					for (size_t j = 0; j < sizec; j++)
 					{
 						fbx::FBXNode node = nodes[i].getChildren()[j];
-						node.print();
+						//node.print();
 						if (node.getName() == "Geometry") {
 							Data data;
 							std::string name = GetNameOfModel(node.properties[1].to_string());
-							if (std::find_if(meshes.begin(), meshes.end(), [=](Mesh* _mesh) {return _mesh->name == name; }) == meshes.end()) {
+							if (std::find_if(meshes.begin(), meshes.end(), [=](Mesh* _mesh) {return _mesh->m_Name == name; }) == meshes.end()) {
 								mesh = new Mesh(name, filepath);
-								mesh->idOfMeshInFile = meshes.size();
+								mesh->m_IdOfMeshInFile = meshes.size();
 								meshes.push_back(mesh);
 								LoadData(data, node, mesh);
 								GenerateMesh(data, mesh);
@@ -438,31 +438,31 @@ void FBXDocument::LoadData(Data& data, FBXNode& node, Mesh* mesh)
 			{
 				data.vertecesSize = nodeG.properties[l].values.size();
 				data.verteces = std::vector<float>(data.vertecesSize);
-				mesh->theHighestPoint = glm::vec3(0);
-				mesh->theLowestPoint = glm::vec3(0);
+				mesh->m_TheHighestPoint = glm::vec3(0);
+				mesh->m_TheLowestPoint = glm::vec3(0);
 				uint32_t tcount = 0;
 				for (size_t a = 0; a < data.vertecesSize; a++)
 				{
 					data.verteces[a] = nodeG.properties[l].values[a].f64;
 					if (tcount == 0) {
-						if (mesh->theHighestPoint.x < data.verteces[a])
-							mesh->theHighestPoint.x = data.verteces[a];
-						else if (mesh->theLowestPoint.x > data.verteces[a])
-							mesh->theLowestPoint.x = data.verteces[a];
+						if (mesh->m_TheHighestPoint.x < data.verteces[a])
+							mesh->m_TheHighestPoint.x = data.verteces[a];
+						else if (mesh->m_TheLowestPoint.x > data.verteces[a])
+							mesh->m_TheLowestPoint.x = data.verteces[a];
 						tcount++;
 					}
 					else if (tcount == 1) {
-						if (mesh->theHighestPoint.y < data.verteces[a])
-							mesh->theHighestPoint.y = data.verteces[a];
-						else if (mesh->theLowestPoint.y > data.verteces[a])
-							mesh->theLowestPoint.y = data.verteces[a];
+						if (mesh->m_TheHighestPoint.y < data.verteces[a])
+							mesh->m_TheHighestPoint.y = data.verteces[a];
+						else if (mesh->m_TheLowestPoint.y > data.verteces[a])
+							mesh->m_TheLowestPoint.y = data.verteces[a];
 						tcount++;
 					}
 					else if (tcount == 2) {
-						if (mesh->theHighestPoint.z < data.verteces[a])
-							mesh->theHighestPoint.z = data.verteces[a];
-						else if (mesh->theLowestPoint.z > data.verteces[a])
-							mesh->theLowestPoint.z = data.verteces[a];
+						if (mesh->m_TheHighestPoint.z < data.verteces[a])
+							mesh->m_TheHighestPoint.z = data.verteces[a];
+						else if (mesh->m_TheLowestPoint.z > data.verteces[a])
+							mesh->m_TheLowestPoint.z = data.verteces[a];
 						tcount = 0;
 					}
 				}
@@ -473,14 +473,14 @@ void FBXDocument::LoadData(Data& data, FBXNode& node, Mesh* mesh)
 			size_t sizeP = nodeG.properties.size();
 			for (size_t l = 0; l < sizeP; l++)
 			{
-				mesh->indicesSize = nodeG.properties[l].values.size();
-				mesh->indices = new uint32_t[mesh->indicesSize];
-				for (size_t a = 0; a < mesh->indicesSize; a++)
+				mesh->m_IndicesSize = nodeG.properties[l].values.size();
+				mesh->m_Indices = new uint32_t[mesh->m_IndicesSize];
+				for (size_t a = 0; a < mesh->m_IndicesSize; a++)
 				{
 					if (nodeG.properties[l].values[a].i32 < 0)
-						mesh->indices[a] = (-nodeG.properties[l].values[a].i32 - 1);
+						mesh->m_Indices[a] = (-nodeG.properties[l].values[a].i32 - 1);
 					else
-						mesh->indices[a] = (nodeG.properties[l].values[a].i32);
+						mesh->m_Indices[a] = (nodeG.properties[l].values[a].i32);
 				}
 			}
 		}
@@ -546,18 +546,18 @@ void FBXDocument::LoadData(Data& data, FBXNode& node, Mesh* mesh)
 
 void FBXDocument::GenerateMesh(Data& data, Mesh* mesh)
 {
-	data.vertecesSizeForNormals = mesh->indicesSize * 3;
+	data.vertecesSizeForNormals = mesh->m_IndicesSize * 3;
 	data.vertecesForNormals = std::vector<float>(data.vertecesSizeForNormals);
 	for (size_t i = 0; i < data.vertecesSizeForNormals; i += 3)
 	{
-		data.vertecesForNormals[i + 0] = data.verteces[mesh->indices[i / 3] * 3 + 0];
-		data.vertecesForNormals[i + 1] = data.verteces[mesh->indices[i / 3] * 3 + 1];
-		data.vertecesForNormals[i + 2] = data.verteces[mesh->indices[i / 3] * 3 + 2];
+		data.vertecesForNormals[i + 0] = data.verteces[mesh->m_Indices[i / 3] * 3 + 0];
+		data.vertecesForNormals[i + 1] = data.verteces[mesh->m_Indices[i / 3] * 3 + 1];
+		data.vertecesForNormals[i + 2] = data.verteces[mesh->m_Indices[i / 3] * 3 + 2];
 	}
-	mesh->indices = new uint32_t[mesh->indicesSize];
-	for (size_t i = 0; i < mesh->indicesSize; i++)
+	mesh->m_Indices = new uint32_t[mesh->m_IndicesSize];
+	for (size_t i = 0; i < mesh->m_IndicesSize; i++)
 	{
-		mesh->indices[i] = i;
+		mesh->m_Indices[i] = i;
 	}
 
 	data.uvSizeForVert = data.uvIndexSize * 2;
@@ -623,42 +623,42 @@ void FBXDocument::GenerateMesh(Data& data, Mesh* mesh)
 		uvCounter += 6;
 	}
 
-	mesh->meshSize = data.vertecesSizeForNormals * 3 + data.normalsSize + data.uvSizeForVert;
-	mesh->mesh = new float[mesh->meshSize];
+	mesh->m_VertAttribSize = data.vertecesSizeForNormals * 3 + data.normalsSize + data.uvSizeForVert;
+	mesh->m_VertAttrib = new float[mesh->m_VertAttribSize];
 	uint32_t counter = 0;
 	uint32_t normalIndex = 0;
 	uint32_t vertecesIndex = 0;
 	uint32_t uvIndex = 0;
 	uint32_t tangentIndex = 0;
 	uint32_t btangentIndex = 0;
-	for (size_t i = 0; i < mesh->meshSize; i++)
+	for (size_t i = 0; i < mesh->m_VertAttribSize; i++)
 	{
 		if (counter < 3) {
-			mesh->mesh[i] = data.vertecesForNormals[vertecesIndex];
+			mesh->m_VertAttrib[i] = data.vertecesForNormals[vertecesIndex];
 			vertecesIndex++;
 			//std::cout << "vertex" << std::endl;
 			counter++;
 		}
 		else if (counter < 6) {
-			mesh->mesh[i] = data.normals[normalIndex];
+			mesh->m_VertAttrib[i] = data.normals[normalIndex];
 			//std::cout << "normal" << std::endl;
 			normalIndex++;
 			counter++;
 		}
 		else if (counter < 8) {
-			mesh->mesh[i] = data.uvForVert[uvIndex];
+			mesh->m_VertAttrib[i] = data.uvForVert[uvIndex];
 			//std::cout << "uv" << std::endl;
 			uvIndex++;
 			counter++;
 		}
 		else if (counter < 11) {
-			mesh->mesh[i] = data.tangent[tangentIndex];
+			mesh->m_VertAttrib[i] = data.tangent[tangentIndex];
 			//std::cout << "tangent" << std::endl;
 			tangentIndex++;
 			counter++;
 		}
 		else if (counter < 14) {
-			mesh->mesh[i] = data.btangent[btangentIndex];
+			mesh->m_VertAttrib[i] = data.btangent[btangentIndex];
 			//std::cout << "btangent" << std::endl;
 			btangentIndex++;
 			counter++;

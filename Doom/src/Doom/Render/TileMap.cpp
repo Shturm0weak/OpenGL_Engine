@@ -19,7 +19,7 @@ bool TileMap::LoadMap(unsigned int width, unsigned int height, const char* map, 
 					sr->SetUVs(textureAtlas->GetSpriteUVs(textureItr->second.x, textureItr->second.y));
 				}
 				else
-					sr->SetTexture(Texture::WhiteTexture);
+					sr->SetTexture(Texture::s_WhiteTexture);
 			}
 			index++;
 		}

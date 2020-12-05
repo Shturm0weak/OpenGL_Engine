@@ -64,7 +64,7 @@ void ThreadPool::Shutdown() noexcept
 void ThreadPool::Init()
 {
 	if (m_IsInitialized == false) {
-		thread_pool = new ThreadPool(thread::hardware_concurrency());
+		s_Instance = new ThreadPool(thread::hardware_concurrency());
 		std::cout << BOLDGREEN << "Initialized Thread pool" << RESET << std::endl;
 		m_IsInitialized = true;
 	}

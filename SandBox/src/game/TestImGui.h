@@ -11,7 +11,7 @@ public:
 	Ray3D::Hit hit;
 	GameObject* light = nullptr;
 	virtual void OnStart() override {
-		ImGui::SetCurrentContext(Window::imGuiContext);
+		ImGui::SetCurrentContext(Window::s_ImGuiContext);
 		float xoffset = -10.f;
 		std::vector<std::string> faces = {
 				"src/SkyBox/back.png",
@@ -44,10 +44,10 @@ public:
 			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->SetColor(COLORS::White);
 			//MeshManager::GetMeshWhenLoaded("man", static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>()));
 			go[i]->GetComponentManager()->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
-			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = Texture::Create("src/Images/man.png");
-			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = Texture::Create("src/Images/normalMap.png");
+			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->m_DiffuseTexture = Texture::Create("src/Images/man.png");
+			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->m_NormalMapTexture = Texture::Create("src/Images/normalMap.png");
 			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->ChangeRenderTechnic(Renderer3D::RenderTechnic::Forward);
-			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->mesh = (MeshManager::GetMesh("man"));
+			static_cast<Renderer3D*>(go[i]->GetComponentManager()->GetComponent<Irenderer>())->m_Mesh = (MeshManager::GetMesh("man"));
 		}
 		//static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->diffuseTexture = new Texture("src/Images/Box1.png");
 		//static_cast<Renderer3D*>(go[1]->GetComponentManager()->GetComponent<Irenderer>())->normalMapTexture = new Texture("src/Images/Box1normalmap.png");

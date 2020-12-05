@@ -34,12 +34,12 @@ public:
 		if (playanim) {
 
 			if (!secondphase) {
-				tr->Scale(GetScale()[0] *  (1 + (5.2f * DeltaTime::deltatime)), GetScale()[1] * (1 + (5.2f * DeltaTime::deltatime)));
+				tr->Scale(GetScale()[0] *  (1 + (5.2f * DeltaTime::s_Deltatime)), GetScale()[1] * (1 + (5.2f * DeltaTime::s_Deltatime)));
 				if (GetScale()[0] > prevscale[0] * 1.5f)
 					secondphase = true;
 			}
 			else if (secondphase) {
-				tr->Scale(GetScale()[0] * (1 - (5.f * DeltaTime::deltatime)), GetScale()[1] * (1 - (5.f * DeltaTime::deltatime)));
+				tr->Scale(GetScale()[0] * (1 - (5.f * DeltaTime::s_Deltatime)), GetScale()[1] * (1 - (5.f * DeltaTime::s_Deltatime)));
 			}
 
 			if (GetScale()[0] < prevscale[0] * 0.5f) {
@@ -80,7 +80,7 @@ public:
 	}
 
 	void Randomize() {
-		Enable = true;
+		m_Enable = true;
 		this->col->Enable = true;
 		std::random_device rd;
 		std::mt19937 e2(rd());

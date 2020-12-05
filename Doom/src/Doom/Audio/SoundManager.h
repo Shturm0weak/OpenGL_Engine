@@ -5,10 +5,13 @@ namespace Doom {
 
 	class DOOM_API SoundManager {
 	private:
-		static ALCdevice* alcDevice;
-		static ALCcontext* alcContext;
+
+		static ALCdevice* s_AlcDevice;
+		static ALCcontext* s_AlcContext;
 	public:
-		static std::map<std::string, Sound*> sounds;
+
+		static std::map<std::string, Sound*> s_Sounds;
+
 		static Sound* GetSound(std::string name);
 		static void CreateSoundAsset(std::string name,Sound* sound);
 		static void Init();

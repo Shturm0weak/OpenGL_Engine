@@ -10,6 +10,7 @@ namespace Doom {
 
 	class DOOM_API Listener {
 	private:
+
 		virtual void OnUpdate() {}
 		virtual void OnMove() {}
 		virtual void OnRotate() {}
@@ -22,7 +23,9 @@ namespace Doom {
 		virtual void OnTranslate() {}
 
 	public:
+
 		std::vector<int> m_RegisteredEvents;
+
 		void HandleEvent(Event* e);
 	};
 

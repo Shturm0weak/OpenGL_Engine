@@ -4,9 +4,9 @@
 namespace Doom {
 
 	struct DOOM_API VertexBufferElement {
-		unsigned int type;
-		unsigned int count;
-		unsigned int normalized;
+		unsigned int m_Type;
+		unsigned int m_Count;
+		unsigned int m_Normalized;
 
 		static unsigned int GetSizeOfType(unsigned int type) {
 			switch (type)

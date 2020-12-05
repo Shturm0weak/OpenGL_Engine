@@ -38,6 +38,7 @@ namespace Doom {
 		friend class GameObject;
 		friend class SphereCollider;
 		friend class World;
+		friend class ViewPort;
 
 	public:
 
@@ -48,14 +49,16 @@ namespace Doom {
 		glm::vec3 GetPosition();
 		glm::vec3 GetScale();
 
+		glm::mat4 GetTransform();
+
 		void Move(glm::vec3 dir);
-		void Rotate(glm::vec3 angles);
+		void Rotate(glm::vec3 angles, bool isRad = false);
 		void Scale(glm::vec3 scale);
 		void Translate(glm::vec3 pos);
 		void RotateOnce(glm::vec3 angles, bool isRad = false);
 
 		void Move(float x = 0, float y = 0, float z = 0);
-		void Rotate(float x, float y, float z );
+		void Rotate(float x, float y, float z, bool isRad = false);
 		void Scale(float x, float y,float z = 0);
 		void Translate(float x = 0, float y = 0,float z = 0);
 		void RotateOnce(float x,float y, float z,bool isRad = false);

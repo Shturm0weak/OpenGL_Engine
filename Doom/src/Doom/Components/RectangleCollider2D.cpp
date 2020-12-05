@@ -8,9 +8,9 @@ using namespace Doom;
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 	//SetType(ComponentType::COLLISION);
 	this->m_Owner = owner;
-	id = World::m_ColId;
-	World::m_ColId++;
-	Renderer::collision2d.push_back(this);
+	id = World::s_ColId;
+	World::s_ColId++;
+	Renderer::s_Collision2d.push_back(this);
 	if (owner != nullptr) {
 		position.x = owner->GetPosition().x;
 		position.y = owner->GetPosition().y;
@@ -38,13 +38,13 @@ RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 
 Doom::RectangleCollider2D::~RectangleCollider2D()
 {
-	Renderer::collision2d.erase(GetId() + Renderer::collision2d.begin());
-	World::m_ColId--;
-	unsigned int size = Renderer::collision2d.size();
+	Renderer::s_Collision2d.erase(GetId() + Renderer::s_Collision2d.begin());
+	World::s_ColId--;
+	unsigned int size = Renderer::s_Collision2d.size();
 	if (GetId() != size) {
 		for (unsigned int i = GetId(); i < size; i++)
 		{
-			Renderer::collision2d[i]->SetId(i);
+			Renderer::s_Collision2d[i]->SetId(i);
 		}
 	}
 	m_Owner->GetComponent<Transform>()->col = nullptr;
@@ -194,11 +194,11 @@ void RectangleCollider2D::IsCollidedSAT() {
 		return;
 	}
 	if (Enable == true) {
-		uint32_t sizeCol = Renderer::collision2d.size();
+		uint32_t sizeCol = Renderer::s_Collision2d.size();
 		for (unsigned int i = 0; i < sizeCol; i++)
 		{
-			if (Renderer::collision2d[i]->Enable == true) {
-				col = Renderer::collision2d[i];
+			if (Renderer::s_Collision2d[i]->Enable == true) {
+				col = Renderer::s_Collision2d[i];
 				if (this != col) {
 					if (col == nullptr) {
 						return;
@@ -235,11 +235,11 @@ void RectangleCollider2D::IsCollidedDIAGS()
 		return;
 	}
 	if (Enable == true) {
-		uint32_t sizeCol = Renderer::collision2d.size();
+		uint32_t sizeCol = Renderer::s_Collision2d.size();
 		for (unsigned int i = 0; i < sizeCol; i++)
 		{
-			if (Renderer::collision2d[i]->Enable == true) {
-				col = Renderer::collision2d[i];
+			if (Renderer::s_Collision2d[i]->Enable == true) {
+				col = Renderer::s_Collision2d[i];
 				if (this != col) {
 					if (col == nullptr) {
 						return;
