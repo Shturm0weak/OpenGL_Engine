@@ -123,17 +123,6 @@ void EntryPoint::Run()
 		Editor::GetInstance()->ShortCuts();
 		ViewPort::GetInstance()->Update();
 
-		//if (Input::IsKeyPressed(Keycode::KEY_BACKSPACE)) {
-		//	if (Editor::GetInstance()->gizmo->m_Obj != nullptr) {
-		//		World::DeleteObject(Editor::GetInstance()->gizmo->m_Obj->m_Id);
-		//		if (World::s_GameObjects.size() > 0)
-		//			Editor::GetInstance()->gizmo->m_Obj = World::s_GameObjects[World::s_GameObjects.size() - 1];
-		//		else
-		//			Editor::GetInstance()->gizmo->m_Obj = nullptr;
-		//		Editor::GetInstance()->go = Editor::GetInstance()->gizmo->m_Obj;
-		//	}
-		//}
-
 		if (ViewPort::GetInstance()->m_IsViewportResized) {
 			Window::GetCamera().m_FrameBufferColor->Resize(Window::GetSize()[0], Window::GetSize()[1]);
 		}

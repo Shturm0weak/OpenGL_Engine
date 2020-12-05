@@ -34,10 +34,13 @@ namespace Doom {
 		bool m_IsCastingShadows = true;
 		bool m_IsWireMesh = false;
 		bool m_IsUsingNormalMap = false;
+		bool m_IsCullingFace = true;
 
+		Renderer3D(const Renderer3D& rhs);
 		Renderer3D();
 		~Renderer3D();
 
+		void operator=(const Renderer3D& rhs);
 		void EraseFromInstancing();
 		void ChangeRenderTechnic(RenderTechnic rt);
 		void LoadMesh(Mesh* mesh);
@@ -45,6 +48,7 @@ namespace Doom {
 		void MakeTransparent();
 		void MakeSolid();
 		virtual void Render() override;
+
 	private:
 
 		//TODO ??? Upload in shader, calculate the angle between the normal and light dir if angle > 90 then shadow should not be drawn!!! ???
@@ -53,6 +57,7 @@ namespace Doom {
 		bool m_IsSkyBox = false;
 		RenderTechnic m_RenderTechnic = RenderTechnic::Forward;
 
+		void Copy(const Renderer3D& rhs);
 		void ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color);
 		void AdditionalUniformsLoad();
 

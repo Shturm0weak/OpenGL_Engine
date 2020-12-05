@@ -9,6 +9,11 @@ void Doom::ScriptComponent::AssignScript(const char* filePath)
 	LuaState::RegisterFunction(m_LState);
 }
 
+Doom::ScriptComponent::ScriptComponent(const ScriptComponent& rhs)
+{
+
+}
+
 Doom::ScriptComponent::ScriptComponent()
 {
 	//SetType(ComponentType::SCRIPT);

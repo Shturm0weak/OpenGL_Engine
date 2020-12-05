@@ -7,8 +7,14 @@
 #include "../Core/Utils.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/quaternion.hpp"
+#include "Rays/Ray3D.h"
 
 using namespace Doom;
+
+Doom::Transform::Transform(const Transform& rhs)
+{
+	Copy(rhs);
+}
 
 Transform::Transform() {
 	//SetType(ComponentType::TRANSFORM);
@@ -19,11 +25,23 @@ void Transform::RealVertexPositions()
 	glm::vec3 position = Utils::GetPosition(m_PosMat4);
 	if (m_PrevPosition.x + m_PrevPosition.y + m_PrevPosition.z != position.x + position.y + position.z) {
 		sr = m_Owner->GetComponentManager()->GetComponent<SpriteRenderer>();
-		if (sr == NULL)
+		if (sr == NULL || sr == nullptr)
 			return;
 		m_PrevPosition = position;
 		sr->Update(position);
 	}
+}
+
+void Doom::Transform::Copy(const Transform& rhs)
+{
+	m_PosMat4 = rhs.m_PosMat4;
+	m_ViewMat4 = rhs.m_ViewMat4;
+	m_ScaleMat4 = rhs.m_ScaleMat4;
+}
+
+void Doom::Transform::operator=(const Transform& rhs)
+{
+	Copy(rhs);
 }
 
 glm::vec3 Doom::Transform::GetRotation()
@@ -260,15 +278,23 @@ void Transform::RotateOnce(glm::vec3 vangles, bool isRad) {
 		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
 	}
 	EventSystem::GetInstance()->SendEvent(EventType::ONROTATE, (Listener*)m_Owner);
-	/*if (owner->Enable) {
-		unsigned int size = owner->GetChilds().size();
-		for (unsigned int i = 0; i < size; i++)
-		{
-			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
-			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
-		}
-	}*/
+	//if(m_PrevRotation.x != vangles.x || m_PrevRotation.y != vangles.y || m_PrevRotation.z != vangles.z){
+	//	m_PrevRotation = vangles;
+	//	if (m_Owner->m_Enable) {
+	//		unsigned int size = m_Owner->GetChilds().size();
+	//		for (unsigned int i = 0; i < size; i++)
+	//		{
+	//			GameObject* go = static_cast<GameObject*>(m_Owner->GetChilds()[i]);
+	//			if (go->m_Enable == true) {
+	//				Transform* goTr = go->m_Transform;
+	//				goTr->RotateOnce(GetRotation() + goTr->GetRotation(), true);
+	//				glm::vec3 _end = goTr->m_ViewMat4 * glm::vec4(goTr->GetPosition(), 1.0f);
+	//				goTr->Translate(_end);
+	//				
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void Transform::Rotate(glm::vec3 vangles, bool isRad) {

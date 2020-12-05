@@ -11,6 +11,23 @@ Doom::SphereCollider::~SphereCollider()
 	}
 }
 
+void Doom::SphereCollider::Copy(const SphereCollider& rhs)
+{
+	m_Offset = rhs.m_Offset;
+	m_Radius = rhs.m_Radius;
+	m_IsInBoundingBox = rhs.m_IsInBoundingBox;
+}
+
+void Doom::SphereCollider::operator=(const SphereCollider& rhs)
+{
+	Copy(rhs);
+}
+
+Doom::SphereCollider::SphereCollider(const SphereCollider& rhs)
+{
+	Copy(rhs);
+}
+
 SphereCollider::SphereCollider() {
 	m_Mesh = MeshManager::GetMesh("sphere");
 	s_Spheres.push_back(this);

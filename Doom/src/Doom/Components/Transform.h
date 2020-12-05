@@ -9,7 +9,7 @@ namespace Doom {
 	class RectangleCollider2D;
 
 	class DOOM_API Transform : public Component {
-	private:
+	public:
 
 		Irenderer* sr = nullptr;
 		RectangleCollider2D* col = nullptr;
@@ -18,10 +18,13 @@ namespace Doom {
 
 		glm::vec3 m_Rotation = glm::vec3(0.0);
 		glm::vec3 m_PrevPosition;
+		//glm::vec3 m_PrevRotation;
 
 		glm::mat4 m_ScaleMat4 = glm::mat4(1.f);
 		glm::mat4 m_PosMat4   = glm::mat4(1.f);
 		glm::mat4 m_ViewMat4  = glm::mat4(1.f);
+
+		void Copy(const Transform& rhs);
 
 		friend class ComponentManager;
 		friend class RectangleCollider2D;
@@ -42,8 +45,11 @@ namespace Doom {
 
 	public:
 
+		Transform(const Transform& rhs);
 		Transform();
 		~Transform() {}
+
+		void operator=(const Transform& rhs);
 
 		glm::vec3 GetRotation();
 		glm::vec3 GetPosition();

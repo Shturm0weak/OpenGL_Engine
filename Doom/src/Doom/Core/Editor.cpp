@@ -33,6 +33,7 @@ void Editor::EditorUpdate()
 	
 	closedButtonsId = 103212;
 	Debug();
+	MenuInstancingStats();
 	Threads();
 
 	ImGui::Begin("Console");
@@ -248,6 +249,7 @@ void Doom::Editor::MenuRenderer3D()
 				ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
 				ImGui::Checkbox("Cast shadows", &r->m_IsCastingShadows);
 				ImGui::Checkbox("Wire mesh", &r->m_IsWireMesh);
+				ImGui::Checkbox("Is culling face", &r->m_IsCullingFace);
 				if (ImGui::CollapsingHeader("Shader")) {
 					Shader* shader = go->GetComponentManager()->GetComponent<Renderer3D>()->m_Shader;
 					ImGui::Text("%s", shader->m_Name);
@@ -271,6 +273,17 @@ void Doom::Editor::MenuRenderer3D()
 					else {
 						if (ImGui::Button("Make Solid")) {
 							r->MakeSolid();
+						}
+					}
+
+					if (r->m_RenderTechnic == Renderer3D::RenderTechnic::Forward) {
+						if (ImGui::Button("Push in Instance rendering")) {
+							r->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
+						}
+					}
+					else {
+						if (ImGui::Button("Push in Forward rendering")) {
+							r->ChangeRenderTechnic(Renderer3D::RenderTechnic::Forward);
 						}
 					}
 
@@ -298,6 +311,10 @@ void Doom::Editor::MenuRenderer3D()
 					if (r->m_Mesh != nullptr) {
 						ImGui::Text("Name: %s", r->m_Mesh->m_Name);
 						ImGui::Text("Id: %i", r->m_Mesh->m_IdOfMeshInFile);
+						glm::vec2 minP = r->m_Owner->GetComponent<CubeCollider3D>()->m_MinP;
+						glm::vec2 maxP = r->m_Owner->GetComponent<CubeCollider3D>()->m_MaxP;
+						ImGui::Text("MinP: %f %f", minP.x, minP.y);
+						ImGui::Text("MaxP: %f %f", maxP.x, maxP.y);
 					}
 					if (ImGui::Button("Meshes")) {
 						isActiveMeshPicker = true;
@@ -528,7 +545,7 @@ void Doom::Editor::MenuLightPoint()
 			ImGui::SliderFloat("Constant", &pl->m_Constant, 0, 1);
 			ImGui::SliderFloat("Linear", &pl->m_Linear, 0, 0.100f);
 			ImGui::SliderFloat("Quadratic", &pl->m_Quadratic, 0, 0.100);
-			ImGui::ColorPicker3("Point light color", &pl->color[0]);
+			ImGui::ColorPicker3("Point light color", &pl->m_Color[0]);
 		}
 	}
 }
@@ -809,6 +826,17 @@ void Doom::Editor::MenuShadowMap()
 	ImGui::End();
 }
 
+void Doom::Editor::MenuInstancingStats()
+{
+	ImGui::Begin("Instancing stats");
+	ImGui::Text("Meshes in instancing %i", Instancing::Instance()->m_InstancedObjects.size());
+	for (auto iter = Instancing::Instance()->m_InstancedObjects.begin(); iter != Instancing::Instance()->m_InstancedObjects.end(); iter++)
+	{
+		ImGui::Text("%s : %i", iter->first->m_Name, iter->second.size());
+	}
+	ImGui::End();
+}
+
 void Doom::Editor::ShortCuts()
 {
 	if (!Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
@@ -823,6 +851,24 @@ void Doom::Editor::ShortCuts()
 		}
 		else if (Input::IsKeyPressed(Keycode::KEY_Q)) {
 			ViewPort::GetInstance()->m_GizmoOperation = -1;
+		}
+		if (Input::IsKeyPressed(Keycode::KEY_BACKSPACE)) {
+			if (Editor::GetInstance()->go != nullptr) {
+				World::DeleteObject(Editor::GetInstance()->go->m_Id);
+				if (World::s_GameObjects.size() > 0)
+					Editor::GetInstance()->go = World::s_GameObjects[World::s_GameObjects.size() - 1];
+				else
+					Editor::GetInstance()->go = nullptr;
+			}
+		}
+		if (Input::IsKeyDown(Keycode::KEY_LEFT_CONTROL) && Input::IsKeyPressed(Keycode::KEY_C)) {
+			copiedGo = go;
+		}
+		else if (Input::IsKeyDown(Keycode::KEY_LEFT_CONTROL) && Input::IsKeyPressed(Keycode::KEY_V)) {
+			if (copiedGo != nullptr) {
+				World::CreateGameObject()->operator=(*copiedGo);
+				go = World::s_GameObjects.back();
+			}
 		}
 	}
 }

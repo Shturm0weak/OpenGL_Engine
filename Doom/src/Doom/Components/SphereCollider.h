@@ -9,6 +9,8 @@ namespace Doom {
 		Shader* m_Shader = Shader::Get("CubeCollider");
 		glm::vec4 m_Color = COLORS::Green;
 
+		void Copy(const SphereCollider& rhs);
+
 		friend class ComponentManager;
 	public:
 
@@ -17,6 +19,9 @@ namespace Doom {
 		float m_Radius = 1.0;
 		bool m_IsInBoundingBox = true;
 		
+		void operator=(const SphereCollider& rhs);
+
+		SphereCollider(const SphereCollider& rhs);
 		SphereCollider();
 		~SphereCollider();
 

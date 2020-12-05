@@ -16,6 +16,16 @@ GameObject::GameObject(const std::string name,float x, float y,float z) {
 	World::s_GameObjects.push_back(this);
 }
 
+Doom::GameObject::GameObject(const GameObject& rhs)
+{
+	Copy(rhs);
+}
+
+void Doom::GameObject::operator=(const GameObject& rhs)
+{
+	Copy(rhs);
+}
+
 Doom::GameObject::~GameObject()
 {
 #ifdef _DEBUG
@@ -60,6 +70,22 @@ void Doom::GameObject::RemoveChild(void * child)
 		}
 	}
 }
+
+void Doom::GameObject::Copy(const GameObject& rhs)
+{
+	m_Name = rhs.m_Name;
+	m_Enable = rhs.m_Enable;
+	m_IsParticle = rhs.m_IsParticle;
+	m_IsSerializable = rhs.m_IsSerializable;
+	m_ComponentManager->operator=(*rhs.m_ComponentManager);
+	for (uint32_t i = 0; i < rhs.m_Childs.size(); i++)
+	{
+		GameObject* go = World::CreateGameObject();
+		go->operator=(*(GameObject*)rhs.m_Childs[i]);
+		AddChild(go);
+	}
+}
+
 glm::vec3 GameObject::GetScale() {
 	return Utils::GetScale(m_Transform->m_ScaleMat4);
 }

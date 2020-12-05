@@ -12,6 +12,8 @@ namespace Doom {
 	public:
 
 		void AssignScript(const char* filePath);
+
+		ScriptComponent(const ScriptComponent& rhs);
 		ScriptComponent();
 		~ScriptComponent();
 	};

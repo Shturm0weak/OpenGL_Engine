@@ -25,6 +25,7 @@ namespace Doom {
 
 		Transform* m_Tr = nullptr;
 
+		void Copy(const SpriteRenderer& rhs);
 		inline std::string GetPathToTexture() const { return this->m_PathToTexture; };
 		std::string m_PathToTexture = ("None");
 
@@ -46,8 +47,11 @@ namespace Doom {
 
 		Texture* m_Texture = Texture::s_WhiteTexture;
 
+		SpriteRenderer(const SpriteRenderer& rhs);
 		SpriteRenderer();
 		~SpriteRenderer();
+
+		void operator=(const SpriteRenderer& rhs);
 
 		virtual void Update(glm::vec3 pos) override;
 		virtual void Render() override;

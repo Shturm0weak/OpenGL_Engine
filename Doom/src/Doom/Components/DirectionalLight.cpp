@@ -3,6 +3,12 @@
 
 using namespace Doom;
 
+void Doom::DirectionalLight::Copy(const DirectionalLight& rhs)
+{
+	m_Intensity = rhs.m_Intensity;
+	m_Color = rhs.m_Color;
+}
+
 glm::mat4 Doom::DirectionalLight::GetLightSpaceMatrix()
 {
 	if (s_DirLights.size() > 0)
@@ -20,6 +26,16 @@ void Doom::DirectionalLight::UpdateLightMatrix()
 	glm::vec3 pos = Window::GetCamera().GetPosition();
 	glm::mat4 view = glm::lookAt(pos, dir + pos, glm::vec3(0, 1, 0));
 	lightSpaceMatrix = m_LightProjection * view;
+}
+
+void Doom::DirectionalLight::operator=(const DirectionalLight& rhs)
+{
+	Copy(rhs);
+}
+
+Doom::DirectionalLight::DirectionalLight(const DirectionalLight& rhs)
+{
+	Copy(rhs);
 }
 
 Doom::DirectionalLight::DirectionalLight()

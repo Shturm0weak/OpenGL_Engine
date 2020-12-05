@@ -98,7 +98,7 @@ public:
 		{
 			lights.push_back(new GameObject(std::string("light " + std::to_string(i)), i * 10, 0, i * 10));
 			lights.back()->GetComponentManager()->AddComponent<PointLight>();
-			lights.back()->GetComponentManager()->GetComponent<PointLight>()->color = glm::vec3(i * 0.1, 0, i * 0.1);
+			lights.back()->GetComponentManager()->GetComponent<PointLight>()->m_Color = glm::vec3(i * 0.1, 0, i * 0.1);
 		}
 		lights.back()->GetComponentManager()->RemoveComponent<PointLight>();
 		lights.back()->GetComponentManager()->AddComponent<DirectionalLight>();

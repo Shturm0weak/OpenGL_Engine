@@ -173,7 +173,6 @@ void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
 		for (uint32_t i = 0; i < iter->second.size(); i++)
 		{
 			GameObject* ch = World::s_GameObjects[iter->second[i]];
-			ch->SetOwner((void*)iter->first);
 			iter->first->AddChild((void*)ch);
 		}
 	}
@@ -216,7 +215,6 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		r->m_Material.m_Specular = mat["Specular"].as<float>();
 		r->m_Color = mat["Color"].as<glm::vec4>();
 		r->m_Shader = Shader::Get(Utils::GetNameFromFilePath(renderer3DComponent["Shader"].as<std::string>(), 6));
-		r->ChangeRenderTechnic((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
 		bool isTransparent = renderer3DComponent["Transparent"].as<bool>();
 		if (isTransparent)
 			r->MakeTransparent();
@@ -225,6 +223,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		r->m_IsCastingShadows = renderer3DComponent["Casting shadows"].as<bool>();
 		r->m_IsWireMesh = renderer3DComponent["Wire mesh"].as<bool>();
 		r->m_IsUsingNormalMap = renderer3DComponent["Use normal map"].as<bool>();
+		r->m_IsCullingFace = renderer3DComponent["Is culling face"].as<bool>();
 		auto textures = renderer3DComponent["Textures"];
 		std::string diffuse = textures["Diffuse"].as<std::string>();
 		std::string normal = textures["Normal"].as<std::string>();
@@ -259,7 +258,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		MeshManager::LoadMesh(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
 		r->LoadMesh(MeshManager::GetMesh(meshName));
-
+		r->ChangeRenderTechnic((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{
@@ -282,7 +281,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		pl->m_Constant = atenuation["Constant"].as<float>();
 		pl->m_Linear = atenuation["Linear"].as<float>();
 		pl->m_Quadratic = atenuation["Quadratic"].as<float>();
-		pl->color = pointLightComponent["Color"].as<glm::vec3>();
+		pl->m_Color = pointLightComponent["Color"].as<glm::vec3>();
 	}
 
 	auto sphereColliderComponent = go["Sphere collider"];
@@ -406,6 +405,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 			out << YAML::Key << "Casting shadows" << YAML::Value << r->m_IsCastingShadows;
 			out << YAML::Key << "Wire mesh" << YAML::Value << r->m_IsWireMesh;
 			out << YAML::Key << "Use normal map" << YAML::Value << r->m_IsUsingNormalMap;
+			out << YAML::Key << "Is culling face" << YAML::Value << r->m_IsCullingFace;
 
 			if (r->m_IsSkyBox) {
 				SkyBox* sb = static_cast<SkyBox*>(r->GetOwnerOfComponent());
@@ -479,7 +479,7 @@ void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter & out, Co
 		PointLight* pl = cm->GetComponent<PointLight>();
 		out << YAML::Key << "Point light";
 		out << YAML::BeginMap;
-		out << YAML::Key << "Color" << YAML::Value << pl->color;
+		out << YAML::Key << "Color" << YAML::Value << pl->m_Color;
 		out << YAML::Key << "Attenuation";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Constant" << YAML::Value << pl->m_Constant;

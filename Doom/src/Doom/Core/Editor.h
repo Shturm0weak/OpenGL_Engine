@@ -48,6 +48,7 @@ namespace Doom {
 		float uvsOffset[2];
 		Editor& operator=(const Editor& rhs) { return *this; }
 		void CreateTextureAtlas();
+		GameObject* copiedGo = nullptr;
 
 		float TextColor[4] = {1,1,1,1};
 		float shadowOffset[2] = {0,0};
@@ -73,6 +74,7 @@ namespace Doom {
 		void DrawChilds(GameObject* go);
 		void ShaderMenu();
 		void MenuShadowMap();
+		void MenuInstancingStats();
 
 	public:
 		bool drawNormals = false;

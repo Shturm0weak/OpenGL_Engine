@@ -19,6 +19,22 @@ void SpriteRenderer::SetTexture(Texture* texture) {
 	m_PathToTexture = texture->GetFilePath();
 }
 
+void Doom::SpriteRenderer::Copy(const SpriteRenderer& rhs)
+{
+	m_Color = rhs.m_Color;
+	m_PathToTexture = rhs.m_PathToTexture;
+	m_RenderType = rhs.m_RenderType;
+	m_Shader = rhs.m_Shader;
+	m_Texture = rhs.m_Texture;
+	m_TextureAtlas = rhs.m_TextureAtlas;
+	memcpy(m_Mesh2D, rhs.m_Mesh2D, sizeof(rhs.m_Mesh2D));
+}
+
+Doom::SpriteRenderer::SpriteRenderer(const SpriteRenderer& rhs)
+{
+	Copy(rhs);
+}
+
 Doom::SpriteRenderer::SpriteRenderer()
 {
 	//SetType(ComponentType::SPRITERENDERER);
@@ -32,6 +48,11 @@ Doom::SpriteRenderer::~SpriteRenderer()
 	if (iter != Renderer::s_Objects2d.end()) {
 		Renderer::s_Objects2d.erase(iter);
 	}
+}
+
+void Doom::SpriteRenderer::operator=(const SpriteRenderer& rhs)
+{
+	Copy(rhs);
 }
 
 void Doom::SpriteRenderer::Update(glm::vec3 pos)

@@ -8,8 +8,7 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 {
 	if (m_IsTransparent)
 		return;
-	m_RenderTechnic = rt;
-	if (m_RenderTechnic == RenderTechnic::Instancing) {
+	if (rt == RenderTechnic::Instancing) {
 		for (auto i = Instancing::Instance()->m_InstancedObjects.begin(); i != Instancing::Instance()->m_InstancedObjects.end(); i++)
 		{
 			if (i->first == m_Mesh) {
@@ -20,13 +19,15 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 			}
 		}
 	}
-	else if (m_RenderTechnic == RenderTechnic::Forward) {
+	else if (rt == RenderTechnic::Forward) {
+		EraseFromInstancing();
 		auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
 		if (iter == Renderer::s_Objects3d.end()) {
 			m_Shader = Shader::Get("Default3D");
 			Renderer::s_Objects3d.push_back(this);
 		}
 	}
+	m_RenderTechnic = rt;
 }
 
 void Doom::Renderer3D::LoadMesh(Mesh * mesh)
@@ -52,6 +53,11 @@ void Doom::Renderer3D::LoadMesh(Mesh * mesh)
 	//std::cout << "the lowest " << mesh->theLowestPoint.x << " " << mesh->theLowestPoint.y << " " << mesh->theLowestPoint.z << "\n";
 }
 
+void Doom::Renderer3D::operator=(const Renderer3D& rhs)
+{
+	Copy(rhs);
+}
+
 void Doom::Renderer3D::EraseFromInstancing()
 {
 	if (m_RenderTechnic == RenderTechnic::Instancing) {
@@ -61,11 +67,16 @@ void Doom::Renderer3D::EraseFromInstancing()
 				auto iter = std::find(i->second.begin(), i->second.end(), this);
 				if (iter != i->second.end()) {
 					i->second.erase(iter);
-					m_Mesh = nullptr;
+					//m_Mesh = nullptr;
 				}
 			}
 		}
 	}
+}
+
+Doom::Renderer3D::Renderer3D(const Renderer3D& rhs)
+{
+	Copy(rhs);
 }
 
 Doom::Renderer3D::Renderer3D()
@@ -83,7 +94,7 @@ Doom::Renderer3D::~Renderer3D()
 {
 	CubeCollider3D* cc = GetOwnerOfComponent()->GetComponentManager()->GetComponent<CubeCollider3D>();
 	if (cc != nullptr && cc->m_IsBoundingBox) {
-		GetOwnerOfComponent()->GetComponentManager()->RemoveComponent(cc);
+		GetOwnerOfComponent()->GetComponentManager()->RemoveComponent(cc); //Fix: could be dangerous if there is more than 1 CubeCollider
 	}
 	if (m_IsTransparent) {
 		auto iter = std::find(Renderer::s_Objects3dTransparent.begin(), Renderer::s_Objects3dTransparent.end(), this);
@@ -92,6 +103,7 @@ Doom::Renderer3D::~Renderer3D()
 		}
 	}
 	else {
+		ChangeRenderTechnic(RenderTechnic::Forward);
 		auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
 		if (iter != Renderer::s_Objects3d.end()) {
 			Renderer::s_Objects3d.erase(iter);
@@ -165,6 +177,25 @@ void Doom::Renderer3D::Render()
 	}
 }
 
+void Doom::Renderer3D::Copy(const Renderer3D& rhs)
+{
+	m_FloatUniforms = rhs.m_FloatUniforms;
+	m_Material = rhs.m_Material;
+	m_DiffuseTexture = rhs.m_DiffuseTexture;
+	m_NormalMapTexture = rhs.m_NormalMapTexture;
+	LoadMesh(rhs.m_Mesh);
+	m_IsCastingShadows = rhs.m_IsCastingShadows;
+	m_IsWireMesh = rhs.m_IsWireMesh;
+	m_IsUsingNormalMap = rhs.m_IsUsingNormalMap;
+	if (rhs.m_IsTransparent)
+		MakeTransparent();
+	m_IsSkyBox = rhs.m_IsSkyBox;
+	ChangeRenderTechnic(rhs.m_RenderTechnic);
+	m_Color = rhs.m_Color;
+	m_Shader = rhs.m_Shader;
+	m_RenderType = rhs.m_RenderType;
+}
+
 void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
 {
 	if (m_Mesh != nullptr) {
@@ -199,7 +230,7 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 				sprintf(buffer, "pointLights[%i].position", i);
 				m_Shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
 				sprintf(buffer, "pointLights[%i].color", i);
-				m_Shader->SetUniform3fv(buffer, pl->color);
+				m_Shader->SetUniform3fv(buffer, pl->m_Color);
 				sprintf(buffer, "pointLights[%i].constant", i);
 				m_Shader->SetUniform1f(buffer, pl->m_Constant);
 				sprintf(buffer, "pointLights[%i]._linear", i);
@@ -226,7 +257,10 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 			m_Mesh->m_Vb->Bind();
 			Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
 			Renderer::s_DrawCalls++;
+			if(!m_IsCullingFace)
+				glDisable(GL_CULL_FACE);
 			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+				glEnable(GL_CULL_FACE);
 			m_Shader->UnBind();
 			m_Mesh->m_Ib->UnBind();
 			glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);

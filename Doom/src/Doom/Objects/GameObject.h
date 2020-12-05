@@ -18,6 +18,8 @@ namespace Doom {
 		ComponentManager* m_ComponentManager = nullptr;
 		void* m_Owner = nullptr;
 
+		void Copy(const GameObject& rhs);
+
 		friend class Doom::Transform;
 		friend class Doom::RectangleCollider2D;
 		friend class Doom::ComponentManager;
@@ -44,8 +46,8 @@ namespace Doom {
 		ComponentManager* GetComponentManager() const { return m_ComponentManager; };
 		inline int& GetLayer() { return m_Layer; }
 		void* GetOwner() const { return m_Owner; }
-		void AddChild(void* child) { m_Childs.push_back(child); }
-		void SetOwner(void* owner) { this->m_Owner = owner; }
+		void AddChild(void* child) { m_Childs.push_back(child); static_cast<GameObject*>(child)->m_Owner = this; }
+		void SetOwner(void* owner) { this->m_Owner = owner; static_cast<GameObject*>(owner)->AddChild(this); }
 		void RemoveChild(void* child);
 
 		template <typename T>
@@ -55,6 +57,9 @@ namespace Doom {
 
 		virtual ~GameObject();
 		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0,float z = 0);
+		GameObject(const GameObject& rhs);
+
+		void operator=(const GameObject& rhs);
 	};
 
 }

@@ -3,6 +3,24 @@
 
 using namespace Doom;
 
+void Doom::PointLight::Copy(const PointLight& rhs)
+{
+	m_Constant = rhs.m_Constant;
+	m_Linear = rhs.m_Linear;
+	m_Quadratic = rhs.m_Quadratic;
+	m_Color = rhs.m_Color;
+}
+
+void Doom::PointLight::operator=(const PointLight& rhs)
+{
+	Copy(rhs);
+}
+
+Doom::PointLight::PointLight(const PointLight& rhs)
+{
+	Copy(rhs);
+}
+
 Doom::PointLight::PointLight()
 {
 	//SetType(ComponentType::POINTLIGHT);

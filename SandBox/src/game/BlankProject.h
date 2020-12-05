@@ -25,6 +25,9 @@ public:
 	double time = 0;
 	GameObject* earth;
 	GameObject* moon;
+	Line* l = nullptr;
+	glm::vec3 start { 1.0f };
+	glm::vec3 end { 0,0,10 };
 	BlankProject(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
 	std::vector<std::string> faces = {
 				"src/SkyBox/skyBox1/back.png",
@@ -36,6 +39,7 @@ public:
 	};
 	virtual void OnStart() {
 		ImGui::SetCurrentContext(Window::s_ImGuiContext);
+		//l = new Line(start, end);
 		//shader = Shader::Get("Tron");
 		//GameObject* dirLight = new GameObject("Directional Light", 0, 0, 0);
 		//dirLight->GetComponentManager()->AddComponent<DirectionalLight>();
@@ -52,7 +56,8 @@ public:
 		//moon->GetComponentManager()->AddComponent<PointLight>();
 		//MeshManager::GetMeshWhenLoaded("sphere", earth->GetComponentManager()->AddComponent<Renderer3D>());
 		//MeshManager::GetMeshWhenLoaded("sphere", moon->GetComponentManager()->AddComponent<Renderer3D>());
-		//GameObject* terrain = new GameObject("Terrain");
+		//earth = new GameObject("earth", start.x , start.y , start.z);
+		//moon = new GameObject("moon");
 		//for (int i = -5; i < 4; i++)
 		//{
 		//	for (int j = -5; j < 4; j++)
@@ -71,6 +76,17 @@ public:
 	}
 
 	virtual void OnUpdate() {
+		//glm::vec3 dir{ 1.0f };
+		//Transform* tr = earth->GetComponent<Transform>();
+		//glm::vec3 _end = tr->m_ViewMat4 * glm::vec4(end, 1.0f);
+		//l->SetEndPoint(tr->GetPosition());
+		//l->SetEndPoint(_end);
+		//std::cout << _end.x << " " << _end.y << " " << _end.z << " " << std::endl;
+		//moon->GetComponent<Transform>()->Translate(_end);
+		//_end = moon->m_Transform->GetPosition();
+		//std::cout << _end.x << " " << _end.y << " " << _end.z << " " << std::endl;
+		//std::cout << "end\n";
+		//moon->GetComponent<Transform>()->RotateOnce(earth->m_Transform->GetRotation(), true);
 		//earth->transform->Rotate( 0, 0, 8);
 		//moon->transform->Rotate(0, 0, -30);
 		//moon->transform->Translate(glm::sin(time) * 30, 6, glm::cos(time) * 30);

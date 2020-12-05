@@ -1,16 +1,16 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [-3.70552278, 1.91893864, -7.49339676]
-    Rotation: [-0.202797249, -2.54655576, 0]
+    Position: [-20.7853394, 3.72014499, 13.5460215]
+    Rotation: [-0.149569109, -1.04511952, 0]
   FOV: 1
 GameObjects:
   - GameObject: 0
     Name: Sun
     Transform:
       Position: [27.5802002, 11.961463, -25.1115665]
-      Scale: [1, 1, 1]
-      Rotation: [1.29154372, 0, 0]
+      Scale: [1.01999843, 1.01999843, 1.01999819]
+      Rotation: [1.04495049, -0.0546056293, -0.482401699]
     Renderer3D:
       Material:
         Ambient: 1
@@ -23,6 +23,7 @@ GameObjects:
       Casting shadows: false
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -31,141 +32,16 @@ GameObjects:
         Mesh Id: 0
     Directional light:
       Intensity: 1
-      Color: [0.0432382822, 0.0432378501, 0.0432378501]
+      Color: [0.0674373507, 0.0674366727, 0.0674366727]
     Cube collider:
       Bounding box: true
     Registered events:
       []
   - GameObject: 1
-    Name: Scene
-    Transform:
-      Position: [0, 0, 0]
-      Scale: [1, 1, 1]
-      Rotation: [0, 0, 0]
-    Childs id:
-      - 2
-      - 3
-      - 4
-      - 5
-    Registered events:
-      []
-  - GameObject: 2
-    Name: Plane.001
-    Transform:
-      Position: [3.31254625, -1.54518139, 5.00998116]
-      Scale: [1, 1, 5.68599987]
-      Rotation: [1.57079637, -0, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [0.691345155, 0.691338241, 0.691338241, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
-        Mesh Id: 1
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 3
-    Name: Cube.002
-    Transform:
-      Position: [3.36703658, -1.60833645, 1.13234639]
-      Scale: [0.899997532, 0.899999797, 0.900006235]
-      Rotation: [1.52420104, -0.454295814, -3.07992268]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 0, 0, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
-        Mesh Id: 2
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 4
-    Name: Cube.001
-    Transform:
-      Position: [0, -2.17000008, 0]
-      Scale: [1, 1, 1]
-      Rotation: [-1.57079637, 0, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [1, 0.767614484, 0.51199162, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
-        Mesh Id: 3
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 5
-    Name: Cube.003
-    Transform:
-      Position: [0, -2.17000008, 0]
-      Scale: [1, 1, 1]
-      Rotation: [-1.57079637, 0, -0]
-    Renderer3D:
-      Material:
-        Ambient: 0.200000003
-        Specular: 0.200000003
-        Color: [0.619981289, 1, 0.340980172, 1]
-      Shader: src/Shaders/Default3D.shader
-      Render technic: 0
-      Transparent: false
-      SkyBox: false
-      Casting shadows: true
-      Wire mesh: false
-      Use normal map: false
-      Textures:
-        Diffuse: WhiteTexture
-        Normal: InvalidTexture
-      Mesh:
-        Mesh: C:\Users\Alexandr\Desktop\Island.fbx
-        Mesh Id: 4
-    Cube collider:
-      Bounding box: true
-    Registered events:
-      []
-  - GameObject: 6
     Name: Unnamed
     Transform:
-      Position: [0, -1.85770237, 0.809699774]
-      Scale: [100, 0.00999999978, 100]
+      Position: [-6.63477039, -1.85770237, 4.74346638]
+      Scale: [100, 0.00999999978, 118.752777]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
@@ -179,6 +55,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -189,7 +66,7 @@ GameObjects:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 7
+  - GameObject: 2
     Name: Unnamed
     Transform:
       Position: [63.1589394, -0.467922449, 20.0073853]
@@ -207,6 +84,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -217,7 +95,7 @@ GameObjects:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 8
+  - GameObject: 3
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]
@@ -235,6 +113,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Faces:
         [src/SkyBox/skyBox1/back.png, src/SkyBox/skyBox1/front.png, src/SkyBox/skyBox1/top.png, src/SkyBox/skyBox1/bottom.png, src/SkyBox/skyBox1/left.png, src/SkyBox/skyBox1/right.png]
       Textures:
@@ -245,10 +124,10 @@ GameObjects:
         Mesh Id: 0
     Registered events:
       []
-  - GameObject: 9
+  - GameObject: 4
     Name: Lamp1
     Transform:
-      Position: [5.93248081, 0.0166039467, 0.0635010004]
+      Position: [4.79938936, 3.35846376, 0.445647269]
       Scale: [0.100000001, 0.100000001, 0.100000001]
       Rotation: [0, 0, 0]
     Renderer3D:
@@ -263,6 +142,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -279,10 +159,10 @@ GameObjects:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 10
+  - GameObject: 5
     Name: Lamp2
     Transform:
-      Position: [4.8117156, 0, 5.75174713]
+      Position: [0.237331122, 3.73894072, 7.76322651]
       Scale: [0.100000001, 0.100000001, 0.100000001]
       Rotation: [0, 0, 0]
     Renderer3D:
@@ -297,6 +177,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -313,10 +194,10 @@ GameObjects:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 11
+  - GameObject: 6
     Name: Lamp3
     Transform:
-      Position: [0, 0, 0]
+      Position: [-1.40638888, 3.69378877, -2.13131332]
       Scale: [0.100000001, 0.100000001, 0.100000001]
       Rotation: [0, 0, 0]
     Renderer3D:
@@ -331,6 +212,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -343,6 +225,192 @@ GameObjects:
         Constant: 0.748000026
         Linear: 0.100000001
         Quadratic: 0.100000001
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 7
+    Name: Scene
+    Transform:
+      Position: [0.005402565, -1.79689074, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Childs id:
+      - 8
+      - 9
+      - 10
+    Registered events:
+      []
+  - GameObject: 8
+    Name: Plane.001
+    Transform:
+      Position: [0.03154248, -1.75274181, 4.25613737]
+      Scale: [1, 0.999999881, 0.806063652]
+      Rotation: [-1.57079649, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [0.849843621, 0.849835098, 0.849835098, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: false
+      Casting shadows: false
+      Wire mesh: false
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: C:\Users\Alexandr\Desktop\among us.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 9
+    Name: Cube.001
+    Transform:
+      Position: [1.02958155, 1.63777304, 2.11372781]
+      Scale: [1, 1, 1]
+      Rotation: [-1.57079637, -0.528952897, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 0.79023248, 0.503649592, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: C:\Users\Alexandr\Desktop\among us.fbx
+        Mesh Id: 2
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 10
+    Name: Cube.003
+    Transform:
+      Position: [0.848877192, 6.32332373, 1.87661362]
+      Scale: [1, 1, 1]
+      Rotation: [-1.57079637, -0.528952897, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [0.612270474, 1, 0.557872772, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Is culling face: false
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: C:\Users\Alexandr\Desktop\among us.fbx
+        Mesh Id: 3
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 11
+    Name: Cube.002
+    Transform:
+      Position: [-4.17280197, -0.674250901, -3.17805839]
+      Scale: [1, 0.999972582, 0.999972582]
+      Rotation: [-1.57079649, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [0, 1, 0.00208544731, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: C:\Users\Alexandr\Desktop\among us.fbx
+        Mesh Id: 1
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 12
+    Name: Cube.002
+    Transform:
+      Position: [2.24553275, -0.674259245, -1.12054348]
+      Scale: [1.00000024, 0.999973536, 0.999969721]
+      Rotation: [1.57082164, -1.00511742, -3.14159226]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 0, 0, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: C:\Users\Alexandr\Desktop\among us.fbx
+        Mesh Id: 1
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 13
+    Name: Cube.002
+    Transform:
+      Position: [-3.19444346, -0.674178481, 7.01133442]
+      Scale: [0.999999583, 0.999974668, 0.999970138]
+      Rotation: [1.57083917, 0.381381929, -3.14159226]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [0, 0.27112937, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: C:\Users\Alexandr\Desktop\among us.fbx
+        Mesh Id: 1
     Cube collider:
       Bounding box: true
     Registered events:

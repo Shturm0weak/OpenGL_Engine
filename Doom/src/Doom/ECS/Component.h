@@ -26,7 +26,7 @@ namespace Doom {
 		void RemoveComponent();
 
 		Component() {}
-		~Component() {}
+		virtual ~Component() {}
 
 		friend class ComponentManager;
 	};

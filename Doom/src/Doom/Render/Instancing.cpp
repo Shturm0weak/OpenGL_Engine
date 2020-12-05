@@ -66,7 +66,7 @@ void Doom::Instancing::Render()
 			sprintf(buffer, "pointLights[%i].position", i);
 			m_Shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
 			sprintf(buffer, "pointLights[%i].color", i);
-			m_Shader->SetUniform3fv(buffer, pl->color);
+			m_Shader->SetUniform3fv(buffer, pl->m_Color);
 			sprintf(buffer, "pointLights[%i].constant", i);
 			m_Shader->SetUniform1f(buffer, pl->m_Constant);
 			sprintf(buffer, "pointLights[%i]._linear", i);

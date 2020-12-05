@@ -9,6 +9,8 @@ namespace Doom {
 	private:
 
 		glm::mat4 lightSpaceMatrix;
+
+		void Copy(const DirectionalLight& rhs);
 	public:
 
 		static std::vector<DirectionalLight*> s_DirLights;
@@ -21,6 +23,9 @@ namespace Doom {
 		static glm::mat4 GetLightSpaceMatrix();
 		void UpdateLightMatrix();
 
+		void operator=(const DirectionalLight& rhs);
+
+		DirectionalLight(const DirectionalLight& rhs);
 		DirectionalLight();
 		~DirectionalLight();
 	};

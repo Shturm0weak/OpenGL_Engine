@@ -29,17 +29,32 @@ namespace Doom {
 		const char** m_NamesOfMembers = nullptr;
 		std::vector <Component*> m_Components;
 
-		friend class Component;
+		template<class T>
+		void CopyComponent(ComponentManager& rhs) {
+			if (rhs.GetComponent<T>() != nullptr) {
+				AddComponent<T>()->operator=(*rhs.GetComponent<T>());
+			}
+		}
 
+		void Copy(ComponentManager& rhs) {
+			CopyComponent<Transform>(rhs);
+			CopyComponent<PointLight>(rhs);
+			CopyComponent<DirectionalLight>(rhs);
+			CopyComponent<Renderer3D>(rhs);
+			CopyComponent<SpriteRenderer>(rhs);
+			CopyComponent<SphereCollider>(rhs);
+		}
+
+		friend class Component;
 	public:
 
-		ComponentManager::ComponentManager(GameObject* owner, std::string& owner_name) {
+		ComponentManager(ComponentManager& rhs) {
+			Copy(rhs);
+		}
+		ComponentManager(GameObject* owner, std::string& owner_name) {
 			this->m_Owner = owner;
 			this->m_OwnerName = owner_name;
 		}
-
-		inline int GetAmountOfComponents() { return m_Components.size(); }
-
 		~ComponentManager() {
 			delete[] m_NamesOfMembers;
 			RemoveComponent<RectangleCollider2D>();
@@ -58,6 +73,12 @@ namespace Doom {
 				RemoveComponent(scripts[i]);
 			}
 		}
+
+		void operator=(ComponentManager& rhs) {
+			Copy(rhs);
+		}
+
+		inline int GetAmountOfComponents() { return m_Components.size(); }
 
 		const char** GetItems() {
 			if (m_NamesOfMembers != nullptr)
@@ -140,7 +161,7 @@ namespace Doom {
 #endif
 				return object;
 			}
-			return nullptr;
+			return GetComponent<T>();
 		}
 	};
 }
