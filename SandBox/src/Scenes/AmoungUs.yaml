@@ -1,16 +1,16 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [-3.49424767, 2.55414057, -15.0222883]
-    Rotation: [-0.238139346, -2.75424528, 0]
+    Position: [-6.76510715, 14.0859022, -11.9852037]
+    Rotation: [-0.764360964, -2.45564771, 0]
   FOV: 1
 GameObjects:
   - GameObject: 0
     Name: Unnamed
     Transform:
       Position: [27.5802002, 11.961463, -25.1115665]
-      Scale: [1, 1, 1]
-      Rotation: [1.02974427, 0, 0]
+      Scale: [1, 1.00000024, 1.00000024]
+      Rotation: [2.21968222, 0, 0]
     Renderer3D:
       Material:
         Ambient: 1
@@ -23,6 +23,7 @@ GameObjects:
       Casting shadows: false
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -67,6 +68,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -80,7 +82,7 @@ GameObjects:
   - GameObject: 3
     Name: Cube.002
     Transform:
-      Position: [4.2991724, -1.57368696, 2.89911604]
+      Position: [3.04914951, -1.65716839, 11.828495]
       Scale: [0.999993205, 0.999999762, 0.999996662]
       Rotation: [1.65265095, -0.485506028, 3.0881145]
     Renderer3D:
@@ -95,6 +97,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -123,6 +126,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -151,6 +155,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: false
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -164,13 +169,13 @@ GameObjects:
   - GameObject: 6
     Name: Unnamed
     Transform:
-      Position: [0, -1.85770237, 0.809699774]
+      Position: [-1.26140904, -1.85770237, 3.59610415]
       Scale: [50, 0.00999999978, 50]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
         Ambient: 0.200000003
-        Specular: 0.200000003
+        Specular: 0
         Color: [1, 0.944733977, 0.557872772, 1]
       Shader: src/Shaders/Default3D.shader
       Render technic: 0
@@ -179,6 +184,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -207,6 +213,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Textures:
         Diffuse: WhiteTexture
         Normal: InvalidTexture
@@ -217,7 +224,7 @@ GameObjects:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 20
+  - GameObject: 22
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]
@@ -235,6 +242,7 @@ GameObjects:
       Casting shadows: true
       Wire mesh: false
       Use normal map: false
+      Is culling face: true
       Faces:
         [src/SkyBox/skyBox1/back.png, src/SkyBox/skyBox1/front.png, src/SkyBox/skyBox1/top.png, src/SkyBox/skyBox1/bottom.png, src/SkyBox/skyBox1/left.png, src/SkyBox/skyBox1/right.png]
       Textures:
