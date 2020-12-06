@@ -38,7 +38,7 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	Batch::Init();
 	SoundManager::Init();
 	Window::GetCamera().m_FrameBufferColor = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB,GL_UNSIGNED_BYTE,false, GL_COLOR_ATTACHMENT0,true,true,true);
-	Window::GetCamera().m_FrameBufferShadowMap = new FrameBuffer(4096 * 2, 4096 * 2, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
+	Window::GetCamera().m_FrameBufferShadowMap = new FrameBuffer(8192, 8192, GL_DEPTH_COMPONENT, GL_FLOAT, true, GL_DEPTH_ATTACHMENT, false, false, false);
 	if (this->m_App->m_Type == TYPE_3D) {
 		//GridLayOut* grid = new GridLayOut();
 		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated

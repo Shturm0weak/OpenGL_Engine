@@ -223,7 +223,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		r->m_IsCastingShadows = renderer3DComponent["Casting shadows"].as<bool>();
 		r->m_IsWireMesh = renderer3DComponent["Wire mesh"].as<bool>();
 		r->m_IsUsingNormalMap = renderer3DComponent["Use normal map"].as<bool>();
-		r->m_IsCullingFace = renderer3DComponent["Is culling face"].as<bool>();
+		if (renderer3DComponent["Is culling face"])
+			r->m_IsCullingFace = renderer3DComponent["Is culling face"].as<bool>();
 		auto textures = renderer3DComponent["Textures"];
 		std::string diffuse = textures["Diffuse"].as<std::string>();
 		std::string normal = textures["Normal"].as<std::string>();

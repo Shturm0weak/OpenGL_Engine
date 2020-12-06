@@ -120,8 +120,10 @@ void Doom::Instancing::Render()
 		gliter->second.m_LayoutDynamic->Push<float>(4);
 		gliter->second.m_Vao->AddBuffer(*gliter->second.m_VboDynamic, *gliter->second.m_LayoutDynamic, 5, 1);
 
+		if (!iter->second[0]->m_IsCullingFace)
+			glDisable(GL_CULL_FACE);
 		glDrawElementsInstanced(GL_TRIANGLES, gliter->second.m_Ibo->GetCount(), GL_UNSIGNED_INT, 0, iter->second.size());
-
+		glEnable(GL_CULL_FACE);
 		m_Shader->UnBind();
 		gliter->second.m_Ibo->UnBind();
 		gliter->second.m_Vao->UnBind();
