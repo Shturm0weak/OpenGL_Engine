@@ -15,6 +15,7 @@ namespace Doom {
 	class DOOM_API Mesh {
 	public:
 
+		bool m_IsInitialized = false;
 		VertexBuffer* m_Vb = nullptr;
 		VertexArray* m_Va = nullptr;
 		IndexBuffer* m_Ib = nullptr;

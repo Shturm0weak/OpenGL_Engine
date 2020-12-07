@@ -94,6 +94,7 @@ DOOM_API std::map<std::string, Mesh*> MeshManager::s_Meshes;
 DOOM_API std::multimap<std::string, void*> MeshManager::s_MeshQueue;
 DOOM_API std::vector <Mesh*> MeshManager::s_NeedToInitMeshes;
 DOOM_API const char** MeshManager::s_NamesOfMeshes;
+DOOM_API std::mutex MeshManager::s_Mtx;
 DOOM_API Shader* Font::s_Shader = nullptr;
 DOOM_API const char** Shader::s_NamesOfShaders;
 

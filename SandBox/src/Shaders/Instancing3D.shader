@@ -108,7 +108,7 @@ vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 Ca
 	vec3 viewDir = normalize(CameraPos - FragPos);
 	vec3 reflectDir = reflect(-LightDir, normal);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-	vec3 specular = specularStrength * spec * diffuseTexColor);
+	vec3 specular = specularStrength * spec * diffuseTexColor;
 
 	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
 }
@@ -126,7 +126,7 @@ vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 Camera
 	vec3 viewDir = normalize(CameraPos - FragPos);
 	vec3 reflectDir = reflect(-LightDir, normal);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-	vec3 specular = specularStrength * spec * diffuseTexColor * (1.0 - shadow));
+	vec3 specular = specularStrength * spec * diffuseTexColor;
 
 	float distance = length(light.position - FragPos);
 	float attenuation = 1.0 / (light.constant + light._linear * distance +

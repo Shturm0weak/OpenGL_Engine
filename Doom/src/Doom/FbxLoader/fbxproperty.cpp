@@ -103,6 +103,7 @@ FBXProperty::FBXProperty(std::ifstream &input)
             uint64_t destLen = uncompressedLength;
             uint64_t srcLen = compressedLength;
             uncompress2(decompressedBuffer, (uLongf*)&destLen, compressedBuffer, (uLongf*)&srcLen);
+            delete[] compressedBuffer;
 
             if(srcLen != compressedLength) throw std::string("compressedLength does not match data");
             if(destLen != uncompressedLength) throw std::string("uncompressedLength does not match data");

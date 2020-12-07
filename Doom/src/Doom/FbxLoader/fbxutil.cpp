@@ -102,6 +102,7 @@ std::string Reader::readString(uint32_t length)
     char* buffer = new char[length + 1];
     buffer[length] = 0;
     if(length) read(buffer, length);
+    delete[] buffer;
     return std::string(buffer);
 }
 

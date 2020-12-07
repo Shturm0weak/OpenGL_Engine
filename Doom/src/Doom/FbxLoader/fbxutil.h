@@ -18,6 +18,8 @@ namespace fbx {
     public:
         Reader(std::ifstream *input);
         Reader(char *input);
+        ~Reader() {
+        }
 
         std::uint8_t readUint8();
         std::int8_t readInt8();

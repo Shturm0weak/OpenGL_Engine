@@ -116,7 +116,7 @@ Doom::Renderer3D::~Renderer3D()
 
 void Doom::Renderer3D::BakeShadows()
 {
-	if (m_IsCastingShadows && m_Mesh != nullptr) {
+	if (m_IsCastingShadows && m_Mesh != nullptr && m_Mesh->m_IsInitialized) {
 		if (!m_IsSkyBox) {
 			Shader* bakeShader = Shader::Get("BakeShadows");
 			bakeShader->Bind();
@@ -198,7 +198,7 @@ void Doom::Renderer3D::Copy(const Renderer3D& rhs)
 
 void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
 {
-	if (m_Mesh != nullptr) {
+	if (m_Mesh != nullptr && m_Mesh->m_IsInitialized) {
 		if (!m_IsSkyBox) {
 			m_Shader->Bind();
 			glBindTextureUnit(0, m_DiffuseTexture->m_RendererID);

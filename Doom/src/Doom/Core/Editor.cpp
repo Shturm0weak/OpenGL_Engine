@@ -615,6 +615,9 @@ void Doom::Editor::MenuBar()
 				SceneSerializer::Serialize(*filePath);
 			}
 		}
+		if (ImGui::MenuItem("Save")) {
+			SceneSerializer::Serialize(SceneSerializer::s_CurrentSceneFilePath);
+		}
 		ImGui::EndMenu();
 	}
 }

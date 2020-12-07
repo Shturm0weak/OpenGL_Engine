@@ -5,6 +5,7 @@
 #include "../STLloader/STLloader.h"
 #include "Instancing.h"
 
+
 using namespace Doom;
 
 void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t meshId)
@@ -28,6 +29,8 @@ void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t mesh
 	std::vector<Renderer3D*> New;
 	#define	_LOAD_MESH_
 	Mesh* mesh = GetMesh(name);
+	if (mesh == nullptr)
+		return;
 	mesh->m_IdOfMeshInFile = meshId;
 	#undef _LOAD_MESH_
 	mesh->Init();
@@ -44,23 +47,32 @@ void Doom::MeshManager::LoadScene(std::string filepath)
 
 void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId)
 {
+	if (meshId > 0)
+		name = name.append(std::to_string(meshId));
 	Doom::ThreadPool::GetInstance()->Enqueue([=] {
 		auto iter = s_Meshes.find(name);
 		if (iter != s_Meshes.end())
 			return;
 		std::string subStr = filepath.substr(filepath.size() - 3, 3);
+		Mesh* mesh = nullptr;
 		if (subStr == "fbx") {
 			fbx::FBXDocument doc;
-			s_Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath, meshId)));
+			mesh = doc.LoadMesh(name, filepath, meshId);
 		}
 		else if (subStr == "stl") {
-			s_Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
+			mesh = StlLoader::LoadMesh(name, filepath);
 		}
 		else {
 			return;
 		}
-		Mesh* mesh = GetMesh(name);
-		s_NeedToInitMeshes.push_back(mesh);
+		if (mesh == nullptr)
+			return;
+		{
+			std::lock_guard<std::mutex> lock(s_Mtx);
+			s_Meshes.insert(std::make_pair(name, mesh));
+			s_NeedToInitMeshes.push_back(mesh);
+		}
+		mesh->m_IdOfMeshInFile = meshId;
 		std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
 	});
 }

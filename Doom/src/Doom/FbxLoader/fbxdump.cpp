@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
         fbx::FBXDocument d;
         d.read(argv[1]);
         if(argc >= 3) {
-            for(auto n : d.nodes) {
+            for(auto n : d.m_Nodes) {
                 if(findNode(argv[2], n)) break;
             }
         } else {

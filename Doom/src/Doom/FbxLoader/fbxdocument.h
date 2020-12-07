@@ -5,6 +5,8 @@
 #include "../Core/Core.h"
 #include <string>
 #include "../Render/Mesh.h"
+#include <map>
+#include <mutex>
 
 namespace fbx {
 
@@ -33,6 +35,8 @@ public:
 	Doom::Mesh* LoadMesh(std::string name, std::string filepath, uint32_t meshId);
 
     FBXDocument();
+	~FBXDocument() {
+	}
     void read(std::ifstream &input);
     void read(std::string fname);
     void write(std::string fname);
@@ -40,7 +44,7 @@ public:
 
     void createBasicStructure();
 
-    std::vector<FBXNode> nodes;
+    std::vector<FBXNode> m_Nodes;
 
     std::uint32_t getVersion();
     void print();
@@ -48,8 +52,8 @@ public:
 private:
 	void LoadData(Data& data, FBXNode& fbxNode, Doom::Mesh* mesh);
 	void GenerateMesh(Data& data, Doom::Mesh* mesh);
-	std::string GetNameOfModel(std::string model, uint32_t offset = 1);
-	std::string GetNameOfMesh(std::string model, uint32_t offset = 1);
+	static std::string GetNameOfModel(std::string model, uint32_t offset = 1);
+	static std::string GetNameOfMesh(std::string model, uint32_t offset = 1);
 
     std::uint32_t version;
 };

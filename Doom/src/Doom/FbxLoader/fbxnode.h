@@ -11,6 +11,8 @@ class DOOM_API FBXNode
 public:
     FBXNode();
     FBXNode(std::string name);
+    ~FBXNode() {
+    }
 
     std::uint32_t read(std::ifstream &input, uint32_t start_offset);
     std::uint32_t write(std::ofstream &output, uint32_t start_offset);

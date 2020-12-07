@@ -176,6 +176,7 @@ void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
 			iter->first->AddChild((void*)ch);
 		}
 	}
+	std::cout << BOLDGREEN << "Scene: <" << NAMECOLOR << s_CurrentSceneFilePath << BOLDGREEN << "> has been loaded\n" << RESET;
 }
 
 void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value & go, std::map<GameObject*, std::vector<int>>& childs)
@@ -232,6 +233,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 			r->m_DiffuseTexture = Texture::s_WhiteTexture;
 		else {
 			Texture::GetAsync(obj, [=] {
+				//Texture::AsyncLoadTexture(diffuse);
 				Texture* t = Texture::Get(diffuse);
 				if (t != nullptr)
 					r->m_DiffuseTexture = t;
@@ -242,6 +244,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 			r->m_NormalMapTexture = Texture::Get("InvalidTexture");
 		else {
 			Texture::GetAsync(r, [=] {
+				//Texture::AsyncLoadTexture(normal);
 				Texture* t = Texture::Get(normal);
 				if (t != nullptr)
 					r->m_NormalMapTexture = t;
@@ -256,10 +259,12 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 			meshId = _meshId.as<uint32_t>();
 		}
 		std::string meshName = Utils::GetNameFromFilePath(meshPath);
-		MeshManager::LoadMesh(meshName, meshPath, meshId);
+		MeshManager::AsyncLoadMesh(meshName, meshPath, meshId);
+		//MeshManager::LoadMesh(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
-		r->LoadMesh(MeshManager::GetMesh(meshName));
-		r->ChangeRenderTechnic((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
+		MeshManager::GetMeshWhenLoaded(meshName, (void*)r);
+		//r->LoadMesh(MeshManager::GetMesh(meshName));
+		//r->ChangeRenderTechnic((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{

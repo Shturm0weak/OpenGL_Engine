@@ -5,6 +5,8 @@ using namespace Doom;
 
 void Mesh::Init()
 {
+	if (m_IsInitialized)
+		return;
 	m_Layout = new VertexBufferLayout();
 	m_Vb = new VertexBuffer(m_VertAttrib, m_VertAttribSize * sizeof(float));
 	m_Va = new VertexArray();
@@ -18,6 +20,7 @@ void Mesh::Init()
 	m_Va->UnBind();
 	m_Vb->UnBind();
 	m_Ib->UnBind();
+	m_IsInitialized = true;
 }
 
 Mesh::~Mesh()

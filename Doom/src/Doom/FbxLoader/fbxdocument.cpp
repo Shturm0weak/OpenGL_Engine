@@ -19,19 +19,20 @@ namespace fbx {
 		try
 		{
 			read(filepath);
+			
 			Mesh* mesh = nullptr;
 			GameObject* scene = new Doom::GameObject("Scene");
 			std::vector<Mesh*> meshes;
 			std::vector<GameObject*> objs;
-			size_t size = nodes.size();
+			size_t size = m_Nodes.size();
 			for (size_t i = 0; i < size; i++)
 			{
-				if (nodes[i].getName() == "Objects") {
-					size_t sizec = nodes[i].getChildren().size();
+				if ( m_Nodes[i].getName() == "Objects") {
+					size_t sizec =  m_Nodes[i].getChildren().size();
 					
 					for (size_t j = 0; j < sizec; j++)
 					{
-						fbx::FBXNode node = nodes[i].getChildren()[j];
+						fbx::FBXNode node =  m_Nodes[i].getChildren()[j];
 						//node.print();
 						if (node.getName() == "Geometry") {
 							Data data;
@@ -65,7 +66,6 @@ namespace fbx {
 							//}
 							go->GetComponent<Renderer3D>()->LoadMesh(meshes[objs.size()]);
 							scene->AddChild((void*)go);
-							go->SetOwner((void*)scene);
 							objs.push_back(go);
 								fbx::FBXNode transform = node.getChildren()[1];
 
@@ -113,23 +113,30 @@ namespace fbx {
 	{
 		try
 		{
-			Data data;
+			if (MeshManager::GetMesh(name) != nullptr)
+				return MeshManager::GetMesh(name);
+
 			read(filepath);
-			Mesh* mesh = new Mesh(name, filepath);
-			size_t size = nodes.size();
+
+			size_t size =  m_Nodes.size();
+			Mesh* mesh = nullptr;
 			for (size_t i = 0; i < size; i++)
 			{
-				if (nodes[i].getName() == "Objects") {
+				if (m_Nodes[i].getName() == "Objects") {
+				
 					//nodes[i].print();
-					size_t sizec = nodes[i].getChildren().size();
-					fbx::FBXNode node = nodes[i].getChildren()[meshId];
+					size_t sizec = m_Nodes[i].getChildren().size();
+					fbx::FBXNode node = m_Nodes[i].getChildren()[meshId];
 					if (node.getName() == "Geometry") {
+						Data data;
+						mesh = new Mesh(name, filepath);
 						LoadData(data, node, mesh);
+						GenerateMesh(data, mesh);
+						return mesh;
 					}
-					GenerateMesh(data, mesh);
-					return mesh;
 				}
 			}
+			return nullptr;
 		}
 		catch (std::string e) {
 			std::cout << e << std::endl;
@@ -159,6 +166,7 @@ void FBXDocument::read(string fname)
         throw std::string("Cannot read from file: \"" + fname + "\"");
     }
     file.close();
+	delete[] buffer;
 }
 
 void FBXDocument::write(string fname)
@@ -177,6 +185,7 @@ void FBXDocument::write(string fname)
         throw std::string("Cannot write to file: \"" + fname + "\"");
     }
     file.close();
+	delete[] buffer;
 }
 
 bool checkMagic(Reader &reader)
@@ -208,7 +217,7 @@ void FBXDocument::read(std::ifstream &input)
         FBXNode node;
         start_offset += node.read(input, start_offset);
         if(node.isNull()) break;
-        nodes.push_back(node);
+         m_Nodes.push_back(node);
     } while(true);
 }
 
@@ -245,7 +254,7 @@ void FBXDocument::write(std::ofstream &output)
     writer.write(version);
 
     uint32_t offset = 27; // magic: 21+2, version: 4
-    for(FBXNode node : nodes) {
+    for(FBXNode node : m_Nodes) {
         offset += node.write(output, offset);
     }
     FBXNode nullNode;
@@ -401,7 +410,7 @@ void FBXDocument::createBasicStructure()
         }
         headerExtension.addChild(sceneInfo);
     }
-    nodes.push_back(headerExtension);
+    m_Nodes.push_back(headerExtension);
 
 
 }
@@ -417,7 +426,7 @@ void FBXDocument::print()
     cout << "  \"version\": " << getVersion() << ",\n";
     cout << "  \"children\": [\n";
     bool hasPrev = false;
-    for(auto node : nodes) {
+    for(auto node : m_Nodes) {
         if(hasPrev) cout << ",\n";
         node.print("    ");
         hasPrev = true;
@@ -469,7 +478,7 @@ void FBXDocument::LoadData(Data& data, FBXNode& node, Mesh* mesh)
 			}
 		}
 		if (nodeG.getName() == "PolygonVertexIndex") {
-
+		
 			size_t sizeP = nodeG.properties.size();
 			for (size_t l = 0; l < sizeP; l++)
 			{
@@ -554,6 +563,7 @@ void FBXDocument::GenerateMesh(Data& data, Mesh* mesh)
 		data.vertecesForNormals[i + 1] = data.verteces[mesh->m_Indices[i / 3] * 3 + 1];
 		data.vertecesForNormals[i + 2] = data.verteces[mesh->m_Indices[i / 3] * 3 + 2];
 	}
+	delete[] mesh->m_Indices;
 	mesh->m_Indices = new uint32_t[mesh->m_IndicesSize];
 	for (size_t i = 0; i < mesh->m_IndicesSize; i++)
 	{

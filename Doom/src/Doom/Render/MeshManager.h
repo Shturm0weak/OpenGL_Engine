@@ -3,12 +3,14 @@
 #include "../Core/Core.h"
 #include "Mesh.h"
 #include <map>
+#include <mutex>
 
 namespace Doom {
 
 	class DOOM_API MeshManager {
 	private:
 
+		static std::mutex s_Mtx;
 		static std::map<std::string, Mesh*> s_Meshes;
 		static std::vector <Mesh*> s_NeedToInitMeshes;
 		static std::multimap<std::string, void*> s_MeshQueue;
