@@ -1,16 +1,16 @@
 Scene: Untitled
 Camera:
   Transform:
-    Position: [-6.76510715, 14.0859022, -11.9852037]
-    Rotation: [-0.764360964, -2.45564771, 0]
+    Position: [-7.03579187, 16.7361565, -6.24366903]
+    Rotation: [-0.807558239, -1.67377794, 0]
   FOV: 1
 GameObjects:
   - GameObject: 0
     Name: Unnamed
     Transform:
-      Position: [27.5802002, 11.961463, -25.1115665]
-      Scale: [1, 1.00000024, 1.00000024]
-      Rotation: [2.21968222, 0, 0]
+      Position: [5.57324505, 14.0674534, 4.52899599]
+      Scale: [1, 0.999999762, 1.00000107]
+      Rotation: [2.16839623, -0.269922793, 0.373399854]
     Renderer3D:
       Material:
         Ambient: 1
@@ -169,7 +169,7 @@ GameObjects:
   - GameObject: 6
     Name: Unnamed
     Transform:
-      Position: [-1.26140904, -1.85770237, 3.59610415]
+      Position: [2.82441688, -1.85770237, 1.80400491]
       Scale: [50, 0.00999999978, 50]
       Rotation: [0, 0, 0]
     Renderer3D:
@@ -224,7 +224,7 @@ GameObjects:
       Bounding box: true
     Registered events:
       []
-  - GameObject: 22
+  - GameObject: 8
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]
@@ -251,6 +251,35 @@ GameObjects:
       Mesh:
         Mesh: src/Mesh/Primitives/cube.fbx
         Mesh Id: 0
+    Registered events:
+      []
+  - GameObject: 9
+    Name: Unnamed
+    Transform:
+      Position: [2.52130151, 8.85486984, -8.11800861]
+      Scale: [1, 1, 1]
+      Rotation: [0.0282867532, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Sponza/sponza_curtain_blue_diff.png
+        Normal: WhiteTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
     Registered events:
       []
 Texture atlases:

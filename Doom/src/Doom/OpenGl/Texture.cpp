@@ -136,22 +136,26 @@ void Doom::Texture::RemoveFromGetAsync(void * ptr)
 		s_WaitingForTextures.erase(iter);
 }
 
-void Doom::Texture::UnloadFromRAM(const std::string& filePath)
+bool Doom::Texture::UnloadFromRAM(const std::string& filePath)
 {
 	Texture* t = Get(filePath,false);
 	if (t != nullptr && t->m_LocalBuffer) {
 		stbi_image_free(t->m_LocalBuffer);
 		t->m_LocalBuffer = nullptr;
+		return true;
 	}
+	return false;
 }
 
-void Doom::Texture::UnloadFromVRAM(const std::string& filePath)
+bool Doom::Texture::UnloadFromVRAM(const std::string& filePath)
 {
 	Texture* t = Get(filePath,false);
 	if (t != nullptr || t != NULL) {
 		glDeleteTextures(1, &t->m_RendererID);
 		t->m_RendererID = -1;
+		return true;
 	}
+	return false;
 }
 
 Texture * Doom::Texture::ColoredTexture(const std::string& name, uint32_t color)
@@ -188,7 +192,7 @@ Texture * Doom::Texture::Create(const std::string& filePath,bool flip,bool repea
 		return t;
 }
 
-void Doom::Texture::LoadTextureInRAM(const std::string& filePath, bool flip)
+bool Doom::Texture::LoadTextureInRAM(const std::string& filePath, bool flip)
 {
 	Texture* t = nullptr;
 	auto iter = s_Textures.find(filePath);
@@ -205,31 +209,33 @@ void Doom::Texture::LoadTextureInRAM(const std::string& filePath, bool flip)
 	if (t->m_LocalBuffer == nullptr) {
 		stbi_set_flip_vertically_on_load(flip);
 		t->m_LocalBuffer = stbi_load(t->m_FilePath.c_str(), &t->m_width, &t->m_height, &t->m_BPP, 4);
+		return true;
 	}
 	else {
 #ifdef _DEBUG
-		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << filePath << BOLDYELLOW << "> m_localBuffer is empty\n" << RESET;
+		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << filePath << BOLDYELLOW << "> m_localBuffer is not empty\n" << RESET;
 #endif
+		return false;
 	}
 }
 
-void Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFromRam)
+bool Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFromRam)
 {
 	Texture* t = Get(filePath);
 	if (t == nullptr)
-		return;
-	if(t->m_LocalBuffer == nullptr){
-#ifdef _DEBUG
-		std::cout << NAMECOLOR << "Texture" << RED ": <"<< NAMECOLOR << filePath << RED << "> Can't be loaded in VRAM, m_LocalBuffer is unloaded from RAM!\n" << RESET;
-#endif
-		return;
-	}
+		return false;
 	if (t->m_RendererID != -1) {
 #ifdef _DEBUG
 		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << filePath << BOLDYELLOW << "> has been already in VRAM\n" << RESET;
 #endif
-		UnloadFromVRAM(filePath);
-		return;
+		//UnloadFromVRAM(filePath);
+		return true;
+	}
+	if(t->m_LocalBuffer == nullptr){
+#ifdef _DEBUG
+		std::cout << NAMECOLOR << "Texture" << RED ": <"<< NAMECOLOR << filePath << RED << "> Can't be loaded in VRAM, m_LocalBuffer is unloaded from RAM!\n" << RESET;
+#endif
+		return false;
 	}
 
 	glGenTextures(1, &t->m_RendererID);
@@ -243,6 +249,7 @@ void Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFr
 	if (unloadFromRam) {
 		UnloadFromRAM(t->m_FilePath);
 	}
+	return true;
 }
 
 unsigned int Doom::Texture::LoadCubeMap(std::vector<std::string> faces)

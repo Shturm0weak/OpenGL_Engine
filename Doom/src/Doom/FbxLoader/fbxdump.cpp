@@ -10,12 +10,12 @@ using std::string;
 using namespace fbx;
 
 bool findNode(std::string name, FBXNode where) {
-    if(where.getName() == name) {
+    if (where.getName() == name) {
         where.print();
         return true;
     }
-    for(FBXNode n : where.getChildren()) {
-        if(findNode(name, n)) {
+    for (FBXNode n : where.getChildren()) {
+        if (findNode(name, n)) {
             return true;
         }
     }
@@ -23,7 +23,7 @@ bool findNode(std::string name, FBXNode where) {
 }
 
 int main(int argc, char** argv) {
-    if(argc < 2) {
+    if (argc < 2) {
         cerr << "Specify file which you want to dump" << endl;
         return 1;
     }
@@ -31,15 +31,17 @@ int main(int argc, char** argv) {
     try {
         fbx::FBXDocument d;
         d.read(argv[1]);
-        if(argc >= 3) {
-            for(auto n : d.m_Nodes) {
-                if(findNode(argv[2], n)) break;
+        if (argc >= 3) {
+            for (auto n : d.m_Nodes) {
+                if (findNode(argv[2], n)) break;
             }
-        } else {
+        }
+        else {
             d.print();
         }
 
-    } catch(string s) {
+    }
+    catch (string s) {
         cerr << "ERROR: " << s << endl;
         return 2;
     }

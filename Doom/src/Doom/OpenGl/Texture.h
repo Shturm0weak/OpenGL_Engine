@@ -44,12 +44,12 @@ namespace Doom {
 		static Texture* Get(const std::string filePath, bool showErrors = true);
 		static void GetAsync(void* ptr, std::function<Texture*()> f);
 		static void RemoveFromGetAsync(void* ptr);
-		static void UnloadFromRAM(const std::string& filePath);
-		static void UnloadFromVRAM(const std::string& filePath);
 		static Texture* ColoredTexture(const std::string& name, uint32_t color);
 		static Texture* Create(const std::string& filePath, bool flip = true, bool repeat = false);
-		static void LoadTextureInRAM(const std::string& filePath, bool flip = false);
-		static void LoadTextureInVRAM(const std::string& filePath, bool unloadFromRam = true);
+		static bool UnloadFromRAM(const std::string& filePath);
+		static bool UnloadFromVRAM(const std::string& filePath);
+		static bool LoadTextureInRAM(const std::string& filePath, bool flip = false);
+		static bool LoadTextureInVRAM(const std::string& filePath, bool unloadFromRam = true);
 		static unsigned int LoadCubeMap(std::vector<std::string> faces);
 
 		~Texture();

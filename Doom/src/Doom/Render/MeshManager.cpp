@@ -18,7 +18,7 @@ void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t mesh
 	std::string subStr = filepath.substr(filepath.size() - 3, 3);
 	if (subStr == "fbx") {
 		fbx::FBXDocument doc;
-		s_Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath,meshId)));
+		s_Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath, meshId)));
 	}
 	else if (subStr == "stl") {
 		s_Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
@@ -27,16 +27,16 @@ void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t mesh
 		return;
 	}
 	std::vector<Renderer3D*> New;
-	#define	_LOAD_MESH_
+#define	_LOAD_MESH_
 	Mesh* mesh = GetMesh(name);
 	if (mesh == nullptr)
 		return;
 	mesh->m_IdOfMeshInFile = meshId;
-	#undef _LOAD_MESH_
+#undef _LOAD_MESH_
 	mesh->Init();
-	Instancing::Instance()->m_InstancedObjects.insert(std::make_pair(mesh,New));
+	Instancing::Instance()->m_InstancedObjects.insert(std::make_pair(mesh, New));
 	Instancing::Instance()->Create(mesh);
-	std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN  << "> has been loaded\n" << RESET;
+	std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
 }
 
 void Doom::MeshManager::LoadScene(std::string filepath)
@@ -74,10 +74,10 @@ void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath, ui
 		}
 		mesh->m_IdOfMeshInFile = meshId;
 		std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
-	});
+		});
 }
 
-Mesh * MeshManager::GetMesh(std::string name)
+Mesh* MeshManager::GetMesh(std::string name)
 {
 	auto iter = s_Meshes.find(name);
 	if (iter != s_Meshes.end()) {
@@ -91,11 +91,11 @@ Mesh * MeshManager::GetMesh(std::string name)
 	}
 }
 
-const char ** Doom::MeshManager::GetListOfMeshes()
+const char** Doom::MeshManager::GetListOfMeshes()
 {
 	if (s_NamesOfMeshes != nullptr)
 		delete[] s_NamesOfMeshes;
-	s_NamesOfMeshes = new const char*[s_Meshes.size()];
+	s_NamesOfMeshes = new const char* [s_Meshes.size()];
 	uint32_t i = 0;
 	for (auto mesh = s_Meshes.begin(); mesh != s_Meshes.end(); mesh++) {
 		s_NamesOfMeshes[i] = mesh->first.c_str();
@@ -104,7 +104,7 @@ const char ** Doom::MeshManager::GetListOfMeshes()
 	return s_NamesOfMeshes;
 }
 
-void Doom::MeshManager::AddMesh(Mesh * mesh)
+void Doom::MeshManager::AddMesh(Mesh* mesh)
 {
 	if (mesh != nullptr) {
 		s_Meshes.insert(std::make_pair(mesh->m_Name, mesh));
@@ -115,7 +115,7 @@ void MeshManager::GetMeshWhenLoaded(std::string name, void* r)
 {
 	//auto iter = Meshes.find(name);
 	//if (iter == Meshes.end()) {
-		s_MeshQueue.insert(std::make_pair(name, r));
+	s_MeshQueue.insert(std::make_pair(name, r));
 	//}
 	//else {
 	//	Renderer3D* render = static_cast<Renderer3D*>(r);
@@ -133,7 +133,7 @@ void MeshManager::DeleteMesh(std::string name)
 	}
 }
 
-void MeshManager::DeleteMesh(Mesh * mesh)
+void MeshManager::DeleteMesh(Mesh* mesh)
 {
 	DeleteMesh(mesh->m_Name);
 }

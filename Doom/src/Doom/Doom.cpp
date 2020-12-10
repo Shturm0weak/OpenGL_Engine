@@ -107,4 +107,4 @@ DOOM_API std::vector <GameObject*> World::s_GameObjects;
 DOOM_API unsigned int Character::s_Indices2D[6] = { 0,1,2,3,2,0 };
 DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 
-DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/scene.yaml";
+DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/scene1.yaml";

@@ -903,33 +903,22 @@ void Doom::Editor::MenuScriptComponent()
 void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 {
 	auto f = std::bind([](std::string path) {
-		try
-		{
-			for (const auto & entry : fs::directory_iterator(path)) {
-				std::string pathToTexture = entry.path().string();
-				if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
-					s_TexturesPath.push_back(pathToTexture);
-					size_t index = 0;
-					index = s_TexturesPath.back().find("\\", index);
-					s_TexturesPath.back().replace(index, 1, "/");
-					Texture::LoadTextureInRAM(s_TexturesPath.back(), true);
-					s_Texture.push_back(Texture::Get(s_TexturesPath.back()));
-				}
+		for (const auto & entry : fs::directory_iterator(path)) {
+			std::string pathToTexture = entry.path().string();
+			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+				s_TexturesPath.push_back(pathToTexture);
+				size_t index = 0;
+				index = s_TexturesPath.back().find("\\", index);
+				s_TexturesPath.back().replace(index, 1, "/");
+				Texture::AsyncLoadTexture(s_TexturesPath.back());
+				Texture::GetAsync(&s_TexturesPath.back(), [=] {
+					Texture* t = Texture::Get(s_TexturesPath.back());
+					if (t != nullptr)
+						s_Texture.push_back(t);
+					return t;
+					});
 			}
 		}
-		catch (const std::exception&)
-		{
-				
-		}
-		
-		for (unsigned int i = 0; i < s_Texture.size(); i++)
-		{
-			std::function<void()> f2 = [=] {Texture::LoadTextureInVRAM(s_Texture[i]->GetFilePath()); };
-			std::function<void()>* f1 = new std::function<void()>(f2);
-			EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS,nullptr,f1);
-		}
-		
-		
 	}, path);
 	ThreadPool::GetInstance()->Enqueue(f);
 }
@@ -937,34 +926,23 @@ void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 void Doom::Editor::CheckTexturesFolder(const std::string path)
 {
 	auto f = std::bind([](std::string path) {
-		try
-		{
-			for (const auto & entry : fs::directory_iterator(path)) {
-				std::string pathToTexture = entry.path().string();
-				if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
-					size_t index = 0;
-					index = pathToTexture.find("\\", index);
-					pathToTexture.replace(index, 1, "/");
-					Texture::LoadTextureInRAM(pathToTexture, true);
-					Texture* text = Texture::Get(pathToTexture);
-					s_TextureVecTemp.push_back(text);
-				}
+		for (const auto& entry : fs::directory_iterator(path)) {
+			std::string pathToTexture = entry.path().string();
+			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+				s_TexturesPath.push_back(pathToTexture);
+				size_t index = 0;
+				index = s_TexturesPath.back().find("\\", index);
+				s_TexturesPath.back().replace(index, 1, "/");
+				Texture::AsyncLoadTexture(s_TexturesPath.back());
+				Texture::GetAsync(&s_TexturesPath.back(), [=] {
+					Texture* t = Texture::Get(s_TexturesPath.back(), false);
+					if (t != nullptr)
+						s_Texture.push_back(t);
+					return t;
+					});
 			}
 		}
-		catch (const std::exception&)
-		{
-
-		}
-
-		for (unsigned int i = 0; i < s_TextureVecTemp.size(); i++)
-		{
-			std::function<void()> f2 = [=] {Texture::LoadTextureInVRAM(s_TextureVecTemp[i]->GetFilePath()); };
-			std::function<void()>* f1 = new std::function<void()>(f2);
-			EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
-		}
-		s_TextureVecTemp.clear();
-
-	}, path);
+		}, path);
 	ThreadPool::GetInstance()->Enqueue(f);
 }
 

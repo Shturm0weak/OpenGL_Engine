@@ -68,10 +68,10 @@ YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec3& v) {
 YAML::Emitter& operator<<(YAML::Emitter& out, float* v) {
 	out << YAML::Flow;
 	out << YAML::BeginSeq <<
-		v[0]  << v[1]	<< v[2]	 << v[3] <<
-		v[4]  << v[5]	<< v[6]	 << v[7] <<
-		v[8]  << v[9]	<< v[10] << v[11] <<
-		v[12] << v[13]	<< v[14] << v[15] <<
+		v[0] << v[1] << v[2] << v[3] <<
+		v[4] << v[5] << v[6] << v[7] <<
+		v[8] << v[9] << v[10] << v[11] <<
+		v[12] << v[13] << v[14] << v[15] <<
 		YAML::EndSeq;
 	return out;
 }
@@ -82,7 +82,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec4& v) {
 	return out;
 }
 
-void Doom::SceneSerializer::Serialize(const std::string & filePath)
+void Doom::SceneSerializer::Serialize(const std::string& filePath)
 {
 	s_CurrentSceneFilePath = filePath;
 	YAML::Emitter out;
@@ -105,7 +105,7 @@ void Doom::SceneSerializer::Serialize(const std::string & filePath)
 
 	for (uint32_t i = 0; i < World::s_GameObjects.size(); i++)
 	{
-		if(World::s_GameObjects[i]->m_IsSerializable)
+		if (World::s_GameObjects[i]->m_IsSerializable)
 			SerializeGameObject(out, World::s_GameObjects[i]);
 	}
 
@@ -125,7 +125,7 @@ void Doom::SceneSerializer::Serialize(const std::string & filePath)
 	fout << out.c_str();
 }
 
-void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
+void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 {
 	s_CurrentSceneFilePath = filePath;
 	std::ifstream stream(filePath);
@@ -164,7 +164,7 @@ void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
 	if (gameobjects) {
 		for (auto go : gameobjects)
 		{
-			DeSerializeGameObject(go,childs);
+			DeSerializeGameObject(go, childs);
 		}
 	}
 
@@ -179,7 +179,7 @@ void Doom::SceneSerializer::DeSerialize(const std::string & filePath)
 	std::cout << BOLDGREEN << "Scene: <" << NAMECOLOR << s_CurrentSceneFilePath << BOLDGREEN << "> has been loaded\n" << RESET;
 }
 
-void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value & go, std::map<GameObject*, std::vector<int>>& childs)
+void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& go, std::map<GameObject*, std::vector<int>>& childs)
 {
 	//uint64_t id = go["GameObject"].as<uint64_t>();
 	std::string name = go["Name"].as<std::string>();
@@ -189,7 +189,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		bool isSkyBox = renderer3DComponent["SkyBox"].as<bool>();
 		if (isSkyBox) {
 			std::vector<std::string>faces = renderer3DComponent["Faces"].as<std::vector<std::string>>();
-			SkyBox* sb = new SkyBox(faces,nullptr);
+			SkyBox* sb = new SkyBox(faces, nullptr);
 			MeshManager::GetMeshWhenLoaded("cube", (void*)(sb->GetComponentManager()->GetComponent<Renderer3D>()));
 			return;
 		}
@@ -229,27 +229,27 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		auto textures = renderer3DComponent["Textures"];
 		std::string diffuse = textures["Diffuse"].as<std::string>();
 		std::string normal = textures["Normal"].as<std::string>();
-		if (diffuse == "InvalidTexture")
+		if (diffuse == "WhiteTexture")
 			r->m_DiffuseTexture = Texture::s_WhiteTexture;
 		else {
+			Texture::AsyncLoadTexture(diffuse);
 			Texture::GetAsync(obj, [=] {
-				//Texture::AsyncLoadTexture(diffuse);
-				Texture* t = Texture::Get(diffuse);
+				Texture* t = Texture::Get(diffuse, false);
 				if (t != nullptr)
 					r->m_DiffuseTexture = t;
 				return t;
-			});
+				});
 		}
 		if (normal == "InvalidTexture")
 			r->m_NormalMapTexture = Texture::Get("InvalidTexture");
 		else {
+			Texture::AsyncLoadTexture(normal);
 			Texture::GetAsync(r, [=] {
-				//Texture::AsyncLoadTexture(normal);
-				Texture* t = Texture::Get(normal);
+				Texture* t = Texture::Get(normal, false);
 				if (t != nullptr)
 					r->m_NormalMapTexture = t;
 				return t;
-			});
+				});
 		}
 		auto mesh = renderer3DComponent["Mesh"];
 		std::string meshPath = mesh["Mesh"].as<std::string>();
@@ -268,9 +268,9 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{
-			r->m_FloatUniforms.insert(std::make_pair(it->first.as<std::string>(),it->second.as<float>()));
+			r->m_FloatUniforms.insert(std::make_pair(it->first.as<std::string>(), it->second.as<float>()));
 		}
-		
+
 	}
 
 	auto dirLightComponent = go["Directional light"];
@@ -324,16 +324,16 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value &
 	}
 }
 
-void Doom::SceneSerializer::DeSerializeTextureAtlas(YAML::detail::iterator_value & ta)
+void Doom::SceneSerializer::DeSerializeTextureAtlas(YAML::detail::iterator_value& ta)
 {
 	std::string name = ta["Texture atlas"].as<std::string>();
 	std::string texture = ta["Texture"].as<std::string>();
 	float width = ta["Sprite width"].as<float>();
 	float height = ta["Sprite height"].as<float>();
-	TextureAtlas::CreateTextureAtlas(name,width,height,Texture::Create(texture));
+	TextureAtlas::CreateTextureAtlas(name, width, height, Texture::Create(texture));
 }
 
-void Doom::SceneSerializer::SerializeTextureAtlas(YAML::Emitter & out, TextureAtlas * ta)
+void Doom::SceneSerializer::SerializeTextureAtlas(YAML::Emitter& out, TextureAtlas* ta)
 {
 	out << YAML::BeginMap;
 	out << YAML::Key << "Texture atlas" << YAML::Value << ta->m_Name;
@@ -343,7 +343,7 @@ void Doom::SceneSerializer::SerializeTextureAtlas(YAML::Emitter & out, TextureAt
 	out << YAML::EndMap;
 }
 
-void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter & out, GameObject * go)
+void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* go)
 {
 	out << YAML::BeginMap;
 	out << YAML::Key << "GameObject" << YAML::Value << std::to_string(go->m_Id);
@@ -363,7 +363,7 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter & out, GameObject 
 	out << YAML::EndMap;
 }
 
-void Doom::SceneSerializer::SerializeGameObjectChilds(YAML::Emitter & out, GameObject * go)
+void Doom::SceneSerializer::SerializeGameObjectChilds(YAML::Emitter& out, GameObject* go)
 {
 	if (go->GetChilds().size() > 0) {
 		out << YAML::Key << "Childs id";
@@ -376,7 +376,7 @@ void Doom::SceneSerializer::SerializeGameObjectChilds(YAML::Emitter & out, GameO
 	}
 }
 
-void Doom::SceneSerializer::SerializeTransformComponent(YAML::Emitter & out, ComponentManager * cm)
+void Doom::SceneSerializer::SerializeTransformComponent(YAML::Emitter& out, ComponentManager* cm)
 {
 	if (cm->GetComponent<Transform>() != nullptr) {
 		Transform* tr = cm->GetComponent<Transform>();
@@ -389,7 +389,7 @@ void Doom::SceneSerializer::SerializeTransformComponent(YAML::Emitter & out, Com
 	}
 }
 
-void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, ComponentManager * cm)
+void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, ComponentManager* cm)
 {
 	if (cm->GetComponent<Renderer3D>() != nullptr) {
 		Renderer3D* r = cm->GetComponent<Renderer3D>();
@@ -422,7 +422,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 				out << YAML::EndMap;
 			}
 
-			if(r->m_FloatUniforms.size() > 0) {
+			if (r->m_FloatUniforms.size() > 0) {
 				out << YAML::Key << "Uniforms float";
 				//out << YAML::BeginMap;
 				out << YAML::Value << r->m_FloatUniforms;
@@ -431,7 +431,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 
 			out << YAML::Key << "Textures";
 			out << YAML::BeginMap;
-			out << YAML::Key << "Diffuse" << YAML::Value << (r->m_DiffuseTexture != nullptr ? r->m_DiffuseTexture->GetFilePath() : "InvalidTexture");
+			out << YAML::Key << "Diffuse" << YAML::Value << (r->m_DiffuseTexture != nullptr ? r->m_DiffuseTexture->GetFilePath() : "WhiteTexture");
 			out << YAML::Key << "Normal" << YAML::Value << (r->m_NormalMapTexture != nullptr ? r->m_NormalMapTexture->GetFilePath() : "InvalidTexture");
 			out << YAML::EndMap;
 
@@ -446,11 +446,11 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter & out, Co
 	}
 }
 
-void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter & out, ComponentManager * cm)
+void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter& out, ComponentManager* cm)
 {
 	if (cm->GetComponent<SpriteRenderer>() != nullptr) {
 		SpriteRenderer* sr = cm->GetComponent<SpriteRenderer>();
-		if (typeid(*sr) == typeid(SpriteRenderer)){
+		if (typeid(*sr) == typeid(SpriteRenderer)) {
 			out << YAML::Key << "Sprite renderer";
 			out << YAML::BeginMap;
 			out << YAML::Key << "Color" << YAML::Value << sr->m_Color;
@@ -467,7 +467,7 @@ void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter & out
 	}
 }
 
-void Doom::SceneSerializer::SerializeDirectionalLightComponent(YAML::Emitter & out, ComponentManager * cm)
+void Doom::SceneSerializer::SerializeDirectionalLightComponent(YAML::Emitter& out, ComponentManager* cm)
 {
 	if (cm->GetComponent<DirectionalLight>() != nullptr) {
 		DirectionalLight* dl = cm->GetComponent<DirectionalLight>();
@@ -479,7 +479,7 @@ void Doom::SceneSerializer::SerializeDirectionalLightComponent(YAML::Emitter & o
 	}
 }
 
-void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter & out, ComponentManager * cm)
+void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter& out, ComponentManager* cm)
 {
 	if (cm->GetComponent<PointLight>() != nullptr) {
 		PointLight* pl = cm->GetComponent<PointLight>();
@@ -496,7 +496,7 @@ void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter & out, Co
 	}
 }
 
-void Doom::SceneSerializer::SerializeCubeColliderComponent(YAML::Emitter & out, ComponentManager * cm)
+void Doom::SceneSerializer::SerializeCubeColliderComponent(YAML::Emitter& out, ComponentManager* cm)
 {
 	if (cm->GetComponent<CubeCollider3D>() != nullptr) {
 		CubeCollider3D* cc = cm->GetComponent<CubeCollider3D>();
@@ -507,7 +507,7 @@ void Doom::SceneSerializer::SerializeCubeColliderComponent(YAML::Emitter & out, 
 	}
 }
 
-void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter & out, ComponentManager * cm)
+void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter& out, ComponentManager* cm)
 {
 	if (cm->GetComponent<SphereCollider>() != nullptr) {
 		SphereCollider* cc = cm->GetComponent<SphereCollider>();
@@ -518,7 +518,7 @@ void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter & out
 	}
 }
 
-void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter & out, GameObject * go)
+void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter& out, GameObject* go)
 {
 	out << YAML::Key << "Registered events" << YAML::Value << go->m_RegisteredEvents;
 }
