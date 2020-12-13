@@ -1,11 +1,23 @@
 #include "../pch.h"
 #include "Ray3D.h"
 #include "../Objects/Line.h"
-std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length, bool AABB)
+std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length, bool AABB, std::vector<std::string> ignoreMask)
 {
 	std::map<float, CubeCollider3D*> d;
-	for (size_t i = 0; i < CubeCollider3D::s_Colliders.size(); i++)
+	for (uint32_t i = 0; i < CubeCollider3D::s_Colliders.size(); i++)
 	{
+		bool hasTag = ignoreMask.size() > 0 ? false : true;
+		for (uint32_t i = 0; i < ignoreMask.size(); i++)
+		{
+			if (CubeCollider3D::s_Colliders[i]->GetOwnerOfComponent()->m_Tag == ignoreMask[i]) {
+				hasTag = true;
+				break;
+			}
+		}
+
+		if (!hasTag)
+			continue;
+
 		bool isIntersected = false;
 		if(AABB)
 			isIntersected = IntersectBoxAABB(start, dir, hit, length, CubeCollider3D::s_Colliders[i]);

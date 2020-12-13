@@ -29,6 +29,7 @@ namespace Doom {
 
 		static ViewPort* ViewPort::GetInstance();
 
+		void RecalculateMouseCoords();
 		void Update();
 		glm::dvec2 GetFromWorldToScreenSpaceImpl(glm::vec2 pos);
 		glm::dvec2 GetFromWorldToScreenSpace(float x, float y);
@@ -45,6 +46,7 @@ namespace Doom {
 		inline float GetAspectRatio() {return m_Size.x / m_Size.y;}
 
 		friend class Doom::Editor;
+		friend class Doom::Window;
 	};
 
 }

@@ -24,6 +24,7 @@
     <ClInclude Include="src\FEM\Matrix.h" />
     <ClInclude Include="src\FEM\Vector.h" />
     <ClInclude Include="src\game\BlankProject.h" />
+    <ClInclude Include="src\AimTrainer\AimTrainer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="src\FEM\MathFunctions.cpp" />
     <ClCompile Include="src\FEM\Matrix.cpp" />
     <ClCompile Include="src\FEM\Vector.cpp" />
+    <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BakeShadows.shader" />
@@ -47,5 +49,6 @@
     <None Include="src\Shaders\LineSimple.shader" />
     <None Include="src\Shaders\SkyBox.shader" />
     <None Include="src\Shaders\Tron.shader" />
+    <None Include="src\Scripts\GameTest.lua" />
   </ItemGroup>
 </Project>

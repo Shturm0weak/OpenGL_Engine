@@ -138,7 +138,7 @@ void math::Print(const Matrix & matrix)
 {
 	for (uint32_t i = 0; i < matrix.m_Rows; i++) {
 		for (uint32_t j = 0; j < matrix.m_Cols; j++) {
-			printf_s("%lf	", (matrix.m_matrix[i * matrix.m_Cols + j]));
+			printf_s("%.16lf	", (matrix.m_matrix[i * matrix.m_Cols + j]));
 		}
 		printf_s("\n");
 	}
@@ -148,6 +148,6 @@ void math::Print(const Vector & vec)
 {
 	for (uint32_t i = 0; i < vec.m_size; i++)
 	{
-		printf_s("%.12lf\n", vec.m_array[i]);
+		printf_s("%.16lf\n", vec.m_array[i]);
 	}
 }

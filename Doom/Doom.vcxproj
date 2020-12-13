@@ -259,6 +259,7 @@
     <ClCompile Include="src\Doom\Core\SceneSerializer.cpp" />
     <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
     <ClCompile Include="src\Doom\Core\ViewPort.cpp" />
+    <ClCompile Include="src\Doom\Core\Window.cpp" />
     <ClCompile Include="src\Doom\Core\World.cpp" />
     <ClCompile Include="src\Doom\Doom.cpp" />
     <ClCompile Include="src\Doom\ECS\Component.cpp" />

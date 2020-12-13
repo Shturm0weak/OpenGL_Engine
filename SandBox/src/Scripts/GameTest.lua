@@ -1,12 +1,14 @@
-
 local time = 0;
 
 function Move(dt)
 	time = time + dt;
-	cpp_Translate(math.sin(time) * 3 + 10, math.cos(time) * 3 + 10, math.sin(time) * 3 + 10);
-	cpp_Scale(math.sin(time) * 3 + 10, math.cos(time) * 3 + 10, math.sin(time) * 3 + 10);
-	x,y,z = cpp_GetPosition();
-	print(tostring(x) .. " " .. tostring(y) .. " " .. tostring(z));
+	go = GameObject.This();
+	tr = go.transform;
+	if tr ~= nil then
+		tr:Translate( math.sin(time) * 3 + 10, math.cos(time) * 3 + 10, math.sin(time) * 3 + 10);
+		tr:Scale( math.sin(time) * 3 + 5, math.cos(time) * 3 + 5, math.sin(time) * 3 + 5);
+		tr:Rotate( time, time, time, true);
+	end
 end
 
 function OnUpdate(dt)
@@ -14,5 +16,5 @@ function OnUpdate(dt)
 end
 
 function OnStart()
-	print("OnStart");
+
 end

@@ -14,8 +14,6 @@ ViewPort* Doom::ViewPort::GetInstance()
 
 void Doom::ViewPort::Update()
 {
-	
-
 	void* tex = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferColor->m_Texture);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -101,6 +99,13 @@ void Doom::ViewPort::GetMousePositionToScreenSpaceImpl()
 	glfwGetCursorPos(Window::GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
 	m_MousePosS.x = ((((m_CursorPos.x - m_ViewportPos.x) / (Window::GetSize()[0] - 1))) - 0.5) * 2 * g_Width;
 	m_MousePosS.y = (((-((m_CursorPos.y + (Window::GetSize()[1] - m_Size.y)) / Window::GetSize()[1])) + 0.5)) * 2 * (float)g_Height / Window::GetCamera().GetAspectRatio();
+}
+
+void Doom::ViewPort::RecalculateMouseCoords()
+{
+	GetMousePositionToScreenSpaceImpl();
+	m_PrevMousePos = GetMousePositionToScreenSpace();
+	m_MouseDragDelta = GetMousePositionToScreenSpace() - m_PrevMousePos;
 }
 
 glm::dvec2 Doom::ViewPort::GetFromWorldToScreenSpaceImpl(glm::vec2 pos)

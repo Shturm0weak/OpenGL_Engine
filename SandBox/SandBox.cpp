@@ -10,9 +10,10 @@
 #include "src/Minecraft/Minecraft.h"
 #include "src/game/BlankProject.h"
 #include "FEM/FEM.h"
+#include "AimTrainer/AimTrainer.h"
 
 int main(){
-	BlankProject app;
+	AimTrainer app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

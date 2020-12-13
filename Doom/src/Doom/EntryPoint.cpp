@@ -13,6 +13,8 @@
 #include "Lua/LuaState.h"
 #include "ImGuizmo/ImGuizmo.h"
 
+#define _IS_GAME_BUILD
+
 using namespace Doom;
 
 EntryPoint::EntryPoint(Doom::Application* app) {
@@ -54,10 +56,12 @@ void EntryPoint::Run()
 	EventSystem::GetInstance()->SendEvent(EventType::ONSTART, nullptr);
 
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
+		Window::s_CursorStateChanged = false;
 		Gui::GetInstance()->m_IsAnyPanelHovered = false;
 		EventSystem::GetInstance()->SendEvent(EventType::ONUPDATE, nullptr);
 		//ThreadPool::GetInstance()->Enqueue([] {Editor::GetInstance()->UpdateNormals(); });
 		DeltaTime::calculateDeltaTime();
+		Editor::GetInstance()->ShortCuts();
 
 		if (FirstFrame) {
 			DeltaTime::s_Deltatime = 0.000001;
@@ -70,8 +74,22 @@ void EntryPoint::Run()
 		ImGuizmo::BeginFrame();
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
+		Window::ClampCursorPos();
 		Window::GetCamera().WindowResize();
+
+#ifndef _IS_GAME_BUILD
 		Window::GetCamera().CameraMovement();
+
+		if (Input::IsKeyPressed(Keycode::KEY_E)) {
+			isEditorEnable = !isEditorEnable;
+		}
+		if (m_App->m_Type == RenderType::TYPE_3D) {
+			World::SelectObject3D();
+		}
+		if (isEditorEnable) {
+			Editor::GetInstance()->EditorUpdate();
+		}
+#endif
 		MeshManager::DispatchLoadedMeshes();
 		Texture::DispatchLoadedTextures();
 		SoundManager::UpdateSourceState();
@@ -79,12 +97,7 @@ void EntryPoint::Run()
 		World::ProccessLuaStates();
 		EventSystem::GetInstance()->ProcessEvents();
 		if (m_App->m_Type == RenderType::TYPE_3D) {
-			World::SelectObject3D();
 			Renderer::SortTransparentObjects();
-		}
-
-		if (Input::IsKeyPressed(Keycode::KEY_E)) {
-			isEditorEnable = !isEditorEnable;
 		}
 
 		Renderer::UpdateLightSpaceMatrices();
@@ -92,10 +105,6 @@ void EntryPoint::Run()
 		Gui::GetInstance()->Begin();
 		m_App->OnGuiRender();
 		Gui::GetInstance()->End();
-
-		if (isEditorEnable) {
-			Editor::GetInstance()->EditorUpdate();
-		}
 
 		Renderer::s_DrawCalls = 0;
 		Renderer::s_Vertices = 0;
@@ -120,13 +129,11 @@ void EntryPoint::Run()
 		Renderer::Clear();
 		Instancing::Instance()->PrepareVertexAtrrib();
 
-		Editor::GetInstance()->ShortCuts();
 		ViewPort::GetInstance()->Update();
 
 		if (ViewPort::GetInstance()->m_IsViewportResized) {
 			Window::GetCamera().m_FrameBufferColor->Resize(Window::GetSize()[0], Window::GetSize()[1]);
 		}
-
 		ImGui::EndFrame();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

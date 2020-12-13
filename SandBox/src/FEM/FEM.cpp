@@ -33,7 +33,9 @@ void Doom::FEM::OnStart()
     math::Matrix matB = CalculateMatrixB(area, R, Z, A, B, Y);
     math::Matrix matK = (math::Transpose(matB) * (matD * matB)) * 2 * 3.14159 * area;
     std::cout << matK.m_Rows << "x" << matK.m_Cols << std::endl;
-    math::Print(matK * (1.0 / 1e7));
+    double arr[6] = { 0,1,0,1,0,1 };
+    math::Vector vec(6, arr);
+    math::Print(matK * vec);
 }
 
 double Doom::FEM::CalculateR(const Triangle& triangle)

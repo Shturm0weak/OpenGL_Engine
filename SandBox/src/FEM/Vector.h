@@ -7,9 +7,11 @@ namespace math {
 
 	class Vector {
 	private:
+
 		double* m_array;
 		uint32_t m_size = 0;
 	public:
+
 		Vector();
 		Vector(uint32_t size);
 		Vector(uint32_t size, double value);

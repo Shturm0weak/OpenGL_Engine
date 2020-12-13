@@ -703,5 +703,6 @@
     </ClCompile>
     <ClCompile Include="src\Doom\Objects\ParticleSystem.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="src\Doom\Core\Window.cpp" />
   </ItemGroup>
 </Project>

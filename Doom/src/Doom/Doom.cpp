@@ -14,6 +14,7 @@
 #include "Lua/LuaState.h"
 #include "Core/SceneSerializer.h"
 #include "Input/WindowsInput.h"
+#include "Rays/Ray3D.h"
 
 using namespace Doom;
 
@@ -57,6 +58,7 @@ DOOM_API ImGuiIO* Window::s_ImGuiIO = nullptr;
 DOOM_API ImGuiContext* Window::s_ImGuiContext = nullptr;
 DOOM_API float Window::s_ScrollYOffset = 0;
 DOOM_API Camera* Window::s_Camera = new Camera();
+DOOM_API bool Window::s_CursorStateChanged = false;
 
 DOOM_API float DeltaTime::s_Time;
 DOOM_API float DeltaTime::s_Lasttime = (float)glfwGetTime();
@@ -107,4 +109,6 @@ DOOM_API std::vector <GameObject*> World::s_GameObjects;
 DOOM_API unsigned int Character::s_Indices2D[6] = { 0,1,2,3,2,0 };
 DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 
-DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/scene1.yaml";
+DOOM_API std::vector<std::string> Ray3D::m_IgnoreMask;
+
+DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/scene.yaml";

@@ -255,6 +255,7 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 			m_Mesh->m_Va->Bind();
 			m_Mesh->m_Ib->Bind();
 			m_Mesh->m_Vb->Bind();
+
 			Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
 			Renderer::s_DrawCalls++;
 			if(!m_IsCullingFace)

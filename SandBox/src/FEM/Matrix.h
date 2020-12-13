@@ -8,6 +8,7 @@ namespace math {
 
 	class Matrix {
 	public:
+
 		double* m_matrix = nullptr;
 		uint32_t m_Rows = 1;
 		uint32_t m_Cols = 1;

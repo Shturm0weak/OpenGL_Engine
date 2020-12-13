@@ -100,6 +100,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\AimTrainer\AimTrainer.h" />
     <ClInclude Include="src\FEM\FEM.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\FEM\MathFunctions.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="src\game\BlankProject.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
     <ClCompile Include="src\FEM\FEM.cpp" />
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="pch.cpp" />
@@ -124,6 +126,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Scripts\GameTest.lua" />
     <None Include="src\Shaders\BakeShadows.shader" />
     <None Include="src\Shaders\BakeShadowsInstancing.shader" />
     <None Include="src\Shaders\Collision2D.shader" />

@@ -222,15 +222,17 @@ void Camera::CameraMovement() {
 			MovePosition(glm::vec3(0, -5.0f * DeltaTime::s_Deltatime, 0));
 		}
 		
-			glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
-			delta *= 0.2;
-			SetRotation(glm::vec3((m_Pitch + delta.y * (2 * 3.14159f) / 360.0f), (m_Yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
-			if (m_Yaw > glm::two_pi<float>() || m_Yaw < -glm::two_pi<float>())
-				m_Yaw = 0;
-			if (m_Pitch > glm::two_pi<float>() || m_Pitch < -glm::two_pi<float>())
-				m_Pitch = 0;
-	
+		glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
+		delta *= 0.2;
+		SetRotation(glm::vec3((m_Pitch + delta.y * (2 * 3.14159f) / 360.0f), (m_Yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
+
+		if (m_Yaw > glm::two_pi<float>() || m_Yaw < -glm::two_pi<float>()) {
+			m_Yaw = 0;
+		}
+		if (m_Pitch > glm::two_pi<float>() || m_Pitch < -glm::two_pi<float>())
+			m_Pitch = 0;
+		
 		glm::vec2 rightVec;
 		rightVec = { -(forwardV.z * 1) / (forwardV.x) ,1 };
 		if (isinf(rightVec.x))

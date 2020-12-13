@@ -386,7 +386,7 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 
 void Doom::Gui::Image(float x, float y, float width, float height, Texture * texture, glm::vec4 color)
 {
-	ApplyRelatedToPanelProperties(&x, &y);
+	//ApplyRelatedToPanelProperties(&x, &y); //TODO: Need somehow to fix it, kind a flag if a panel is existed
 
 	float aRatio = Window::GetCamera().GetAspectRatio();
 	glm::vec2 pos = glm::vec2(aRatio * x, aRatio * y);
