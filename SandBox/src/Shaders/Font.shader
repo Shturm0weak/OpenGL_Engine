@@ -133,5 +133,4 @@ void main() {
 		vec3 overallcolor = mix(vec3(u_outlineColor.r, u_outlineColor.g, u_outlineColor.b), vec3(out_color.r, out_color.g, out_color.b), alpha / overallalpha);
 		color = vec4(overallcolor, overallalpha);
 	}
-		
 };

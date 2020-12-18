@@ -168,14 +168,14 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 		}
 	}
 
-	for (auto iter = childs.begin(); iter != childs.end(); iter++)
-	{
-		for (uint32_t i = 0; i < iter->second.size(); i++)
-		{
-			GameObject* ch = World::s_GameObjects[iter->second[i]];
-			iter->first->AddChild((void*)ch);
-		}
-	}
+	//for (auto iter = childs.begin(); iter != childs.end(); iter++)
+	//{
+	//	for (uint32_t i = 0; i < iter->second.size(); i++)
+	//	{
+	//		GameObject* ch = World::s_GameObjects[iter->second[i]];
+	//		iter->first->AddChild((void*)ch);
+	//	}
+	//}
 	std::cout << BOLDGREEN << "Scene: <" << NAMECOLOR << s_CurrentSceneFilePath << BOLDGREEN << "> has been loaded\n" << RESET;
 }
 
@@ -226,6 +226,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		r->m_IsUsingNormalMap = renderer3DComponent["Use normal map"].as<bool>();
 		if (renderer3DComponent["Is culling face"])
 			r->m_IsCullingFace = renderer3DComponent["Is culling face"].as<bool>();
+		if (renderer3DComponent["Is renderable"])
+			r->m_IsRenderable = renderer3DComponent["Is renderable"].as<bool>();
 		auto textures = renderer3DComponent["Textures"];
 		std::string diffuse = textures["Diffuse"].as<std::string>();
 		std::string normal = textures["Normal"].as<std::string>();
@@ -262,9 +264,9 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		MeshManager::AsyncLoadMesh(meshName, meshPath, meshId);
 		//MeshManager::LoadMesh(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
+		r->m_RenderTechnic = ((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
 		MeshManager::GetMeshWhenLoaded(meshName, (void*)r);
 		//r->LoadMesh(MeshManager::GetMesh(meshName));
-		//r->ChangeRenderTechnic((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{
@@ -410,6 +412,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 			out << YAML::Key << "SkyBox" << YAML::Value << r->m_IsSkyBox;
 			out << YAML::Key << "Casting shadows" << YAML::Value << r->m_IsCastingShadows;
 			out << YAML::Key << "Wire mesh" << YAML::Value << r->m_IsWireMesh;
+			out << YAML::Key << "Is renderable" << YAML::Value << r->m_IsRenderable;
 			out << YAML::Key << "Use normal map" << YAML::Value << r->m_IsUsingNormalMap;
 			out << YAML::Key << "Is culling face" << YAML::Value << r->m_IsCullingFace;
 

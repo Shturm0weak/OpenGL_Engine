@@ -41,6 +41,7 @@ namespace Doom {
 		inline int GetHeight() const { return m_height; }
 		inline std::string GetFilePath() const { return m_FilePath; }
 		static void AsyncLoadTexture(const std::string& filePath);
+		static std::vector<Texture*> GetLoadedTexturesFromFolder(std::string filePath);
 		static Texture* Get(const std::string filePath, bool showErrors = true);
 		static void GetAsync(void* ptr, std::function<Texture*()> f);
 		static void RemoveFromGetAsync(void* ptr);

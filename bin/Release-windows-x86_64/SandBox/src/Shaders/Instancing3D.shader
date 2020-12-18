@@ -97,8 +97,8 @@ float shadow = 0.0;
 
 vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
 	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
-	float ambientStrength = ambient * light.intensity;
-	vec3 dambient = ambientStrength * diffuseTexColor;
+	float ambientStrength = ambient;
+	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
 
 	vec3 LightDir = normalize(light.dir);
 	float diffuseStrength = max(dot(normal, LightDir), 0.0);
@@ -110,13 +110,13 @@ vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 Ca
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 	vec3 specular = specularStrength * spec * diffuseTexColor;
 
-	return (dambient + (1.0 - shadow) * (diffuse + specular) * light.color);
+	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
 }
 
 vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
 	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
 	float ambientStrength = ambient;
-	vec3 pambient = ambientStrength * diffuseTexColor * light.color;
+	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
 
 	vec3 LightDir = normalize(light.position - FragPos);
 	float diffuseStrength = max(dot(normal, LightDir), 0.0);
@@ -132,31 +132,36 @@ vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 Camera
 	float attenuation = 1.0 / (light.constant + light._linear * distance +
 		light.quadratic * (distance * distance));
 
-	pambient *= attenuation;
+	ambient *= attenuation;
 	specular *= attenuation;
 	diffuse *= attenuation;
 
-	return (pambient + (diffuse + specular) * light.color);
+	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace)
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal)
 {
+	// perform perspective divide
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	// transform to [0,1] range
 	projCoords = projCoords * 0.5 + 0.5;
+	// get depth of current fragment from light's perspective
 	float currentDepth = projCoords.z;
-	float bias = 0.005;
-
-	vec2 texelSize = 1.0 / textureSize(u_ShadowMap, 0);
-	for (int x = -1; x <= 1; ++x)
+	// check whether current frag pos is in shadow
+	//float bias = 0.005;
+	float bias = clamp(0.001 * tan(acos(dot(normal, dirLights[0].dir))), 0.0, 0.01);
+	vec2 texelSize = 0.7 / textureSize(u_ShadowMap, 0);
+	int pcfRange = 4;
+	for (int x = -pcfRange; x <= pcfRange; ++x)
 	{
-		for (int y = -1; y <= 1; ++y)
+		for (int y = -pcfRange; y <= pcfRange; ++y)
 		{
 			float pcfDepth = texture(u_ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
 			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
 		}
 	}
 
-	shadow /= 9;
+	shadow /= ((pcfRange * 2 + 1) * (pcfRange * 2 + 1));
 
 	if (projCoords.z > 1.0)
 		shadow = 0.0;
@@ -165,9 +170,10 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 }
 
 void main() {
-	if (u_DrawShadows > 0.5) {
-		shadow = ShadowCalculation(FragPosLightSpace);
-	}
+	vec4 texColor = texture(u_DiffuseTexture, v_textcoords);
+	if (texColor.a < 0.1)
+		discard;
+
 	vec3 normal = (Normal);
 	vec3 result = vec3(0,0,0);
 	if (u_isNormalMapping) {
@@ -175,7 +181,9 @@ void main() {
 		normal *= normal * 2.0 - 1.0;
 		normal = normalize(TBN *  normal);
 	}
-
+	if (u_DrawShadows > 0.5) {
+		shadow = ShadowCalculation(FragPosLightSpace, normal);
+	}
 	for (int i = 0; i < dLightSize; i++)
 	{
 		result += DirLightsCompute(dirLights[i], normal, FragPos, CameraPos);

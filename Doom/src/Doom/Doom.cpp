@@ -32,6 +32,9 @@ DOOM_API Batch* Batch::s_Instance;
 DOOM_API bool Renderer::s_PolygonMode = false;
 DOOM_API int Renderer::s_DrawCalls = 0;
 DOOM_API int Renderer::s_Vertices = 0;
+DOOM_API float Renderer::s_Exposure = 1.5f;
+DOOM_API bool Renderer::s_BloomEffect = true;
+DOOM_API float Renderer::s_Brightness = 1.0;
 
 DOOM_API int World::s_ObjId = 0;
 DOOM_API int World::s_ColId = 0;

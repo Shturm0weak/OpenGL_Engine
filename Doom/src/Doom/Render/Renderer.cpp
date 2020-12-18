@@ -15,7 +15,7 @@ using namespace Doom;
 void Doom::Renderer::Clear(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearDepth(1.0f);
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Doom::Renderer::SortTransparentObjects()
@@ -54,15 +54,73 @@ void Doom::Renderer::SortTransparentObjects()
 	});
 }
 
+void Doom::Renderer::BloomEffect()
+{
+	if (!s_BloomEffect)
+		return;
+
+	bool horizontal = true, first_iteration = true;
+	unsigned int amount = 10;
+
+	std::vector<FrameBuffer*> fb = Window::GetCamera().m_FrameBufferBlur;
+
+	Shader* shader = Shader::Get("Blur");
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		fb[horizontal]->Bind();
+
+		shader->Bind();
+		shader->SetUniform1i("horizontal", horizontal);
+		int id = first_iteration ? Window::GetCamera().m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
+		glBindTexture(GL_TEXTURE_2D, id);
+
+		Renderer::RenderForPostEffect(MeshManager::GetMesh("plane"), shader);
+		
+		horizontal = !horizontal;
+		if (first_iteration)
+			first_iteration = false;
+	}
+	shader->UnBind();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	Renderer::Clear();
+
+	Window::GetCamera().m_FrameBufferColor->Bind();
+	shader = Shader::Get("Bloom");
+	shader->Bind();
+	glBindTextureUnit(0, Window::GetCamera().m_FrameBufferColor->m_Textures[0]);
+	shader->SetUniform1i("scene", 0);
+	glBindTextureUnit(1, fb[0]->m_Textures[0]);
+	shader->SetUniform1i("bloomBlurH", 1);
+	shader->SetUniform1f("exposure", Renderer::s_Exposure);
+	Renderer::RenderForPostEffect(MeshManager::GetMesh("plane"), shader);
+	Window::GetCamera().m_FrameBufferColor->UnBind();
+
+	//ImGui::Begin("Blur");
+	//void* te = reinterpret_cast<void*>(fb[!horizontal]->m_Textures[0]);
+	//ImGui::Image(te, ImVec2(Window::GetSize()[0], Window::GetSize()[1]), ImVec2(0, 1), ImVec2(1, 0));
+	//ImGui::End();
+}
+
+void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
+{
+	shader->Bind();
+	mesh->m_Va->Bind();
+	mesh->m_Ib->Bind();
+	mesh->m_Vb->Bind();
+	Renderer::s_Vertices += mesh->m_Ib->GetCount();
+	Renderer::s_DrawCalls++;
+	glDrawElements(GL_TRIANGLES, mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+	shader->UnBind();
+	mesh->m_Ib->UnBind();
+	glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
+}
+
 void Renderer::Render() {
 	if (Window::GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
 		glDisable(GL_DEPTH_TEST);
-		//glDisable(GL_CULL_FACE);
 		Render2DObjects();
 		RenderCollision();
 		RenderLines();
-		RenderText();
-		//glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
 		return;
@@ -73,12 +131,6 @@ void Renderer::Render() {
 	RenderCollision3D();
 	Render2DObjects();
 	RenderTransparent();
-	glDisable(GL_DEPTH_TEST);
-	//glDisable(GL_CULL_FACE);
-	RenderText();
-	//glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
 }
 
 void Doom::Renderer::Render2DObjects()
@@ -121,7 +173,7 @@ void Doom::Renderer::Render3DObjects()
 	
 	for each (Renderer3D* r in Renderer::s_Objects3d)
 	{
-		if (r->GetOwnerOfComponent()->m_Enable == true)
+		if (r->GetOwnerOfComponent()->m_Enable == true && r->m_IsRenderable)
 		{
 			r->Render();
 		}

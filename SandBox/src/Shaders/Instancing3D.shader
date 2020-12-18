@@ -55,7 +55,8 @@ void main() {
 #shader fragment
 #version 330 core
 
-layout(location = 0) out vec4 gl_FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 BrightColor;
 in vec2 v_textcoords;
 in vec3 CameraPos;
 in vec3 FragPos;
@@ -92,6 +93,8 @@ uniform sampler2D u_NormalMapTexture;
 uniform bool u_isNormalMapping;
 uniform sampler2D u_ShadowMap;
 uniform float u_DrawShadows;
+
+uniform float Brightness;
 
 float shadow = 0.0;
 
@@ -149,7 +152,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal)
 	float currentDepth = projCoords.z;
 	// check whether current frag pos is in shadow
 	//float bias = 0.005;
-	float bias = clamp(0.001 * tan(acos(dot(normal, dirLights[0].dir))), 0.0, 0.01);
+	float bias = clamp(0.002 * tan(acos(dot(normal, dirLights[0].dir))), 0.0, 0.01);
 	vec2 texelSize = 0.7 / textureSize(u_ShadowMap, 0);
 	int pcfRange = 4;
 	for (int x = -pcfRange; x <= pcfRange; ++x)
@@ -192,6 +195,11 @@ void main() {
 	for (int i = 0; i < pLightSize; i++){
 		result += PointLightsCompute(pointLights[i], normal, FragPos, CameraPos);
 	}
-
-	gl_FragColor = vec4(result, 1.0) * out_color;
+	float gamma = 2.2;
+	FragColor = vec4(pow(result * out_color.rgb, vec3(1.0 / gamma)), 1.0);
+	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	if (brightness > Brightness)
+		BrightColor = vec4(FragColor.rgb, 1.0);
+	else
+		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 };

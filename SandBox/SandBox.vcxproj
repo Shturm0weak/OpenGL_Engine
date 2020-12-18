@@ -126,9 +126,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\AimTrainer\Sounds\HitSound.ogg" />
     <None Include="src\Scripts\GameTest.lua" />
     <None Include="src\Shaders\BakeShadows.shader" />
     <None Include="src\Shaders\BakeShadowsInstancing.shader" />
+    <None Include="src\Shaders\Bloom.shader" />
+    <None Include="src\Shaders\Blur.shader" />
     <None Include="src\Shaders\Collision2D.shader" />
     <None Include="src\Shaders\CubeCollider.shader" />
     <None Include="src\Shaders\Default2D.shader" />
@@ -138,6 +141,7 @@
     <None Include="src\Shaders\Instancing3D.shader" />
     <None Include="src\Shaders\Line.shader" />
     <None Include="src\Shaders\LineSimple.shader" />
+    <None Include="src\Shaders\QuadFullScreen.shader" />
     <None Include="src\Shaders\SkyBox.shader" />
     <None Include="src\Shaders\Tron.shader" />
   </ItemGroup>

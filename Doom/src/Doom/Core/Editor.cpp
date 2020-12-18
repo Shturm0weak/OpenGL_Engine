@@ -8,6 +8,7 @@
 #include "../Render/Instancing.h"
 #include "Components/ScriptComponent.h"
 #include "Core/Utils.h"
+#include "Objects/SkyBox.h"
 
 namespace fs = std::filesystem;
 
@@ -51,7 +52,9 @@ void Editor::EditorUpdate()
 	}
 
 	ImGui::SliderFloat("DrawShadows", &Instancing::Instance()->m_DrawShadows, 0, 1);
-
+	ImGui::SliderFloat("Bloom exposure", &Renderer::s_Exposure, 0, 10);
+	ImGui::SliderFloat("Brightness", &Renderer::s_Brightness, 0, 10);
+	ImGui::Checkbox("Bloom effect", &Renderer::s_BloomEffect);
 	CreateTextureAtlas();
 
 	ImGui::SliderFloat("Zoom", &Window::GetCamera().m_ZoomLevel, 0.1f, 100.f);
@@ -84,6 +87,22 @@ void Editor::EditorUpdate()
 			GameObject* clgo = World::CreateGameObject();
 			clgo->operator=(*go);
 			go = clgo;
+		}
+		if (ImGui::MenuItem("Create SkyBox"))
+		{
+			std::optional<std::string> filePath = FileDialogs::OpenFile("All Files (*.png)\0");
+			if (filePath) {
+				size_t index = (*filePath).find_last_of("\\");
+				if (index != std::string::npos) {
+					std::string path = (*filePath).substr(0, index);
+					//path.replace(path.begin(), path.end(), '\\', '/');
+					std::vector<std::string> files = Utils::GetFilesName(path, ".png");
+					if (files.size() >= 6) {
+						SkyBox* skybox = new SkyBox(files, nullptr);
+						MeshManager::GetMeshWhenLoaded("cube", (void*)(skybox->GetComponentManager()->GetComponent<Renderer3D>()));
+					}
+				}
+			}
 		}
 			
 		if (ImGui::MenuItem("Delete"))
@@ -819,8 +838,12 @@ void Doom::Editor::ShaderMenu()
 
 void Doom::Editor::MenuShadowMap()
 {
-	void* my_tex_id = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferShadowMap->m_Texture);
-	ImGui::Begin("FrameBuffer");
+	void* my_tex_id = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferBlur[0]->m_Textures[0]);
+	ImGui::Begin("FrameBuffer Bloom");
+	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::End();
+	my_tex_id = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferShadowMap->m_Textures[0]);
+	ImGui::Begin("FrameBuffer Shadow Map");
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::SliderFloat("Znear", &Window::GetCamera().m_ZnearSM, -500, 500);
 	ImGui::SliderFloat("Zfar", &Window::GetCamera().m_ZfarSM, 0, 500);
@@ -1079,7 +1102,7 @@ void Doom::Editor::EditorUpdateMyGui()
 		}
 		if (g->CollapsingHeader("Shadow map", 0, 0, COLORS::DarkGray * 0.7f)) {
 			Texture* shadowMap = new Texture;
-			shadowMap->m_RendererID = Window::GetCamera().m_FrameBufferShadowMap->m_Texture;
+			shadowMap->m_RendererID = Window::GetCamera().m_FrameBufferShadowMap->m_Textures[0];
 			glm::vec2 size{256,256};
 			g->Image(size.x / 2, -size.y / 2, size.x, size.y, shadowMap);
 			g->SliderFloat("Znear", &Window::GetCamera().m_ZnearSM, -500, 500, 0, 0, 200, 25);

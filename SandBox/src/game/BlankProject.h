@@ -30,12 +30,12 @@ public:
 	glm::vec3 end { 0,0,10 };
 	BlankProject(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
 	std::vector<std::string> faces = {
-				"src/SkyBox/skyBox1/back.png",
-				"src/SkyBox/skyBox1/front.png",
-				"src/SkyBox/skyBox1/top.png",
-				"src/SkyBox/skyBox1/bottom.png",
-				"src/SkyBox/skyBox1/left.png",
-				"src/SkyBox/skyBox1/right.png",
+				"src/SkyBox/skyBox1/1back.png",
+				"src/SkyBox/skyBox1/2front.png",
+				"src/SkyBox/skyBox1/3top.png",
+				"src/SkyBox/skyBox1/4bottom.png",
+				"src/SkyBox/skyBox1/5left.png",
+				"src/SkyBox/skyBox1/6right.png",
 	};
 	virtual void OnStart() {
 		ImGui::SetCurrentContext(Window::s_ImGuiContext);

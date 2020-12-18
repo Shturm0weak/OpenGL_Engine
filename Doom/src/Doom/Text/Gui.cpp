@@ -10,8 +10,7 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 	float scale = startscale / m_Font->m_Size;
 	std::vector<Character*> characters;
 	std::vector<unsigned int> newLines;
-	float aRatio = Window::GetCamera().GetAspectRatio();
-	float ratio = aRatio;
+	float ratio = Window::GetCamera().GetAspectRatio();
 	int counter1 = 0;
 	bool dotPass = false;
 	va_list argptr;
@@ -20,12 +19,20 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 	for (size_t i = 0; i < strSize; i++)
 	{
 		char strChar = str[i];
-		if (strChar == '%') {
+		if (strChar == '#') {
+			if (str[i + 1] == '%') {
+				FindCharInFont(characters, str[i + 1]);
+			}
+			else if (str[i + 1] == '#') {
+				FindCharInFont(characters, str[i + 1]);
+			}
+			i++;
+		}
+		else if (strChar == '%') {
 			if (str[i + 1] == 'd')
 				m_S = std::to_string(va_arg(argptr, int));
-			else if (str[i + 1] == 'f') {
+			else if (str[i + 1] == 'f')
 				m_S = std::to_string(va_arg(argptr, double));
-			}
 			else if (str[i + 1] == 's')
 				m_S = (va_arg(argptr, std::string));
 			size_t argSize = m_S.size();
@@ -41,10 +48,7 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 				if(dotPass)
 					counter1++;
 
-				auto cIter = m_Font->m_Characters.find(pchar);
-				if (cIter != m_Font->m_Characters.end()) {
-					characters.push_back(cIter->second);
-				}
+				FindCharInFont(characters, pchar);
 
 				/*size_t size = font->characters.size();
 				for (size_t i = 0; i < size; i++)
@@ -67,10 +71,7 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 			continue;
 		}
 		else {
-			auto cIter = m_Font->m_Characters.find(strChar);
-			if (cIter != m_Font->m_Characters.end()) {
-				characters.push_back(cIter->second);
-			}
+			FindCharInFont(characters, strChar);
 
 			/*size_t size = font->characters.size();
 			for (size_t k = 0; k < size; k++)
@@ -159,6 +160,12 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	ApplyRelatedToPanelProperties(&x, &y);
 	x += width * 0.5f;
 	y -= height * 0.5f;
+	if (m_XAlign == AlignHorizontally::XCENTER) {
+		x += m_RelatedPanelProperties.m_Size.x * 0.5f - m_RelatedPanelProperties.m_Margin.x - width * 0.5f;
+	}
+	if (m_YAlign == AlignVertically::YCENTER) {
+		y -= m_RelatedPanelProperties.m_Size.y * 0.5f - m_RelatedPanelProperties.m_Margin.y - height * 0.5f;
+	}
 	float tempx = x;
 	float tempy = y;
 	float aRatio = Window::GetCamera().GetAspectRatio();
@@ -195,7 +202,9 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	if (str.length() > 0) {
 		m_XAlign = AlignHorizontally::XCENTER;
 		m_YAlign = AlignVertically::YCENTER;
-		Text(str, true, tempx - m_RelatedPanelProperties.m_Pos.x - m_RelatedPanelProperties.m_Margin.x, tempy - m_RelatedPanelProperties.m_Pos.y + m_RelatedPanelProperties.m_YOffset + m_RelatedPanelProperties.m_Margin.y, scale, textColor);
+		if (m_RelatedPanelProperties.m_AutoAllignment)
+			tempy += m_RelatedPanelProperties.m_YOffset;
+		Text(str, true, tempx - m_RelatedPanelProperties.m_Pos.x - m_RelatedPanelProperties.m_Margin.x, tempy - m_RelatedPanelProperties.m_Pos.y + m_RelatedPanelProperties.m_Margin.y, scale, textColor); //Maybe it will be needed  + m_RelatedPanelProperties.m_Margin.y
 		m_YAlign = AlignVertically::BOTTOM;
 		m_XAlign = AlignHorizontally::LEFT;
 	}
@@ -255,14 +264,18 @@ void Doom::Gui::Panel(std::string label,float x, float y, float width, float hei
 
 	Batch::GetInstance()->Submit(m_CurrentPanelCoods, color, texture, m_RelatedPanelProperties.m_PanelSizeForShader, m_RelatedPanelProperties.m_PanelPosForShader, (m_EdgeRadius / (_size)* ratio));
 
-	if (label.size() > 0) {
+	if (label.size() > 0 && label.find("##") == std::string::npos) {
 		glm::vec2 tempMargin = m_RelatedPanelProperties.m_Margin;
 		glm::vec2 tempPadding = m_RelatedPanelProperties.m_Padding;
-		m_RelatedPanelProperties.m_Margin = glm::vec2(5);
+		m_RelatedPanelProperties.m_Margin = glm::vec3(5);
 		m_RelatedPanelProperties.m_Padding = glm::vec2(0);
-		m_XAlign = Gui::AlignHorizontally::LEFT;
-		Text(label,true,m_EdgeRadius - m_RelatedPanelProperties.m_Margin.x);
-		m_XAlign = Gui::AlignHorizontally::XCENTER;
+		//m_XAlign = Gui::AlignHorizontally::LEFT;
+		x = 0;
+		if (m_XAlign == AlignHorizontally::XCENTER)
+			x = m_RelatedPanelProperties.m_Size.x * 0.5f - m_RelatedPanelProperties.m_Margin.x;
+		
+		Text(label, true, m_EdgeRadius + x, 0, m_RelatedPanelProperties.m_PanelLabelSize);
+		//m_XAlign = Gui::AlignHorizontally::XCENTER;
 		m_RelatedPanelProperties.m_Margin = tempMargin;
 		m_RelatedPanelProperties.m_Padding = tempPadding;
 	}
@@ -333,7 +346,7 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 	float tempCoords[8];
 	for (size_t i = 0; i < 8; i++)
 		tempCoords[i] = m_CurrentPanelCoods[i];
-	Panel("",x, y, width, height, panelColor,true);
+	Panel("##OuterPanel" + label, x, y, width, height, panelColor, true);
 
 	float maxValue = 0;
 	if (min < 0 && max < 0)
@@ -366,7 +379,7 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 				*value = min;
 	}
 
-	Panel("",x + _x - width * 0.5f, y, 0.05f * width, 1.5f * height, sliderColor);
+	Panel("##InnerPanel" + label,x + _x - width * 0.5f, y, 0.05f * width, 1.5f * height, sliderColor);
 
 	m_RelatedPanelProperties = temp;
 
@@ -557,7 +570,15 @@ void Doom::Gui::ApplyRelatedToPanelProperties(float * x, float * y)
 	*x += m_RelatedPanelProperties.m_Pos.x + m_RelatedPanelProperties.m_Margin.x;
 	*y += m_RelatedPanelProperties.m_Pos.y - m_RelatedPanelProperties.m_Margin.y;
 	if (m_RelatedPanelProperties.m_AutoAllignment)
-		*y -= m_RelatedPanelProperties.m_YOffset;
+		*y -= m_RelatedPanelProperties.m_YOffset; //NEED to test, not sure that it will works with all UI elements
+}
+
+void Doom::Gui::FindCharInFont(std::vector<Character*>& localCharV, char c)
+{
+	auto cIter = m_Font->m_Characters.find(c);
+	if (cIter != m_Font->m_Characters.end()) {
+		localCharV.push_back(cIter->second);
+	}
 }
 
 void Doom::Gui::RecalculateProjectionMatrix()

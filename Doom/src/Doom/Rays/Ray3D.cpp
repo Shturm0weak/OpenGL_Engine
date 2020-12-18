@@ -7,9 +7,9 @@ std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm
 	for (uint32_t i = 0; i < CubeCollider3D::s_Colliders.size(); i++)
 	{
 		bool hasTag = ignoreMask.size() > 0 ? false : true;
-		for (uint32_t i = 0; i < ignoreMask.size(); i++)
+		for (uint32_t j = 0; j < ignoreMask.size(); j++)
 		{
-			if (CubeCollider3D::s_Colliders[i]->GetOwnerOfComponent()->m_Tag == ignoreMask[i]) {
+			if (CubeCollider3D::s_Colliders[i]->GetOwnerOfComponent()->m_Tag == ignoreMask[j]) {
 				hasTag = true;
 				break;
 			}

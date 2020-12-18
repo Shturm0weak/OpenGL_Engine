@@ -19,9 +19,11 @@ namespace Doom {
 
 		FrameBuffer* m_FrameBufferColor = nullptr;
 		FrameBuffer* m_FrameBufferShadowMap = nullptr;
+		FrameBuffer* m_FrameBufferUI = nullptr;
+		std::vector<FrameBuffer* > m_FrameBufferBlur;
 
 		Camera();
-		~Camera() {}
+		~Camera();
 
 		glm::vec3 GetRotation();
 		glm::vec3 GetMouseDirVec();

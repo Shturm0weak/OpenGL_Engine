@@ -1,6 +1,8 @@
 #include "../pch.h"
 #include "Texture.h"
 #include "stb_image.h"
+#include <filesystem>
+namespace fs = std::filesystem;
 
 using namespace Doom;
 
@@ -42,6 +44,23 @@ Texture::Texture(const std::string& path, int flip,bool repeat)
 
 Texture::Texture()
 {
+}
+
+std::vector<Texture*> Texture::GetLoadedTexturesFromFolder(std::string filePath) {
+	std::vector<Texture*> ts;
+	for (const auto& entry : fs::directory_iterator(filePath)) {
+		std::string pathToTexture = entry.path().string();
+		if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+			size_t index = 0;
+			index = pathToTexture.find("\\", index);
+			pathToTexture.replace(index, 1, "/");
+			Texture* t = Texture::Get(pathToTexture);
+			if (t != nullptr) {
+				ts.push_back(t);
+			}
+		}
+	}
+	return ts;
 }
 
 void Doom::Texture::DispatchLoadedTextures()

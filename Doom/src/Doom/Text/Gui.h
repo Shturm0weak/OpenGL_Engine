@@ -25,6 +25,7 @@ namespace Doom {
 			glm::vec2 m_Margin = glm::vec2(10.0f);
 			glm::vec2 m_Padding = glm::vec2(10.0f);
 			float m_YOffset = 0.0f;
+			float m_PanelLabelSize = 24.0f;
 			bool m_AutoAllignment = false;
 		};
 
@@ -119,6 +120,7 @@ namespace Doom {
 
 		void LoadStandartFonts();
 		void ApplyRelatedToPanelProperties(float* x, float* y);
+		void FindCharInFont(std::vector<Character*>& localCharV, char c);
 
 		Gui() {RecalculateProjectionMatrix();}
 		~Gui() {}

@@ -16,10 +16,10 @@ void main() {
 #shader fragment
 #version 330 core
 
-layout(location = 0) out vec4 gl_FragColor;
+layout(location = 0) out vec4 FragColor;
 
 in vec4 out_color;
 
 void main() {
-	gl_FragColor = out_color;
+	FragColor = out_color;
 };

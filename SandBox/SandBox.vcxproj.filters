@@ -50,5 +50,9 @@
     <None Include="src\Shaders\SkyBox.shader" />
     <None Include="src\Shaders\Tron.shader" />
     <None Include="src\Scripts\GameTest.lua" />
+    <None Include="src\AimTrainer\Sounds\HitSound.ogg" />
+    <None Include="src\Shaders\Blur.shader" />
+    <None Include="src\Shaders\Bloom.shader" />
+    <None Include="src\Shaders\QuadFullScreen.shader" />
   </ItemGroup>
 </Project>

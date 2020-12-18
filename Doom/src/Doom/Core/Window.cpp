@@ -23,7 +23,6 @@ void Doom::Window::ShowCursor()
 void Doom::Window::SetCurrentContext(GLFWwindow* context)
 {
 	glfwMakeContextCurrent(context);
-	s_CursorStateChanged = true;
 }
 
 glm::dvec2 Doom::Window::GlfwGetMousePos()
@@ -113,6 +112,13 @@ void Doom::Window::ClampCursorPos()
 		if (mousePos != newCursorPos)
 			ViewPort::GetInstance()->RecalculateMouseCoords();
 	}
+	glm::vec3 rot = Window::GetCamera().GetRotation();
+	if (rot.y > glm::two_pi<float>() || rot.y < -glm::two_pi<float>())
+		rot.y = 0;
+	if (rot.x > glm::two_pi<float>() || rot.x < -glm::two_pi<float>())
+		rot.x = 0;
+	Window::GetCamera().SetRotation(glm::vec3(rot.x, rot.y, 0.0f));
+
 }
 
 void Doom::Window::SetCursorPos(glm::dvec2 pos)

@@ -51,6 +51,17 @@ namespace Utils {
 		}
 	}
 
+	static std::vector<std::string> GetFilesName(const std::string& path, const char* filter) {
+		std::vector<std::string> files;
+		for (const auto& entry : fs::directory_iterator(path)) {
+			std::string pathToTexture = entry.path().string();
+			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+				files.push_back(entry.path().string());
+			}
+		}
+		return files;
+	}
+
 	static glm::vec3 GetPosition(glm::mat4& pos) {
 		float* matPtr = glm::value_ptr(pos);
 		return glm::vec3(matPtr[12], matPtr[13], matPtr[14]);

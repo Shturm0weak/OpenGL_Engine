@@ -14,6 +14,14 @@ Camera::Camera(){
 	EventSystem::GetInstance()->RegisterClient(EventType::ONWINDOWRESIZE, this);
 }
 
+Doom::Camera::~Camera()
+{
+	delete m_FrameBufferBlur[0];
+	delete m_FrameBufferBlur[1];
+	delete m_FrameBufferColor;
+	delete m_FrameBufferShadowMap;
+}
+
 void Camera::RecalculateViewMatrix() {
 	ThreadPool::GetInstance()->Enqueue([=] {
 	std::lock_guard<std::mutex> lock(m_Mtx);
@@ -222,16 +230,11 @@ void Camera::CameraMovement() {
 			MovePosition(glm::vec3(0, -5.0f * DeltaTime::s_Deltatime, 0));
 		}
 		
-		glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		Window::DisableCursor();
 		glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
 		delta *= 0.2;
-		SetRotation(glm::vec3((m_Pitch + delta.y * (2 * 3.14159f) / 360.0f), (m_Yaw - delta.x * (2 * 3.14159f) / 360.0f), 0));
-
-		if (m_Yaw > glm::two_pi<float>() || m_Yaw < -glm::two_pi<float>()) {
-			m_Yaw = 0;
-		}
-		if (m_Pitch > glm::two_pi<float>() || m_Pitch < -glm::two_pi<float>())
-			m_Pitch = 0;
+		glm::vec3 rot = Window::GetCamera().GetRotation();
+		Window::GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
 		
 		glm::vec2 rightVec;
 		rightVec = { -(forwardV.z * 1) / (forwardV.x) ,1 };
@@ -264,7 +267,7 @@ void Camera::CameraMovement() {
 	}
 	}
 	else {
-		glfwSetInputMode(Window::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		Window::ShowCursor();
 	}
 	SetOnStart();
 }

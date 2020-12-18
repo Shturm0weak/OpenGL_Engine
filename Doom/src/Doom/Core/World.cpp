@@ -93,6 +93,8 @@ void Doom::World::ShutDown()
 		delete World::s_GameObjects[i];
 	}
 	World::s_GameObjects.clear();
+	World::s_ColId = 0;
+	World::s_ObjId = 0;
 }
 
 void Doom::World::PopBack()

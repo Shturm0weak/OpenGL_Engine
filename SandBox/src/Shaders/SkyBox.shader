@@ -23,12 +23,18 @@ void main() {
 #shader fragment
 #version 330 core
 
-layout(location = 0) out vec4 gl_FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 BrightColor;
 
 uniform samplerCube u_DiffuseTexture;
-
+uniform float Brightness;
 in vec3 TextCoords;
 
 void main() {
-	gl_FragColor = texture(u_DiffuseTexture, TextCoords);
+	FragColor = texture(u_DiffuseTexture, TextCoords);
+	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	if (brightness > Brightness)
+		BrightColor = vec4(FragColor.rgb, 1.0);
+	else
+		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

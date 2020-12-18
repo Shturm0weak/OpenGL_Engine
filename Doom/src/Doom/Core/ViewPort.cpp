@@ -14,7 +14,7 @@ ViewPort* Doom::ViewPort::GetInstance()
 
 void Doom::ViewPort::Update()
 {
-	void* tex = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferColor->m_Texture);
+	void* tex = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferColor->m_Textures[0]);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("ViewPort", &ViewPort::GetInstance()->m_IsToolOpen, ImGuiWindowFlags_NoScrollbar);

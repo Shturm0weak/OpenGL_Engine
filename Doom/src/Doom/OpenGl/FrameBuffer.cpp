@@ -4,29 +4,33 @@
 
 using namespace Doom;
 
-FrameBuffer::FrameBuffer(int width, int height, int TextureParameterinternalFormat,int TextureParametertextureType, bool TextureParameterClampBorder,int FrameBufferAttachment,bool NeedRBO,bool ReadBuffer,bool DrawBuffer)
+FrameBuffer::FrameBuffer(int width, int height, int TextureParameterinternalFormat, int TextureParametertextureType, int TextureParamLinear, int TextureParameterClamp,int FrameBufferAttachment,bool NeedRBO,bool ReadBuffer,bool DrawBuffer, int NumOfTextures)
 {
 	size = glm::vec2(width, height);
 
 	glGenFramebuffers(1, &m_Fbo);
 
-	glGenTextures(1, &m_Texture);
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, TextureParameterinternalFormat, width, height, 0, TextureParameterinternalFormat, TextureParametertextureType, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	if (TextureParameterClampBorder)
+	for (uint32_t i = 0; i < NumOfTextures; i++)
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+		m_Textures.push_back(0);
+		glGenTextures(1, &m_Textures[i]);
+		glBindTexture(GL_TEXTURE_2D, m_Textures[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, TextureParameterinternalFormat, width, height, 0, TextureParameterinternalFormat, TextureParametertextureType, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TextureParamLinear);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextureParamLinear);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureParameterClamp);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureParameterClamp);
+		if (TextureParameterClamp == GL_CLAMP_TO_BORDER) {
+			float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+		}
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, FrameBufferAttachment + i, GL_TEXTURE_2D, m_Textures[i], 0);
 	}
-	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, FrameBufferAttachment, GL_TEXTURE_2D, m_Texture, 0);
-
+	m_HasRbo = NeedRBO;
 	if (NeedRBO) {
 		glGenRenderbuffers(1, &m_Rbo);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
@@ -55,12 +59,17 @@ FrameBuffer::~FrameBuffer()
 
 void Doom::FrameBuffer::Resize(float width, float height)
 {
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Rbo);
+	for (uint32_t i = 0; i < m_Textures.size(); i++)
+	{
+		glBindTexture(GL_TEXTURE_2D, m_Textures[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		if (m_HasRbo) {
+			glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Rbo);
+		}
+	}
 }
 
 void FrameBuffer::Bind()

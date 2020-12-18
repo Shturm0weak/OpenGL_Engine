@@ -37,7 +37,7 @@ void Doom::Renderer3D::LoadMesh(Mesh * mesh)
 	m_Tr = m_Owner->GetComponentManager()->GetComponent<Transform>();
 	EraseFromInstancing();
 	m_Mesh = mesh;
-	ChangeRenderTechnic(RenderTechnic::Forward);
+	ChangeRenderTechnic(m_RenderTechnic);
 	if (!m_IsSkyBox) {
 		CubeCollider3D* cc = m_Owner->GetComponentManager()->GetComponent<CubeCollider3D>();
 		if (cc == nullptr) {
@@ -92,6 +92,8 @@ Doom::Renderer3D::Renderer3D()
 
 Doom::Renderer3D::~Renderer3D()
 {
+	if (GetOwnerOfComponent() == nullptr)
+		return;
 	CubeCollider3D* cc = GetOwnerOfComponent()->GetComponentManager()->GetComponent<CubeCollider3D>();
 	if (cc != nullptr && cc->m_IsBoundingBox) {
 		GetOwnerOfComponent()->GetComponentManager()->RemoveComponent(cc); //Fix: could be dangerous if there is more than 1 CubeCollider
@@ -199,101 +201,107 @@ void Doom::Renderer3D::Copy(const Renderer3D& rhs)
 void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
 {
 	if (m_Mesh != nullptr && m_Mesh->m_IsInitialized) {
-		if (!m_IsSkyBox) {
-			m_Shader->Bind();
-			glBindTextureUnit(0, m_DiffuseTexture->m_RendererID);
-			m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-			m_Shader->SetUniformMat4f("u_Model", pos);
-			m_Shader->SetUniformMat4f("u_View", view);
-			m_Shader->SetUniformMat4f("u_Scale", scale);
-			m_Shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
-			AdditionalUniformsLoad();
-			int dlightSize = DirectionalLight::s_DirLights.size();
-			m_Shader->SetUniform1i("dLightSize", dlightSize);
-			for (int i = 0; i < dlightSize; i++)
-			{
-				char buffer[64];
-				DirectionalLight* dl = DirectionalLight::s_DirLights[i];
-				dl->m_Dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->m_ViewMat4 * glm::vec4(0, 0, -1, 1);
-				sprintf(buffer, "dirLights[%i].dir", i);
-				m_Shader->SetUniform3fv(buffer, dl->m_Dir);
-				sprintf(buffer, "dirLights[%i].color", i);
-				m_Shader->SetUniform3fv(buffer, dl->m_Color);
-			}
-
-			int plightSize = PointLight::s_PointLights.size();
-			m_Shader->SetUniform1i("pLightSize", plightSize);
+		if (m_IsSkyBox) {
+			RenderSkyBox();
+			return;
+		}
+		m_Shader->Bind();
+		glBindTextureUnit(0, m_DiffuseTexture->m_RendererID);
+		m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+		m_Shader->SetUniformMat4f("u_Model", pos);
+		m_Shader->SetUniformMat4f("u_View", view);
+		m_Shader->SetUniformMat4f("u_Scale", scale);
+		m_Shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
+		AdditionalUniformsLoad();
+		int dlightSize = DirectionalLight::s_DirLights.size();
+		m_Shader->SetUniform1i("dLightSize", dlightSize);
+		for (int i = 0; i < dlightSize; i++)
+		{
 			char buffer[64];
-			for (int i = 0; i < plightSize; i++)
-			{
-				PointLight* pl = PointLight::s_PointLights[i];
-				sprintf(buffer, "pointLights[%i].position", i);
-				m_Shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
-				sprintf(buffer, "pointLights[%i].color", i);
-				m_Shader->SetUniform3fv(buffer, pl->m_Color);
-				sprintf(buffer, "pointLights[%i].constant", i);
-				m_Shader->SetUniform1f(buffer, pl->m_Constant);
-				sprintf(buffer, "pointLights[%i]._linear", i);
-				m_Shader->SetUniform1f(buffer, pl->m_Linear);
-				sprintf(buffer, "pointLights[%i].quadratic", i);
-				m_Shader->SetUniform1f(buffer, pl->m_Quadratic);
-			}
-			m_Shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
-			m_Shader->SetUniform1f("u_Ambient", m_Material.m_Ambient);
-			m_Shader->SetUniform1f("u_Specular", m_Material.m_Specular);
-			m_Shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
-			m_Shader->SetUniform1i("u_DiffuseTexture", 0);
-			glBindTextureUnit(2, Window::GetCamera().m_FrameBufferShadowMap->m_Texture);
-			m_Shader->SetUniform1i("u_ShadowTexture", 2);
-			m_Shader->SetUniform1f("u_DrawShadows", Instancing::Instance()->m_DrawShadows);
-			if (m_IsUsingNormalMap) {
-				glBindTextureUnit(1, m_NormalMapTexture->m_RendererID);
-				m_Shader->SetUniform1i("u_NormalMapTexture", 1);
-			}
-			m_Shader->SetUniform1i("u_isNormalMapping", m_IsUsingNormalMap);
-			m_Shader->Bind();
-			m_Mesh->m_Va->Bind();
-			m_Mesh->m_Ib->Bind();
-			m_Mesh->m_Vb->Bind();
+			DirectionalLight* dl = DirectionalLight::s_DirLights[i];
+			dl->m_Dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->m_ViewMat4 * glm::vec4(0, 0, -1, 1);
+			sprintf(buffer, "dirLights[%i].dir", i);
+			m_Shader->SetUniform3fv(buffer, dl->m_Dir);
+			sprintf(buffer, "dirLights[%i].color", i);
+			m_Shader->SetUniform3fv(buffer, dl->m_Color);
+		}
 
-			Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
-			Renderer::s_DrawCalls++;
-			if(!m_IsCullingFace)
-				glDisable(GL_CULL_FACE);
-			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
-				glEnable(GL_CULL_FACE);
-			m_Shader->UnBind();
-			m_Mesh->m_Ib->UnBind();
-			glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
+		int plightSize = PointLight::s_PointLights.size();
+		m_Shader->SetUniform1i("pLightSize", plightSize);
+		char buffer[64];
+		for (int i = 0; i < plightSize; i++)
+		{
+			PointLight* pl = PointLight::s_PointLights[i];
+			sprintf(buffer, "pointLights[%i].position", i);
+			m_Shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
+			sprintf(buffer, "pointLights[%i].color", i);
+			m_Shader->SetUniform3fv(buffer, pl->m_Color);
+			sprintf(buffer, "pointLights[%i].constant", i);
+			m_Shader->SetUniform1f(buffer, pl->m_Constant);
+			sprintf(buffer, "pointLights[%i]._linear", i);
+			m_Shader->SetUniform1f(buffer, pl->m_Linear);
+			sprintf(buffer, "pointLights[%i].quadratic", i);
+			m_Shader->SetUniform1f(buffer, pl->m_Quadratic);
 		}
-		else {
-			//shader = Shader::Get("SkyBoxShader");
-			glDepthFunc(GL_LEQUAL);
-			glActiveTexture(GL_TEXTURE0);
+		m_Shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
+		m_Shader->SetUniform1f("u_Ambient", m_Material.m_Ambient);
+		m_Shader->SetUniform1f("u_Specular", m_Material.m_Specular);
+		m_Shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
+		m_Shader->SetUniform1i("u_DiffuseTexture", 0);
+		glBindTextureUnit(2, Window::GetCamera().m_FrameBufferShadowMap->m_Textures[0]);
+		m_Shader->SetUniform1i("u_ShadowTexture", 2);
+		m_Shader->SetUniform1f("u_DrawShadows", Instancing::Instance()->m_DrawShadows); 
+		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
+		if (m_IsUsingNormalMap) {
+			glBindTextureUnit(1, m_NormalMapTexture->m_RendererID);
+			m_Shader->SetUniform1i("u_NormalMapTexture", 1);
+		}
+		m_Shader->SetUniform1i("u_isNormalMapping", m_IsUsingNormalMap);
+		m_Shader->Bind();
+		m_Mesh->m_Va->Bind();
+		m_Mesh->m_Ib->Bind();
+		m_Mesh->m_Vb->Bind();
+
+		Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
+		Renderer::s_DrawCalls++;
+		if (!m_IsCullingFace)
 			glDisable(GL_CULL_FACE);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, m_DiffuseTexture->m_RendererID);
-			m_Shader->Bind();
-			Window::GetCamera().RecalculateViewMatrix();
-			m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetProjectionMatrix());
-			m_Shader->SetUniformMat4f("u_Model", m_Tr->m_PosMat4);
-			m_Shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetCamera().GetViewMatrix())));
-			m_Shader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
-			m_Shader->SetUniform1i("u_DiffuseTexture", 0);
-			m_Shader->Bind();
-			m_Mesh->m_Va->Bind();
-			m_Mesh->m_Ib->Bind();
-			m_Mesh->m_Vb->Bind();
-			Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
-			Renderer::s_DrawCalls++;
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			glBindVertexArray(0);
-			m_Shader->UnBind();
-			m_Mesh->m_Ib->UnBind();
-			m_DiffuseTexture->UnBind();
-			glDepthFunc(GL_LESS);
-			glEnable(GL_CULL_FACE);
-		}
+		glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+		glEnable(GL_CULL_FACE);
+		m_Shader->UnBind();
+		m_Mesh->m_Ib->UnBind();
+		glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
 	}
+}
+
+void Doom::Renderer3D::RenderSkyBox()
+{
+	m_Shader = Shader::Get("SkyBox");
+	glDepthFunc(GL_LEQUAL);
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_CULL_FACE);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_DiffuseTexture->m_RendererID);
+	m_Shader->Bind();
+	Window::GetCamera().RecalculateViewMatrix();
+	m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetProjectionMatrix());
+	m_Shader->SetUniformMat4f("u_Model", m_Tr->m_PosMat4);
+	m_Shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetCamera().GetViewMatrix())));
+	m_Shader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
+	m_Shader->SetUniform1i("u_DiffuseTexture", 0);
+	m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
+	m_Shader->Bind();
+	m_Mesh->m_Va->Bind();
+	m_Mesh->m_Ib->Bind();
+	m_Mesh->m_Vb->Bind();
+	Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
+	Renderer::s_DrawCalls++;
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	m_Shader->UnBind();
+	m_Mesh->m_Ib->UnBind();
+	m_DiffuseTexture->UnBind();
+	glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
 }
 
 void Doom::Renderer3D::AdditionalUniformsLoad()

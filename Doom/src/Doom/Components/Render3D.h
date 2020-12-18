@@ -35,7 +35,8 @@ namespace Doom {
 		bool m_IsWireMesh = false;
 		bool m_IsUsingNormalMap = false;
 		bool m_IsCullingFace = true;
-
+		bool m_IsRenderable = true;
+		
 		Renderer3D(const Renderer3D& rhs);
 		Renderer3D();
 		~Renderer3D();
@@ -59,6 +60,7 @@ namespace Doom {
 
 		void Copy(const Renderer3D& rhs);
 		void ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color);
+		void RenderSkyBox();
 		void AdditionalUniformsLoad();
 
 		friend class Doom::SceneSerializer;
@@ -67,6 +69,7 @@ namespace Doom {
 		friend class Doom::MeshManager;
 		friend class Doom::ComponentManager;
 		friend class Doom::Editor;
+		friend class Doom::Renderer;
 	};
 
 }

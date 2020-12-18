@@ -15,6 +15,9 @@ namespace Doom {
 		static int s_Vertices;
 		static bool s_PolygonMode;
 		static int s_DrawCalls;
+		static float s_Exposure;
+		static bool s_BloomEffect;
+		static float s_Brightness;
 
 		static void Render2DObjects();
 		static void Render3DObjects();
@@ -28,6 +31,8 @@ namespace Doom {
 		static void RenderCollision();
 		static void Clear();
 		static void SortTransparentObjects();
+		static void RenderForPostEffect(Mesh* mesh, Shader* shader);
+		static void BloomEffect();
 		inline static unsigned int GetAmountOfCollisions() { return s_Collision2d.size(); }
 	private:
 

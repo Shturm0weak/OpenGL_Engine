@@ -7,8 +7,31 @@ namespace Doom {
 	{
 	private:
 
+		Texture* m_CrossHair = nullptr;
+		std::vector<std::string> m_IgnoreMask;
+		std::map<GameObject*, double> m_Objs; //time since spawn
+		glm::vec2 m_LimX{ -5.0f, 5.0f };
+		glm::vec2 m_LimY{ 5.0f, 10.0f };
+		glm::vec2 m_LimZ{ -5.0f, 5.0f };
+		uint32_t m_Missed = 0;
+		uint32_t m_Hits = 0;
+		double m_Time = 0;
+		bool m_Pause = true;
+		bool m_Options = false;
+		bool m_ChooseCrossHair = false;
+		float m_CrossHairScale = 1.0f;
+		float m_AudioVolume = 0.5f;
+		float m_MouseSensetivity = 1.0f;
+		bool m_DrawShadows = true;
+
+		void OptionsMenu();
+		void ChooseCrossHairMenu();
+		void MainMenu();
 		void RayCast();
 		void CameraMovement();
+		void SpawnObject();
+		void UpdateObjects();
+		glm::vec3 RandomPos(glm::vec2 limX, glm::vec2 limY, glm::vec2 limZ);
 
 	public:
 
