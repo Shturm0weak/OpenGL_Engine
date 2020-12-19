@@ -1,5 +1,7 @@
 #pragma once
 #include <unordered_map>
+#include "Rays/Ray3D.h"
+#include "Objects/SkyBox.h"
 #define E 0.01
 
 void PerlinNoise2D(int nWidth, int nHeight, float *fSeed, int nOctaves, float fBias, float *fOutput)
@@ -42,7 +44,7 @@ void PerlinNoise2D(int nWidth, int nHeight, float *fSeed, int nOctaves, float fB
 
 class Minecraft : public Application {
 public:
-	Minecraft(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
+	Minecraft(std::string name = "Minecraft", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
 	std::vector<GameObject*> cube;
 	std::vector<GameObject*> tree;
 	GameObject* terrain = nullptr;
@@ -60,40 +62,40 @@ public:
 	std::map<uint32_t, glm::vec3> lD;
 	virtual void OnStart() override {
 
-		MeshManager::LoadMesh("kompas", "src/Mesh/model.stl");
-
+		//MeshManager::LoadMesh("kompas", "src/Mesh/model.stl");
+		Renderer::s_BloomEffect = false;
 		ImGui::SetCurrentContext(Window::s_ImGuiContext);
-		dirtImg = Texture::Create("src/Minecraft/Textures/dirtImg.png");
-		//float* seed = new float[width * height];
-		//float* noise = new float[width * height];
+		dirtImg = Texture::Create("src/Minecraft/Textures/dirtTexture.png");
+		float* seed = new float[width * height];
+		float* noise = new float[width * height];
 		terrain = new GameObject("terrain");
 		
-		//for (size_t i = 0; i < width * height; i++)
-		//{
-		//	seed[i] = (float)rand() / (float)RAND_MAX;
-		//}
-		//PerlinNoise2D(width, height,seed,5,0.7,noise);
-		//delete[] seed;
+		for (size_t i = 0; i < width * height; i++)
+		{
+			seed[i] = (float)rand() / (float)RAND_MAX;
+		}
+		PerlinNoise2D(width, height,seed,5,0.7,noise);
+		delete[] seed;
 		std::vector<std::string> faces = {
-				"src/SkyBox/back.png",
-				"src/SkyBox/front.png",
-				"src/SkyBox/top.png",
-				"src/SkyBox/bottom.png",
-				"src/SkyBox/left.png",
-				"src/SkyBox/right.png",
+				"src/SkyBox/skybox1/1back.png",
+				"src/SkyBox/skybox1/2front.png",
+				"src/SkyBox/skybox1/3top.png",
+				"src/SkyBox/skybox1/4bottom.png",
+				"src/SkyBox/skybox1/5left.png",
+				"src/SkyBox/skybox1/6right.png",
 		};
-		MeshManager::LoadMesh("skyboxCube", "src/Mesh/cube.fbx");
 		MeshManager::AsyncLoadMesh("cube", "src/Minecraft/Models/cube.fbx");
-		MeshManager::LoadMesh("gladiator", "src/Mesh/Try.stl");
-		SkyBox* skybox = new SkyBox(faces, MeshManager::GetMesh("skyboxCube"));
-		/*for (size_t i = 0; i < width; i++)
+		//MeshManager::LoadMesh("gladiator", "src/Mesh/Try.stl");
+		SkyBox* skybox = new SkyBox(faces, nullptr);
+		MeshManager::GetMeshWhenLoaded("cube", skybox->GetComponent<Renderer3D>());
+		for (size_t i = 0; i < width; i++)
 		{
 			for (size_t j = 0; j < height; j++)
 			{
 				CreateCube(i, j);
-				cube.back()->GetComponent<Transform>()->Translate(i,0,j);
+				cube.back()->GetComponent<Transform>()->Translate(i, glm::ceil(noise[i * width + j] * 3),j);
 			}
-		}*/
+		}
 		for (uint32_t i = 0; i < 2; i++)
 		{
 			lights.push_back(new GameObject(std::string("light " + std::to_string(i)), i * 10, 0, i * 10));
@@ -102,94 +104,93 @@ public:
 		}
 		lights.back()->GetComponentManager()->RemoveComponent<PointLight>();
 		lights.back()->GetComponentManager()->AddComponent<DirectionalLight>();
-		lights.back()->GetComponent<Transform>()->RotateOnce(-110,0,0);
-		gladiator = new GameObject("gladiator", 0, 5, 0);
-		gladiator->GetComponentManager()->RemoveComponent<Irenderer>();
-		gladiator->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
-		//gladiator->GetComponent<Transform>()->Scale(0.1, 0.1, 0.1);
-		gladiator->GetComponent<Transform>()->Translate(0, 10, 0);
-		glm::vec2 a(0, 0);
-		glm::vec2 b(0, 100);
-		CrossSection(dots1,a,b);
-		glm::vec2 c(0, 0);
-		glm::vec2 d(0.1, 0);
-		CrossSection(dots2,c, d);
+		lights.back()->GetComponent<Transform>()->RotateOnce(120,0,0);
+		//gladiator = new GameObject("gladiator", 0, 5, 0);
+		//gladiator->GetComponentManager()->RemoveComponent<Irenderer>();
+		//gladiator->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+		//gladiator->GetComponent<Transform>()->Translate(0, 10, 0);
+		//glm::vec2 a(0, 0);
+		//glm::vec2 b(0, 100);
+		//CrossSection(dots1,a,b);
+		//glm::vec2 c(0, 0);
+		//glm::vec2 d(0.1, 0);
+		//CrossSection(dots2,c, d);
 
-		uint32_t index = 0;
-		uint32_t counter = 0;
-
-		for (uint32_t i = 0; i < dots1.size(); i++)
-		{
-			//std::cout << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << std::endl;
-			for (auto iter = lD.begin(); iter != lD.end(); iter++)
-			{
-				if (IsVec3Equal(dots1[i], iter->second)) {
-					counter++;
-				}
-				else {
-					//std::cout << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << " / " << iter->second.x << "	" << iter->second.y << "	" << iter->second.z << std::endl;
-				}
-			}
-			if (counter == 0) {
-				//std::cout << "insert " << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << std::endl;
-				lD.insert(std::make_pair(index, dots1[i]));
-				index++;
-			}
-			counter = 0;
-		}
-		int size = lD.size();
-
-		for (uint32_t i = 0; i < dots1.size(); i+=2)
-		{
-			int32_t a1 = -1;
-			int32_t b1 = -1;
-			for (auto iter = lD.begin(); iter != lD.end(); iter++)
-			{
-				if (IsVec3Equal(dots1[i], iter->second)) {
-					a1 = iter->first;
-				}
-			}
-			for (auto iter = lD.begin(); iter != lD.end(); iter++)
-			{
-				if (IsVec3Equal(dots1[i + 1], iter->second)) {
-					b1 = iter->first;
-				}
-			}
-			if (a1 < 0 || b1 < 0)
-				std::cout << "No such pair of verteces\n";
-			else {
-				lines.insert(std::make_pair(a1, b1));
-				
-			}
-		}
-
-		//!!!!!
-		// Loop is closed if each edge has in and out it looks like this
-		// ([x,..] and [...,x]) or ([..,x] and [...,x]) and is not if [x,x] or ([x,..] and [..,x])
-		// TO DO!!!!!
-		//!!!!!
-
-		for (auto i = lines.begin(); i != lines.end();)
-		{
-			if (i->first == i->second) {
-				lines.erase(i++);
-			}
-			else {
-				++i;
-			}
-		}
-
-		int con = 0;
-		for (auto iter = lines.begin(); iter != lines.end(); iter++)
-		{
-			Line* l = new Line(lD.find(iter->first)->second, lD.find(iter->second)->second);
-			if(con % 2 == 0)
-				l->m_Color = COLORS::Green;
-			else
-				l->m_Color = COLORS::Yellow;
-			con++;
-		}
-
+		//uint32_t index = 0;
+		//uint32_t counter = 0;
+		//
+		//for (uint32_t i = 0; i < dots1.size(); i++)
+		//{
+		//	//std::cout << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << std::endl;
+		//	for (auto iter = lD.begin(); iter != lD.end(); iter++)
+		//	{
+		//		if (IsVec3Equal(dots1[i], iter->second)) {
+		//			counter++;
+		//		}
+		//		else {
+		//			//std::cout << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << " / " << iter->second.x << "	" << iter->second.y << "	" << iter->second.z << std::endl;
+		//		}
+		//	}
+		//	if (counter == 0) {
+		//		//std::cout << "insert " << dots1[i].x << "	" << dots1[i].y << "	" << dots1[i].z << std::endl;
+		//		lD.insert(std::make_pair(index, dots1[i]));
+		//		index++;
+		//	}
+		//	counter = 0;
+		//}
+		//int size = lD.size();
+		//
+		//for (uint32_t i = 0; i < dots1.size(); i+=2)
+		//{
+		//	int32_t a1 = -1;
+		//	int32_t b1 = -1;
+		//	for (auto iter = lD.begin(); iter != lD.end(); iter++)
+		//	{
+		//		if (IsVec3Equal(dots1[i], iter->second)) {
+		//			a1 = iter->first;
+		//		}
+		//	}
+		//	for (auto iter = lD.begin(); iter != lD.end(); iter++)
+		//	{
+		//		if (IsVec3Equal(dots1[i + 1], iter->second)) {
+		//			b1 = iter->first;
+		//		}
+		//	}
+		//	if (a1 < 0 || b1 < 0)
+		//		std::cout << "No such pair of verteces\n";
+		//	else {
+		//		lines.insert(std::make_pair(a1, b1));
+		//		
+		//	}
+		//}
+		//
+		////!!!!!
+		//// Loop is closed if each edge has in and out it looks like this
+		//// ([x,..] and [...,x]) or ([..,x] and [...,x]) and is not if [x,x] or ([x,..] and [..,x])
+		//// TO DO!!!!!
+		////!!!!!
+		//
+		//for (auto i = lines.begin(); i != lines.end();)
+		//{
+		//	if (i->first == i->second) {
+		//		lines.erase(i++);
+		//	}
+		//	else {
+		//		++i;
+		//	}
+		//}
+		//
+		//int con = 0;
+		//for (auto iter = lines.begin(); iter != lines.end(); iter++)
+		//{
+		//	Line* l = new Line(lD.find(iter->first)->second, lD.find(iter->second)->second);
+		//	if(con % 2 == 0)
+		//		l->m_Color = COLORS::Green;
+		//	else
+		//		l->m_Color = COLORS::Yellow;
+		//	con++;
+		//}
+		//
 	}
 
 	bool IsVec3Equal(glm::vec3 a, glm::vec3 b) {
@@ -328,13 +329,11 @@ public:
 	void CreateCube(int i ,int j) {
 		cube.push_back(new GameObject("dirt" + std::to_string(i) + ":" + std::to_string(j)));
 		terrain->AddChild((void*)cube.back());
-		cube.back()->SetOwner((void*)terrain);
-		cube.back()->GetComponentManager()->RemoveComponent<Irenderer>();
 		cube.back()->GetComponentManager()->AddComponent<Renderer3D>();
 		MeshManager::GetMeshWhenLoaded("cube", (void*)cube.back()->GetComponent<Renderer3D>());
 		cube.back()->GetComponent<Renderer3D>()->m_Material.m_Ambient = 0.4f;
 		cube.back()->GetComponent<Renderer3D>()->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
-		cube.back()->GetComponent<Renderer3D>()->m_DiffuseTexture = Texture::Create("src/Minecraft/Textures/minecraft_dirt.png");
+		cube.back()->GetComponent<Renderer3D>()->m_DiffuseTexture = dirtImg;
 		cube.back()->GetComponent<Transform>()->RotateOnce(0, 0, -90);
 		cube.back()->GetComponent<Transform>()->Scale(0.5, 0.5, 0.5);
 		cube.back()->GetComponentManager()->AddComponent<CubeCollider3D>();

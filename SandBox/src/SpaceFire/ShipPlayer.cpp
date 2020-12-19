@@ -72,14 +72,12 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->m_Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
-	bulletsPlaceHolder->SetOwner((void*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
-	GetComponentManager()->AddComponent<SpriteRenderer>();
 	col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 	tr = GetComponentManager()->GetComponent<Transform>();
-	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
+	sr = GetComponentManager()->AddComponent<SpriteRenderer>();;
 	tr->Scale(5, 5);
 	sr->SetTexture(texture);
 	col->SetTag("Player");
@@ -88,7 +86,6 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	{
 		bullets.push_back(new Bullet("Bullet",dir,"Bullet" + std::to_string(i), GetPosition().x, GetPosition().y));
 		bullets[i]->isActive = false;
-		bullets[i]->SetOwner((void*)bulletsPlaceHolder);
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
 		bullets[i]->m_Enable = false;
 		bullets[i]->col->Enable = false;
@@ -196,5 +193,5 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 		}
 		SoundManager::Play(fireSound);
 	}
-	timerFire += DeltaTime::m_Deltatime;
+	timerFire += DeltaTime::s_Deltatime;
 }

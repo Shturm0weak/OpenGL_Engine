@@ -6,6 +6,7 @@ private:
 public:
 	Ammo(std::string name,float x, float y,int amount) : GameObject(name,x,y) {
 		ammo = amount;
+		GetComponentManager()->AddComponent<SpriteRenderer>();
 		SoundManager::CreateSoundAsset("pickUp", pickUp);
 	 }
 

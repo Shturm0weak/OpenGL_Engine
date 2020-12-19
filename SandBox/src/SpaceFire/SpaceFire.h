@@ -24,6 +24,7 @@ public:
 	SpaceFire(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name,TYPE_2D,width,height,Vsync){}
 
 	void OnStart() {
+		Renderer::s_BloomEffect = false;
 		Window::GetCamera().Zoom(20);
 		SoundManager::CreateSoundAsset("back", backSound);
 		SoundManager::SetVolume(0.3f);
@@ -35,10 +36,10 @@ public:
 		backgroundTexture = Texture::Create("src/SpaceFire/Images/SpaceBack.png");
 		background1 = new GameObject("BackGround1");
 		background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		static_cast<SpriteRenderer*>(background1->GetComponentManager()->AddComponent<SpriteRenderer>())->SetTexture(backgroundTexture);
+		(background1->GetComponentManager()->AddComponent<SpriteRenderer>())->SetTexture(backgroundTexture);
 		background2 = new GameObject("BackGround2");
 		background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		static_cast<SpriteRenderer*>(background2->GetComponentManager()->AddComponent<SpriteRenderer>())->SetTexture(backgroundTexture);
+		(background2->GetComponentManager()->AddComponent<SpriteRenderer>())->SetTexture(backgroundTexture);
 		pl = new ShipPlayer();
 		float x = -20;
 		for (unsigned int i = 0; i < 5; i++)
@@ -61,7 +62,7 @@ public:
 		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
 		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 20;
 		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin = glm::vec2(50,40);
-		Gui::GetInstance()->Panel("",x, y, 450, 200, COLORS::DarkGray * 0.8f);
+		Gui::GetInstance()->Panel("##1",x, y, 450, 200, COLORS::DarkGray * 0.8f);
 		if (Gui::GetInstance()->Button("Exit", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			Window::Exit();
 		}
@@ -78,14 +79,16 @@ public:
 	}
 
 	void OnGuiRender() {
-
+		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin.x = 0;
+		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin.y = 0;
 		for (size_t i = 0; i < enemies.size(); i++)
 		{
 			if (enemies[i]->isDead)
 				continue;
-			glm::dvec2 pos = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetPosition().x - static_cast<SpriteRenderer*>(enemies[i]->GetComponentManager()->GetComponent<Irenderer>())->GetWidth() / 2.), (enemies[i]->GetPosition().y + static_cast<SpriteRenderer*>(enemies[i]->GetComponentManager()->GetComponent<Irenderer>())->GetHeight()));
-			glm::vec2 size = ViewPort::GetInstance()->GetFromWorldToScreenSpace(static_cast<SpriteRenderer*>(enemies[i]->GetComponentManager()->GetComponent<Irenderer>())->GetWidth(), 0);
-			//Gui::GetInstance()->Bar(pos.x,pos.y,enemies[i]->hp,100,COLORS::Red,COLORS::DarkGray, size.x,25 / (Window::GetCamera().GetZoomLevel() / 10));
+			glm::dvec2 pos = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetPosition().x - enemies[i]->GetComponent<SpriteRenderer>()->GetWidth() / 2.0), (enemies[i]->GetPosition().y + enemies[i]->GetComponent<SpriteRenderer>()->GetHeight() / 2.0));
+			glm::vec2 size = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetComponentManager()->GetComponent<SpriteRenderer>())->GetWidth(), 0);
+		
+			Gui::GetInstance()->Bar(pos.x, pos.y + 30, enemies[i]->hp, 100, COLORS::Red, COLORS::DarkGray, size.x,25 / (Window::GetCamera().GetZoomLevel() / 10));
 		}
 
 		if (pl->isDead || pause) {
@@ -139,7 +142,7 @@ public:
 		Gui::GetInstance()->RelateToPanel();
 		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
 		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 10;
-		Gui::GetInstance()->Panel("",g_Width * 0.5, g_Height / Window::GetCamera().GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
+		Gui::GetInstance()->Panel("##2",g_Width * 0.5, g_Height / Window::GetCamera().GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
 		Gui::GetInstance()->Text("FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
 		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
 		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);

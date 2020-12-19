@@ -122,17 +122,15 @@ void Transform::RotateOnce(float x, float y, float z,bool isRad) {
 		}*/
 }
 
-void Doom::Transform::RotateOnce(glm::vec3 a, glm::vec3 tempAxis)
+void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
 {
 	glm::vec3 position = Utils::GetPosition(m_PosMat4);
-	glm::vec3 axis = tempAxis;
 	glm::vec3 b = glm::vec3(0, 1, 0);
-	float angleRad = acosf((a.x * b.x + a.y * b.y + a.z * b.z) / ((sqrtf(a.x * a.x + a.y * a.y + a.z * a.z) * (sqrtf(b.x * b.x + b.y * b.y + b.z * b.z)))));
+	float angleRad = acosf((dir.x * b.x + dir.y * b.y + dir.z * b.z) / ((sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * (sqrtf(b.x * b.x + b.y * b.y + b.z * b.z)))));
 	if (ViewPort::GetInstance()->GetMousePositionToWorldSpace().x > position.x)
 		angleRad = -angleRad;
 	axis *= angleRad;
-	m_ViewMat4 = glm::mat4(1.0f);
-	m_ViewMat4 = glm::rotate(m_ViewMat4, angleRad, axis);
+	m_ViewMat4 = glm::toMat4(glm::quat(axis));
 	RealVertexPositions();
 	if (col == nullptr) {
 		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();

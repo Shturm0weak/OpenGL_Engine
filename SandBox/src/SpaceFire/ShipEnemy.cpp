@@ -20,14 +20,12 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->m_Enable = false;
 	AddChild((void*)bulletsPlaceHolder);
-	bulletsPlaceHolder->SetOwner((void*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (GameObject*)this);
 	EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
-	GetComponentManager()->AddComponent<SpriteRenderer>();
+	sr = GetComponentManager()->AddComponent<SpriteRenderer>();
 	col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 	tr = GetComponentManager()->GetComponent<Transform>();
-	sr = static_cast<SpriteRenderer*>(GetComponentManager()->GetComponent<Irenderer>());
 	tr->Scale(5, 5);
 	tr->RotateOnce(0,0,180);
 	sr->SetColor(COLORS::Red);
@@ -98,10 +96,11 @@ void ShipEnemy::Death()
 	int ammo = distribution1(e2);
 	if (chance <= 1) {
 		Ammo* a = new Ammo("AmmoPickUp", GetPosition().x, GetPosition().y, ammo);
-		static_cast<SpriteRenderer*>(a->GetComponentManager()->GetComponent<Irenderer>())->SetTexture(Texture::Create("src/SpaceFire/Images/Ammo.png"));
-		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
 		RectangleCollider2D* col = a->GetComponentManager()->AddComponent<RectangleCollider2D>();
+		(a->GetComponentManager()->GetComponent<SpriteRenderer>())->SetTexture(Texture::Create("src/SpaceFire/Images/Ammo.png"));
+		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
 		col->SetTag("Ammo");
+		col->IsTrigger = true;
 	}
 }
 
@@ -118,5 +117,5 @@ void ShipEnemy::Fire() {
 		bullets[usedBulletCounter]->lifeTimer = 0;
 		usedBulletCounter++;
 	}
-	timerFire += DeltaTime::m_Deltatime;
+	timerFire += DeltaTime::s_Deltatime;
 }

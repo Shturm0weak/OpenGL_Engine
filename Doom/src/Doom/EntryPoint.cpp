@@ -13,7 +13,7 @@
 #include "Lua/LuaState.h"
 #include "ImGuizmo/ImGuizmo.h"
 
-//#define _IS_GAME_BUILD
+#define _IS_GAME_BUILD
 
 using namespace Doom;
 
@@ -22,6 +22,7 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 		this->m_App = new Application();
 	else
 		this->m_App = app;
+	World::s_Application = this->m_App;
 	Window::Init(this->m_App->m_Name.c_str(), this->m_App->m_Width, this->m_App->m_Height, this->m_App->m_Vsync);
 	this->m_App->Init();
 	MainThread::Init();
@@ -58,12 +59,12 @@ void EntryPoint::Run()
 {
 	bool isEditorEnable = false;
 	bool FirstFrame = true;
-	SceneSerializer::DeSerialize(SceneSerializer::s_CurrentSceneFilePath);
 #ifdef _IS_GAME_BUILD
 	m_App->OnStart();
 #endif
 	EventSystem::GetInstance()->SendEvent(EventType::ONSTART, nullptr);
 	while (!glfwWindowShouldClose(Window::GetWindow())) {
+		RectangleCollider2D::CollidersToInit();
 		Window::s_CursorStateChanged = false;
 		Gui::GetInstance()->m_IsAnyPanelHovered = false;
 		EventSystem::GetInstance()->SendEvent(EventType::ONUPDATE, nullptr);
@@ -138,7 +139,7 @@ void EntryPoint::Run()
 		Renderer::Clear();
 		Instancing::Instance()->PrepareVertexAtrrib();
 
-		Renderer::BloomEffect();
+		Renderer::RenderBloomEffect();
 	
 		Shader* shader = Shader::Get("QuadFullScreen");
 		Renderer::Clear();
@@ -147,6 +148,9 @@ void EntryPoint::Run()
 		glBindTexture(GL_TEXTURE_2D, Window::GetCamera().m_FrameBufferColor->m_Textures[0]);
 		Renderer::RenderForPostEffect(MeshManager::GetMesh("plane"), shader);
 		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
+		Renderer::RenderCollision();
+		Renderer::RenderCollision3D();
 		Renderer::RenderText();
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
@@ -166,7 +170,6 @@ void EntryPoint::Run()
 		glfwSwapBuffers(Window::GetWindow());
 		glfwPollEvents();
 	}
-	SceneSerializer::Serialize(SceneSerializer::s_CurrentSceneFilePath);
 #ifdef _IS_GAME_BUILD
 	m_App->OnClose();
 #endif

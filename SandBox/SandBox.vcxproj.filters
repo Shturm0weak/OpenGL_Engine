@@ -25,6 +25,19 @@
     <ClInclude Include="src\FEM\Vector.h" />
     <ClInclude Include="src\game\BlankProject.h" />
     <ClInclude Include="src\AimTrainer\AimTrainer.h" />
+    <ClInclude Include="src\SpaceFire\Ammo.h" />
+    <ClInclude Include="src\SpaceFire\Bullet.h" />
+    <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
+    <ClInclude Include="src\SpaceFire\ShipPlayer.h" />
+    <ClInclude Include="src\SpaceFire\SpaceFire.h" />
+    <ClInclude Include="src\game\RayCastTest.h" />
+    <ClInclude Include="src\game\TicTacToe.h" />
+    <ClInclude Include="src\game\StressTest.h" />
+    <ClInclude Include="src\Minecraft\Minecraft.h" />
+    <ClInclude Include="src\Examples\BlankProject.h" />
+    <ClInclude Include="src\Examples\RayCastTest.h" />
+    <ClInclude Include="src\Examples\StressTest.h" />
+    <ClInclude Include="src\Examples\TicTacToe.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
@@ -34,6 +47,8 @@
     <ClCompile Include="src\FEM\Matrix.cpp" />
     <ClCompile Include="src\FEM\Vector.cpp" />
     <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
+    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
+    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BakeShadows.shader" />
@@ -54,5 +69,51 @@
     <None Include="src\Shaders\Blur.shader" />
     <None Include="src\Shaders\Bloom.shader" />
     <None Include="src\Shaders\QuadFullScreen.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\Fonts\arial.png" />
+    <Image Include="src\Fonts\calibri.png" />
+    <Image Include="src\Fonts\harrington.png" />
+    <Image Include="src\Fonts\peak.png" />
+    <Image Include="src\Fonts\playball.png" />
+    <Image Include="src\Fonts\segoe.png" />
+    <Image Include="src\GameRPG\Textures\RPGpack_sheet_2X.png" />
+    <Image Include="src\Images\arial.png" />
+    <Image Include="src\Images\background.png" />
+    <Image Include="src\Images\bird.png" />
+    <Image Include="src\Images\bomb.png" />
+    <Image Include="src\Images\Box.png" />
+    <Image Include="src\Images\Box1.png" />
+    <Image Include="src\Images\Box1normalmap.png" />
+    <Image Include="src\Images\car.png" />
+    <Image Include="src\Images\Circle.png" />
+    <Image Include="src\Images\coin.png" />
+    <Image Include="src\Images\CrossLines.png" />
+    <Image Include="src\Images\default.png" />
+    <Image Include="src\Images\dirt.jpg" />
+    <Image Include="src\Images\download.png" />
+    <Image Include="src\Images\earth.png" />
+    <Image Include="src\Images\Gladiator_BaseColor.png" />
+    <Image Include="src\Images\Gladiator_body_normal_3ds_Max.png" />
+    <Image Include="src\Images\Heart.png" />
+    <Image Include="src\Images\Leaves01.png" />
+    <Image Include="src\Images\man.png" />
+    <Image Include="src\Images\MuzzleFlash.png" />
+    <Image Include="src\Images\normalMap.png" />
+    <Image Include="src\Images\one.png" />
+    <Image Include="src\Images\reddot.png" />
+    <Image Include="src\Images\Stone.png" />
+    <Image Include="src\Images\tgorecfs_2K_Normal.png" />
+    <Image Include="src\Images\tube.png" />
+    <Image Include="src\Images\watermellon.png" />
+    <Image Include="src\Images\WhiteCircle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\Fonts\arial.txt" />
+    <Text Include="src\Fonts\calibri.txt" />
+    <Text Include="src\Fonts\harrington.txt" />
+    <Text Include="src\Fonts\peak.txt" />
+    <Text Include="src\Fonts\playball.txt" />
+    <Text Include="src\Fonts\segoe.txt" />
   </ItemGroup>
 </Project>

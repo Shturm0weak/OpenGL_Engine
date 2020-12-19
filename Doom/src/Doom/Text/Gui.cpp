@@ -291,10 +291,10 @@ void Doom::Gui::Bar(float x, float y, float value, float maxValue, glm::vec4 col
 	float tempCoords[8];
 	for (size_t i = 0; i < 8; i++)
 		tempCoords[i] = m_CurrentPanelCoods[i];
-	Panel("",x,y,width,height,outColor);
+	Panel("##Bar1" + std::to_string(x),x,y,width,height,outColor);
 	float _width = width * (value / maxValue);
 	float diff = width - _width;
-	Panel("",x - diff * 0.5f, y, _width, height, color);
+	Panel("##Bar2" + std::to_string(x),x - diff * 0.5f, y, _width, height, color);
 	m_RelatedPanelProperties = temp;
 	for (size_t i = 0; i < 8; i++)
 		m_CurrentPanelCoods[i] = tempCoords[i];

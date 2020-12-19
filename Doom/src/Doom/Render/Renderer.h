@@ -32,7 +32,7 @@ namespace Doom {
 		static void Clear();
 		static void SortTransparentObjects();
 		static void RenderForPostEffect(Mesh* mesh, Shader* shader);
-		static void BloomEffect();
+		static void RenderBloomEffect();
 		inline static unsigned int GetAmountOfCollisions() { return s_Collision2d.size(); }
 	private:
 

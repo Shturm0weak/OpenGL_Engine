@@ -12,6 +12,7 @@
 #include <mutex>
 
 //!!! Deprecated !!!\\
+//!!! Need to be added before <SpriteRenderer> otherwise it will be considered in the (0,0) coordinates !!!\\
 
 namespace Doom {
 
@@ -26,7 +27,9 @@ namespace Doom {
 		const unsigned int indeces[6] = { 0,1,2,3,2,0 };
 
 		int id = 0;
-		//void* Owner = nullptr;
+
+		static std::vector<RectangleCollider2D*> s_CollidersToInit;
+
 		RectangleCollider2D* col = nullptr;
 		Transform* trans = nullptr;
 		
@@ -62,6 +65,7 @@ namespace Doom {
 		friend class Renderer;
 		friend class Batch;
 		friend class Ray2D;
+		friend class SceneSerializer;
 
 		glm::vec2 displacement;
 		glm::vec2 offset = {0,0};
@@ -102,6 +106,8 @@ namespace Doom {
 		void SetOffset(float x, float y);
 		void IsCollidedSAT();
 		void IsCollidedDIAGS();
+
+		static void CollidersToInit();
 	};
 
 }

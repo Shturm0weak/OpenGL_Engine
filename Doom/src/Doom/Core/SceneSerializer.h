@@ -25,6 +25,7 @@ namespace Doom {
 		static void SerializeCubeColliderComponent(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializeSphereColliderComponent(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializeRegisteredEvents(YAML::Emitter& out, GameObject* go);
+		static void SerializeRectangularCollider(YAML::Emitter& out, ComponentManager* go);
 	};
 
 }

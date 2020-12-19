@@ -3,6 +3,7 @@
 #include "World.h"
 #include "../Objects/SkyBox.h"
 #include "../Core/Utils.h"
+#include "Core/Editor.h"
 
 namespace YAML {
 
@@ -88,8 +89,7 @@ void Doom::SceneSerializer::Serialize(const std::string& filePath)
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene";
-	out << YAML::Value << "Untitled";
-
+	out << YAML::Value << ((Application*)World::s_Application)->m_Type;
 	out << YAML::Key << "Camera";
 	out << YAML::BeginMap;
 	out << YAML::Key << "Transform";
@@ -97,6 +97,7 @@ void Doom::SceneSerializer::Serialize(const std::string& filePath)
 	out << YAML::Key << "Position" << YAML::Value << Window::GetCamera().GetPosition();
 	out << YAML::Key << "Rotation" << YAML::Value << Window::GetCamera().GetRotation();
 	out << YAML::EndMap;
+	out << YAML::Key << "Zoom" << YAML::Value << Window::GetCamera().GetZoomLevel();
 	out << YAML::Key << "FOV" << YAML::Value << Window::GetCamera().GetFOV();
 	out << YAML::EndMap;
 
@@ -137,16 +138,19 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 	if (!data["Scene"])
 		return;
 
-	std::string sceneName = data["Scene"].as<std::string>();
-
+	RenderType type = (RenderType)data["Scene"].as<int>();
 
 	auto cam = data["Camera"];
 	auto camTransform = cam["Transform"];
 	glm::vec3 position = camTransform["Position"].as<glm::vec3>();
 	glm::vec3 rotation = camTransform["Rotation"].as<glm::vec3>();
 	float fov = cam["FOV"].as<float>();
+	double zoom = cam["Zoom"].as<float>();
 	Camera& camera = Window::GetCamera();
-	camera.SetFov(fov);
+	if (type == RenderType::TYPE_3D)
+		camera.SetFov(fov);
+	else
+		camera.Zoom(zoom);
 	camera.SetPosition(position);
 	camera.SetRotation(rotation);
 
@@ -310,6 +314,18 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		}
 	}
 
+	auto RectangularCollider2DComponent = go["Rectangle collider 2D"];
+	if (RectangularCollider2DComponent) {
+		RectangleCollider2D* rc = obj->GetComponentManager()->AddComponent<RectangleCollider2D>();
+		rc->Enable = RectangularCollider2DComponent["Is Enable"].as<bool>();
+		rc->IsTrigger = RectangularCollider2DComponent["Is trigger"].as<bool>();
+		rc->SetTag(RectangularCollider2DComponent["Tag"].as<std::string>());
+		glm::vec3 offset = RectangularCollider2DComponent["OffSet"].as<glm::vec3>();
+		rc->SetOffset(offset.x, offset.y);
+		glm::vec3 scale = RectangularCollider2DComponent["Scale"].as<glm::vec3>();
+		rc->Scale(scale.x, scale.y);
+	}
+
 	auto childsId = go["Childs id"];
 	if (childsId) {
 		std::vector<int> ids = childsId.as<std::vector<int>>();
@@ -361,6 +377,7 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 	SerializeSphereColliderComponent(out, cm);
 	SerializeGameObjectChilds(out, go);
 	SerializeRegisteredEvents(out, go);
+	SerializeRectangularCollider(out, cm);
 
 	out << YAML::EndMap;
 }
@@ -524,4 +541,19 @@ void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter& out,
 void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter& out, GameObject* go)
 {
 	out << YAML::Key << "Registered events" << YAML::Value << go->m_RegisteredEvents;
+}
+
+void Doom::SceneSerializer::SerializeRectangularCollider(YAML::Emitter& out, ComponentManager* cm)
+{
+	if (cm->GetComponent<RectangleCollider2D>() != nullptr) {
+		RectangleCollider2D* rc = cm->GetComponent<RectangleCollider2D>();
+		out << YAML::Key << "Rectangle collider 2D";
+		out << YAML::BeginMap;
+		out << YAML::Key << "Is Enable" << YAML::Value << rc->Enable;
+		out << YAML::Key << "Is trigger" << YAML::Value << rc->IsTrigger;
+		out << YAML::Key << "Tag" << YAML::Value << rc->GetTag();
+		out << YAML::Key << "OffSet" << YAML::Value << glm::vec3(rc->offset , 0);
+		out << YAML::Key << "Scale" << YAML::Value << rc->scaleValues;
+		out << YAML::EndMap;
+	}
 }

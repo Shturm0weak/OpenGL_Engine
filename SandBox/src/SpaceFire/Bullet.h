@@ -31,7 +31,7 @@ public:
 	virtual void OnUpdate() override {
 		if (isActive) {
 			tr->Move(moveDir.x * speed, moveDir.y * speed, moveDir.z * speed);
-			lifeTimer += DeltaTime::m_Deltatime;
+			lifeTimer += DeltaTime::s_Deltatime;
 		}
 		if (lifeTimer > maxTimeToLive) {
 			Death();

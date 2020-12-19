@@ -9,6 +9,7 @@
 #include "Render/Instancing.h"
 #include "Objects/SkyBox.h"
 #include "Core/Utils.h"
+#include "Core/SceneSerializer.h"
 
 using namespace Doom;
 
@@ -102,6 +103,7 @@ glm::vec3 Doom::AimTrainer::RandomPos(glm::vec2 limX, glm::vec2 limY, glm::vec2 
 
 void AimTrainer::OnStart()
 {
+	SceneSerializer::DeSerialize(SceneSerializer::s_CurrentSceneFilePath);
 	Window::GetCamera().SetPosition(glm::vec3(0, 12, 12));
 	Window::GetCamera().SetRotation(glm::vec3(0, 0, 0));
 	GameObject* startGo = new GameObject("Start", 0, 10, -10);

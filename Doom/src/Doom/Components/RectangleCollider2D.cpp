@@ -6,22 +6,10 @@
 using namespace Doom;
 
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
-	//SetType(ComponentType::COLLISION);
 	this->m_Owner = owner;
 	id = World::s_ColId;
 	World::s_ColId++;
 	Renderer::s_Collision2d.push_back(this);
-	if (owner != nullptr) {
-		position.x = owner->GetPosition().x;
-		position.y = owner->GetPosition().y;
-	}
-	else {
-		position.x = x;
-		position.y = y;
-	}
-	this->pos = translate(glm::mat4(1.f), glm::vec3(position.x, position.y, 0));
-	RealVerPos();
-	//float theta = (-owner->GetAngle() * (2 * 3.14159f) / 360.0f);
 	glm::vec2 p1 = glm::vec2(ScaledVerPos[0] + position.x, ScaledVerPos[1] + position.y);
 	glm::vec2 p2 = glm::vec2(ScaledVerPos[4] + position.x, ScaledVerPos[5] + position.y);
 	glm::vec2 p3 = glm::vec2(ScaledVerPos[8] + position.x, ScaledVerPos[9] + position.y);
@@ -30,10 +18,8 @@ RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 	p.push_back(p2);
 	p.push_back(p3);
 	p.push_back(p4);
-	if (owner != nullptr) {
-		Translate(owner->GetPosition().x, owner->GetPosition().y);
-		SetOffset(offset.x, offset.y);
-	}
+	SetOffset(offset.x, offset.y);
+	s_CollidersToInit.push_back(this);
 }
 
 Doom::RectangleCollider2D::~RectangleCollider2D()
@@ -283,6 +269,15 @@ void RectangleCollider2D::IsCollidedDIAGS()
 			}
 		}
 		return;
+	}
+}
+
+void Doom::RectangleCollider2D::CollidersToInit()
+{
+	for (uint32_t i = 0; i < RectangleCollider2D::s_CollidersToInit.size(); i++)
+	{
+		Transform* tr = RectangleCollider2D::s_CollidersToInit[i]->GetOwnerOfComponent()->m_Transform;
+		RectangleCollider2D::s_CollidersToInit[i]->UpdateCollision(tr->GetPosition().x, tr->GetPosition().y, tr->m_PosMat4, tr->m_ViewMat4, tr->m_ScaleMat4);
 	}
 }
 

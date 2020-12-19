@@ -7,6 +7,7 @@ namespace Doom {
 
 		static std::vector <GameObject*> s_GameObjects;
 
+		static void* s_Application;
 		static int s_ObjId;
 		static int s_ColId;
 

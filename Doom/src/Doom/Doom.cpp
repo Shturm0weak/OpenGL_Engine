@@ -15,6 +15,7 @@
 #include "Core/SceneSerializer.h"
 #include "Input/WindowsInput.h"
 #include "Rays/Ray3D.h"
+#include "EntryPoint.h"
 
 using namespace Doom;
 
@@ -68,7 +69,8 @@ DOOM_API float DeltaTime::s_Lasttime = (float)glfwGetTime();
 DOOM_API float DeltaTime::s_Deltatime = 1.0 / 1e8;
 DOOM_API std::mutex DeltaTime::s_Mtx;
 
-DOOM_API bool RectangleCollider2D::s_IsVisible;
+DOOM_API bool RectangleCollider2D::s_IsVisible = false;
+DOOM_API std::vector <RectangleCollider2D*> RectangleCollider2D::s_CollidersToInit;
 
 DOOM_API vec4 COLORS::Red(0.9, 0, 0, 1);
 DOOM_API vec4 COLORS::Yellow(1, 1, 0, 1);
@@ -115,3 +117,5 @@ DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 DOOM_API std::vector<std::string> Ray3D::m_IgnoreMask;
 
 DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/scene.yaml";
+
+DOOM_API void* World::s_Application = nullptr;

@@ -80,8 +80,8 @@ void Doom::ViewPort::Update()
 void Doom::ViewPort::GetMousePositionToWorldSpaceImpl()
 {
 	glfwGetCursorPos(Window::GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
-	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (Window::GetSize()[0] - 1))) - 0.5) * Window::GetCamera().GetAspectRatio() * 2 * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().x;
-	m_MousePosW.y = (((-((m_CursorPos.y + (Window::GetSize()[1] - m_Size.y)) / Window::GetSize()[1])) + 0.5)) * 2 * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().y;
+	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * Window::GetCamera().GetAspectRatio() * 2 * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().x;
+	m_MousePosW.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (Window::GetSize()[1] / m_Size.y)) / Window::GetSize()[1]) + 0.5) * 2 * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().y;
 }
 void Doom::ViewPort::GetStaticMousePositionImpl()
 {

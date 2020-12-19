@@ -54,7 +54,7 @@ void Doom::Renderer::SortTransparentObjects()
 	});
 }
 
-void Doom::Renderer::BloomEffect()
+void Doom::Renderer::RenderBloomEffect()
 {
 	if (!s_BloomEffect)
 		return;
@@ -119,7 +119,6 @@ void Renderer::Render() {
 	if (Window::GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
 		glDisable(GL_DEPTH_TEST);
 		Render2DObjects();
-		RenderCollision();
 		RenderLines();
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
@@ -128,7 +127,6 @@ void Renderer::Render() {
 	RenderCollision();
 	Render3DObjects();
 	RenderLines();
-	RenderCollision3D();
 	Render2DObjects();
 	RenderTransparent();
 }
