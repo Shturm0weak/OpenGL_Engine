@@ -31,15 +31,15 @@ Shader* Doom::Shader::Create(const std::string& name, const std::string& path)
 	}
 }
 
-Shader * Doom::Shader::Get(const std::string& name)
+Shader * Doom::Shader::Get(const std::string& name, bool showErrors)
 {
 	auto iter = s_Shaders.find(name);
 	if (iter != s_Shaders.end())
 		return iter->second;
-	else {
+	else if (showErrors){
 		std::cout << BOLDYELLOW << "Shader: <" << NAMECOLOR << name << BOLDYELLOW << "> doesn't exist!" << RESET << std::endl;
-		return nullptr;
 	}
+	return nullptr;
 }
 
 void Shader::Bind() const {

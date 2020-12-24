@@ -20,18 +20,18 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 	
 	std::vector<glm::vec2> corners;
 	std::multimap<RectangleCollider2D*,glm::vec2*> points;
-	unsigned int size = Renderer::s_Collision2d.size();
+	unsigned int size = RectangleCollider2D::s_Collision2d.size();
 
 	bool ignoreFlag = false;
 
 	for (unsigned int i = 0; i < size; i++)
 	{
-		RectangleCollider2D* col = Renderer::s_Collision2d[i];
+		RectangleCollider2D* col = RectangleCollider2D::s_Collision2d[i];
 
 		unsigned int ignoreMaskSize = ignoreMask.size();
 		for (unsigned int i = 0; i < ignoreMaskSize; i++)
 		{
-			if (ignoreMask[i] == col->GetTag())
+			if (ignoreMask[i] == col->GetOwnerOfComponent()->m_Tag)
 				ignoreFlag = true;
 		}
 
@@ -40,24 +40,25 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 			continue;
 		}
 
-		if (col->Enable != false) {
+		if (col->m_Enable != false) {
 			corners.clear();
-			corners.push_back(glm::vec2(col->ScaledVerPos[0], col->ScaledVerPos[1]));
-			corners.push_back(glm::vec2(col->ScaledVerPos[4], col->ScaledVerPos[5]));
-			corners.push_back(glm::vec2(col->ScaledVerPos[8], col->ScaledVerPos[9]));
-			corners.push_back(glm::vec2(col->ScaledVerPos[12], col->ScaledVerPos[13]));
+			corners.push_back(glm::vec2(col->m_TransformedVerPos[0], col->m_TransformedVerPos[1]));
+			corners.push_back(glm::vec2(col->m_TransformedVerPos[4], col->m_TransformedVerPos[5]));
+			corners.push_back(glm::vec2(col->m_TransformedVerPos[8], col->m_TransformedVerPos[9]));
+			corners.push_back(glm::vec2(col->m_TransformedVerPos[12], col->m_TransformedVerPos[13]));
 
 			glm::vec2* result = nullptr;
-			result = LineIntersect(corners[3] + glm::vec2(col->position.x, col->position.y), corners[0] + glm::vec2(col->position.x, col->position.y), start, m_End);
+			glm::vec3 colPos = col->GetOwnerOfComponent()->GetPosition();
+			result = LineIntersect(corners[3] + glm::vec2(colPos.x, colPos.y), corners[0] + glm::vec2(colPos.x, colPos.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
-			result = LineIntersect(corners[0] + glm::vec2(col->position.x, col->position.y), corners[1] + glm::vec2(col->position.x, col->position.y), start, m_End);
+			result = LineIntersect(corners[0] + glm::vec2(colPos.x, colPos.y), corners[1] + glm::vec2(colPos.x, colPos.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
-			result = LineIntersect(corners[1] + glm::vec2(col->position.x, col->position.y), corners[2] + glm::vec2(col->position.x, col->position.y), start, m_End);
+			result = LineIntersect(corners[1] + glm::vec2(colPos.x, colPos.y), corners[2] + glm::vec2(colPos.x, colPos.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
-			result = LineIntersect(corners[2] + glm::vec2(col->position.x, col->position.y), corners[3] + glm::vec2(col->position.x, col->position.y), start, m_End);
+			result = LineIntersect(corners[2] + glm::vec2(colPos.x, colPos.y), corners[3] + glm::vec2(colPos.x, colPos.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));
 		}

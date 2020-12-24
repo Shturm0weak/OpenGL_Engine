@@ -9,9 +9,10 @@
 #include "src/Examples/BlankProject.h"
 #include "FEM/FEM.h"
 #include "AimTrainer/AimTrainer.h"
+#include "Examples/TestCollision2D.h"
 
 int main(){
-	RayCastTest app;
+	TestCollision2D app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

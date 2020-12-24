@@ -38,6 +38,7 @@
     <ClInclude Include="src\Examples\RayCastTest.h" />
     <ClInclude Include="src\Examples\StressTest.h" />
     <ClInclude Include="src\Examples\TicTacToe.h" />
+    <ClInclude Include="src\Examples\TestCollision2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
@@ -69,6 +70,9 @@
     <None Include="src\Shaders\Blur.shader" />
     <None Include="src\Shaders\Bloom.shader" />
     <None Include="src\Shaders\QuadFullScreen.shader" />
+    <None Include="src\Scenes\RayCastTest.yaml" />
+    <None Include="src\Scenes\scene.yaml" />
+    <None Include="src\Shaders\TestShader.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\Fonts\arial.png" />

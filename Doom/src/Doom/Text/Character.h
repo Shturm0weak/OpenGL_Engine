@@ -16,7 +16,6 @@ namespace Doom {
 		glm::vec2 m_Scale;
 		glm::vec4 m_Color = COLORS::White;
 
-		static unsigned int s_Indices2D[6];
 		float m_Mesh2D[20] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,

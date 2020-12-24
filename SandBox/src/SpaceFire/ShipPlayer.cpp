@@ -80,15 +80,15 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	sr = GetComponentManager()->AddComponent<SpriteRenderer>();;
 	tr->Scale(5, 5);
 	sr->SetTexture(texture);
-	col->SetTag("Player");
-	col->IsTrigger = true;
+	col->GetOwnerOfComponent()->m_Tag = ("Player");
+	col->m_IsTrigger = true;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
 		bullets.push_back(new Bullet("Bullet",dir,"Bullet" + std::to_string(i), GetPosition().x, GetPosition().y));
 		bullets[i]->isActive = false;
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
 		bullets[i]->m_Enable = false;
-		bullets[i]->col->Enable = false;
+		bullets[i]->col->m_Enable = false;
 		bullets[i]->damage = 15.f;
 	}
 }
@@ -96,7 +96,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 void ShipPlayer::Death()
 {
 	m_Enable = false;
-	col->Enable = false;
+	col->m_Enable = false;
 	isDead = true;
 }
 
@@ -106,7 +106,7 @@ void ShipPlayer::Respawn()
 	ammo = 100;
 	hp = 100;
 	m_Enable = true;
-	col->Enable = true;
+	col->m_Enable = true;
 	isDead = false;
 	tr->Translate(0, 0);
 	kills = 0;
@@ -141,12 +141,12 @@ void ShipPlayer::OnUpdate() {
 void ShipPlayer::OnCollision(void * _col)
 {
 	RectangleCollider2D* __col = static_cast<RectangleCollider2D*>(_col);
-	if (__col->GetTag() == "EnemyBullet") {
+	if (__col->GetOwnerOfComponent()->m_Tag == "EnemyBullet") {
 		Bullet* bullet = static_cast<Bullet*>(__col->GetOwnerOfComponent());
 		hp -= bullet->damage;
 		bullet->Death();
 	}
-	else if (__col->GetTag() == "Ammo") {
+	else if (__col->GetOwnerOfComponent()->m_Tag == "Ammo") {
 		Ammo* a = static_cast<Ammo*>(__col->GetOwnerOfComponent());
 		ammo += a->GetAmmo();
 		SoundManager::Play(SoundManager::GetSound("pickUp"));
@@ -171,7 +171,7 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 			bullets[usedBulletCounter]->SetMoveDirection(dir);
 			bullets[usedBulletCounter]->tr->Translate(GetPosition().x + xOffset, GetPosition().y + yOffset);
 			bullets[usedBulletCounter]->m_Enable = true;
-			bullets[usedBulletCounter]->col->Enable = true;
+			bullets[usedBulletCounter]->col->m_Enable = true;
 			bullets[usedBulletCounter]->isActive = true;
 			bullets[usedBulletCounter]->lifeTimer = 0;
 			usedBulletCounter++;

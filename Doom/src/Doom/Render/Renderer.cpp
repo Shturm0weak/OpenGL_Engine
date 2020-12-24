@@ -268,9 +268,9 @@ void Doom::Renderer::RenderTransparent()
 void Doom::Renderer::RenderCollision(){
 	if (RectangleCollider2D::s_IsVisible == true) {
 		Batch::GetInstance()->BeginGameObjects();
-		for (unsigned int i = 0; i < Renderer::s_Collision2d.size(); i++) {
-			RectangleCollider2D* col = Renderer::s_Collision2d[i];
-			if (col != nullptr && col->Enable == true) {
+		for (unsigned int i = 0; i < RectangleCollider2D::s_Collision2d.size(); i++) {
+			RectangleCollider2D* col = RectangleCollider2D::s_Collision2d[i];
+			if (col != nullptr && col->m_Enable == true) {
 				Batch::GetInstance()->Submit(*col);
 			}
 		}

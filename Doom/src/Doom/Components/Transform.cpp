@@ -70,13 +70,10 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 	position.y += speedY * DeltaTime::GetDeltaTime();
 	position.z += speedZ * DeltaTime::GetDeltaTime();
 	m_PosMat4 = glm::translate(glm::mat4(1.0f),position);
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr) {
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
+
 	if (m_Owner->m_Enable) {
 		unsigned int size = m_Owner->GetChilds().size();
 		for (unsigned int i = 0; i < size; i++)
@@ -102,14 +99,10 @@ void Transform::RotateOnce(float x, float y, float z,bool isRad) {
 		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
 		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
 		m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
+		
+		m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 		RealVertexPositions();
-		if (col == nullptr) {
-			col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-		}
-		if (col != nullptr) {
-			glm::vec3 position = Utils::GetPosition(m_PosMat4);
-			col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-		}
+
 		EventSystem::GetInstance()->SendEvent(EventType::ONROTATE, (Listener*)m_Owner);
 		/*if (owner->Enable) {
 			unsigned int size = owner->GetChilds().size();
@@ -131,13 +124,10 @@ void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
 		angleRad = -angleRad;
 	axis *= angleRad;
 	m_ViewMat4 = glm::toMat4(glm::quat(axis));
+
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr) {
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+	
 	EventSystem::GetInstance()->SendEvent(EventType::ONROTATE, (Listener*)m_Owner);
 	/*if (owner->Enable) {
 		unsigned int size = owner->GetChilds().size();
@@ -161,14 +151,10 @@ void Transform::Rotate(float x, float y, float z, bool isRad) {
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr) {
-		glm::vec3 position = Utils::GetPosition(m_PosMat4);
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+
 	EventSystem::GetInstance()->SendEvent(EventType::ONROTATE, (Listener*)m_Owner);
 	/*if (owner->Enable) {
 		unsigned int size = owner->GetChilds().size();
@@ -184,14 +170,10 @@ void Transform::Rotate(float x, float y, float z, bool isRad) {
 void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
 	glm::vec3 vScale(scaleX, scaleY, scaleZ);
 	m_ScaleMat4 = glm::scale(glm::mat4(1.f), vScale);
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr){
-		glm::vec3 position = Utils::GetPosition(m_PosMat4);
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+
 	EventSystem::GetInstance()->SendEvent(EventType::ONSCALE, (Listener*)m_Owner);
 	unsigned int size = m_Owner->GetChilds().size();
 	for (unsigned int i = 0; i < size; i++)
@@ -220,12 +202,10 @@ void Transform::Translate(float x, float y,float z)
 	position.y = y;
 	position.z = z;
 	m_PosMat4 = translate(glm::mat4(1.f), position);
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr)
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
+
 	EventSystem::GetInstance()->SendEvent(EventType::ONTRANSLATE, (Listener*)m_Owner);
 }
 
@@ -235,13 +215,10 @@ void Transform::Move(glm::vec3 vdir) {
 	position.y += vdir.y * DeltaTime::GetDeltaTime();
 	position.z += vdir.z * DeltaTime::GetDeltaTime();
 	m_PosMat4 = glm::translate(glm::mat4(1.0f), position);
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr) {
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
+
 	if (m_Owner->m_Enable) {
 		unsigned int size = m_Owner->GetChilds().size();
 		for (unsigned int i = 0; i < size; i++)
@@ -267,14 +244,10 @@ void Transform::RotateOnce(glm::vec3 vangles, bool isRad) {
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr) {
-		glm::vec3 position = Utils::GetPosition(m_PosMat4);
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+
 	EventSystem::GetInstance()->SendEvent(EventType::ONROTATE, (Listener*)m_Owner);
 	//if(m_PrevRotation.x != vangles.x || m_PrevRotation.y != vangles.y || m_PrevRotation.z != vangles.z){
 	//	m_PrevRotation = vangles;
@@ -306,14 +279,10 @@ void Transform::Rotate(glm::vec3 vangles, bool isRad) {
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
 	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr) {
-		glm::vec3 position = Utils::GetPosition(m_PosMat4);
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+
 	EventSystem::GetInstance()->SendEvent(EventType::ONROTATE, (Listener*)m_Owner);
 	/*if (owner->Enable) {
 		unsigned int size = owner->GetChilds().size();
@@ -328,14 +297,10 @@ void Transform::Rotate(glm::vec3 vangles, bool isRad) {
 
 void Transform::Scale(glm::vec3 vscale) {
 	m_ScaleMat4 = glm::scale(glm::mat4(1.f), vscale);
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr) {
-		glm::vec3 position = Utils::GetPosition(m_PosMat4);
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
-	}
+
 	EventSystem::GetInstance()->SendEvent(EventType::ONSCALE, (Listener*)m_Owner);
 	unsigned int size = m_Owner->GetChilds().size();
 	for (unsigned int i = 0; i < size; i++)
@@ -361,11 +326,9 @@ void Transform::Translate(glm::vec3 vpos)
 		}
 	}
 	m_PosMat4 = translate(glm::mat4(1.f), vpos);
+	
+	m_Owner->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	RealVertexPositions();
-	if (col == nullptr) {
-		col = m_Owner->m_ComponentManager->GetComponent<RectangleCollider2D>();
-	}
-	if (col != nullptr)
-		col->UpdateCollision(position.x, position.y, m_PosMat4, m_ViewMat4, m_ScaleMat4);
+
 	EventSystem::GetInstance()->SendEvent(EventType::ONTRANSLATE, (Listener*)m_Owner);
 }

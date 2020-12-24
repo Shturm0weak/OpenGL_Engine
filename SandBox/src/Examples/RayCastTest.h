@@ -10,6 +10,7 @@ public:
 	glm::vec2 pos = glm::vec2(0, 0);
 	GameObject* coin = nullptr;
 
+
 	RayCastTest(std::string name = "RayCast", float x = 800, float y = 600, bool Vsync = false) : Application(name, TYPE_2D, x, y, Vsync){
 	}
 
@@ -23,7 +24,7 @@ public:
 		RectangleCollider2D* col = coin->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		coin->GetComponentManager()->AddComponent<SpriteRenderer>()->SetTexture(Texture::Create("src/Images/Bird.png"));
 		coin->GetComponentManager()->GetComponent<Transform>()->Scale(3, 3);
-		col->SetTag("Bird");
+		col->GetOwnerOfComponent()->m_Tag = ("Bird");
 		
 		float angle = 0;
 		for (unsigned int i = 0; i < 2000; i++)
@@ -47,7 +48,7 @@ public:
 			Ray2D::Hit hit;
 			rays[i]->SetStart(pos);
 			if (rays[i]->Raycast(hit, 100, pos, rays[i]->m_Dir, rays[i]->m_IgnoreMask)) {
-				if (hit.m_Object->GetTag() == "Bird")
+				if (hit.m_Object->GetOwnerOfComponent()->m_Tag == "Bird")
 					coin->m_Enable = true;
 				lines[i]->SetEndPoint(hit.m_Point.x, hit.m_Point.y);
 			}

@@ -86,7 +86,7 @@ void EntryPoint::Run()
 		Window::ClampCursorPos();
 		Window::GetCamera().WindowResize();
 
-#ifndef _IS_GAME_BUILD
+//#ifndef _IS_GAME_BUILD
 		if (Input::IsKeyPressed(Keycode::KEY_E)) {
 			isEditorEnable = !isEditorEnable;
 		}
@@ -97,7 +97,7 @@ void EntryPoint::Run()
 			Editor::GetInstance()->EditorUpdate();
 		}
 		Window::GetCamera().CameraMovement();
-#endif
+//#endif
 		MeshManager::DispatchLoadedMeshes();
 		Texture::DispatchLoadedTextures();
 		SoundManager::UpdateSourceState();

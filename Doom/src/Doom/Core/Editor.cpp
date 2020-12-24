@@ -187,10 +187,16 @@ void Editor::EditorUpdate()
 		ImGui::Checkbox("Enable", &go->m_Enable);
 		if (go->GetOwner() != nullptr)
 			ImGui::Text("Has Owner");
-		ImGui::InputText("Name", name, sizeof(name));
+		ImGui::InputText("String that can applied to name and tag ...", name, sizeof(name));
+		ImGui::Text("Name %s", go->m_Name);
 		ImGui::SameLine();
 		if (ImGui::Button("Change name")) {
 			go->m_Name = name;
+		}
+		ImGui::Text("Tag %s", go->m_Tag);
+		ImGui::SameLine();
+		if (ImGui::Button("Change tag")) {
+			go->m_Tag = name;
 		}
 		ImGui::SliderInt("Layer", &go->GetLayer(), 0, World::GetAmountOfObjects() - 1);
 		if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->m_RenderType == TYPE_2D) {
@@ -467,20 +473,13 @@ void Doom::Editor::MenuRectangleCollider2D(Doom::RectangleCollider2D* col)
 		if (MenuRemoveComponent<RectangleCollider2D>()) {
 			if (ImGui::CollapsingHeader("Rectangle collider2D")) {
 				ImGui::Text("Collision");
-				ImGui::Text("ID %d", col->GetId());
-				ImGui::Text("Tag %s", col->GetTag().c_str());
-				ImGui::InputText("Tag", tag, sizeof(tag));
-				ImGui::SameLine();
-				if (ImGui::Button("Change tag")) {
-					col->SetTag(tag);
-				}
-				ImGui::Checkbox("Enable collision", &col->Enable);
-				ImGui::Checkbox("Trigger", &col->IsTrigger);
+				ImGui::Checkbox("Enable collision", &col->m_Enable);
+				ImGui::Checkbox("Trigger", &col->m_IsTrigger);
 				ImGui::InputFloat2("Set the borders of X and Y offset slider", changeSliderCollisionOffset);
-				ImGui::SliderFloat("Offset X", &col->offset.x, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-				ImGui::SliderFloat("Offset Y", &col->offset.y, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
-				ImGui::InputFloat2("Offset", &(col->offset.x, col->offset.x));
-				col->SetOffset(col->offset.x, col->offset.y);
+				ImGui::SliderFloat("Offset X", &col->m_Offset.x, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+				ImGui::SliderFloat("Offset Y", &col->m_Offset.y, changeSliderCollisionOffset[0], changeSliderCollisionOffset[1]);
+				ImGui::InputFloat2("Offset", &(col->m_Offset.x, col->m_Offset.x));
+				col->SetOffset(col->m_Offset.x, col->m_Offset.y);
 				if (ImGui::Button("Remove collider")) {
 					go->m_ComponentManager->RemoveComponent<Doom::RectangleCollider2D>();
 					selectedcomponent = 0;
@@ -533,13 +532,13 @@ void Doom::Editor::MenuTransform(Transform* tr)
 	ImGui::SameLine();
 	if (ImGui::CollapsingHeader("Transform")) {
 		ImGui::Text("Position");
-		ImGui::InputFloat2("Limits", changeSliderPos);
+		ImGui::InputFloat2("Limits P", changeSliderPos);
 		glm::vec3 position = go->GetPosition();
 		ImGui::SliderFloat("Position X", &(position.x), changeSliderPos[0], changeSliderPos[1]);
 		ImGui::SliderFloat("Position Y", &(position.y), changeSliderPos[0], changeSliderPos[1]);
 		ImGui::SliderFloat("Position Z", &(position.z), changeSliderPos[0], changeSliderPos[1]);
 		ImGui::Text("Scale");
-		ImGui::InputFloat2("Limits", changeSliderScale);
+		ImGui::InputFloat2("Limits S", changeSliderScale);
 		glm::vec3 scale = go->GetScale();
 		ImGui::SliderFloat("Scale X", &(scale[0]), changeSliderScale[0], changeSliderScale[1]);
 		ImGui::SliderFloat("Scale Y", &(scale[1]), changeSliderScale[0], changeSliderScale[1]);

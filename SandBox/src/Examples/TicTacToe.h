@@ -179,8 +179,8 @@ public:
 		for (unsigned int i = 0; i < 9; i++)
 		{
 			RectangleCollider2D* col = plates[i].plate->GetComponentManager()->GetComponent<RectangleCollider2D>();
-			if (col->ScaledVerPos[0] + col->GetPositions().x < mousePos.x && col->ScaledVerPos[4] + col->GetPositions().x > mousePos.x &&
-				col->ScaledVerPos[1] + col->GetPositions().y < mousePos.y && col->ScaledVerPos[9] + col->GetPositions().y > mousePos.y){
+			if (col->m_TransformedVerPos[0] + col->GetOwnerOfComponent()->GetPosition().x < mousePos.x && col->m_TransformedVerPos[4] + col->GetOwnerOfComponent()->GetPosition().x > mousePos.x &&
+				col->m_TransformedVerPos[1] + col->GetOwnerOfComponent()->GetPosition().y < mousePos.y && col->m_TransformedVerPos[9] + col->GetOwnerOfComponent()->GetPosition().y > mousePos.y){
 				*selected = i;
 				return &plates[i];
 			}

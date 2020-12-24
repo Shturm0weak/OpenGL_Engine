@@ -147,7 +147,6 @@ public:
 		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
 		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
 		Gui::GetInstance()->Text("Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetPosition().x, pl->GetPosition().y);
-		Gui::GetInstance()->Text("Collisions: %d", true, 0, 0, fontSize, COLORS::White, 0, Renderer::GetAmountOfCollisions());
 		Gui::GetInstance()->m_XAlign = Gui::AlignHorizontally::LEFT;
 		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = false;
 		Gui::GetInstance()->UnRelateToPanel();

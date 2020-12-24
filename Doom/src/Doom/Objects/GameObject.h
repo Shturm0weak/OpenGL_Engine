@@ -33,8 +33,8 @@ namespace Doom {
 
 		Transform* m_Transform = nullptr;
 
-		std::string m_Name;
-		std::string m_Tag;
+		std::string m_Name = "Unnamed";
+		std::string m_Tag = "General";
 		int m_Id = 0;
 		int m_Layer = 0;
 		bool m_Enable = true;

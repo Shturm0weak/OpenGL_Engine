@@ -12,7 +12,6 @@ namespace Doom {
 	public:
 
 		Irenderer* sr = nullptr;
-		RectangleCollider2D* col = nullptr;
 
 		void RealVertexPositions();
 

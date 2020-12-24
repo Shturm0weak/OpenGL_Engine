@@ -317,13 +317,11 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	auto RectangularCollider2DComponent = go["Rectangle collider 2D"];
 	if (RectangularCollider2DComponent) {
 		RectangleCollider2D* rc = obj->GetComponentManager()->AddComponent<RectangleCollider2D>();
-		rc->Enable = RectangularCollider2DComponent["Is Enable"].as<bool>();
-		rc->IsTrigger = RectangularCollider2DComponent["Is trigger"].as<bool>();
-		rc->SetTag(RectangularCollider2DComponent["Tag"].as<std::string>());
+		rc->m_Enable = RectangularCollider2DComponent["Is Enable"].as<bool>();
+		rc->m_IsTrigger = RectangularCollider2DComponent["Is trigger"].as<bool>();
 		glm::vec3 offset = RectangularCollider2DComponent["OffSet"].as<glm::vec3>();
 		rc->SetOffset(offset.x, offset.y);
 		glm::vec3 scale = RectangularCollider2DComponent["Scale"].as<glm::vec3>();
-		rc->Scale(scale.x, scale.y);
 	}
 
 	auto childsId = go["Childs id"];
@@ -549,11 +547,10 @@ void Doom::SceneSerializer::SerializeRectangularCollider(YAML::Emitter& out, Com
 		RectangleCollider2D* rc = cm->GetComponent<RectangleCollider2D>();
 		out << YAML::Key << "Rectangle collider 2D";
 		out << YAML::BeginMap;
-		out << YAML::Key << "Is Enable" << YAML::Value << rc->Enable;
-		out << YAML::Key << "Is trigger" << YAML::Value << rc->IsTrigger;
-		out << YAML::Key << "Tag" << YAML::Value << rc->GetTag();
-		out << YAML::Key << "OffSet" << YAML::Value << glm::vec3(rc->offset , 0);
-		out << YAML::Key << "Scale" << YAML::Value << rc->scaleValues;
+		out << YAML::Key << "Is Enable" << YAML::Value << rc->m_Enable;
+		out << YAML::Key << "Is trigger" << YAML::Value << rc->m_IsTrigger;
+		out << YAML::Key << "OffSet" << YAML::Value << glm::vec3(rc->m_Offset , 0);
+		out << YAML::Key << "Scale" << YAML::Value << Utils::GetScale(glm::mat4(1.0f));
 		out << YAML::EndMap;
 	}
 }

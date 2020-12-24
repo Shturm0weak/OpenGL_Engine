@@ -426,11 +426,12 @@ void Batch::Submit(RectangleCollider2D& c) {
 	}
 
 	m_GoB.m_TextureIndex = 0.0f;
-	//std::cout << "Batch " << c.position.x << "	" << c.position.y << std::endl;
+
 	glm::vec3 scaleVal = c.m_Owner->GetScale();
-	m_GoB.m_Buffer->vertex = glm::vec2(c.positions[0] * scaleVal[0], c.positions[1] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.positions[2], c.positions[3]);
-	m_GoB.m_Buffer->m_static = c.Static;
+
+	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[0] * scaleVal[0], c.m_Vertices[1] * scaleVal[1]);
+	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
+	m_GoB.m_Buffer->m_static = false;
 	m_GoB.m_Buffer->m_color = COLORS::White;
 	m_GoB.m_Buffer->isGui = 0.f;
 	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
@@ -440,9 +441,9 @@ void Batch::Submit(RectangleCollider2D& c) {
 	m_GoB.m_Buffer->rotationMat3 = mvp[3];
 	m_GoB.m_Buffer++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.positions[4] * scaleVal[0], c.positions[5] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.positions[6], c.positions[7]);
-	m_GoB.m_Buffer->m_static = c.Static;
+	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[2] * scaleVal[0], c.m_Vertices[3] * scaleVal[1]);
+	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
+	m_GoB.m_Buffer->m_static = false;
 	m_GoB.m_Buffer->m_color = COLORS::White;
 	m_GoB.m_Buffer->isGui = 0.f;
 	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
@@ -452,9 +453,9 @@ void Batch::Submit(RectangleCollider2D& c) {
 	m_GoB.m_Buffer->rotationMat3 = mvp[3];
 	m_GoB.m_Buffer++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.positions[8] * scaleVal[0], c.positions[9] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.positions[10], c.positions[11]);
-	m_GoB.m_Buffer->m_static = c.Static;
+	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[4] * scaleVal[0], c.m_Vertices[5] * scaleVal[1]);
+	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
+	m_GoB.m_Buffer->m_static = false;
 	m_GoB.m_Buffer->m_color = COLORS::White;
 	m_GoB.m_Buffer->isGui = 0.f;
 	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
@@ -464,9 +465,9 @@ void Batch::Submit(RectangleCollider2D& c) {
 	m_GoB.m_Buffer->rotationMat3 = mvp[3];
 	m_GoB.m_Buffer++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.positions[12] * scaleVal[0], c.positions[13] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.positions[14], c.positions[15]);
-	m_GoB.m_Buffer->m_static = c.Static;
+	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[6] * scaleVal[0], c.m_Vertices[7] * scaleVal[1]);
+	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
+	m_GoB.m_Buffer->m_static = false;
 	m_GoB.m_Buffer->m_color = COLORS::White;
 	m_GoB.m_Buffer->isGui = 0.f;
 	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
@@ -477,7 +478,7 @@ void Batch::Submit(RectangleCollider2D& c) {
 	m_GoB.m_Buffer++;
 
 	m_GIndexCount += 6;
-	m_Shader = c.shader;
+	m_Shader = c.s_Shader;
 }
 
 void Batch::flushGameObjects(Shader * shader)

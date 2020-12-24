@@ -28,7 +28,8 @@ DOOM_API std::vector <SpriteRenderer*> Renderer::s_Objects2d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
 
-DOOM_API std::vector <RectangleCollider2D*> Renderer::s_Collision2d;
+DOOM_API std::vector <RectangleCollider2D*> RectangleCollider2D::s_Collision2d;
+DOOM_API Shader* RectangleCollider2D::s_Shader;
 DOOM_API Batch* Batch::s_Instance;
 DOOM_API bool Renderer::s_PolygonMode = false;
 DOOM_API int Renderer::s_DrawCalls = 0;
@@ -111,7 +112,6 @@ DOOM_API std::vector<DirectionalLight*> DirectionalLight::s_DirLights;
 //storage of all references to our objects in the scene
 DOOM_API std::vector <GameObject*> World::s_GameObjects;
 
-DOOM_API unsigned int Character::s_Indices2D[6] = { 0,1,2,3,2,0 };
 DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 
 DOOM_API std::vector<std::string> Ray3D::m_IgnoreMask;

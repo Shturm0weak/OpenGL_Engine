@@ -2,6 +2,7 @@
 #include "../Core/Core.h"
 #include "../ECS/Component.h"
 #include "../Render/TextureAtlas.h"
+#include "../Enums/ColorsRGBA.h"
 
 namespace Doom {
 

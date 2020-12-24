@@ -7,7 +7,7 @@
 void ShipEnemy::OnCollision(void * _col)
 {
 	RectangleCollider2D* __col = static_cast<RectangleCollider2D*>(_col);
-	if (__col->GetTag() == "Bullet") {
+	if (__col->GetOwnerOfComponent()->m_Tag == "Bullet") {
 		Bullet* bullet = static_cast<Bullet*>(__col->GetOwnerOfComponent());
 		hp -= bullet->damage;
 		bullet->Death();
@@ -30,7 +30,7 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	tr->RotateOnce(0,0,180);
 	sr->SetColor(COLORS::Red);
 	sr->SetTexture(texture);
-	col->IsTrigger = false;
+	col->m_IsTrigger = false;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
 		bullets.push_back(new Bullet("EnemyBullet", glm::vec3(0,-1,0), "Bullet" + std::to_string(i), GetPosition().x, GetPosition().y));
@@ -38,7 +38,7 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 		bullets[i]->SetOwner((void*)bulletsPlaceHolder);
 		bulletsPlaceHolder->AddChild((void*)bullets[i]);
 		bullets[i]->m_Enable = false;
-		bullets[i]->col->Enable = false;
+		bullets[i]->col->m_Enable = false;
 		bullets[i]->damage = 10;
 	}
 	ps = new ParticleSystem(0, 0, 50, 1, 10, 1, 0.5, 0.5, 0, 0.2,nullptr);
@@ -73,7 +73,7 @@ void ShipEnemy::Spawn()
 {
 	hp = 100;
 	m_Enable = true;
-	col->Enable = true;
+	col->m_Enable = true;
 	isDead = false;
 	tr->Translate(GetPosition().x, 20);
 }
@@ -82,7 +82,7 @@ void ShipEnemy::Death()
 {
 	pl->kills++;
 	m_Enable = false;
-	col->Enable = false;
+	col->m_Enable = false;
 	isDead = true;
 	SoundManager::Play(explosionSound);
 	ps->SetPosition(GetPosition().x, GetPosition().y);
@@ -99,8 +99,8 @@ void ShipEnemy::Death()
 		RectangleCollider2D* col = a->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		(a->GetComponentManager()->GetComponent<SpriteRenderer>())->SetTexture(Texture::Create("src/SpaceFire/Images/Ammo.png"));
 		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
-		col->SetTag("Ammo");
-		col->IsTrigger = true;
+		col->GetOwnerOfComponent()->m_Tag = ("Ammo");
+		col->m_IsTrigger = true;
 	}
 }
 
@@ -112,7 +112,7 @@ void ShipEnemy::Fire() {
 		bullets[usedBulletCounter]->SetMoveDirection(glm::vec3(0,-1,0));
 		bullets[usedBulletCounter]->tr->Translate(GetPosition().x, GetPosition().y);
 		bullets[usedBulletCounter]->m_Enable = true;
-		bullets[usedBulletCounter]->col->Enable = true;
+		bullets[usedBulletCounter]->col->m_Enable = true;
 		bullets[usedBulletCounter]->isActive = true;
 		bullets[usedBulletCounter]->lifeTimer = 0;
 		usedBulletCounter++;

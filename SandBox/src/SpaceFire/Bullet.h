@@ -20,12 +20,12 @@ public:
 		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
 		tr = GetComponentManager()->GetComponent<Transform>();
 		sr = static_cast<SpriteRenderer*>(GetComponentManager()->AddComponent<SpriteRenderer>());
-		col->SetTag(tag);
+		col->GetOwnerOfComponent()->m_Tag = (tag);
 		this->moveDir = glm::vec3(moveDir * (1.f / sqrtf(moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z)));
 		sr->SetTexture(texture);
 		sr->SetColor(COLORS::Orange);
 		tr->Scale(0.5, 0.5);
-		col->IsTrigger = true;
+		col->m_IsTrigger = true;
 	}
 
 	virtual void OnUpdate() override {
@@ -44,7 +44,7 @@ public:
 
 	void Death() {
 		isActive = false;
-		col->Enable = false;
+		col->m_Enable = false;
 		m_Enable = false;
 	}
 };
