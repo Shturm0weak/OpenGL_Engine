@@ -26,8 +26,6 @@ namespace Doom {
 		Transform* m_Tr = nullptr;
 
 		void Copy(const SpriteRenderer& rhs);
-		inline std::string GetPathToTexture() const { return this->m_PathToTexture; };
-		std::string m_PathToTexture = ("None");
 
 		friend class Transform;
 		friend class GameObject;
@@ -35,16 +33,9 @@ namespace Doom {
 		friend class Renderer;
 		friend class SceneSerializer;
 		friend class ComponentManager;
-	
 	public:
 
-		float m_WorldVertexPositions[8] = {
-			-0.5f, -0.5f,
-			 0.5f, -0.5f,
-			 0.5f,  0.5f,
-			-0.5f,  0.5f
-		};
-
+		TextureAtlas* m_TextureAtlas = nullptr;
 		Texture* m_Texture = Texture::s_WhiteTexture;
 
 		SpriteRenderer(const SpriteRenderer& rhs);
@@ -53,14 +44,12 @@ namespace Doom {
 
 		void operator=(const SpriteRenderer& rhs);
 
-		virtual void Update(glm::vec3 pos) override;
+		void GetTransformedVertices(float* buffer); // returns 8 floats
+
 		virtual void Render() override;
 
-		inline int GetTexture() { return m_Texture->m_RendererID; }
-		inline Texture* GetTexturePointer() { return m_Texture; }
-		double GetWidth() const;
-		double GetHeight() const;
-
+		float GetWidth() const;
+		float GetHeight() const;
 		float* GetUVs() const;
 		
 		//Only in int size from 0 to 1 !!!
@@ -68,7 +57,6 @@ namespace Doom {
 		void OriginalUvs();
 		void ReverseUVs();
 		void SetUVs(float* uvs);
-		void SetTexture(Texture* texture);
 		void Setlayer(int layer);
 
 	};

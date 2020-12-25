@@ -79,7 +79,7 @@ ShipPlayer::ShipPlayer(std::string name, float x, float y) : GameObject(name,x,y
 	tr = GetComponentManager()->GetComponent<Transform>();
 	sr = GetComponentManager()->AddComponent<SpriteRenderer>();;
 	tr->Scale(5, 5);
-	sr->SetTexture(texture);
+	sr->m_Texture = (texture);
 	col->GetOwnerOfComponent()->m_Tag = ("Player");
 	col->m_IsTrigger = true;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
@@ -156,11 +156,13 @@ void ShipPlayer::OnCollision(void * _col)
 
 void ShipPlayer::Fire(float xOffset,float yOffset) {
 	if (ammo > 0 && timerFire > TimePerBullet && Input::IsMouseDown(GLFW_MOUSE_BUTTON_1)) {
+		float worldVertexPositions[8];
+		sr->GetTransformedVertices(worldVertexPositions);
 		timerFire = 0;
 		int amount = currentStage;
 		if (currentStage != ZERO) {
-			xOffset = sr->m_WorldVertexPositions[0] * 0.3f;
-			yOffset = sr->m_WorldVertexPositions[1] * 0.3f;
+			xOffset = worldVertexPositions[0] * 0.3f;
+			yOffset = worldVertexPositions[1] * 0.3f;
 		}
 		for (size_t i = 0; i < amount; i++)
 		{
@@ -177,8 +179,8 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 			usedBulletCounter++;
 			ammo--;
 			if (amount == 2) {
-				xOffset = sr->m_WorldVertexPositions[2] * 0.3f;
-				yOffset = sr->m_WorldVertexPositions[3] * 0.3f;
+				xOffset = worldVertexPositions[2] * 0.3f;
+				yOffset = worldVertexPositions[3] * 0.3f;
 			}
 			else if (amount == 3) {
 				if (i == 0) {
@@ -186,8 +188,8 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 					yOffset = 0;
 				}
 				else if (i == 1) {
-					xOffset = sr->m_WorldVertexPositions[2] * 0.3f;
-					yOffset = sr->m_WorldVertexPositions[3] * 0.3f;
+					xOffset = worldVertexPositions[2] * 0.3f;
+					yOffset = worldVertexPositions[3] * 0.3f;
 				}
 			}
 		}

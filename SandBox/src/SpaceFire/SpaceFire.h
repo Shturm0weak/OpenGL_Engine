@@ -36,10 +36,10 @@ public:
 		backgroundTexture = Texture::Create("src/SpaceFire/Images/SpaceBack.png");
 		background1 = new GameObject("BackGround1");
 		background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		(background1->GetComponentManager()->AddComponent<SpriteRenderer>())->SetTexture(backgroundTexture);
+		(background1->GetComponentManager()->AddComponent<SpriteRenderer>())->m_Texture = (backgroundTexture);
 		background2 = new GameObject("BackGround2");
 		background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		(background2->GetComponentManager()->AddComponent<SpriteRenderer>())->SetTexture(backgroundTexture);
+		(background2->GetComponentManager()->AddComponent<SpriteRenderer>())->m_Texture = (backgroundTexture);
 		pl = new ShipPlayer();
 		float x = -20;
 		for (unsigned int i = 0; i < 5; i++)

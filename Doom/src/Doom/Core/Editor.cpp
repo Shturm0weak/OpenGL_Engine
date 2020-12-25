@@ -328,9 +328,7 @@ void Doom::Editor::MenuRenderer3D()
 						texturePickerId = 2;
 					}
 					ImGui::Checkbox("NormalMap", &r->m_IsUsingNormalMap);
-					float* tempColor = r->GetColor();
-					ImGui::ColorEdit4("Color", tempColor);
-					r->SetColor(glm::vec4(tempColor[0], tempColor[1], tempColor[2], tempColor[3]));
+					ImGui::ColorEdit4("Color", &r->m_Color[0]);
 				}
 				if (ImGui::CollapsingHeader("Mesh")) {
 					if (r->m_Mesh != nullptr) {
@@ -369,9 +367,7 @@ void Doom::Editor::MenuRenderer2D()
 		SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
 		if (MenuRemoveComponent<SpriteRenderer>()) {
 			if (ImGui::CollapsingHeader("Render2D")) {
-				color = sr->GetColor();
-				ImGui::ColorEdit4("Sprite color", color);
-				sr->SetColor(glm::vec4(color[0], color[1], color[2], color[3]));
+				ImGui::ColorEdit4("Sprite color", &sr->m_Color[0]);
 				delete[] color;
 				int counterImagesButtons = 0;
 				ImGui::Text("Textures");
@@ -387,7 +383,7 @@ void Doom::Editor::MenuRenderer2D()
 					if (ImGui::ImageButton(my_tex_id, ImVec2(36, 36), ImVec2(1, 1), ImVec2(0, 0), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f))) {
 						if (go != nullptr) {
 
-							sr->SetTexture(i->second);
+							sr->m_Texture = i->second;
 						}
 
 					}
@@ -409,7 +405,7 @@ void Doom::Editor::MenuRenderer2D()
 				}
 				if (ImGui::Button("No texture")) {
 					if (go != nullptr)
-						sr->SetTexture(Texture::s_WhiteTexture);
+						sr->m_Texture = Texture::s_WhiteTexture;
 				}
 				if (ImGui::Button("Load texture ...")) {
 					std::optional<std::string> filePath = FileDialogs::OpenFile("textures (*.png)\0");
@@ -442,7 +438,7 @@ void Doom::Editor::MenuRenderer2D()
 									if (go != nullptr) {
 										SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
 										sr->m_TextureAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas);
-										sr->SetTexture(textureOfAtlas);
+										sr->m_Texture = textureOfAtlas;
 										sr->SetUVs(uvs);
 									}
 								}
@@ -686,7 +682,7 @@ void Doom::Editor::TexturePicker()
 			switch (texturePickerId)
 			{
 			case 0:
-				go->GetComponent<SpriteRenderer>()->SetTexture(texture.second);
+				go->GetComponent<SpriteRenderer>()->m_Texture = (texture.second);
 				break;
 			case 1:
 				go->GetComponent<Renderer3D>()->m_DiffuseTexture = (texture.second);

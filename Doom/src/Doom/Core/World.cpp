@@ -69,10 +69,12 @@ GameObject* Doom::World::SelectObject()
 		GameObject* go = static_cast<GameObject*>(World::s_GameObjects[i]);
 		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
 		p.clear();
-		p.push_back(glm::vec2(sr->m_WorldVertexPositions[0] + go->GetPosition().x, sr->m_WorldVertexPositions[1] + go->GetPosition().y));
-		p.push_back(glm::vec2(sr->m_WorldVertexPositions[2] + go->GetPosition().x, sr->m_WorldVertexPositions[3] + go->GetPosition().y));
-		p.push_back(glm::vec2(sr->m_WorldVertexPositions[4] + go->GetPosition().x, sr->m_WorldVertexPositions[5] + go->GetPosition().y));
-		p.push_back(glm::vec2(sr->m_WorldVertexPositions[6] + go->GetPosition().x, sr->m_WorldVertexPositions[7] + go->GetPosition().y));
+		float worldVertexPositions[8];
+		sr->GetTransformedVertices(worldVertexPositions);
+		p.push_back(glm::vec2(worldVertexPositions[0] + go->GetPosition().x, worldVertexPositions[1] + go->GetPosition().y));
+		p.push_back(glm::vec2(worldVertexPositions[2] + go->GetPosition().x, worldVertexPositions[3] + go->GetPosition().y));
+		p.push_back(glm::vec2(worldVertexPositions[4] + go->GetPosition().x, worldVertexPositions[5] + go->GetPosition().y));
+		p.push_back(glm::vec2(worldVertexPositions[6] + go->GetPosition().x, worldVertexPositions[7] + go->GetPosition().y));
 		if (ObjectCollided(p, i)) {
 			if (Editor::GetInstance()->go != go) {
 				Editor::GetInstance()->go = go;

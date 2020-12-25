@@ -105,13 +105,13 @@ public:
 					amountOfNonEmpty++;
 					plate->isEmpty = false;
 					if (turn == 0) {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(crossLinesTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
 						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(circleTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
 						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 0;
@@ -128,13 +128,13 @@ public:
 					amountOfNonEmpty++;
 					plate->isEmpty = false;
 					if (turn == 0) {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(crossLinesTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
 						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(circleTexture);
+						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
 						SoundManager::Play(backSound);
 						plate->owner = turn;
 						turn = 0;
@@ -225,7 +225,7 @@ public:
 		{
 			plates[i].isEmpty = true;
 			plates[i].owner = -1;
-			plates[i].plate->GetComponentManager()->GetComponent<SpriteRenderer>()->SetTexture(nullptr);
+			plates[i].plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (nullptr);
 		}
 		end = false;
 		amountOfNonEmpty = 0;

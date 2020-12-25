@@ -25,7 +25,6 @@ namespace Doom {
 	private:
 
 		GameObject* m_Owner = nullptr;
-		std::string m_OwnerName;
 		const char** m_NamesOfMembers = nullptr;
 		std::vector <Component*> m_Components;
 
@@ -43,6 +42,7 @@ namespace Doom {
 			CopyComponent<Renderer3D>(rhs);
 			CopyComponent<SpriteRenderer>(rhs);
 			CopyComponent<SphereCollider>(rhs);
+			CopyComponent<Animator>(rhs);
 		}
 
 		friend class Component;
@@ -51,26 +51,21 @@ namespace Doom {
 		ComponentManager(ComponentManager& rhs) {
 			Copy(rhs);
 		}
-		ComponentManager(GameObject* owner, std::string& owner_name) {
+		ComponentManager(GameObject* owner) {
 			this->m_Owner = owner;
-			this->m_OwnerName = owner_name;
 		}
 		~ComponentManager() {
 			delete[] m_NamesOfMembers;
-			RemoveComponent<RectangleCollider2D>();
-			RemoveComponent<Animator>();
-			RemoveComponent<CubeCollider3D>();
-			RemoveComponent<PointLight>();
-			RemoveComponent<DirectionalLight>();
-			RemoveComponent<Renderer3D>();
-			RemoveComponent<SpriteRenderer>();
-			RemoveComponent<SphereCollider>();
-			RemoveComponent<Transform>();
 
 			std::vector<ScriptComponent*> scripts = GetScripts();
 			for (uint32_t i = 0; i < scripts.size(); i++)
 			{
 				RemoveComponent(scripts[i]);
+			}
+
+			for (uint32_t i = 0; i < m_Components.size(); i)
+			{
+				RemoveComponent(m_Components[i]);
 			}
 		}
 
@@ -157,7 +152,7 @@ namespace Doom {
 				object->m_Id = m_Components.size();
 				m_Components.push_back(object);
 #ifdef _DEBUG
-				std::cout << NAMECOLOR << (int)object->m_Type << RESET << ": has been added to GameObject <" NAMECOLOR << m_OwnerName << RESET << ">" << std::endl;
+				std::cout << NAMECOLOR << typeid(T).name() << RESET << ": has been added to GameObject <" NAMECOLOR << m_Owner->m_Name << RESET << ">" << std::endl;
 #endif
 				return object;
 			}

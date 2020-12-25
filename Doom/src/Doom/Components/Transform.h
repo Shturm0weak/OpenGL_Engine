@@ -13,7 +13,7 @@ namespace Doom {
 
 		Irenderer* sr = nullptr;
 
-		void RealVertexPositions();
+		//void RealVertexPositions();
 
 		glm::vec3 m_Rotation = glm::vec3(0.0);
 		glm::vec3 m_PrevPosition;

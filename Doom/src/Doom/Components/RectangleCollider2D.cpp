@@ -142,6 +142,8 @@ void RectangleCollider2D::IsCollidedSAT() {
 		return;
 	}
 	if (m_Enable == true) {
+		for (size_t i = 0; i < 5; i++) //This is the temporary way to handle the error displacement of big ration of unit vector
+		{
 		uint32_t sizeCol = s_Collision2d.size();
 		for (unsigned int i = 0; i < sizeCol; i++)
 		{
@@ -155,21 +157,21 @@ void RectangleCollider2D::IsCollidedSAT() {
 						if (ShapeOverlap_SAT(*this, *m_Col)) {
 							m_IsCollided = true;
 							m_CollidedObject = m_Col;
-							std::function<void()> f2 = std::bind(&EventSystem::SendEvent,EventSystem::GetInstance(),EventType::ONCOLLSION, (Listener*)(m_Owner), (void*)this->m_CollidedObject);
+							std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(m_Owner), (void*)this->m_CollidedObject);
 							std::function<void()>* f1 = new std::function<void()>(f2);
 							EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
-							//EventSystem::Instance()->SendEvent("OnCollision", (Listener*)(owner), (void*)this->collidedObject);
 						}
 						else {
 							m_IsCollided = false;
 							m_CollidedObject = nullptr;
 						}
 					}
-					else
+					else {
 						ShapeOverlap_SAT_STATIC(*this, *m_Col);
+					}
 				}
 			}
-
+		}
 		}
 	}
 }
@@ -246,6 +248,7 @@ void Doom::RectangleCollider2D::CollidersToInit()
 }
 
 #include "Rays/Ray2D.h"
+#include <limits>
 
 bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, RectangleCollider2D &r2)
 {
@@ -301,26 +304,31 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 	// by overlap along the vector between the two object centers
 	Transform* trans1 = r1.m_Owner->m_ComponentManager->GetComponent<Transform>();
 	Transform* trans2 = r2.m_Owner->m_ComponentManager->GetComponent<Transform>();
-	glm::vec2 d = glm::vec2(r2.m_Owner->GetPosition().x - r1.m_Owner->GetPosition().x, r2.m_Owner->GetPosition().y - r1.m_Owner->GetPosition().y);
-	//double s = sqrtf(d.x * d.x + d.y * d.y);
-	Ray2D::Normilize(d);
+
+	glm::vec2 r1Pos = trans1->GetPosition();
+	glm::vec2 r2Pos = trans2->GetPosition();
+	glm::vec2 d = glm::vec2(r2Pos.x - r1Pos.x, r2Pos.y - r1Pos.y);
+	double s = sqrtf(d.x * d.x + d.y * d.y);
+
 	//If displacement.x is set then even with 0 angle
 	//of a collided object will move our player along the x axis
 	//only if the both objects have not the same x
 	//so it needs to be overthought either do we need continues collision detection or not
+
 	glm::dvec2 posToTranslate = glm::vec2(0, 0);
 	
 	posToTranslate.x = r1.m_Owner->GetPosition().x;
-	if ((r2.m_Vertices[9] * r2.m_Owner->GetScale()[1]) + r2.m_Owner->GetPosition().y - 0.15 > (r1.m_Vertices[1] * r1.m_Owner->GetScale()[1]) + r1.m_Owner->GetPosition().y)
-		posToTranslate.x = r1.m_Owner->GetPosition().x - (overlap * d.x);
+	float minAngle = glm::radians(1.0f);
+	if (trans1->GetRotation().z > minAngle || trans2->GetRotation().z > minAngle)
+		posToTranslate.x = r1Pos.x - (overlap * d.x / s);
 	
-	double displacmentTemp = (overlap * d.y);
-	posToTranslate.y = r1.m_Owner->GetPosition().y - (overlap * d.y);
+	posToTranslate.y = r1Pos.y - (overlap * d.y / s);
 	trans1->Translate(posToTranslate.x, posToTranslate.y);
+
 	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(m_Owner), &r2);
 	std::function<void()>* f1 = new std::function<void()>(f2);
 	EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
-	return false;
+	return true;
 }
 
 bool RectangleCollider2D::ShapeOverlap_SAT(RectangleCollider2D &r1, RectangleCollider2D &r2)

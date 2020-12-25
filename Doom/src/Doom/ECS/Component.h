@@ -6,7 +6,6 @@
 namespace Doom {
 
 	class GameObject;
-	enum class ComponentType;
 
 	class DOOM_API Component {
 	private:
@@ -16,8 +15,7 @@ namespace Doom {
 	protected:
 
 		GameObject* m_Owner = nullptr;
-
-		inline void SetType(const size_t type)  { m_Type = type; }
+		void SetType(size_t type) { m_Type = type; }
 	public:
 
 		inline size_t GetComponentType() const { return m_Type; }

@@ -12,7 +12,7 @@
 #include "Examples/TestCollision2D.h"
 
 int main(){
-	TestCollision2D app;
+	RayCastTest app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

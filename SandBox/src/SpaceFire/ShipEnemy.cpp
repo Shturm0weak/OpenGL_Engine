@@ -28,8 +28,8 @@ ShipEnemy::ShipEnemy(std::string name, float x, float y) : GameObject(name, x, y
 	tr = GetComponentManager()->GetComponent<Transform>();
 	tr->Scale(5, 5);
 	tr->RotateOnce(0,0,180);
-	sr->SetColor(COLORS::Red);
-	sr->SetTexture(texture);
+	sr->m_Color = (COLORS::Red);
+	sr->m_Texture = (texture);
 	col->m_IsTrigger = false;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
@@ -97,7 +97,7 @@ void ShipEnemy::Death()
 	if (chance <= 1) {
 		Ammo* a = new Ammo("AmmoPickUp", GetPosition().x, GetPosition().y, ammo);
 		RectangleCollider2D* col = a->GetComponentManager()->AddComponent<RectangleCollider2D>();
-		(a->GetComponentManager()->GetComponent<SpriteRenderer>())->SetTexture(Texture::Create("src/SpaceFire/Images/Ammo.png"));
+		(a->GetComponentManager()->GetComponent<SpriteRenderer>())->m_Texture = (Texture::Create("src/SpaceFire/Images/Ammo.png"));
 		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
 		col->GetOwnerOfComponent()->m_Tag = ("Ammo");
 		col->m_IsTrigger = true;

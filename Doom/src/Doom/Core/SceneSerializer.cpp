@@ -306,7 +306,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	if (spriteRendererComponent) {
 		SpriteRenderer* sr = obj->GetComponentManager()->AddComponent<SpriteRenderer>();
 		sr->m_Color = spriteRendererComponent["Color"].as<glm::vec4>();
-		sr->SetTexture(Texture::Create(spriteRendererComponent["Texture"].as<std::string>()));
+		sr->m_Texture = (Texture::Create(spriteRendererComponent["Texture"].as<std::string>()));
 		std::vector<float> vert = spriteRendererComponent["Vertices"].as<std::vector<float>>();
 		for (uint32_t i = 0; i < 16; i++)
 		{

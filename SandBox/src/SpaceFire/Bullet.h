@@ -22,8 +22,8 @@ public:
 		sr = static_cast<SpriteRenderer*>(GetComponentManager()->AddComponent<SpriteRenderer>());
 		col->GetOwnerOfComponent()->m_Tag = (tag);
 		this->moveDir = glm::vec3(moveDir * (1.f / sqrtf(moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z)));
-		sr->SetTexture(texture);
-		sr->SetColor(COLORS::Orange);
+		sr->m_Texture = (texture);
+		sr->m_Color = (COLORS::Orange);
 		tr->Scale(0.5, 0.5);
 		col->m_IsTrigger = true;
 	}

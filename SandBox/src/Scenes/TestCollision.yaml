@@ -1,0 +1,180 @@
+Scene: 0
+Camera:
+  Transform:
+    Position: [1.35939646, 0.999368608, 0]
+    Rotation: [0, 0, 0]
+  Zoom: 5.8189997673034668
+  FOV: 1
+GameObjects:
+  - GameObject: 0
+    Name: test
+    Transform:
+      Position: [0, 0, 0]
+      Scale: [5, 1, 0]
+      Rotation: [0, 0, 0]
+    Sprite renderer:
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Registered events:
+      []
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - GameObject: 2
+    Name: Unnamed
+    Transform:
+      Position: [-5, 0, 0]
+      Scale: [5, 1, 1]
+      Rotation: [0, 0, 0]
+    Sprite renderer:
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Registered events:
+      []
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - GameObject: 3
+    Name: Unnamed
+    Transform:
+      Position: [5, 0, 0]
+      Scale: [5, 1, 1]
+      Rotation: [0, 0, 0]
+    Sprite renderer:
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Registered events:
+      []
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - GameObject: 4
+    Name: Unnamed
+    Transform:
+      Position: [-7, 3, 0]
+      Scale: [5, 1, 1]
+      Rotation: [0, 0, 1.57079637]
+    Sprite renderer:
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Registered events:
+      []
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - GameObject: 5
+    Name: Unnamed
+    Transform:
+      Position: [7, 3, 0]
+      Scale: [5, 1, 1]
+      Rotation: [0, 0, 1.57079637]
+    Sprite renderer:
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Registered events:
+      []
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+Texture atlases:
+  []

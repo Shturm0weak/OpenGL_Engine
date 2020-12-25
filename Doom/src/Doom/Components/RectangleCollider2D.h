@@ -11,19 +11,12 @@
 #include "Transform.h"
 #include <mutex>
 
-//!!! Deprecated !!!\\
-//!!! Need to be added before <SpriteRenderer> otherwise it will be considered in the (0,0) coordinates !!!\\
-
 namespace Doom {
 
 	class DOOM_API RectangleCollider2D : public Component {
 	private:
 
-		const float m_Vertices[8] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f };
+		static float m_Vertices[8];
 
 		static std::vector<RectangleCollider2D*> s_CollidersToInit;
 		static Shader* s_Shader;
@@ -31,6 +24,10 @@ namespace Doom {
 		RectangleCollider2D* m_Col = nullptr;
 		Transform* m_Transform = nullptr;
 
+		glm::vec2 m_Displacement;
+		glm::vec2 m_Offset = { 0,0 };
+
+		std::vector<glm::vec2> p;
 
 		bool ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, RectangleCollider2D &r2);
 		bool ShapeOverlap_SAT(RectangleCollider2D &r1, RectangleCollider2D &r2);
@@ -38,7 +35,7 @@ namespace Doom {
 		void CalculateRealVerPos();
 		void CalculateEdges();
 		float* GetVertexPositions(); //8 floats
-		
+
 		friend class GameObject;
 		friend class Transform;
 		friend class Editor;
@@ -46,12 +43,6 @@ namespace Doom {
 		friend class Batch;
 		friend class Ray2D;
 		friend class SceneSerializer;
-
-		glm::vec2 m_Displacement;
-		glm::vec2 m_Offset = {0,0};
-
-		std::vector<glm::vec2> p;
-
 	public:
 
 		float* m_TransformedVerPos = new float[16];

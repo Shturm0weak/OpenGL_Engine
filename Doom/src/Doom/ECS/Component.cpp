@@ -11,7 +11,7 @@ void Doom::Component::RemoveComponent()
 	if (m_Id != _size) {
 		for (unsigned int i = m_Id; i < _size; i++)
 		{
-			m_Owner->GetComponentManager()->m_Components[i]->m_Id = i;;
+			m_Owner->GetComponentManager()->m_Components[i]->m_Id = i;
 		}
 	}
 	delete this;

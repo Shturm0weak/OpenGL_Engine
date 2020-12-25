@@ -23,7 +23,7 @@ namespace Doom {
 		void Rotate(float angle);
 		static glm::vec2* LineIntersect(glm::vec2 corner, glm::vec2 nextCorner, glm::vec2 from, glm::vec2 to);
 		static void Normilize(glm::vec2& vector);
-		float Distance(glm::vec2 start, glm::vec2 end);
+		float static Distance(glm::vec2 start, glm::vec2 end);
 
 		Ray2D(glm::vec2 start, glm::vec2 direction, float length);
 	};

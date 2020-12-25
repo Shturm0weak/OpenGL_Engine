@@ -17,11 +17,11 @@ bool TileMap::LoadMap(unsigned int width, unsigned int height, const char* map, 
 				SpriteRenderer* sr = go->GetComponentManager()->AddComponent<SpriteRenderer>();
 				auto textureItr = uvs.find(map[index]);
 				if (textureItr != uvs.end()) {
-					sr->SetTexture(textureAtlas->GetTexture());
+					sr->m_Texture = (textureAtlas->GetTexture());
 					sr->SetUVs(textureAtlas->GetSpriteUVs(textureItr->second.x, textureItr->second.y));
 				}
 				else
-					sr->SetTexture(Texture::s_WhiteTexture);
+					sr->m_Texture = (Texture::s_WhiteTexture);
 			}
 			index++;
 		}
