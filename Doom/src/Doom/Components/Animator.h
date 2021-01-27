@@ -25,9 +25,9 @@ namespace Doom {
 		float m_Speed = 8;
 
 		Animator();
-		~Animator() {
-			delete items;
-		}
+		~Animator();
+
+		static Component* Create();
 
 		void SetAnimation(const std::string path);
 		void PlayAnim(std::vector<Texture*>& text);

@@ -6,7 +6,12 @@ Character::~Character()
 {
 }
 
-Character::Character(Font* font,int ch,float posx,float posy,float scale)
+Character::Character()
+{
+	
+}
+
+void Doom::Character::Init(Font* font, int ch, float posx, float posy, float scale)
 {
 	m_Shader = font->s_Shader;
 	this->m_Font = font;
@@ -25,12 +30,12 @@ Character::Character(Font* font,int ch,float posx,float posy,float scale)
 		m_XAdvance = font->m_XAdvance[i];
 	}
 	{
-		double size = font->m_FontAtlas->GetWidth();
+		double size = font->m_FontAtlas->m_width;
 
-		m_Mesh2D[2] = (m_X) / size;
-		m_Mesh2D[3] = (abs(m_Y - size) - m_Height) / size;
-		m_Mesh2D[6] = (m_X + m_Width) / size;
-		m_Mesh2D[7] = (abs(m_Y - size) - m_Height) / size;
+		m_Mesh2D[2]  = (m_X) / size;
+		m_Mesh2D[3]  = (abs(m_Y - size) - m_Height) / size;
+		m_Mesh2D[6]  = (m_X + m_Width) / size;
+		m_Mesh2D[7]  = (abs(m_Y - size) - m_Height) / size;
 		m_Mesh2D[10] = (m_X + m_Width) / size;
 		m_Mesh2D[11] = abs(m_Y - size) / size;
 		m_Mesh2D[14] = m_X / size;
@@ -39,12 +44,12 @@ Character::Character(Font* font,int ch,float posx,float posy,float scale)
 		double widthRatio = Window::GetCamera().GetAspectRatio() / ViewPort::GetInstance()->GetSize()[0];
 		double heightRatio = 1 / ViewPort::GetInstance()->GetSize()[1];
 
-		m_Mesh2D[0]  = 0;
-		m_Mesh2D[1]  = 0;
-		m_Mesh2D[4]  = (widthRatio  * (m_Width  + m_XOffset));
-		m_Mesh2D[5]  = 0;
-		m_Mesh2D[8]  = (widthRatio  * (m_Width  + m_XOffset));
-		m_Mesh2D[9]  = (heightRatio * (m_Height + m_YOffset));
+		m_Mesh2D[0] = 0;
+		m_Mesh2D[1] = 0;
+		m_Mesh2D[4] = (widthRatio * (m_Width + m_XOffset));
+		m_Mesh2D[5] = 0;
+		m_Mesh2D[8] = (widthRatio * (m_Width + m_XOffset));
+		m_Mesh2D[9] = (heightRatio * (m_Height + m_YOffset));
 		m_Mesh2D[12] = 0;
 		m_Mesh2D[13] = (heightRatio * (m_Height + m_YOffset));
 	}
@@ -59,12 +64,6 @@ void Character::Scale(float argscale)
 	m_Scale.y = argscale;
 }
 
-inline void Character::Translate(float x, float y)
-{
-	m_Position.x = x;
-	m_Position.y = y;
-}
-
 Doom::Font::~Font()
 {
 	delete[] m_Id;
@@ -75,11 +74,7 @@ Doom::Font::~Font()
 	delete[] m_XOffset;
 	delete[] m_YOffset;
 	delete[] m_XAdvance;
-
-	for (auto i = m_Characters.begin(); i != m_Characters.end(); i++)
-	{
-		delete i->second;
-	}
+	delete[] m_CharacterPtr;
 
 	m_Characters.clear();
 }
@@ -130,11 +125,11 @@ void Doom::Font::LoadFont(const std::string& filename, const std::string& pathTo
 
 void Doom::Font::LoadCharacters()
 {
-	Character* character = nullptr;
+	m_CharacterPtr = new Character[m_Count];
 	for (unsigned int i = 0; i < m_Count; i++)
 	{
-		character = (new Character(this, i));
-		m_Characters.insert(std::make_pair(character->m_Ch, character));
+		m_CharacterPtr[i].Init(this, i);
+		m_Characters.insert(std::make_pair(m_CharacterPtr[i].m_Ch, &m_CharacterPtr[i]));
 	}
 	//std::cout << BOLDGREEN << "Characters has been loaded" << RESET << std::endl;
 }

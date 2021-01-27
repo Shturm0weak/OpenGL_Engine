@@ -33,6 +33,11 @@ void Doom::DirectionalLight::operator=(const DirectionalLight& rhs)
 	Copy(rhs);
 }
 
+Component* Doom::DirectionalLight::Create()
+{
+	return new DirectionalLight();
+}
+
 Doom::DirectionalLight::DirectionalLight(const DirectionalLight& rhs)
 {
 	Copy(rhs);

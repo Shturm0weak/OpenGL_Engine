@@ -3,6 +3,11 @@
 
 using namespace Doom;
 
+Component* Doom::CubeCollider3D::Create()
+{
+	return new CubeCollider3D();
+}
+
 void Doom::CubeCollider3D::InitMesh()
 {
 	float* vertices = new float[36 * 3]{
@@ -81,7 +86,7 @@ CubeCollider3D::CubeCollider3D() {
 
 void Doom::CubeCollider3D::Render()
 {
-	Transform* tr = m_Owner->GetComponent<Transform>();
+	Transform* tr = m_OwnerOfCom->GetComponent<Transform>();
 	this->m_Shader->Bind();
 	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
 	this->m_Shader->SetUniformMat4f("u_Model", glm::translate(tr->m_PosMat4,m_Offset * tr->GetScale())); //??? Probably I need to offset * glm::vec3 not just glm::vec3.y ???
@@ -91,7 +96,7 @@ void Doom::CubeCollider3D::Render()
 	m_Va->Bind();
 	m_Ib->Bind();
 	m_Vb->Bind();
-	Renderer::s_DrawCalls++;
+	Renderer::s_Stats.m_DrawCalls++;
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);

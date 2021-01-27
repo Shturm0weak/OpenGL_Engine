@@ -1,6 +1,7 @@
 #include "Batch.h"
 #include "../Core/Timer.h"
 #include "Text/Gui.h"
+#include "Core/Utils.h"
 
 using namespace Doom;
 
@@ -47,49 +48,37 @@ void Batch::Submit(Character* c)
 		m_TextB.m_TextureSlotsIndex++;
 	}
 
-	m_TextB.m_Buffer->vertex = glm::vec2((c->m_Mesh2D[0] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[1]) * c->m_Scale.y + c->m_Position.y));
-	m_TextB.m_Buffer->textcoords = glm::vec2(c->m_Mesh2D[2], c->m_Mesh2D[3]);
-	m_TextB.m_Buffer->m_static = c->m_IsRelatedToCam;
-	m_TextB.m_Buffer->m_color = c->m_Color;
-	m_TextB.m_Buffer->isGui = 0.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((c->m_Mesh2D[0] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[1]) * c->m_Scale.y + c->m_Position.y));
+	m_TextB.m_BufferT->m_UV = glm::vec2(c->m_Mesh2D[2], c->m_Mesh2D[3]);
+	m_TextB.m_BufferT->m_Static = c->m_IsRelatedToCam;
+	m_TextB.m_BufferT->m_Color = c->m_Color;
+	m_TextB.m_BufferT->m_IsGui = 0.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
-	m_TextB.m_Buffer->vertex = glm::vec2((c->m_Mesh2D[4] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[5]) * c->m_Scale.y + c->m_Position.y));
-	m_TextB.m_Buffer->textcoords = glm::vec2(c->m_Mesh2D[6], c->m_Mesh2D[7]);
-	m_TextB.m_Buffer->m_static = c->m_IsRelatedToCam;
-	m_TextB.m_Buffer->m_color = c->m_Color;
-	m_TextB.m_Buffer->isGui = 0.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((c->m_Mesh2D[4] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[5]) * c->m_Scale.y + c->m_Position.y));
+	m_TextB.m_BufferT->m_UV = glm::vec2(c->m_Mesh2D[6], c->m_Mesh2D[7]);
+	m_TextB.m_BufferT->m_Static = c->m_IsRelatedToCam;
+	m_TextB.m_BufferT->m_Color = c->m_Color;
+	m_TextB.m_BufferT->m_IsGui = 0.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
-	m_TextB.m_Buffer->vertex = glm::vec2((c->m_Mesh2D[8] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[9]) * c->m_Scale.y + c->m_Position.y));
-	m_TextB.m_Buffer->textcoords = glm::vec2(c->m_Mesh2D[10], c->m_Mesh2D[11]);
-	m_TextB.m_Buffer->m_static = c->m_IsRelatedToCam;
-	m_TextB.m_Buffer->m_color = c->m_Color;
-	m_TextB.m_Buffer->isGui = 0.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((c->m_Mesh2D[8] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[9]) * c->m_Scale.y + c->m_Position.y));
+	m_TextB.m_BufferT->m_UV = glm::vec2(c->m_Mesh2D[10], c->m_Mesh2D[11]);
+	m_TextB.m_BufferT->m_Static = c->m_IsRelatedToCam;
+	m_TextB.m_BufferT->m_Color = c->m_Color;
+	m_TextB.m_BufferT->m_IsGui = 0.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
-	m_TextB.m_Buffer->vertex = glm::vec2((c->m_Mesh2D[12] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[13]) * c->m_Scale.y + c->m_Position.y));
-	m_TextB.m_Buffer->textcoords = glm::vec2(c->m_Mesh2D[14], c->m_Mesh2D[15]);
-	m_TextB.m_Buffer->m_static = c->m_IsRelatedToCam;
-	m_TextB.m_Buffer->m_color = c->m_Color;
-	m_TextB.m_Buffer->isGui = 0.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((c->m_Mesh2D[12] * c->m_Scale.x + c->m_Position.x), ((c->m_Mesh2D[13]) * c->m_Scale.y + c->m_Position.y));
+	m_TextB.m_BufferT->m_UV = glm::vec2(c->m_Mesh2D[14], c->m_Mesh2D[15]);
+	m_TextB.m_BufferT->m_Static = c->m_IsRelatedToCam;
+	m_TextB.m_BufferT->m_Color = c->m_Color;
+	m_TextB.m_BufferT->m_IsGui = 0.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
 	m_TIndexCount += 6;
 }
@@ -127,65 +116,50 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 		}
 	}
 
-	m_GoB.m_Buffer->vertex = glm::vec2(mesh2D[0] * scale.x, mesh2D[1] * scale.y);
-	m_GoB.m_Buffer->textcoords = glm::vec2(mesh2D[2], mesh2D[3]);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = view[0];
-	m_GoB.m_Buffer->rotationMat1 = view[1];
-	m_GoB.m_Buffer->rotationMat2 = view[2];
-	m_GoB.m_Buffer->rotationMat3 = view[3];
-	m_GoB.m_Buffer->posMat0 = pos[0];
-	m_GoB.m_Buffer->posMat1 = pos[1];
-	m_GoB.m_Buffer->posMat2 = pos[2];
-	m_GoB.m_Buffer->posMat3 = pos[3];
-	m_GoB.m_Buffer++;
+	glm::vec2 posv = Utils::GetPosition(pos);
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[0] * scale.x, mesh2D[1] * scale.y);
+	m_GoB.m_BufferG->m_UV = glm::vec2(mesh2D[2], mesh2D[3]);
+	m_GoB.m_BufferG->m_Color = color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
+	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(mesh2D[4] * scale.x, mesh2D[5] * scale.y);
-	m_GoB.m_Buffer->textcoords = glm::vec2(mesh2D[6], mesh2D[7]);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = view[0];
-	m_GoB.m_Buffer->rotationMat1 = view[1];
-	m_GoB.m_Buffer->rotationMat2 = view[2];
-	m_GoB.m_Buffer->rotationMat3 = view[3];
-	m_GoB.m_Buffer->posMat0 = pos[0];
-	m_GoB.m_Buffer->posMat1 = pos[1];
-	m_GoB.m_Buffer->posMat2 = pos[2];
-	m_GoB.m_Buffer->posMat3 = pos[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[4] * scale.x, mesh2D[5] * scale.y);
+	m_GoB.m_BufferG->m_UV = glm::vec2(mesh2D[6], mesh2D[7]);
+	m_GoB.m_BufferG->m_Color = color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
+	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(mesh2D[8] * scale.x, mesh2D[9] * scale.y);
-	m_GoB.m_Buffer->textcoords = glm::vec2(mesh2D[10], mesh2D[11]);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = view[0];
-	m_GoB.m_Buffer->rotationMat1 = view[1];
-	m_GoB.m_Buffer->rotationMat2 = view[2];
-	m_GoB.m_Buffer->rotationMat3 = view[3];
-	m_GoB.m_Buffer->posMat0 = pos[0];
-	m_GoB.m_Buffer->posMat1 = pos[1];
-	m_GoB.m_Buffer->posMat2 = pos[2];
-	m_GoB.m_Buffer->posMat3 = pos[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[8] * scale.x, mesh2D[9] * scale.y);
+	m_GoB.m_BufferG->m_UV = glm::vec2(mesh2D[10], mesh2D[11]);
+	m_GoB.m_BufferG->m_Color = color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
+	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(mesh2D[12] * scale.x, mesh2D[13] * scale.y);
-	m_GoB.m_Buffer->textcoords = glm::vec2(mesh2D[14], mesh2D[15]);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = view[0];
-	m_GoB.m_Buffer->rotationMat1 = view[1];
-	m_GoB.m_Buffer->rotationMat2 = view[2];
-	m_GoB.m_Buffer->rotationMat3 = view[3];
-	m_GoB.m_Buffer->posMat0 = pos[0];
-	m_GoB.m_Buffer->posMat1 = pos[1];
-	m_GoB.m_Buffer->posMat2 = pos[2];
-	m_GoB.m_Buffer->posMat3 = pos[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[12] * scale.x, mesh2D[13] * scale.y);
+	m_GoB.m_BufferG->m_UV = glm::vec2(mesh2D[14], mesh2D[15]);
+	m_GoB.m_BufferG->m_Color = color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
+	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG++;
 
 	m_GIndexCount += 6;
 }
@@ -216,65 +190,37 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 		}
 	}
 
-	m_TextB.m_Buffer->vertex = glm::vec2((mesh2D[0]), mesh2D[1]);
-	m_TextB.m_Buffer->textcoords = glm::vec2(0,0);
-	m_TextB.m_Buffer->m_static = true;
-	m_TextB.m_Buffer->m_color = color;
-	m_TextB.m_Buffer->isGui = 1.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->size = size;
-	m_TextB.m_Buffer->pos = pos;
-	m_TextB.m_Buffer->raduis = radius;
-	m_TextB.m_Buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((mesh2D[0]), mesh2D[1]);
+	m_TextB.m_BufferT->m_UV = glm::vec2(0,0);
+	m_TextB.m_BufferT->m_Static = true;
+	m_TextB.m_BufferT->m_Color = color;
+	m_TextB.m_BufferT->m_IsGui = 1.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
-	m_TextB.m_Buffer->vertex = glm::vec2((mesh2D[2]), (mesh2D[3]));
-	m_TextB.m_Buffer->textcoords = glm::vec2(1.0f, 0.0f);
-	m_TextB.m_Buffer->m_static = true;
-	m_TextB.m_Buffer->m_color = color;
-	m_TextB.m_Buffer->isGui = 1.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->size = size;
-	m_TextB.m_Buffer->pos = pos;
-	m_TextB.m_Buffer->raduis = radius;
-	m_TextB.m_Buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((mesh2D[2]), (mesh2D[3]));
+	m_TextB.m_BufferT->m_UV = glm::vec2(1.0f, 0.0f);
+	m_TextB.m_BufferT->m_Static = true;
+	m_TextB.m_BufferT->m_Color = color;
+	m_TextB.m_BufferT->m_IsGui = 1.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
-	m_TextB.m_Buffer->vertex = glm::vec2((mesh2D[4]), (mesh2D[5]));
-	m_TextB.m_Buffer->textcoords = glm::vec2(1.0f, 1.0f);
-	m_TextB.m_Buffer->m_static = true;
-	m_TextB.m_Buffer->m_color = color;
-	m_TextB.m_Buffer->isGui = 1.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->size = size;
-	m_TextB.m_Buffer->pos = pos;
-	m_TextB.m_Buffer->raduis = radius;
-	m_TextB.m_Buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((mesh2D[4]), (mesh2D[5]));
+	m_TextB.m_BufferT->m_UV = glm::vec2(1.0f, 1.0f);
+	m_TextB.m_BufferT->m_Static = true;
+	m_TextB.m_BufferT->m_Color = color;
+	m_TextB.m_BufferT->m_IsGui = 1.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
-	m_TextB.m_Buffer->vertex = glm::vec2((mesh2D[6]), ((mesh2D[7])));
-	m_TextB.m_Buffer->textcoords = glm::vec2(0.0f, 1.0f);
-	m_TextB.m_Buffer->m_static = true;
-	m_TextB.m_Buffer->m_color = color;
-	m_TextB.m_Buffer->isGui = 1.;
-	m_TextB.m_Buffer->texIndex = m_TextB.m_TextureIndex;
-	m_TextB.m_Buffer->size = size;
-	m_TextB.m_Buffer->pos = pos;
-	m_TextB.m_Buffer->raduis = radius;
-	m_TextB.m_Buffer->viewportSize = glm::vec2(Window::GetSize()[0], Window::GetSize()[1]);
-	m_TextB.m_Buffer->relatedToPanel = Gui::GetInstance()->m_IsRelatedToPanel;
-	m_TextB.m_Buffer->panelPos = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelPosForShader;
-	m_TextB.m_Buffer->panelSize = Gui::GetInstance()->m_RelatedPanelProperties.m_PanelSizeForShader;
-	m_TextB.m_Buffer++;
+	m_TextB.m_BufferT->m_Vertex = glm::vec2((mesh2D[6]), ((mesh2D[7])));
+	m_TextB.m_BufferT->m_UV = glm::vec2(0.0f, 1.0f);
+	m_TextB.m_BufferT->m_Static = true;
+	m_TextB.m_BufferT->m_Color = color;
+	m_TextB.m_BufferT->m_IsGui = 1.;
+	m_TextB.m_BufferT->m_TexIndex = m_TextB.m_TextureIndex;
+	m_TextB.m_BufferT++;
 
 	m_TIndexCount += 6;
 }
@@ -289,13 +235,13 @@ void Doom::Batch::Submit(Line & line)
 		BeginLines();
 	}
 
-	m_LinesB.m_BufferL->m_vertex = glm::vec3(line.m_Verteces[0], line.m_Verteces[1], line.m_Verteces[2]);
-	m_LinesB.m_BufferL->m_color = line.m_Color;
+	m_LinesB.m_BufferL->m_Vertex = glm::vec3(line.m_Verteces[0], line.m_Verteces[1], line.m_Verteces[2]);
+	m_LinesB.m_BufferL->m_Color = line.m_Color;
 
 	m_LinesB.m_BufferL++;
 
-	m_LinesB.m_BufferL->m_vertex = glm::vec3(line.m_Verteces[3], line.m_Verteces[4],line.m_Verteces[5]);
-	m_LinesB.m_BufferL->m_color = line.m_Color;
+	m_LinesB.m_BufferL->m_Vertex = glm::vec3(line.m_Verteces[3], line.m_Verteces[4],line.m_Verteces[5]);
+	m_LinesB.m_BufferL->m_Color = line.m_Color;
 
 	m_LinesB.m_BufferL++;
 
@@ -313,20 +259,20 @@ void Doom::Batch::Submit(glm::vec4 color, float* mesh2D)
 		m_LIndexCount = 0;
 	}
 
-	m_LinesB.m_BufferL->m_vertex = glm::vec3(mesh2D[0], mesh2D[1], mesh2D[2]);
-	m_LinesB.m_BufferL->m_color = color;
+	m_LinesB.m_BufferL->m_Vertex = glm::vec3(mesh2D[0], mesh2D[1], mesh2D[2]);
+	m_LinesB.m_BufferL->m_Color = color;
 
 	m_LinesB.m_BufferL++;
 
-	m_LinesB.m_BufferL->m_vertex = glm::vec3(mesh2D[3], mesh2D[4], mesh2D[5]);
-	m_LinesB.m_BufferL->m_color = color;
+	m_LinesB.m_BufferL->m_Vertex = glm::vec3(mesh2D[3], mesh2D[4], mesh2D[5]);
+	m_LinesB.m_BufferL->m_Color = color;
 
 	m_LinesB.m_BufferL++;
 
 	m_LIndexCount += 3;
 }
 
-void Batch::Submit(SpriteRenderer & c)
+void Batch::Submit(SpriteRenderer* c)
 {
 
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE) {
@@ -336,88 +282,73 @@ void Batch::Submit(SpriteRenderer & c)
 	}
 	m_GoB.m_TextureIndex = 0.0f;
 
-	if (c.m_Texture != nullptr) {
-		for (unsigned int i = 0; i < maxTextureSlots; i++)
-		{
-			if (m_GoB.m_TextureSlots[i] == c.m_Texture->m_RendererID) {
-				m_GoB.m_TextureIndex = (float)i;
-				break;
-			}
-
+	bool isFound = false;
+	if (c->m_Texture != nullptr) {
+		auto iter = std::find(m_GoB.m_TextureSlots.begin(), m_GoB.m_TextureSlots.end(), c->m_Texture->m_RendererID);
+		if (iter != m_GoB.m_TextureSlots.end()) {
+			m_GoB.m_TextureIndex = (float)(iter - m_GoB.m_TextureSlots.begin());
+			isFound = true;
 		}
-		if (m_GoB.m_TextureIndex == 0.0f) {
+		if (!isFound) {
 			m_GoB.m_TextureIndex = (float)m_GoB.m_TextureSlotsIndex;
-			m_GoB.m_TextureSlots[m_GoB.m_TextureSlotsIndex] = c.m_Texture->m_RendererID;
+			m_GoB.m_TextureSlots[m_GoB.m_TextureSlotsIndex] = c->m_Texture->m_RendererID;
 			m_GoB.m_TextureSlotsIndex++;
 		}
-		//c.texture->Bind();
 	}
 
-	Transform* trOfR = c.GetOwnerOfComponent()->GetComponent<Transform>();
-	
-	//GtextureIndex = 0;
-	glm::vec2 scale = c.m_Owner->GetScale();
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Mesh2D[0] * scale[0], c.m_Mesh2D[1] * scale[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.m_Mesh2D[2], c.m_Mesh2D[3]);
-	m_GoB.m_Buffer->m_color = c.m_Color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_Buffer->rotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_Buffer->rotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_Buffer->rotationMat3 = trOfR->m_ViewMat4[3];
-	m_GoB.m_Buffer->posMat0 = trOfR->m_PosMat4[0];
-	m_GoB.m_Buffer->posMat1 = trOfR->m_PosMat4[1];
-	m_GoB.m_Buffer->posMat2 = trOfR->m_PosMat4[2];
-	m_GoB.m_Buffer->posMat3 = trOfR->m_PosMat4[3];
-	m_GoB.m_Buffer++;
+	Transform* trOfR = c->m_OwnerOfCom->m_Transform;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Mesh2D[4] * scale[0], c.m_Mesh2D[5] * scale[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.m_Mesh2D[6], c.m_Mesh2D[7]);
-	m_GoB.m_Buffer->m_color = c.m_Color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_Buffer->rotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_Buffer->rotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_Buffer->rotationMat3 = trOfR->m_ViewMat4[3];
-	m_GoB.m_Buffer->posMat0 = trOfR->m_PosMat4[0];
-	m_GoB.m_Buffer->posMat1 = trOfR->m_PosMat4[1];
-	m_GoB.m_Buffer->posMat2 = trOfR->m_PosMat4[2];
-	m_GoB.m_Buffer->posMat3 = trOfR->m_PosMat4[3];
-	m_GoB.m_Buffer++;
+	glm::vec2 scale = c->m_OwnerOfCom->GetScale();
+	glm::vec2 pos = c->m_OwnerOfCom->GetPosition();
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[0] * scale[0], c->m_Mesh2D[1] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[2], c->m_Mesh2D[3]);
+	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Mesh2D[8] * scale[0], c.m_Mesh2D[9] * scale[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.m_Mesh2D[10], c.m_Mesh2D[11]);
-	m_GoB.m_Buffer->m_color = c.m_Color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_Buffer->rotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_Buffer->rotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_Buffer->rotationMat3 = trOfR->m_ViewMat4[3];
-	m_GoB.m_Buffer->posMat0 = trOfR->m_PosMat4[0];
-	m_GoB.m_Buffer->posMat1 = trOfR->m_PosMat4[1];
-	m_GoB.m_Buffer->posMat2 = trOfR->m_PosMat4[2];
-	m_GoB.m_Buffer->posMat3 = trOfR->m_PosMat4[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[4] * scale[0], c->m_Mesh2D[5] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[6], c->m_Mesh2D[7]);
+	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Mesh2D[12] * scale[0], c.m_Mesh2D[13] * scale[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(c.m_Mesh2D[14], c.m_Mesh2D[15]);
-	m_GoB.m_Buffer->m_color = c.m_Color;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_Buffer->rotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_Buffer->rotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_Buffer->rotationMat3 = trOfR->m_ViewMat4[3];
-	m_GoB.m_Buffer->posMat0 = trOfR->m_PosMat4[0];
-	m_GoB.m_Buffer->posMat1 = trOfR->m_PosMat4[1];
-	m_GoB.m_Buffer->posMat2 = trOfR->m_PosMat4[2];
-	m_GoB.m_Buffer->posMat3 = trOfR->m_PosMat4[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[8] * scale[0], c->m_Mesh2D[9] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[10], c->m_Mesh2D[11]);
+	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG++;
+
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[12] * scale[0], c->m_Mesh2D[13] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[14], c->m_Mesh2D[15]);
+	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG++;
 
 	m_GIndexCount += 6;
 }
 
 void Batch::Submit(RectangleCollider2D& c) {
-	glm::mat4 mvp = c.m_Owner->GetComponentManager()->GetComponent<Transform>()->m_PosMat4 * c.m_Owner->GetComponentManager()->GetComponent<Transform>()->m_ViewMat4;
+	glm::mat4 mvp = c.m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>()->m_PosMat4 * c.m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>()->m_ViewMat4;
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1) {
 		EndGameObjects();
 		flushGameObjects(m_Shader);
@@ -427,55 +358,47 @@ void Batch::Submit(RectangleCollider2D& c) {
 
 	m_GoB.m_TextureIndex = 0.0f;
 
-	glm::vec3 scaleVal = c.m_Owner->GetScale();
+	glm::vec3 scaleVal = c.m_OwnerOfCom->GetScale();
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[0] * scaleVal[0], c.m_Vertices[1] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = COLORS::White;
-	m_GoB.m_Buffer->isGui = 0.f;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = mvp[0];
-	m_GoB.m_Buffer->rotationMat1 = mvp[1];
-	m_GoB.m_Buffer->rotationMat2 = mvp[2];
-	m_GoB.m_Buffer->rotationMat3 = mvp[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c.m_Vertices[0] * scaleVal[0], c.m_Vertices[1] * scaleVal[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(0, 0);
+	m_GoB.m_BufferG->m_Color = COLORS::White;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = mvp[0];
+	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
+	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
+	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[2] * scaleVal[0], c.m_Vertices[3] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = COLORS::White;
-	m_GoB.m_Buffer->isGui = 0.f;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = mvp[0];
-	m_GoB.m_Buffer->rotationMat1 = mvp[1];
-	m_GoB.m_Buffer->rotationMat2 = mvp[2];
-	m_GoB.m_Buffer->rotationMat3 = mvp[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c.m_Vertices[2] * scaleVal[0], c.m_Vertices[3] * scaleVal[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(0, 0);
+	m_GoB.m_BufferG->m_Color = COLORS::White;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = mvp[0];
+	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
+	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
+	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[4] * scaleVal[0], c.m_Vertices[5] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = COLORS::White;
-	m_GoB.m_Buffer->isGui = 0.f;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = mvp[0];
-	m_GoB.m_Buffer->rotationMat1 = mvp[1];
-	m_GoB.m_Buffer->rotationMat2 = mvp[2];
-	m_GoB.m_Buffer->rotationMat3 = mvp[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c.m_Vertices[4] * scaleVal[0], c.m_Vertices[5] * scaleVal[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(0, 0);
+	m_GoB.m_BufferG->m_Color = COLORS::White;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = mvp[0];
+	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
+	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
+	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG++;
 
-	m_GoB.m_Buffer->vertex = glm::vec2(c.m_Vertices[6] * scaleVal[0], c.m_Vertices[7] * scaleVal[1]);
-	m_GoB.m_Buffer->textcoords = glm::vec2(0, 0);
-	m_GoB.m_Buffer->m_static = false;
-	m_GoB.m_Buffer->m_color = COLORS::White;
-	m_GoB.m_Buffer->isGui = 0.f;
-	m_GoB.m_Buffer->texIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_Buffer->rotationMat0 = mvp[0];
-	m_GoB.m_Buffer->rotationMat1 = mvp[1];
-	m_GoB.m_Buffer->rotationMat2 = mvp[2];
-	m_GoB.m_Buffer->rotationMat3 = mvp[3];
-	m_GoB.m_Buffer++;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(c.m_Vertices[6] * scaleVal[0], c.m_Vertices[7] * scaleVal[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(0, 0);
+	m_GoB.m_BufferG->m_Color = COLORS::White;
+	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
+	m_GoB.m_BufferG->m_RotationMat0 = mvp[0];
+	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
+	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
+	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG++;
 
 	m_GIndexCount += 6;
 	m_Shader = c.s_Shader;
@@ -500,8 +423,8 @@ void Batch::flushGameObjects(Shader * shader)
 	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().m_ViewProjectionMat4);
 	shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 	glDrawElements(GL_TRIANGLES, m_GIndexCount, GL_UNSIGNED_INT, NULL);
-	Renderer::s_DrawCalls++;
-	Renderer::s_Vertices += m_GIndexCount;
+	Renderer::s_Stats.m_DrawCalls++;
+	Renderer::s_Stats.m_Vertices += m_GIndexCount;
 	shader->UnBind();
 	m_GoB.m_Ibo->UnBind();
 	m_GoB.m_TextureSlotsIndex = 2;
@@ -526,35 +449,35 @@ void Batch::flushCollision(Shader * shader)
 	glDrawElements(GL_TRIANGLES, m_GIndexCount, GL_UNSIGNED_INT, NULL);
 	glLineWidth(1.0f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	Renderer::s_DrawCalls++;
-	Renderer::s_Vertices += m_GIndexCount;
+	Renderer::s_Stats.m_DrawCalls++;
+	Renderer::s_Stats.m_Vertices += m_GIndexCount;
 	shader->UnBind();
 	m_GoB.m_Ibo->UnBind();
 	m_GIndexCount = 0;
 }
 
 void Batch::BeginText() {
-	m_TextB.m_Buffer = m_TextB.m_BufferPtr;
+	m_TextB.m_BufferT = m_TextB.m_BufferPtrT;
 	m_TIndexCount = 0;
 }
 
 void Batch::EndText() {
-	uint32_t dataSize = (uint8_t*)m_TextB.m_Buffer - (uint8_t*)m_TextB.m_BufferPtr;
+	uint32_t dataSize = (uint8_t*)m_TextB.m_BufferT - (uint8_t*)m_TextB.m_BufferPtrT;
 	glBindBuffer(GL_ARRAY_BUFFER, m_TextB.m_Vbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, m_TextB.m_BufferPtr);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, m_TextB.m_BufferPtrT);
 }
 
 void Batch::BeginGameObjects()
 {
-	m_GoB.m_Buffer = m_GoB.m_BufferPtr;
+	m_GoB.m_BufferG = m_GoB.m_BufferPtrG;
 	m_GIndexCount = 0;
 }
 
 void Batch::EndGameObjects()
 {
-	uint32_t dataSize = (uint8_t*)m_GoB.m_Buffer - (uint8_t*)m_GoB.m_BufferPtr;
+	uint32_t dataSize = (uint8_t*)m_GoB.m_BufferG - (uint8_t*)m_GoB.m_BufferPtrG;
 	glBindBuffer(GL_ARRAY_BUFFER, m_GoB.m_Vbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, m_GoB.m_BufferPtr);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, m_GoB.m_BufferPtrG);
 }
 
 void Doom::Batch::BeginLines()
@@ -596,8 +519,8 @@ void Batch::flushText(Shader* shader)
 	shader->SetUniform4fv("u_outlineColor", Gui::GetInstance()->m_TextProps.m_OutLineColor);
 
 	glDrawElements(GL_TRIANGLES, m_TIndexCount, GL_UNSIGNED_INT, NULL);
-	Renderer::s_DrawCalls++;
-	Renderer::s_Vertices += m_TIndexCount;
+	Renderer::s_Stats.m_DrawCalls++;
+	Renderer::s_Stats.m_Vertices += m_TIndexCount;
 	shader->UnBind();
 	m_TextB.m_Ibo->UnBind();
 	glBindVertexArray(0);
@@ -609,6 +532,7 @@ void Batch::flushText(Shader* shader)
 		glBindTextureUnit(i, 0);
 	}
 }
+
 void Doom::Batch::flushLines(Shader * shader)
 {
 	glBindVertexArray(m_LinesB.m_Vao);
@@ -618,8 +542,8 @@ void Doom::Batch::flushLines(Shader * shader)
 	glLineWidth(Line::s_Width);
 	glDrawElements(GL_LINES, m_LIndexCount, GL_UNSIGNED_INT, nullptr);
 	glLineWidth(1.0f);
-	Renderer::s_DrawCalls++;
-	Renderer::s_Vertices += m_LIndexCount;
+	Renderer::s_Stats.m_DrawCalls++;
+	Renderer::s_Stats.m_Vertices += m_LIndexCount;
 	shader->UnBind();
 	m_LinesB.m_Ibo->UnBind();
 	glBindVertexArray(0);
@@ -632,46 +556,25 @@ void Batch::initText()
 
 	glGenBuffers(1, &m_TextB.m_Vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_TextB.m_Vbo);
-	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(TextVertex) * 4 * RENDERER_MAX_SPRITES, NULL, GL_DYNAMIC_DRAW);
 
 	glEnableVertexArrayAttrib(m_TextB.m_Vao, 0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, vertex));
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(TextVertex), (const GLvoid*)offsetof(TextVertex, m_Vertex));
 
 	glEnableVertexArrayAttrib(m_TextB.m_Vao, 1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, textcoords));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TextVertex), (const GLvoid*)offsetof(TextVertex, m_UV));
 
 	glEnableVertexArrayAttrib(m_TextB.m_Vao, 2);
-	glVertexAttribPointer(2, 1, GL_INT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, m_static));
+	glVertexAttribPointer(2, 1, GL_INT, GL_FALSE, sizeof(TextVertex), (const GLvoid*)offsetof(TextVertex, m_Static));
 
 	glEnableVertexArrayAttrib(m_TextB.m_Vao, 3);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, m_color));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(TextVertex), (const GLvoid*)offsetof(TextVertex, m_Color));
 
 	glEnableVertexArrayAttrib(m_TextB.m_Vao, 4);
-	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, isGui));
+	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(TextVertex), (const GLvoid*)offsetof(TextVertex, m_IsGui));
 
 	glEnableVertexArrayAttrib(m_TextB.m_Vao, 5);
-	glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, texIndex));
-
-	glEnableVertexArrayAttrib(m_TextB.m_Vao, 6);
-	glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, size));
-
-	glEnableVertexArrayAttrib(m_TextB.m_Vao, 7);
-	glVertexAttribPointer(7, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
-
-	glEnableVertexArrayAttrib(m_TextB.m_Vao, 8);
-	glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, raduis));
-
-	glEnableVertexArrayAttrib(m_TextB.m_Vao, 9);
-	glVertexAttribPointer(9, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, viewportSize));
-
-	glEnableVertexArrayAttrib(m_TextB.m_Vao, 10);
-	glVertexAttribPointer(10, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, panelSize));
-
-	glEnableVertexArrayAttrib(m_TextB.m_Vao, 11);
-	glVertexAttribPointer(11, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
-
-	glEnableVertexArrayAttrib(m_TextB.m_Vao, 12);
-	glVertexAttribPointer(12, 1, GL_INT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, relatedToPanel));
+	glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(TextVertex), (const GLvoid*)offsetof(TextVertex, m_TexIndex));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -690,7 +593,7 @@ void Batch::initText()
 		offset += 4;
 	}
 
-	m_TextB.m_BufferPtr = new Vertex[RENDERER_MAX_SPRITES];
+	m_TextB.m_BufferPtrT = new TextVertex[RENDERER_MAX_SPRITES];
 	m_TextB.m_Ibo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
 	glBindVertexArray(0);
 
@@ -709,43 +612,34 @@ void Batch::initGameObjects()
 
 	glGenBuffers(1, &m_GoB.m_Vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_GoB.m_Vbo);
-	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GOVertex) * 4 * RENDERER_MAX_SPRITES, NULL, GL_DYNAMIC_DRAW);
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, vertex));
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_Vertex));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, textcoords));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_UV));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 3);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, m_color));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_Color));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 4);
-	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, texIndex));
+	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_TexIndex));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 5);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rotationMat0));
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_RotationMat0));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rotationMat1));
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_RotationMat1));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 7);
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rotationMat2));
+	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_RotationMat2));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 8);
-	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rotationMat3));
+	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_RotationMat3));
 
-	glEnableVertexArrayAttrib(m_GoB.m_Vao, 10);
-	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat0));
-
-	glEnableVertexArrayAttrib(m_GoB.m_Vao, 11);
-	glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat1));
-
-	glEnableVertexArrayAttrib(m_GoB.m_Vao, 12);
-	glVertexAttribPointer(12, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat2));
-
-	glEnableVertexArrayAttrib(m_GoB.m_Vao, 13);
-	glVertexAttribPointer(13, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, posMat3));
+	glEnableVertexArrayAttrib(m_GoB.m_Vao, 9);
+	glVertexAttribPointer(9, 2, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_Pos));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -764,7 +658,7 @@ void Batch::initGameObjects()
 		offset += 4;
 	}
 
-	m_GoB.m_BufferPtr = new Vertex[RENDERER_MAX_SPRITES];
+	m_GoB.m_BufferPtrG = new GOVertex[RENDERER_MAX_SPRITES * 4];
 	m_GoB.m_Ibo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
 	glBindVertexArray(0);
 
@@ -782,13 +676,13 @@ void Doom::Batch::initLines()
 
 	glGenBuffers(1, &m_LinesB.m_Vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_LinesB.m_Vbo);
-	glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VertexLine) * 2 * RENDERER_MAX_SPRITES, NULL, GL_DYNAMIC_DRAW);
 
 	glEnableVertexArrayAttrib(m_LinesB.m_Vao, 0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_vertex));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_Vertex));
 
 	glEnableVertexArrayAttrib(m_LinesB.m_Vao, 1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_color));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexLine), (const GLvoid*)offsetof(VertexLine, m_Color));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

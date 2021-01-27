@@ -59,6 +59,8 @@ namespace Doom {
 		RectangleCollider2D(GameObject* owner = nullptr,double x = 0, double y = 0);
 		~RectangleCollider2D();
 
+		static Component* Create();
+
 		void SetOffset(float x, float y);
 		void IsCollidedSAT();
 		void IsCollidedDIAGS();

@@ -168,6 +168,7 @@ void MeshManager::DispatchLoadedMeshes()
 			if (iter != s_Meshes.end()) {
 				Renderer3D* r = static_cast<Renderer3D*>(i->second);
 				r->LoadMesh(iter->second);
+				r->ChangeRenderTechnic(r->m_RenderTechnic);
 				s_MeshQueue.erase(i++);
 			}
 			else

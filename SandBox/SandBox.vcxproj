@@ -101,10 +101,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\AimTrainer\AimTrainer.h" />
-    <ClInclude Include="src\Examples\BlankProject.h" />
     <ClInclude Include="src\Examples\RayCastTest.h" />
     <ClInclude Include="src\Examples\StressTest.h" />
-    <ClInclude Include="src\Examples\TestCollision2D.h" />
+    <ClInclude Include="src\Examples\Test.h" />
     <ClInclude Include="src\Examples\TicTacToe.h" />
     <ClInclude Include="src\FEM\FEM.h" />
     <ClInclude Include="pch.h" />
@@ -115,7 +114,8 @@
     <ClInclude Include="src\game\RayCastTest.h" />
     <ClInclude Include="src\game\StressTest.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
-    <ClInclude Include="src\Minecraft\Minecraft.h" />
+    <ClInclude Include="src\Hexagon\Hexagon.h" />
+    <ClInclude Include="src\Hexagon\TestComponent.h" />
     <ClInclude Include="src\SpaceFire\Ammo.h" />
     <ClInclude Include="src\SpaceFire\Bullet.h" />
     <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
@@ -130,6 +130,8 @@
     <ClCompile Include="src\FEM\MathFunctions.cpp" />
     <ClCompile Include="src\FEM\Matrix.cpp" />
     <ClCompile Include="src\FEM\Vector.cpp" />
+    <ClCompile Include="src\Hexagon\Hexagon.cpp" />
+    <ClCompile Include="src\Hexagon\TestComponent.cpp" />
     <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
     <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
   </ItemGroup>
@@ -142,7 +144,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\AimTrainer\Sounds\HitSound.ogg" />
     <None Include="src\Scenes\RayCastTest.yaml" />
     <None Include="src\Scenes\scene.yaml" />
     <None Include="src\Scripts\GameTest.lua" />

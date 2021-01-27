@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RENDERER3D_H
-#define RENDERER3D_H
 
 #include "../Core/Core.h"
 #include "../OpenGl/VertexArray.h"
@@ -24,11 +22,12 @@ namespace Doom {
 		struct Material {
 			float m_Ambient = 0.2f;
 			float m_Specular = 0.2f;
+			float m_Intensity = 0.0;
 		};
 
 		Material m_Material;
-		Texture* m_DiffuseTexture = Texture::s_WhiteTexture;
-		Texture* m_NormalMapTexture = Texture::Get("InvalidTexture");
+		Texture* m_DiffuseTexture = nullptr;
+		Texture* m_NormalMapTexture = nullptr;
 		Transform* m_Tr = nullptr;
 		Mesh* m_Mesh = nullptr;
 		bool m_IsCastingShadows = true;
@@ -40,6 +39,8 @@ namespace Doom {
 		Renderer3D(const Renderer3D& rhs);
 		Renderer3D();
 		~Renderer3D();
+
+		static Component* Create();
 
 		void operator=(const Renderer3D& rhs);
 		void EraseFromInstancing();
@@ -73,5 +74,3 @@ namespace Doom {
 	};
 
 }
-
-#endif

@@ -9,12 +9,9 @@ namespace Doom {
 	class DOOM_API Texture {
 	private:
 
-		std::string m_FilePath;
-		std::string m_Name;
 		static std::map<std::string, Texture*> s_Textures;
 		static bool s_IsTextureAdded;
 		unsigned char* m_LocalBuffer = nullptr;
-		int m_width = 0, m_height = 0, m_BPP = 0;
 
 		Texture(const std::string& path, int flip = 1,bool repeat = false);
 		Texture();
@@ -31,15 +28,16 @@ namespace Doom {
 		static std::vector<Texture*> s_LoadedTextures;
 		static Texture* s_WhiteTexture;
 
+		std::string m_FilePath;
+		std::string m_Name;
 		unsigned int m_RendererID = -1;
-		
+		int m_width = 0, m_height = 0, m_BPP = 0;
+
 		void Bind(unsigned int slot = 0) const;
 		void UnBind() const;
 
 		static void ShutDown();
-		inline int GetWidth() const { return m_width; }
-		inline int GetHeight() const { return m_height; }
-		inline std::string GetFilePath() const { return m_FilePath; }
+		static void Delete(Texture* texture);
 		static void AsyncLoadTexture(const std::string& filePath);
 		static std::vector<Texture*> GetLoadedTexturesFromFolder(std::string filePath);
 		static Texture* Get(const std::string filePath, bool showErrors = true);

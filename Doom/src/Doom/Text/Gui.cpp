@@ -50,15 +50,6 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 
 				FindCharInFont(characters, pchar);
 
-				/*size_t size = font->characters.size();
-				for (size_t i = 0; i < size; i++)
-				{
-					if (font->characters[i]->ch == pchar) {
-						characters.push_back(font->characters[i]);
-						break;
-					}
-				}*/
-
 				if (counter1 > charsAfterComma)
 					break;
 			}
@@ -72,16 +63,6 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 		}
 		else {
 			FindCharInFont(characters, strChar);
-
-			/*size_t size = font->characters.size();
-			for (size_t k = 0; k < size; k++)
-			{
-				if (font->characters[k]->ch == strChar) {
-					characters.push_back(font->characters[k]);
-					break;
-				}
-			}*/
-
 		}
 	}
 
@@ -144,14 +125,16 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 
 		if (i == 0) {
 			m_CharacterXOffset = 0;
-			m_Character->Translate(ratio * (x + m_CharacterXOffset), ratio * y);
+			m_Character->m_Position.x = ratio * (x + m_CharacterXOffset);
+			m_Character->m_Position.y = ratio * y;
 		}
 		else {
-			m_Character->Translate(ratio * (x + m_CharacterXOffset), ratio * y);
+			m_Character->m_Position.x = ratio * (x + m_CharacterXOffset);
+			m_Character->m_Position.y = ratio * y;
 		}
 		m_CharacterXOffset += m_Character->m_XAdvance * m_Character->m_Scale.x;
 		Batch::GetInstance()->Submit(m_Character);
-}
+	}
 	va_end(argptr);
 }
 

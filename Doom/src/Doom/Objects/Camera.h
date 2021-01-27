@@ -19,7 +19,6 @@ namespace Doom {
 
 		FrameBuffer* m_FrameBufferColor = nullptr;
 		FrameBuffer* m_FrameBufferShadowMap = nullptr;
-		FrameBuffer* m_FrameBufferUI = nullptr;
 		std::vector<FrameBuffer* > m_FrameBufferBlur;
 
 		Camera();
@@ -27,6 +26,7 @@ namespace Doom {
 
 		glm::vec3 GetRotation();
 		glm::vec3 GetMouseDirVec();
+		glm::vec3 GetForwardV();
 
 		inline glm::vec3 GetPosition() const { return m_Position; }
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMat4; }
@@ -75,7 +75,7 @@ namespace Doom {
 		bool m_IsWindowResized = false;
 	public:
 
-		glm::vec3 forwardV = { 0,0,-1 };
+		glm::vec3 backV = { 0,0,-1 };
 		float m_ZnearSM = -50.0f;
 		float m_ZfarSM = 50.0f;
 		float m_RationProjectionSM = 50.0f;

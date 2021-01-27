@@ -107,8 +107,8 @@ void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 	mesh->m_Va->Bind();
 	mesh->m_Ib->Bind();
 	mesh->m_Vb->Bind();
-	Renderer::s_Vertices += mesh->m_Ib->GetCount();
-	Renderer::s_DrawCalls++;
+	Renderer::s_Stats.m_Vertices += mesh->m_Ib->GetCount();
+	Renderer::s_Stats.m_DrawCalls++;
 	glDrawElements(GL_TRIANGLES, mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 	shader->UnBind();
 	mesh->m_Ib->UnBind();
@@ -116,51 +116,52 @@ void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 }
 
 void Renderer::Render() {
-	if (Window::GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
-		glDisable(GL_DEPTH_TEST);
-		Render2DObjects();
+	{
+		Timer t;
+		if (Window::GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
+			glDisable(GL_DEPTH_TEST);
+			Render2DObjects();
+			RenderLines();
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LESS);
+			return;
+		}
+		RenderCollision();
+		Render3DObjects();
 		RenderLines();
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		return;
+		Render2DObjects();
+		RenderTransparent();
 	}
-	RenderCollision();
-	Render3DObjects();
-	RenderLines();
-	Render2DObjects();
-	RenderTransparent();
+	s_Stats.m_ObjectsRenderTime = Timer::s_OutTime;
 }
 
 void Doom::Renderer::Render2DObjects()
 {
+	if (Renderer::s_Objects2d.size() > 0 || Particle::s_Particles.size())
 	{
-		size_t size = Renderer::s_Objects2d.size();
-		if (size > 0)
+		Batch* batch = Batch::GetInstance();
+		batch->BeginGameObjects();
+
+
 		{
-			Batch* batch = Batch::GetInstance();
-			batch->BeginGameObjects();
-			for (size_t i = 0; i < size;i++) {
+			for (size_t i = 0; i < Renderer::s_Objects2d.size(); i++) {
 				SpriteRenderer* r = Renderer::s_Objects2d[i];
-				if (r->GetOwnerOfComponent()->m_Enable == true)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
+				if (r->GetOwnerOfComponent()->m_Enable)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
 					r->Render();
 				}
 			}
-			size_t particleSize = Particle::s_Particles.size();
-			if (particleSize > 0) {
-
-				for (size_t i = 0; i < particleSize; i++)
-				{
-					Particle* p = Particle::s_Particles[i];
-					if (p->Enable)
-						Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX, p->scaleY), p->texture);
-				}
-			}
-			batch->EndGameObjects();
 		}
-		
-	}
 
+		
+		for (size_t i = 0; i < Particle::s_Particles.size(); i++)
+		{
+			Particle* p = Particle::s_Particles[i];
+			if (p->Enable)
+				Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX, p->scaleY), p->texture);
+		}
+		batch->EndGameObjects();
+	}
 	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->m_BasicShader);
 }
 
@@ -171,7 +172,7 @@ void Doom::Renderer::Render3DObjects()
 	
 	for each (Renderer3D* r in Renderer::s_Objects3d)
 	{
-		if (r->GetOwnerOfComponent()->m_Enable == true && r->m_IsRenderable)
+		if (r->GetOwnerOfComponent()->m_Enable == true)
 		{
 			r->Render();
 		}

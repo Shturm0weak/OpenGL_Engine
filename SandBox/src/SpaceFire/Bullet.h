@@ -1,6 +1,6 @@
 #pragma once
 
-class Bullet : public GameObject {
+class Bullet : public Component {
 public:
 	float damage = 15.f;
 	double lifeTimer = 0;
@@ -12,14 +12,19 @@ public:
 	glm::vec3 moveDir;
 	float speed = 40.f;
 	Texture* texture = Texture::Create("src/SpaceFire/Images/WhiteCircle.png");
+	int useless = 0;
 
-	Bullet(std::string tag,glm::vec3 moveDir,std::string name = "Bullet", float x = 0, float y = 0) : GameObject(name, x, y) {
-		EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (GameObject*)this);
-		EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (GameObject*)this);
-		EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLSION, (GameObject*)this);
-		col = GetComponentManager()->AddComponent<RectangleCollider2D>();
-		tr = GetComponentManager()->GetComponent<Transform>();
-		sr = static_cast<SpriteRenderer*>(GetComponentManager()->AddComponent<SpriteRenderer>());
+	static Component* Create() {
+		return new Bullet();
+	}
+
+	void Init(std::string tag, glm::vec3 moveDir, std::string name = "Bullet") {
+		EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, this);
+		EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLISION, this);
+		col = GetOwnerOfComponent()->AddComponent<RectangleCollider2D>();
+		tr = GetOwnerOfComponent()->GetComponent<Transform>();
+		sr = GetOwnerOfComponent()->AddComponent<SpriteRenderer>();
 		col->GetOwnerOfComponent()->m_Tag = (tag);
 		this->moveDir = glm::vec3(moveDir * (1.f / sqrtf(moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z)));
 		sr->m_Texture = (texture);
@@ -45,6 +50,6 @@ public:
 	void Death() {
 		isActive = false;
 		col->m_Enable = false;
-		m_Enable = false;
+		GetOwnerOfComponent()->m_Enable = false;
 	}
 };

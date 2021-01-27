@@ -3,13 +3,15 @@
 
 using namespace Doom;
 
-Shader::Shader(const std::string& name, const std::string& filepath) : m_Name(name),m_FilePath(filepath), m_RendererID(0) {
+Shader::Shader(const std::string& name, const std::string& filepath) : m_Name(name),m_FilePath(filepath), m_RendererID(0)
+{
 	ShaderProgramSource source = Parseshader(filepath);
 	m_RendererID = CreateShader(source.m_VertexSource, source.m_FragmentSource);
 	std::cout << BOLDGREEN << "Shader: <" << NAMECOLOR << name << BOLDGREEN << "> has been created" << RESET << std::endl;
 }
 
-Shader::~Shader() {
+Shader::~Shader()
+{
 	glDeleteProgram(m_RendererID);
 	auto iter = s_Shaders.find(this->m_Name);
 	if(iter != s_Shaders.end())
@@ -42,15 +44,18 @@ Shader * Doom::Shader::Get(const std::string& name, bool showErrors)
 	return nullptr;
 }
 
-void Shader::Bind() const {
+void Shader::Bind() const 
+{
 	glUseProgram(m_RendererID);
 }
 
-void Shader::UnBind() const {
+void Shader::UnBind() const 
+{
 	glUseProgram(0);
 }
 
-void Shader::SetUniform1i(const std::string& name, int value) {
+void Shader::SetUniform1i(const std::string& name, int value)
+{
 	glUniform1i(GetUniformLocation(name), value);
 }
 
@@ -59,7 +64,8 @@ void Shader::SetUniform1iv(const std::string& name, int* value)
 	glUniform1iv(GetUniformLocation(name),32,value);
 }
 
-void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
+void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) 
+{
 	glUniform4f(GetUniformLocation(name),v0,v1,v2,v3);
 }
 
@@ -73,7 +79,8 @@ void Doom::Shader::SetUniform2f(const std::string& name, float v0, float v1)
 	glUniform2f(GetUniformLocation(name),v0,v1);
 }
 
-void Shader::SetUniform4fv(const std::string& name, const glm::vec4& vec4) {
+void Shader::SetUniform4fv(const std::string& name, const glm::vec4& vec4) 
+{
 	float vec[4] = { vec4[0],vec4[1],vec4[2],vec4[3] };
 	glUniform4fv(GetUniformLocation(name), 1,vec);
 }
@@ -84,7 +91,8 @@ void Doom::Shader::SetUniform3fv(const std::string& name, const glm::vec3 & vec3
 	glUniform3fv(GetUniformLocation(name), 1, vec);
 }
 
-void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) {
+void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) 
+{
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
 }
 
@@ -109,16 +117,19 @@ const char ** Doom::Shader::GetListOfShaders()
 	return s_NamesOfShaders;
 }
 
-void Shader::SetUniform2fv(const std::string& name, const glm::vec2& vec2) {
+void Shader::SetUniform2fv(const std::string& name, const glm::vec2& vec2)
+{
 	float vec[2] = { vec2[0],vec2[1] };
 	glUniform2fv(GetUniformLocation(name),1,vec);
 }
 
-void Shader::SetUniform1f(const std::string& name, float v0) {
+void Shader::SetUniform1f(const std::string& name, float v0) 
+{
 	glUniform1fv(GetUniformLocation(name), 1, &v0);
 }
 
-int Shader::GetUniformLocation(const std::string& name) {
+int Shader::GetUniformLocation(const std::string& name) 
+{
 	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 		return m_UniformLocationCache[name];
 	int location = glGetUniformLocation(m_RendererID, name.c_str());
@@ -128,7 +139,8 @@ int Shader::GetUniformLocation(const std::string& name) {
 	return location;
 }
 
-ShaderProgramSource Shader::Parseshader(const std::string& filepath) {
+ShaderProgramSource Shader::Parseshader(const std::string& filepath)
+{
 	std::ifstream stream(filepath);
 
 	enum class shadertype {
@@ -139,6 +151,7 @@ ShaderProgramSource Shader::Parseshader(const std::string& filepath) {
 
 	shadertype shadertp = shadertype::NONE;
 	std::string line;
+	std::string buf;
 	std::stringstream ss[2];
 	while (getline(stream, line))
 	{
@@ -154,11 +167,11 @@ ShaderProgramSource Shader::Parseshader(const std::string& filepath) {
 			ss[(int)shadertp] << line << '\n';
 		}
 	}
-
 	return { ss[0].str(),ss[1].str() };
 }
 
-unsigned int Shader::CompileShader(unsigned int type, const std::string& source) {
+unsigned int Shader::CompileShader(unsigned int type, const std::string& source) 
+{
 	unsigned int id = glCreateShader(type);
 	const char* src = source.c_str();
 	glShaderSource(id, 1, &src, nullptr);
@@ -181,7 +194,8 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	return id;
 }
 
-unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& FragmentShader) {
+unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& FragmentShader)
+{
 	unsigned int programm = glCreateProgram();
 	unsigned vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 	unsigned fs = CompileShader(GL_FRAGMENT_SHADER, FragmentShader);

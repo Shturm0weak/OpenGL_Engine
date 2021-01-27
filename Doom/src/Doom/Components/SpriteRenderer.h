@@ -15,13 +15,14 @@ namespace Doom {
 	class DOOM_API SpriteRenderer : public Irenderer {
 	private:
 
-		static unsigned int s_Indices2D[6];
 		float m_Mesh2D[16] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,
 		 0.5f,  0.5f, 1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
+
+		static unsigned int s_Indices2D[6];
 
 		Transform* m_Tr = nullptr;
 
@@ -35,8 +36,8 @@ namespace Doom {
 		friend class ComponentManager;
 	public:
 
-		TextureAtlas* m_TextureAtlas = nullptr;
 		Texture* m_Texture = Texture::s_WhiteTexture;
+		TextureAtlas* m_TextureAtlas = nullptr;
 
 		SpriteRenderer(const SpriteRenderer& rhs);
 		SpriteRenderer();
@@ -47,6 +48,8 @@ namespace Doom {
 		void GetTransformedVertices(float* buffer); // returns 8 floats
 
 		virtual void Render() override;
+
+		static Component* Create();
 
 		float GetWidth() const;
 		float GetHeight() const;

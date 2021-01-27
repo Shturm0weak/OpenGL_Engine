@@ -16,6 +16,11 @@ void Doom::PointLight::operator=(const PointLight& rhs)
 	Copy(rhs);
 }
 
+Component* Doom::PointLight::Create()
+{
+	return new PointLight();
+}
+
 Doom::PointLight::PointLight(const PointLight& rhs)
 {
 	Copy(rhs);

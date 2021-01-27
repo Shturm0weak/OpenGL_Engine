@@ -23,6 +23,11 @@ void Doom::SphereCollider::operator=(const SphereCollider& rhs)
 	Copy(rhs);
 }
 
+Component* Doom::SphereCollider::Create()
+{
+	return new SphereCollider();
+}
+
 Doom::SphereCollider::SphereCollider(const SphereCollider& rhs)
 {
 	Copy(rhs);
@@ -36,7 +41,7 @@ SphereCollider::SphereCollider() {
 
 void Doom::SphereCollider::Render()
 {
-	Transform* tr = m_Owner->GetComponent<Transform>();
+	Transform* tr = m_OwnerOfCom->GetComponent<Transform>();
 	glm::vec3 scale = tr->GetScale();
 	if (m_IsInBoundingBox)
 		m_Radius = scale.y;
@@ -51,7 +56,7 @@ void Doom::SphereCollider::Render()
 	m_Mesh->m_Va->Bind();
 	m_Mesh->m_Ib->Bind();
 	m_Mesh->m_Vb->Bind();
-	Renderer::s_DrawCalls++;
+	Renderer::s_Stats.m_DrawCalls++;
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
@@ -69,7 +74,7 @@ bool Doom::SphereCollider::IntersectSphereToSphere(SphereCollider* sp) {
 	glm::vec3 scale = GetOwnerOfComponent()->GetScale();
 	float d = glm::distance(pos1, pos2);
 	if (d < m_Radius + sp->m_Radius) {
-		EventSystem::GetInstance()->SendEvent(EventType::ONCOLLSION,(Listener*)GetOwnerOfComponent(),(void*)(sp));
+		EventSystem::GetInstance()->SendEvent(EventType::ONCOLLISION,(Listener*)GetOwnerOfComponent(),(void*)(sp));
 		return true;
 	}
 	return false;

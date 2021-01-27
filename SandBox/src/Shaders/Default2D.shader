@@ -9,10 +9,7 @@ layout(location = 5) in vec4 rotationMat0;
 layout(location = 6) in vec4 rotationMat1;
 layout(location = 7) in vec4 rotationMat2;
 layout(location = 8) in vec4 rotationMat3;
-layout(location = 10) in vec4 positionMat0;
-layout(location = 11) in vec4 positionMat1;
-layout(location = 12) in vec4 positionMat2;
-layout(location = 13) in vec4 positionMat3;
+layout(location = 9) in vec2 posv;
 
 out vec4 positionsfrag;
 flat out int tex_index;
@@ -25,12 +22,10 @@ mat4 rot = mat4(
 	rotationMat2,
 	rotationMat3);
 
-mat4 pos = mat4(
-	positionMat0,
-	positionMat1,
-	positionMat2,
-	positionMat3
-);
+mat4 pos = mat4(1.0, 0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0, 0.0,
+				0.0, 0.0, 1.0, 0.0,
+				posv.x, posv.y, 0.0, 1.0);
 
 void main() {
 	gl_Position = u_ViewProjection * pos * rot * positions;

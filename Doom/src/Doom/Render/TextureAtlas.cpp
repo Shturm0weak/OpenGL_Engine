@@ -14,21 +14,21 @@ Doom::TextureAtlas * Doom::TextureAtlas::CreateTextureAtlas(std::string name, fl
 {
 	TextureAtlas* ta = GetTextureAtlas(name);
 	if (ta == nullptr)
-		new TextureAtlas(name, spriteWidth, spriteHeight, texture);
+		return new TextureAtlas(name, spriteWidth, spriteHeight, texture);
 	else
 		return ta;
 }
 
 float * Doom::TextureAtlas::GetSpriteUVs(float x, float y)
 {
-	m_UVs[0] = (x * m_SpriteWidth) / m_Texture->GetWidth();
-	m_UVs[1] = (y * m_SpriteHeight) / m_Texture->GetHeight();
-	m_UVs[2] = ((x + 1) * m_SpriteWidth) / m_Texture->GetWidth();
-	m_UVs[3] = (y * m_SpriteHeight) / m_Texture->GetHeight();
-	m_UVs[4] = ((x + 1) * m_SpriteWidth) / m_Texture->GetWidth();
-	m_UVs[5] = ((y + 1) * m_SpriteHeight) / m_Texture->GetHeight();
-	m_UVs[6] = (x * m_SpriteWidth) / m_Texture->GetWidth();
-	m_UVs[7] = ((y + 1) * m_SpriteHeight) / m_Texture->GetHeight();
+	m_UVs[0] = (x * m_SpriteWidth) / m_Texture->m_width;
+	m_UVs[1] = (y * m_SpriteHeight) / m_Texture->m_height;
+	m_UVs[2] = ((x + 1) * m_SpriteWidth) / m_Texture->m_width;
+	m_UVs[3] = (y * m_SpriteHeight) / m_Texture->m_height;
+	m_UVs[4] = ((x + 1) * m_SpriteWidth) / m_Texture->m_width;
+	m_UVs[5] = ((y + 1) * m_SpriteHeight) / m_Texture->m_height;
+	m_UVs[6] = (x * m_SpriteWidth) / m_Texture->m_width;
+	m_UVs[7] = ((y + 1) * m_SpriteHeight) / m_Texture->m_height;
 	return m_UVs;
 }
 

@@ -11,17 +11,11 @@ namespace Doom {
 	class DOOM_API Transform : public Component {
 	public:
 
-		Irenderer* sr = nullptr;
-
-		//void RealVertexPositions();
-
+		glm::mat4 m_ScaleMat4 = glm::mat4(1.f);
+		glm::mat4 m_PosMat4 = glm::mat4(1.f);
+		glm::mat4 m_ViewMat4 = glm::mat4(1.f);
 		glm::vec3 m_Rotation = glm::vec3(0.0);
 		glm::vec3 m_PrevPosition;
-		//glm::vec3 m_PrevRotation;
-
-		glm::mat4 m_ScaleMat4 = glm::mat4(1.f);
-		glm::mat4 m_PosMat4   = glm::mat4(1.f);
-		glm::mat4 m_ViewMat4  = glm::mat4(1.f);
 
 		void Copy(const Transform& rhs);
 
@@ -44,17 +38,19 @@ namespace Doom {
 
 	public:
 
+		glm::mat4 GetTransform();
+
+		glm::vec3 GetRotation();
+		glm::vec3 GetPosition();
+		glm::vec3 GetScale();
+
 		Transform(const Transform& rhs);
 		Transform();
 		~Transform() {}
 
 		void operator=(const Transform& rhs);
 
-		glm::vec3 GetRotation();
-		glm::vec3 GetPosition();
-		glm::vec3 GetScale();
-
-		glm::mat4 GetTransform();
+		static Component* Create();
 
 		void Move(glm::vec3 dir);
 		void Rotate(glm::vec3 angles, bool isRad = false);

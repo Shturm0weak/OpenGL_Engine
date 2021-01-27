@@ -142,4 +142,35 @@ namespace Utils {
 		return true;
 	}
 
+	template<class T>
+	std::map<char*, uint32_t>::iterator PreAllocateMemory(std::map<char*, uint32_t>& memoryPool, std::vector<char*> freeMemory) {
+		std::map<char*, uint32_t>::iterator iter;
+		if (freeMemory.size() > 0) {
+			for (auto iterMP = memoryPool.begin(); iterMP != memoryPool.end(); iterMP++)
+			{
+				if((uint64_t)(iterMP->first) < (uint64_t)freeMemory.back() && (uint64_t)freeMemory.back() < (uint64_t)(iterMP->first) + MAX_PREALLOCATED_INSTANCES)
+					iter = iterMP;
+			}
+		}
+		else if (memoryPool.size() == 0) {
+			char* newPreAllocMemory = new char[MAX_PREALLOCATED_INSTANCES * sizeof(T)];
+			memoryPool.insert(std::make_pair(newPreAllocMemory, 0));
+		}
+		char* memoryPtr = memoryPool.rbegin()->first;
+		iter = memoryPool.find(memoryPtr);
+		if (iter->second == MAX_PREALLOCATED_INSTANCES) {
+			char* newPreAllocMemory = new char[MAX_PREALLOCATED_INSTANCES * sizeof(T)];
+			iter = memoryPool.insert(std::make_pair(newPreAllocMemory, 0)).first;
+			memoryPtr = newPreAllocMemory;
+		}
+		return iter;
+	}
+
+	template<typename T>
+	static std::string GetComponentTypeName() {
+		std::string name = typeid(T).name();
+		name = name.substr(6);
+		return name;
+	}
+
 }

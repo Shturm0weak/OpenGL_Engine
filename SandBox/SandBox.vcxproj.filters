@@ -24,7 +24,6 @@
     <ClInclude Include="src\FEM\Matrix.h" />
     <ClInclude Include="src\FEM\Vector.h" />
     <ClInclude Include="src\game\BlankProject.h" />
-    <ClInclude Include="src\AimTrainer\AimTrainer.h" />
     <ClInclude Include="src\SpaceFire\Ammo.h" />
     <ClInclude Include="src\SpaceFire\Bullet.h" />
     <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
@@ -33,12 +32,13 @@
     <ClInclude Include="src\game\RayCastTest.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
     <ClInclude Include="src\game\StressTest.h" />
-    <ClInclude Include="src\Minecraft\Minecraft.h" />
-    <ClInclude Include="src\Examples\BlankProject.h" />
+    <ClInclude Include="src\Hexagon\Hexagon.h" />
+    <ClInclude Include="src\AimTrainer\AimTrainer.h" />
+    <ClInclude Include="src\Hexagon\TestComponent.h" />
+    <ClInclude Include="src\Examples\Test.h" />
     <ClInclude Include="src\Examples\RayCastTest.h" />
     <ClInclude Include="src\Examples\StressTest.h" />
     <ClInclude Include="src\Examples\TicTacToe.h" />
-    <ClInclude Include="src\Examples\TestCollision2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
@@ -47,9 +47,11 @@
     <ClCompile Include="src\FEM\MathFunctions.cpp" />
     <ClCompile Include="src\FEM\Matrix.cpp" />
     <ClCompile Include="src\FEM\Vector.cpp" />
-    <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
     <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
     <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
+    <ClCompile Include="src\Hexagon\Hexagon.cpp" />
+    <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
+    <ClCompile Include="src\Hexagon\TestComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BakeShadows.shader" />
@@ -66,7 +68,6 @@
     <None Include="src\Shaders\SkyBox.shader" />
     <None Include="src\Shaders\Tron.shader" />
     <None Include="src\Scripts\GameTest.lua" />
-    <None Include="src\AimTrainer\Sounds\HitSound.ogg" />
     <None Include="src\Shaders\Blur.shader" />
     <None Include="src\Shaders\Bloom.shader" />
     <None Include="src\Shaders\QuadFullScreen.shader" />

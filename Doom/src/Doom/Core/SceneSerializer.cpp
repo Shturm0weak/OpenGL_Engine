@@ -238,24 +238,26 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		if (diffuse == "WhiteTexture")
 			r->m_DiffuseTexture = Texture::s_WhiteTexture;
 		else {
-			Texture::AsyncLoadTexture(diffuse);
-			Texture::GetAsync(obj, [=] {
-				Texture* t = Texture::Get(diffuse, false);
-				if (t != nullptr)
-					r->m_DiffuseTexture = t;
-				return t;
-				});
+			r->m_DiffuseTexture = Texture::Create(diffuse);
+			//Texture::AsyncLoadTexture(diffuse);
+			//Texture::GetAsync(obj, [=] {
+			//	Texture* t = Texture::Get(diffuse, false);
+			//	if (t != nullptr)
+			//		r->m_DiffuseTexture = t;
+			//	return t;
+			//	});
 		}
 		if (normal == "InvalidTexture")
 			r->m_NormalMapTexture = Texture::Get("InvalidTexture");
 		else {
-			Texture::AsyncLoadTexture(normal);
+			r->m_NormalMapTexture = Texture::Create(normal);
+			/*Texture::AsyncLoadTexture(normal);
 			Texture::GetAsync(r, [=] {
 				Texture* t = Texture::Get(normal, false);
 				if (t != nullptr)
 					r->m_NormalMapTexture = t;
 				return t;
-				});
+				});*/
 		}
 		auto mesh = renderer3DComponent["Mesh"];
 		std::string meshPath = mesh["Mesh"].as<std::string>();
@@ -266,11 +268,9 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		}
 		std::string meshName = Utils::GetNameFromFilePath(meshPath);
 		MeshManager::AsyncLoadMesh(meshName, meshPath, meshId);
-		//MeshManager::LoadMesh(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
 		r->m_RenderTechnic = ((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
 		MeshManager::GetMeshWhenLoaded(meshName, (void*)r);
-		//r->LoadMesh(MeshManager::GetMesh(meshName));
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{
@@ -330,14 +330,15 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		childs.insert(std::make_pair(obj, ids));
 	}
 
-	auto rEvents = go["Registered events"];
+	//@deprecated
+	/*auto rEvents = go["Registered events"];
 	if (rEvents) {
 		std::vector<int> events = rEvents.as<std::vector<int>>();
 		for (uint32_t i = 0; i < events.size(); i++)
 		{
 			EventSystem::GetInstance()->RegisterClient((EventType)events[i], obj);
 		}
-	}
+	}*/
 }
 
 void Doom::SceneSerializer::DeSerializeTextureAtlas(YAML::detail::iterator_value& ta)
@@ -353,7 +354,7 @@ void Doom::SceneSerializer::SerializeTextureAtlas(YAML::Emitter& out, TextureAtl
 {
 	out << YAML::BeginMap;
 	out << YAML::Key << "Texture atlas" << YAML::Value << ta->m_Name;
-	out << YAML::Key << "Texture" << YAML::Value << ta->GetTexture()->GetFilePath();
+	out << YAML::Key << "Texture" << YAML::Value << ta->GetTexture()->m_FilePath;
 	out << YAML::Key << "Sprite width" << YAML::Value << ta->GetSpriteWidth();
 	out << YAML::Key << "Sprite height" << YAML::Value << ta->GetSpriteHeight();
 	out << YAML::EndMap;
@@ -449,8 +450,8 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 
 			out << YAML::Key << "Textures";
 			out << YAML::BeginMap;
-			out << YAML::Key << "Diffuse" << YAML::Value << (r->m_DiffuseTexture != nullptr ? r->m_DiffuseTexture->GetFilePath() : "WhiteTexture");
-			out << YAML::Key << "Normal" << YAML::Value << (r->m_NormalMapTexture != nullptr ? r->m_NormalMapTexture->GetFilePath() : "InvalidTexture");
+			out << YAML::Key << "Diffuse" << YAML::Value << (r->m_DiffuseTexture != nullptr ? r->m_DiffuseTexture->m_FilePath : "WhiteTexture");
+			out << YAML::Key << "Normal" << YAML::Value << (r->m_NormalMapTexture != nullptr ? r->m_NormalMapTexture->m_FilePath : "InvalidTexture");
 			out << YAML::EndMap;
 
 			out << YAML::Key << "Mesh";
@@ -472,8 +473,8 @@ void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter& out,
 			out << YAML::Key << "Sprite renderer";
 			out << YAML::BeginMap;
 			out << YAML::Key << "Color" << YAML::Value << sr->m_Color;
-			out << YAML::Key << "Texture" << YAML::Value << (sr->m_Texture != nullptr ? sr->m_Texture->GetFilePath() : "InvalidTexture");
-			out << YAML::Key << "Texture atlas" << YAML::Value << (sr->m_TextureAtlas != nullptr ? sr->m_TextureAtlas->GetTexture()->GetFilePath() : "InvalidTexture");;
+			out << YAML::Key << "Texture" << YAML::Value << (sr->m_Texture != nullptr ? sr->m_Texture->m_FilePath : "InvalidTexture");
+			out << YAML::Key << "Texture atlas" << YAML::Value << (sr->m_TextureAtlas != nullptr ? sr->m_TextureAtlas->GetTexture()->m_FilePath : "InvalidTexture");;
 			std::vector<float> vert;
 			for (uint32_t i = 0; i < 16; i++)
 			{
@@ -538,7 +539,7 @@ void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter& out,
 
 void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter& out, GameObject* go)
 {
-	out << YAML::Key << "Registered events" << YAML::Value << go->m_RegisteredEvents;
+	//out << YAML::Key << "Registered events" << YAML::Value << go->m_RegisteredEvents;
 }
 
 void Doom::SceneSerializer::SerializeRectangularCollider(YAML::Emitter& out, ComponentManager* cm)

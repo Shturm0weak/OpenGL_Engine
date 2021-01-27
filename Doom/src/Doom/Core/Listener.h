@@ -12,11 +12,11 @@ namespace Doom {
 	private:
 
 		virtual void OnUpdate() {}
+		virtual void OnCollision(void* col) {}
 		virtual void OnMove() {}
 		virtual void OnRotate() {}
 		virtual void OnStart() {}
 		virtual void OnScale() {}
-		virtual void OnCollision(void* col) {}
 		virtual void OnWindowResize(void* props) {}
 		virtual void OnMiss() {}
 		virtual void OnMainThreadProcess(void* task) {}
@@ -27,6 +27,8 @@ namespace Doom {
 		std::vector<int> m_RegisteredEvents;
 
 		void HandleEvent(Event* e);
+
+		virtual ~Listener() {}
 	};
 
 }

@@ -6,10 +6,8 @@ using namespace Doom;
 ParticleSystem::ParticleSystem(float x, float y ,int amount,double lifeTime,float speed,float maxSize,float minSize,float radiusToSpawn, double minTimeToSpawn, double maxTimeToSpawn,Texture* texture) :
 	AmountOfParticles(amount),lifeTime(lifeTime),speedMultiplier(speed),maxSize(maxSize),minSize(minSize), radiusToSpawn(radiusToSpawn),minTimeToSpawn(minTimeToSpawn),maxTimeToSpawn(maxTimeToSpawn),texture(texture)
 {
-	m_Name = "ParticleSystem";
-	glm::vec2 position;
-	position.x = x;
-	position.y = y;
+	m_Name = "ParticleEmmiter";
+	glm::vec2 position(x, y);
 	m_Enable = false;
 	particlesPool = new Particle[AmountOfParticles];
 	std::random_device rd;
@@ -18,23 +16,27 @@ ParticleSystem::ParticleSystem(float x, float y ,int amount,double lifeTime,floa
 	{
 		particlesPool[i].Enable = false;
 		particlesPool[i].texture = this->texture;
+
 		std::uniform_real_distribution<float> distributionraduis(-this->radiusToSpawn, this->radiusToSpawn);
 		float radius = distributionraduis(e2);
 		particlesPool[i].x = position.x + radius;
 		particlesPool[i].y = position.y + radius;
 		particlesPool[i].pos = glm::translate(glm::mat4(1.f),glm::vec3(particlesPool[i].x, particlesPool[i].y,0));
+
 		std::uniform_real_distribution<float> distribution1(this->minSize, this->maxSize);
 		float scale = distribution1(e2);
 		particlesPool[i].scaleX = scale; particlesPool[i].scaleY = scale;
+
 		std::uniform_real_distribution<float> distribution(-1, 1);
 		particlesPool[i].speeddiry = distribution(e2);
 		particlesPool[i].speeddirx = distribution(e2);
+
 		std::uniform_real_distribution<float> distribution2(this->minTimeToSpawn, this->maxTimeToSpawn);
 		particlesPool[i].timeToSpawn = distribution2(e2);
+
 		std::uniform_real_distribution<float> distributioncolor(60, 120);
 		float colorGreen = distributioncolor(e2);
-		color = glm::vec4(1, colorGreen / 255., 0, opacity);
-		particlesPool[i].color = color;
+		particlesPool[i].color = glm::vec4(1, colorGreen / 255., 0, opacity);
 	}
 }
 
@@ -57,20 +59,20 @@ void ParticleSystem::Play() {
 
 			particlesPool[i].pos = glm::translate(glm::mat4(1.f), glm::vec3(particlesPool[i].x, particlesPool[i].y, 0));
 
-			gravityAcceleration += (0.05 * DeltaTime::GetDeltaTime()) * gravity;
-			particlesPool[i].lifeTime += DeltaTime::GetDeltaTime();
+			gravityAcceleration += (0.05 * DeltaTime::s_Deltatime) * gravity;
+			particlesPool[i].lifeTime += DeltaTime::s_Deltatime;
 			if (isRotating) {
 				float angle = (-theta0 * (2 * 3.14159f) / 360.0f);
-				particlesPool[i].view = glm::rotate(particlesPool[i].view, angle * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
+				particlesPool[i].view = glm::rotate(particlesPool[i].view, angle * DeltaTime::s_Deltatime, glm::vec3(0, 0, 1));
 			}
 			if (isSmallerWithTime)
 			{
-				particlesPool[i].scaleX = particlesPool[i].scaleX * (1 - (0.99 * DeltaTime::GetDeltaTime() * scaleMultiplier));
-				particlesPool[i].scaleY = particlesPool[i].scaleY * (1 - (0.99 * DeltaTime::GetDeltaTime() * scaleMultiplier));
+				particlesPool[i].scaleX = particlesPool[i].scaleX * (1 - (0.99 * DeltaTime::s_Deltatime * scaleMultiplier));
+				particlesPool[i].scaleY = particlesPool[i].scaleY * (1 - (0.99 * DeltaTime::s_Deltatime * scaleMultiplier));
 			}
 		}
 	}
-	timer += DeltaTime::GetDeltaTime();
+	timer += DeltaTime::s_Deltatime;
 }
 
 void ParticleSystem::Restart() {

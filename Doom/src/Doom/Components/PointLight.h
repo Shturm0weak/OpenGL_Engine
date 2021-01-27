@@ -21,6 +21,8 @@ namespace Doom {
 
 		void operator=(const PointLight& rhs);
 
+		static Component* Create();
+
 		PointLight(const PointLight& rhs);
 		PointLight();
 		~PointLight();

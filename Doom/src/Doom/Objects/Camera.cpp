@@ -33,9 +33,9 @@ void Camera::RecalculateViewMatrix() {
 
 	float cosPitch = cos(m_Pitch);
 
-	forwardV.z = cos(m_Yaw) * cosPitch;
-	forwardV.x = sin(m_Yaw) * cosPitch;
-	forwardV.y = sin(m_Pitch);
+	backV.z = cos(m_Yaw) * cosPitch;
+	backV.x = sin(m_Yaw) * cosPitch;
+	backV.y = sin(m_Pitch);
 
 	m_ViewMat4 = glm::inverse(transform);
 	m_ViewProjectionMat4 = m_ProjectionMat4 * m_ViewMat4;
@@ -142,6 +142,11 @@ glm::vec3 Doom::Camera::GetMouseDirVec()
 	return glm::vec3(glm::normalize(mouseRay));
 }
 
+glm::vec3 Doom::Camera::GetForwardV()
+{
+	return glm::vec3(-backV.x, backV.y, -backV.z);
+}
+
 void Doom::Camera::SetRotation(glm::vec3 rot)
 {
 	m_Pitch = rot.x; m_Yaw = rot.y; m_Roll = rot.z;
@@ -216,12 +221,12 @@ void Camera::CameraMovement() {
 		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
 			speed *= 10;
 		}
-		forwardV *= speed * DeltaTime::s_Deltatime;
+		backV *= speed * DeltaTime::s_Deltatime;
 		if (Input::IsKeyDown(Keycode::KEY_W)) {
-			MovePosition(glm::vec3(-forwardV.x, forwardV.y, -forwardV.z));
+			MovePosition(glm::vec3(-backV.x, backV.y, -backV.z));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_S)) {
-			MovePosition(glm::vec3(forwardV.x, -forwardV.y, forwardV.z));
+			MovePosition(glm::vec3(backV.x, -backV.y, backV.z));
 		}
 		if (Input::IsKeyDown(Keycode::SPACE)) {
 			MovePosition(glm::vec3(0, 5.0f * DeltaTime::s_Deltatime, 0));
@@ -237,7 +242,7 @@ void Camera::CameraMovement() {
 		Window::GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
 		
 		glm::vec2 rightVec;
-		rightVec = { -(forwardV.z * 1) / (forwardV.x) ,1 };
+		rightVec = { -(backV.z * 1) / (backV.x) ,1 };
 		if (isinf(rightVec.x))
 			rightVec = {1,0};
 		rightVec *= (1.f / sqrt(rightVec.x * rightVec.x + rightVec.y * rightVec.y));

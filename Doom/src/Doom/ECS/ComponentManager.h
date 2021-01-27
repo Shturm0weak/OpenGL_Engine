@@ -18,6 +18,7 @@
 #include "../Components/DirectionalLight.h"
 #include "../Components/SphereCollider.h"
 #include "../Components/ScriptComponent.h"
+#include "Core/Utils.h"
 
 namespace Doom {
 
@@ -46,6 +47,7 @@ namespace Doom {
 		}
 
 		friend class Component;
+		friend class Editor;
 	public:
 
 		ComponentManager(ComponentManager& rhs) {
@@ -81,7 +83,7 @@ namespace Doom {
 			m_NamesOfMembers = new const char* [m_Components.size()];
 			for (unsigned int i = 0; i < m_Components.size(); i++)
 			{
-				m_NamesOfMembers[i] = std::to_string((int)m_Components[i]->GetComponentType()).c_str();
+				m_NamesOfMembers[i] = m_Components[i]->GetComponentType().c_str();
 			}
 			return m_NamesOfMembers;
 		}
@@ -89,7 +91,7 @@ namespace Doom {
 		std::vector<ScriptComponent*> GetScripts() {
 			std::vector<ScriptComponent*> scripts;
 			for (Component* com : m_Components) {
-				if (com->m_Type == sizeof(ScriptComponent))
+				if (com->m_Type == Utils::GetComponentTypeName<ScriptComponent>())
 					scripts.push_back(static_cast<ScriptComponent*>(com));
 			}
 			return scripts;
@@ -136,7 +138,7 @@ namespace Doom {
 		T* GetComponent()
 		{
 			for (auto com : m_Components) {
-				if (com->GetComponentType() == sizeof(T)) {
+				if (com->m_Type == Utils::GetComponentTypeName<T>()) {
 					return static_cast<T*>(com);
 				}
 			}
@@ -145,16 +147,16 @@ namespace Doom {
 
 		template<class T>
 		T* AddComponent() {
-			if ((GetComponent<T>() != nullptr && GetComponent<T>()->m_Type == sizeof(ScriptComponent)) || GetComponent<T>() == nullptr) {
-				T* object = new T();
-				object->m_Owner = (this->m_Owner);
-				object->SetType(sizeof(T));
+			if ((GetComponent<T>() != nullptr && GetComponent<T>()->m_Type == Utils::GetComponentTypeName<ScriptComponent>()) || GetComponent<T>() == nullptr) {
+				Component* object = T::Create();
+				object->m_OwnerOfCom = (this->m_Owner);
+				object->SetType(Utils::GetComponentTypeName<T>());
 				object->m_Id = m_Components.size();
 				m_Components.push_back(object);
 #ifdef _DEBUG
-				std::cout << NAMECOLOR << typeid(T).name() << RESET << ": has been added to GameObject <" NAMECOLOR << m_Owner->m_Name << RESET << ">" << std::endl;
+				std::cout << NAMECOLOR << Utils::GetComponentTypeName<T>() << " size:" << sizeof(T) << RESET << ": has been added to GameObject <" NAMECOLOR << m_Owner->m_Name << RESET << ">" << std::endl;
 #endif
-				return object;
+				return static_cast<T*>(object);
 			}
 			return GetComponent<T>();
 		}

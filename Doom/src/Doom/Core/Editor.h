@@ -63,9 +63,11 @@ namespace Doom {
 		void MenuDirectionalLight();
 		void MenuSphereCollisionComponent();
 		void MenuScriptComponent();
+		void MenuAllComponents();
 
 		template<class T>
 		bool MenuRemoveComponent();
+		bool MenuRemoveComponent(Component* com);
 		bool MenuRemoveScript(ScriptComponent* sc);
 		void MeshPicker();
 		void TexturePicker();
@@ -75,6 +77,7 @@ namespace Doom {
 		void ShaderMenu();
 		void MenuShadowMap();
 		void MenuInstancingStats();
+		void MenuStats();
 
 	public:
 		bool drawNormals = false;

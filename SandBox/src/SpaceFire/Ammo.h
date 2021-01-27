@@ -1,14 +1,18 @@
 #pragma once
-class Ammo : public GameObject {
+class Ammo : public Component {
 private:
 	int ammo = 0;
 	Sound* pickUp = new Sound("src/SpaceFire/Sounds/pickUp.wav");
 public:
-	Ammo(std::string name,float x, float y,int amount) : GameObject(name,x,y) {
+	void Init(int amount) {
 		ammo = amount;
-		GetComponentManager()->AddComponent<SpriteRenderer>();
+		GetOwnerOfComponent()->AddComponent<SpriteRenderer>();
 		SoundManager::CreateSoundAsset("pickUp", pickUp);
 	 }
+
+	static Component* Create() {
+		return new Ammo();
+	}
 
 	inline int GetAmmo() { return ammo; }
  };

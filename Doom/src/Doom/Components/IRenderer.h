@@ -21,6 +21,10 @@ namespace Doom {
 		Irenderer() {}
 		virtual ~Irenderer() {}
 
+		static Component* Create() {
+			return new Irenderer();
+		}
+
 		virtual void Render() {}
 	};
 

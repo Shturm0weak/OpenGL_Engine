@@ -88,8 +88,8 @@ void Doom::Instancing::Render()
 		m_Shader->SetUniform1i("u_ShadowMap", 2);
 		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 
-		Renderer::s_Vertices += gliter->first->m_IndicesSize * objsSize;
-		Renderer::s_DrawCalls++;
+		Renderer::s_Stats.m_Vertices += gliter->first->m_IndicesSize * objsSize;
+		Renderer::s_Stats.m_DrawCalls++;
 
 		gliter->second.m_Vao->Bind();
 		gliter->second.m_Ibo->Bind();

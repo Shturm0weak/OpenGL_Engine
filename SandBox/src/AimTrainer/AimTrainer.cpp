@@ -17,8 +17,7 @@ void Doom::AimTrainer::RayCast()
 {
 	if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
 		Ray3D::Hit hit;
-		glm::vec3 forward = Window::GetCamera().forwardV;
-		glm::vec3 dir = glm::vec3(-forward.x, forward.y, -forward.z);
+		glm::vec3 dir = Window::GetCamera().GetForwardV();
 		Ray3D::Normilize(dir);
 		std::map<float, CubeCollider3D*> intersects = Ray3D::RayCast(Window::GetCamera().GetPosition(), dir, &hit, 10000, false, m_IgnoreMask);
 		//new Line(Window::GetCamera().GetPosition(), Window::GetCamera().GetPosition() + dir * 100.f);
@@ -49,7 +48,7 @@ void Doom::AimTrainer::CameraMovement()
 	delta *= 0.1;
 	delta *= m_MouseSensetivity;
 	glm::vec3 rot = Window::GetCamera().GetRotation();
-	Window::GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
+	Window::GetCamera().SetRotation(glm::vec3(rot.x + glm::radians(delta.y), rot.y - glm::radians(delta.x), 0));
 }
 
 void Doom::AimTrainer::SpawnObject()
@@ -168,7 +167,7 @@ void Doom::AimTrainer::MainMenu() {
 		m_Options = true;
 	}
 	g->m_XAlign = g->XCENTER;
-	if (g->Button("Exit", 0, 0, 50, 300,150, COLORS::Gray * 0.8f)) {
+	if (g->Button("Exit", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f)) {
 		Window::Exit();
 	}
 	g->m_RelatedPanelProperties.m_AutoAllignment = false;
@@ -238,9 +237,10 @@ void Doom::AimTrainer::ChooseCrossHairMenu() {
 
 void Doom::AimTrainer::OnGuiRender()
 {
+	Timer t;
 	if (!m_Pause) {
 		Gui* g = Gui::GetInstance();
-		if(m_CrossHair != nullptr)
+		if (m_CrossHair != nullptr)
 			g->Image(0, 0, 50 * m_CrossHairScale, 50 * m_CrossHairScale, m_CrossHair);
 		g->Text("FPS %f", 1, 700, 500, 40, COLORS::White, 3, Window::GetFPS());
 		g->Text("Missed %d", 1, 700, 450, 40, COLORS::White, 0, m_Missed);

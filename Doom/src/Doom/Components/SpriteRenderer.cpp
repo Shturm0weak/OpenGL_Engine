@@ -1,8 +1,8 @@
-
 #include "../pch.h"
 #include "SpriteRenderer.h"
 #include "../Render/Batch.h"
 #include "../Core/World.h"
+#include "Core/Utils.h"
 
 using namespace Doom;
 
@@ -68,7 +68,12 @@ void Doom::SpriteRenderer::GetTransformedVertices(float* buffer)
 
 void Doom::SpriteRenderer::Render()
 {
-	Batch::GetInstance()->Submit(*this);
+	Batch::GetInstance()->Submit(this);
+}
+
+Component* Doom::SpriteRenderer::Create()
+{
+	return new SpriteRenderer();
 }
 
 void SpriteRenderer::ReverseUVs()
@@ -129,12 +134,12 @@ void SpriteRenderer::SetUVs(float* uvs)
 
 float Doom::SpriteRenderer::GetWidth() const
 {
-	return m_Owner->GetScale()[0] * m_Mesh2D[4] * 2;
+	return m_OwnerOfCom->GetScale()[0] * m_Mesh2D[4] * 2;
 }
 
 float Doom::SpriteRenderer::GetHeight() const
 {
-	return m_Owner->GetScale()[1] * m_Mesh2D[9] * 2;
+	return m_OwnerOfCom->GetScale()[1] * m_Mesh2D[9] * 2;
 }
 
 float * SpriteRenderer::GetUVs() const
@@ -155,10 +160,10 @@ void SpriteRenderer::Setlayer(int layer)
 {
 	unsigned int size = World::s_GameObjects.size();
 #ifdef _DEBUG
-	std::cout << m_Owner->m_Name << " is set from layer " << m_Owner->m_Id << " to " << layer << std::endl;
+	std::cout << m_OwnerOfCom->m_Name << " is set from layer " << m_OwnerOfCom->m_Id << " to " << layer << std::endl;
 #endif
-	World::s_GameObjects.erase(World::s_GameObjects.begin() + m_Owner->m_Id);
-	World::s_GameObjects.insert(World::s_GameObjects.begin() + layer, m_Owner);
+	World::s_GameObjects.erase(World::s_GameObjects.begin() + m_OwnerOfCom->m_Id);
+	World::s_GameObjects.insert(World::s_GameObjects.begin() + layer, m_OwnerOfCom);
 	for (unsigned int i = 0; i < World::s_GameObjects.size(); i++)
 	{
 		World::s_GameObjects[i]->m_Id = i;

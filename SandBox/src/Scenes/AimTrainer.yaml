@@ -1,0 +1,201 @@
+Scene: 1
+Camera:
+  Transform:
+    Position: [-33.1941643, 73.9969025, 15.531436]
+    Rotation: [-1.01316416, -1.16299331, 0]
+  Zoom: 1
+  FOV: 1
+GameObjects:
+  - GameObject: 0
+    Name: Sun
+    Transform:
+      Position: [0, 0, 0]
+      Scale: [0.999999762, 1.00000036, 1]
+      Rotation: [1.32773173, -0.104624934, -0.189344123]
+    Directional light:
+      Intensity: 1
+      Color: [1, 1, 1]
+    Registered events:
+      []
+  - GameObject: 1
+    Name: Unnamed
+    Transform:
+      Position: [0, 0, 0]
+      Scale: [15, 1, 15]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/default.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 2
+    Name: Unnamed
+    Transform:
+      Position: [0, 15, 15]
+      Scale: [15, 0.99999994, 14.999999]
+      Rotation: [1.57079625, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 3
+    Name: Unnamed
+    Transform:
+      Position: [0, 15, -15]
+      Scale: [15, 0.999999881, 14.9999981]
+      Rotation: [1.57079625, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 4
+    Name: Unnamed
+    Transform:
+      Position: [15, 15, 0]
+      Scale: [14.999999, 0.999999821, 14.9999981]
+      Rotation: [0, 0, 1.57079625]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 5
+    Name: Unnamed
+    Transform:
+      Position: [-15, 15, 0]
+      Scale: [14.999999, 0.999999821, 14.9999981]
+      Rotation: [0, 0, 1.57079637]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+    Registered events:
+      []
+  - GameObject: 6
+    Name: SkyBox
+    Transform:
+      Position: [0, 0, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/SkyBox.shader
+      Render technic: 0
+      Transparent: false
+      SkyBox: true
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Faces:
+        [C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\1back.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\2front.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\3top.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\4bottom.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\5left.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\6right.png]
+      Textures:
+        Diffuse: ""
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Registered events:
+      []
+Texture atlases:
+  []

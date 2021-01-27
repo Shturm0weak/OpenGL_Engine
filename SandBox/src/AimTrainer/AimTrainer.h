@@ -16,14 +16,13 @@ namespace Doom {
 		uint32_t m_Missed = 0;
 		uint32_t m_Hits = 0;
 		double m_Time = 0;
-		bool m_Pause = true;
-		bool m_Options = false;
-		bool m_ChooseCrossHair = false;
 		float m_CrossHairScale = 1.0f;
 		float m_AudioVolume = 0.5f;
 		float m_MouseSensetivity = 1.0f;
+		bool m_Pause = true;
+		bool m_Options = false;
+		bool m_ChooseCrossHair = false;
 		bool m_DrawShadows = true;
-
 		void OptionsMenu();
 		void ChooseCrossHairMenu();
 		void MainMenu();
@@ -35,7 +34,7 @@ namespace Doom {
 
 	public:
 
-		AimTrainer(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
+		AimTrainer(std::string name = "AimTrainer", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
 
 		void OnStart();
 		void OnUpdate();

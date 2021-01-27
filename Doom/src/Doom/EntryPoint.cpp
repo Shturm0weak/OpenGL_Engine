@@ -13,9 +13,9 @@
 #include "Lua/LuaState.h"
 #include "ImGuizmo/ImGuizmo.h"
 
-#define _IS_GAME_BUILD
-
 using namespace Doom;
+
+#define _IS_GAME_BUILD
 
 EntryPoint::EntryPoint(Doom::Application* app) {
 	if (app == nullptr)
@@ -46,13 +46,13 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 	Window::GetCamera().m_FrameBufferColor->UnBind();
-	Window::GetCamera().m_FrameBufferUI = new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, true, true, true, 2);
 	Window::GetCamera().m_FrameBufferBlur.push_back(new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
 	Window::GetCamera().m_FrameBufferBlur.push_back(new FrameBuffer(Window::GetSize()[0], Window::GetSize()[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
 	if (this->m_App->m_Type == TYPE_3D) {
 		//GridLayOut* grid = new GridLayOut();
 		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
 	}
+	std::cout << glGetString(GL_VERSION) << std::endl;
 }
 
 void EntryPoint::Run()
@@ -104,6 +104,7 @@ void EntryPoint::Run()
 
 		World::ProccessLuaStates();
 		EventSystem::GetInstance()->ProcessEvents();
+
 		if (m_App->m_Type == RenderType::TYPE_3D) {
 			Renderer::SortTransparentObjects();
 		}
@@ -117,9 +118,9 @@ void EntryPoint::Run()
 		Gui::GetInstance()->End();
 #endif
 
-		Renderer::s_DrawCalls = 0;
-		Renderer::s_Vertices = 0;
+		Renderer::s_Stats.Reset();
 		if (Instancing::Instance()->m_DrawShadows > 0.5f) {
+			Timer t;
 			FrameBuffer* shadowMap = Window::GetCamera().m_FrameBufferShadowMap;
 			glfwGetWindowSize(Window::GetWindow(), &m_Size[0], &m_Size[1]);
 			glViewport(0, 0, shadowMap->size.x, shadowMap->size.y);
@@ -129,6 +130,7 @@ void EntryPoint::Run()
 			Instancing::Instance()->BakeShadows();
 			shadowMap->UnBind();
 		}
+		Renderer::s_Stats.m_ShadowRenderTime = Timer::s_OutTime;
 
 		glViewport(0, 0, m_Size[0], m_Size[1]);
 		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().m_FrameBufferColor->m_Fbo);
@@ -139,23 +141,36 @@ void EntryPoint::Run()
 		Renderer::Clear();
 		Instancing::Instance()->PrepareVertexAtrrib();
 
-		Renderer::RenderBloomEffect();
-	
+		{
+			Timer t;
+			Renderer::RenderBloomEffect();
+		}
+		Renderer::s_Stats.m_BloomRenderTime = Timer::s_OutTime;
+
 		Shader* shader = Shader::Get("QuadFullScreen");
-		Renderer::Clear();
-		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().m_FrameBufferColor->m_Fbo);
-		shader->Bind();
-		glBindTexture(GL_TEXTURE_2D, Window::GetCamera().m_FrameBufferColor->m_Textures[0]);
-		Renderer::RenderForPostEffect(MeshManager::GetMesh("plane"), shader);
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_DEPTH_TEST);
-		Renderer::RenderCollision();
-		Renderer::RenderCollision3D();
-		Renderer::RenderText();
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		shader->UnBind();
+		{
+			Timer t;
+			Renderer::Clear();
+			glBindFramebuffer(GL_FRAMEBUFFER, Window::GetCamera().m_FrameBufferColor->m_Fbo);
+			shader->Bind();
+			glBindTexture(GL_TEXTURE_2D, Window::GetCamera().m_FrameBufferColor->m_Textures[0]);
+			Renderer::RenderForPostEffect(MeshManager::GetMesh("plane"), shader);
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_DEPTH_TEST);
+			Renderer::RenderCollision();
+			Renderer::RenderCollision3D();
+		}
+		Renderer::s_Stats.m_CollisionRenderTime = Timer::s_OutTime;
+
+		{
+			Timer t;
+			Renderer::RenderText();
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LESS);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			shader->UnBind();
+		}
+		Renderer::s_Stats.m_GuiRenderTime = Timer::s_OutTime;
 
 		ViewPort::GetInstance()->Update();
 		if (ViewPort::GetInstance()->m_IsViewportResized) {

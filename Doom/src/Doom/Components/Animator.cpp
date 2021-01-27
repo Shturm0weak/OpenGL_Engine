@@ -15,7 +15,7 @@ void Doom::Animator::SetAnimation(const std::string path)
 			for (int i = 0; i < 2; i++)
 			{
 				index = m_TexturesPath.back().find("\\", index);
-				m_TexturesPath.back().replace(index, 1, "/");	
+				m_TexturesPath.back().replace(index, 1, "/");
 			}
 			text.push_back(Texture::Create(m_TexturesPath.back(), 1));
 		}
@@ -31,12 +31,7 @@ void Doom::Animator::PlayAnim(std::vector<Texture*>& text) {
 	m_Timer += DeltaTime::GetDeltaTime();
 	m_Counter = m_Timer * m_Speed;
 	if (m_Counter < text.size()) {
-		m_Owner->GetComponent<SpriteRenderer>()->m_Texture = (text[m_Counter]);
-		//if (owner->ShaderType::SHADER_TEXTURE != owner->shadertype)
-		//	owner->SetShader(GameObject::SHADER_TEXTURE);
-		//owner->shader->Bind();
-		//owner->texture->Bind(owner->texture->m_RendererID);
-		//owner->shader->SetUniform1i("u_Texture", owner->texture->m_RendererID);
+		m_OwnerOfCom->GetComponent<SpriteRenderer>()->m_Texture = (text[m_Counter]);
 	}
 	if (m_Counter >= text.size())
 		m_Timer = 0;
@@ -56,4 +51,14 @@ const char** Doom::Animator::GetAnimations() {
 
 Doom::Animator::Animator() {
 //	SetType(ComponentType::ANIMATOR);
+}
+
+Doom::Animator::~Animator()
+{
+	delete items;
+}
+
+Doom::Component* Doom::Animator::Create()
+{
+	return new Animator();
 }

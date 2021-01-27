@@ -10,9 +10,12 @@
 #include "FEM/FEM.h"
 #include "AimTrainer/AimTrainer.h"
 #include "Examples/TestCollision2D.h"
+#include "Examples/StressTest2D.h"
+#include "Hexagon/Hexagon.h"
+#include "Examples/Test.h"
 
 int main(){
-	RayCastTest app;
+	TicTacToe app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

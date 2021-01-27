@@ -50,8 +50,8 @@ public:
 	GameObject* terrain = nullptr;
 	GameObject* gladiator = nullptr;
 	std::vector<GameObject*> lights;
-	int width = 16;
-	int height = 16;
+	int width = 128;
+	int height = 128;
 	int dirtCount = 0;
 	double time = 0.0;
 	Ray3D::Hit hit;
@@ -84,7 +84,7 @@ public:
 				"src/SkyBox/skybox1/5left.png",
 				"src/SkyBox/skybox1/6right.png",
 		};
-		MeshManager::AsyncLoadMesh("cube", "src/Minecraft/Models/cube.fbx");
+		MeshManager::LoadMesh("cube", "src/Minecraft/Models/cube.fbx");
 		//MeshManager::LoadMesh("gladiator", "src/Mesh/Try.stl");
 		SkyBox* skybox = new SkyBox(faces, nullptr);
 		MeshManager::GetMeshWhenLoaded("cube", skybox->GetComponent<Renderer3D>());
@@ -96,7 +96,7 @@ public:
 				cube.back()->GetComponent<Transform>()->Translate(i, glm::ceil(noise[i * width + j] * 3),j);
 			}
 		}
-		for (uint32_t i = 0; i < 2; i++)
+		for (uint32_t i = 0; i < 7; i++)
 		{
 			lights.push_back(new GameObject(std::string("light " + std::to_string(i)), i * 10, 0, i * 10));
 			lights.back()->GetComponentManager()->AddComponent<PointLight>();
@@ -264,7 +264,7 @@ public:
 
 	virtual void OnUpdate() override {
 		time += DeltaTime::s_Deltatime;
-		glm::vec3 forward = glm::vec3(-Window::GetCamera().forwardV.x, Window::GetCamera().forwardV.y, -Window::GetCamera().forwardV.z);
+		glm::vec3 forward = glm::vec3(-Window::GetCamera().backV.x, Window::GetCamera().backV.y, -Window::GetCamera().backV.z);
 		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward, &hit, 100);
 		if(hit.m_Object != nullptr){
 			if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
@@ -330,7 +330,7 @@ public:
 		cube.push_back(new GameObject("dirt" + std::to_string(i) + ":" + std::to_string(j)));
 		terrain->AddChild((void*)cube.back());
 		cube.back()->GetComponentManager()->AddComponent<Renderer3D>();
-		MeshManager::GetMeshWhenLoaded("cube", (void*)cube.back()->GetComponent<Renderer3D>());
+		cube.back()->GetComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
 		cube.back()->GetComponent<Renderer3D>()->m_Material.m_Ambient = 0.4f;
 		cube.back()->GetComponent<Renderer3D>()->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 		cube.back()->GetComponent<Renderer3D>()->m_DiffuseTexture = dirtImg;

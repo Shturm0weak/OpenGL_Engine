@@ -58,6 +58,6 @@ public:
 	}
 
 	virtual void OnClose() override {
-		SceneSerializer::Serialize("src/Scenes/RayCastTest.yaml");
+		//SceneSerializer::Serialize("src/Scenes/RayCastTest.yaml");
 	}
 };

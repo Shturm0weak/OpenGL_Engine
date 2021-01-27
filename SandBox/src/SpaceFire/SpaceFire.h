@@ -4,7 +4,8 @@
 #include "ShipEnemy.h"
 #include "Core/Timer.h"
 #include <random>
-
+#include "Ammo.h"
+#include "Bullet.h"
 class SpaceFire : public Application {
 
 	ShipPlayer* pl = nullptr;
@@ -19,11 +20,23 @@ class SpaceFire : public Application {
 	double fps = 0;
 	int fontSize = 20;
 	Sound* backSound = new Sound("src/SpaceFire/Sounds/back.ogg");
+
 public:
 
-	SpaceFire(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name,TYPE_2D,width,height,Vsync){}
+	SpaceFire(std::string name = "SpaceFire", int width = 800, int height = 600, bool Vsync = false) : Application(name,TYPE_2D,width,height,Vsync){}
 
 	void OnStart() {
+	/*	std::cout << NAMECOLOR << typeid(GameObject).name() << " size:" << sizeof(GameObject) << RESET << std::endl;
+		std::cout << NAMECOLOR << typeid(Transform).name() << " size:" << sizeof(Transform) << RESET << std::endl;
+		std::cout << NAMECOLOR << typeid(SpriteRenderer).name() << " size:" << sizeof(SpriteRenderer) << RESET << std::endl;
+		std::cout << NAMECOLOR << typeid(RectangleCollider2D).name() << " size:" << sizeof(RectangleCollider2D) << RESET << std::endl;
+		std::cout << NAMECOLOR << typeid(Ammo).name() << " size:" << sizeof(Ammo) << RESET << std::endl;
+		std::cout << NAMECOLOR << typeid(ShipEnemy).name() << " size:" << sizeof(ShipEnemy) << RESET << std::endl;
+		std::cout << NAMECOLOR << typeid(ShipPlayer).name() << " size:" << sizeof(ShipPlayer) << RESET << std::endl;
+		std::cout << NAMECOLOR << typeid(Bullet).name() << " size:" << sizeof(Bullet) << RESET << std::endl;*/
+		float* f = new float(5);
+		uint64_t ptr = uint64_t(f);
+		float f1 = *(float*)(void*)ptr;
 		Renderer::s_BloomEffect = false;
 		Window::GetCamera().Zoom(20);
 		SoundManager::CreateSoundAsset("back", backSound);
@@ -40,12 +53,14 @@ public:
 		background2 = new GameObject("BackGround2");
 		background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
 		(background2->GetComponentManager()->AddComponent<SpriteRenderer>())->m_Texture = (backgroundTexture);
-		pl = new ShipPlayer();
+		pl = (new GameObject())->AddComponent<ShipPlayer>();
+		pl->Init();
 		float x = -20;
 		for (unsigned int i = 0; i < 5; i++)
 		{
-			enemies.push_back(new ShipEnemy("ShipEnemy", x, 20));
-			enemies[i]->pl = pl;
+			enemies.push_back((new GameObject("ShipEnemy", x, 20))->AddComponent<ShipEnemy>());
+			enemies.back()->Init();
+			enemies.back()->pl = pl;
 			x += 10;
 		}
 		pl->hp = 0;
@@ -85,8 +100,8 @@ public:
 		{
 			if (enemies[i]->isDead)
 				continue;
-			glm::dvec2 pos = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetPosition().x - enemies[i]->GetComponent<SpriteRenderer>()->GetWidth() / 2.0), (enemies[i]->GetPosition().y + enemies[i]->GetComponent<SpriteRenderer>()->GetHeight() / 2.0));
-			glm::vec2 size = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetComponentManager()->GetComponent<SpriteRenderer>())->GetWidth(), 0);
+			glm::dvec2 pos = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetPosition().x - enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetWidth() / 2.0), (enemies[i]->GetOwnerOfComponent()->GetPosition().y + enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetHeight() / 2.0));
+			glm::vec2 size = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>())->GetWidth(), 0);
 		
 			Gui::GetInstance()->Bar(pos.x, pos.y + 30, enemies[i]->hp, 100, COLORS::Red, COLORS::DarkGray, size.x,25 / (Window::GetCamera().GetZoomLevel() / 10));
 		}
@@ -146,7 +161,7 @@ public:
 		Gui::GetInstance()->Text("FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
 		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
 		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
-		Gui::GetInstance()->Text("Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetPosition().x, pl->GetPosition().y);
+		Gui::GetInstance()->Text("Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetOwnerOfComponent()->GetPosition().x, pl->GetOwnerOfComponent()->GetPosition().y);
 		Gui::GetInstance()->m_XAlign = Gui::AlignHorizontally::LEFT;
 		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = false;
 		Gui::GetInstance()->UnRelateToPanel();

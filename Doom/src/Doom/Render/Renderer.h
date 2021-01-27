@@ -12,9 +12,32 @@ namespace Doom {
 	class DOOM_API Renderer {
 	public:
 
-		static int s_Vertices;
+		struct Stats {
+			uint64_t m_Vertices = 0;
+			uint64_t m_DrawCalls = 0;
+			double m_RenderTime = 0;
+			double m_ObjectsRenderTime = 0;
+			double m_GuiRenderTime = 0;
+			double m_ShadowRenderTime = 0;
+			double m_BloomRenderTime = 0;
+			double m_CollisionRenderTime = 0;
+			uint64_t m_FramePerSecond = 0;
+
+			void Reset() {
+				m_Vertices = 0;
+				m_DrawCalls = 0;
+				m_RenderTime = 0;
+				m_ObjectsRenderTime = 0;
+				m_GuiRenderTime = 0;
+				m_ShadowRenderTime = 0;
+				m_BloomRenderTime = 0;
+				m_CollisionRenderTime = 0;
+				m_FramePerSecond = 0;
+			}
+		};
+
+		static Stats s_Stats;
 		static bool s_PolygonMode;
-		static int s_DrawCalls;
 		static float s_Exposure;
 		static bool s_BloomEffect;
 		static float s_Brightness;

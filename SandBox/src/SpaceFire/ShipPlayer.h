@@ -13,7 +13,7 @@ enum Stages {
 	THIRD = 4,
 };
 
-class ShipPlayer : public GameObject {
+class ShipPlayer : public Component {
 private:
 	Stages currentStage = ZERO;
 
@@ -37,18 +37,20 @@ public:
 	double TimePerBullet = (100. / fireRate) / 100; //bullets per second
 	double timerFire = 2;
 	GameObject* bulletsPlaceHolder = nullptr;
-	std::vector<Bullet*> bullets;
+	std::vector<GameObject*> bullets;
 	glm::vec3 dir;
 	SpriteRenderer* sr = nullptr;
 	Transform* tr = nullptr;
 	RectangleCollider2D* col = nullptr;
 	Texture* texture = Texture::Create("src/SpaceFire/Images/SpaceShip.png");
 
-	ShipPlayer(std::string name = "ShipPlayer",float x = 0,float y = 0);
+	static Component* Create();
+
+	void Init(std::string name = "ShipPlayer",float x = 0,float y = 0);
 
 	void Death();
 	void Respawn();
 	void OnStart();
 	void OnUpdate();
-	void OnCollision(void* _col);
+	virtual void OnCollision(void* _col) override;
 };

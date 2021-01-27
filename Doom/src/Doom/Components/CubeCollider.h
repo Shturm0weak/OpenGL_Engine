@@ -19,8 +19,10 @@ namespace Doom {
 		static std::vector<CubeCollider3D*> s_Colliders;
 		glm::vec3 m_MinP = { -1,-1,-1 };
 		glm::vec3 m_MaxP = {  1, 1, 1 };
-		glm::vec3 m_Offset = {0,0,0};
+		glm::vec3 m_Offset = {0, 0, 0};
 		bool m_IsBoundingBox = false;
+
+		static Component* Create();
 
 		static void InitMesh();
 		void Render();

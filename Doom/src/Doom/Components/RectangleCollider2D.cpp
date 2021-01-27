@@ -5,8 +5,13 @@
 
 using namespace Doom;
 
+Component* Doom::RectangleCollider2D::Create()
+{
+	return new RectangleCollider2D();
+}
+
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
-	this->m_Owner = owner;
+	this->m_OwnerOfCom = owner;
 	World::s_ColId++;
 	s_Collision2d.push_back(this);
 	SetOffset(m_Offset.x, m_Offset.y);
@@ -142,8 +147,8 @@ void RectangleCollider2D::IsCollidedSAT() {
 		return;
 	}
 	if (m_Enable == true) {
-		for (size_t i = 0; i < 5; i++) //This is the temporary way to handle the error displacement of big ration of unit vector
-		{
+		//for (size_t i = 0; i < 5; i++) //This is the temporary way to handle the error displacement of big ration of unit vector
+		//{
 		uint32_t sizeCol = s_Collision2d.size();
 		for (unsigned int i = 0; i < sizeCol; i++)
 		{
@@ -157,9 +162,11 @@ void RectangleCollider2D::IsCollidedSAT() {
 						if (ShapeOverlap_SAT(*this, *m_Col)) {
 							m_IsCollided = true;
 							m_CollidedObject = m_Col;
-							std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(m_Owner), (void*)this->m_CollidedObject);
-							std::function<void()>* f1 = new std::function<void()>(f2);
-							EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
+							//std::cout << "Handle Collision " << GetOwnerOfComponent()->m_Name << "\n";
+							//std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(m_OwnerOfCom), (void*)this->m_CollidedObject);
+							//std::function<void()>* f1 = new std::function<void()>(f2);
+							//EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
+							EventSystem::GetInstance()->SendEvent(EventType::ONCOLLISION,(m_OwnerOfCom->m_Listener), (void*)this->m_CollidedObject);
 						}
 						else {
 							m_IsCollided = false;
@@ -171,7 +178,7 @@ void RectangleCollider2D::IsCollidedSAT() {
 					}
 				}
 			}
-		}
+		//}
 		}
 	}
 }
@@ -223,8 +230,8 @@ void RectangleCollider2D::IsCollidedDIAGS()
 							}
 						}
 						if (m_IsTrigger == false) {
-							m_Transform = m_Owner->m_ComponentManager->GetComponent<Transform>();
-							m_Transform->Translate(m_Owner->GetPosition().x - m_Displacement.x, m_Owner->GetPosition().y - m_Displacement.y);
+							m_Transform = m_OwnerOfCom->m_ComponentManager->GetComponent<Transform>();
+							m_Transform->Translate(m_OwnerOfCom->GetPosition().x - m_Displacement.x, m_OwnerOfCom->GetPosition().y - m_Displacement.y);
 							m_Transform = nullptr;
 						}
 						
@@ -302,8 +309,8 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 
 	// If we got here, the objects have collided, we will displace r1
 	// by overlap along the vector between the two object centers
-	Transform* trans1 = r1.m_Owner->m_ComponentManager->GetComponent<Transform>();
-	Transform* trans2 = r2.m_Owner->m_ComponentManager->GetComponent<Transform>();
+	Transform* trans1 = r1.m_OwnerOfCom->m_ComponentManager->GetComponent<Transform>();
+	Transform* trans2 = r2.m_OwnerOfCom->m_ComponentManager->GetComponent<Transform>();
 
 	glm::vec2 r1Pos = trans1->GetPosition();
 	glm::vec2 r2Pos = trans2->GetPosition();
@@ -317,7 +324,7 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 
 	glm::dvec2 posToTranslate = glm::vec2(0, 0);
 	
-	posToTranslate.x = r1.m_Owner->GetPosition().x;
+	posToTranslate.x = r1.m_OwnerOfCom->GetPosition().x;
 	float minAngle = glm::radians(1.0f);
 	if (trans1->GetRotation().z > minAngle || trans2->GetRotation().z > minAngle)
 		posToTranslate.x = r1Pos.x - (overlap * d.x / s);
@@ -325,7 +332,7 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 	posToTranslate.y = r1Pos.y - (overlap * d.y / s);
 	trans1->Translate(posToTranslate.x, posToTranslate.y);
 
-	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLSION, (Listener*)(m_Owner), &r2);
+	std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLISION, (m_OwnerOfCom->m_Listener), &r2);
 	std::function<void()>* f1 = new std::function<void()>(f2);
 	EventSystem::GetInstance()->SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
 	return true;

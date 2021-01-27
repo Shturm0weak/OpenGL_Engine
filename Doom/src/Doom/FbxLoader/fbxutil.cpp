@@ -107,9 +107,6 @@ namespace fbx {
         char* buffer = new char[length + 1];
         buffer[length] = 0;
         if (length) read(buffer, length);
-#ifndef _DEBUG
-        delete[] buffer;
-#endif
         return std::string(buffer);
     }
 

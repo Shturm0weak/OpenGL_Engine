@@ -120,6 +120,15 @@ void Doom::Texture::ShutDown()
 	}
 }
 
+void Doom::Texture::Delete(Texture* texture)
+{
+	auto iter = s_Textures.find(texture->m_FilePath);
+	if (iter != s_Textures.end()) {
+		delete iter->second;
+		s_Textures.erase(iter);
+	}
+}
+
 void Doom::Texture::AsyncLoadTexture(const std::string & filePath)
 {
 	ThreadPool::GetInstance()->Enqueue([=] {
@@ -206,7 +215,7 @@ Texture * Doom::Texture::Create(const std::string& filePath,bool flip,bool repea
 {
 	Texture* t = Get(filePath,false);
 	if (t == nullptr || t == NULL)
-		return new Texture(filePath, flip,repeat);
+		return new Texture(filePath, flip, repeat);
 	else
 		return t;
 }

@@ -25,6 +25,8 @@ namespace Doom {
 
 		void operator=(const DirectionalLight& rhs);
 
+		static Component* Create();
+
 		DirectionalLight(const DirectionalLight& rhs);
 		DirectionalLight();
 		~DirectionalLight();

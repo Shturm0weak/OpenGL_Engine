@@ -9,8 +9,11 @@ void Listener::HandleEvent(Event* e) {
 		OnUpdate();
 	else if (type == EventType::ONSTART)
 		OnStart();
-	else if (type == EventType::ONCOLLSION)
-		e->GetSender()->OnCollision(e->GetParameter());
+	else if (type == EventType::ONCOLLISION) {
+		if (e->GetParameter() != nullptr) {
+			e->GetSender()->OnCollision(e->GetParameter());
+		}
+	}
 	else if (type == EventType::ONMOVE)
 		e->GetSender()->OnMove();
 	else if (type == EventType::ONROTATE)

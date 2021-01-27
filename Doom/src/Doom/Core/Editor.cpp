@@ -36,6 +36,7 @@ void Editor::EditorUpdate()
 	Debug();
 	MenuInstancingStats();
 	Threads();
+	MenuStats();
 
 	ImGui::Begin("Console");
 
@@ -67,20 +68,17 @@ void Editor::EditorUpdate()
 	{
 		if (ImGui::MenuItem("Create GameObject"))
 		{
-			World::CreateGameObject();
-			go = World::s_GameObjects.back();
+			go = World::CreateGameObject();
 		}
 		if (ImGui::MenuItem("Create 2D GameObject"))
 		{
-			World::CreateGameObject();
-			go = World::s_GameObjects.back();
+			go = World::CreateGameObject();
 			go->GetComponentManager()->AddComponent<SpriteRenderer>();
 		}
 		if (ImGui::MenuItem("Create 3D GameObject"))
 		{
-			World::CreateGameObject();
-			go = World::s_GameObjects.back();
-			go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+			go = World::CreateGameObject();
+			MeshManager::GetMeshWhenLoaded("cube", (void*)(go->GetComponentManager()->AddComponent<Renderer3D>()));
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
@@ -223,6 +221,7 @@ void Editor::EditorUpdate()
 		MenuScriptComponent();
 		MenuSphereCollisionComponent();
 		MenuShadowMap();
+		MenuAllComponents();
 	}
 	ImGui::End();
 }
@@ -259,7 +258,7 @@ void Editor::CreateTextureAtlas() {
 	ImGui::NewLine();
 	if (ImGui::Button("Apply") &&  textureForAtlas != nullptr) {
 		isActiveTextureAtlasCreation = false;
-		std::string name = "TextureAtlas/" + textureForAtlas->GetFilePath();
+		std::string name = "TextureAtlas/" + textureForAtlas->m_FilePath;
 		TextureAtlas* textureAtlas = TextureAtlas::CreateTextureAtlas(name,spriteSize[0],spriteSize[1],textureForAtlas);
 	}
 	ImGui::End();
@@ -276,7 +275,7 @@ void Doom::Editor::MenuRenderer3D()
 				ImGui::Checkbox("Wire mesh", &r->m_IsWireMesh);
 				ImGui::Checkbox("Is culling face", &r->m_IsCullingFace);
 				if (ImGui::CollapsingHeader("Shader")) {
-					Shader* shader = go->GetComponentManager()->GetComponent<Renderer3D>()->m_Shader;
+					Shader* shader = r->m_Shader;
 					ImGui::Text("%s", shader->m_Name);
 					if (ImGui::Button("Reload")) {
 						shader->Reload();
@@ -334,8 +333,8 @@ void Doom::Editor::MenuRenderer3D()
 					if (r->m_Mesh != nullptr) {
 						ImGui::Text("Name: %s", r->m_Mesh->m_Name);
 						ImGui::Text("Id: %i", r->m_Mesh->m_IdOfMeshInFile);
-						glm::vec2 minP = r->m_Owner->GetComponent<CubeCollider3D>()->m_MinP;
-						glm::vec2 maxP = r->m_Owner->GetComponent<CubeCollider3D>()->m_MaxP;
+						glm::vec2 minP = r->m_OwnerOfCom->GetComponent<CubeCollider3D>()->m_MinP;
+						glm::vec2 maxP = r->m_OwnerOfCom->GetComponent<CubeCollider3D>()->m_MaxP;
 						ImGui::Text("MinP: %f %f", minP.x, minP.y);
 						ImGui::Text("MaxP: %f %f", maxP.x, maxP.y);
 					}
@@ -425,8 +424,8 @@ void Doom::Editor::MenuRenderer2D()
 
 						Texture* textureOfAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetTexture();
 						int frame_padding = -1;
-						unsigned int amountOfSpritesX = (textureOfAtlas->GetWidth()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteWidth());
-						unsigned int amountOfSpritesY = (textureOfAtlas->GetHeight()) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteHeight());
+						unsigned int amountOfSpritesX = (textureOfAtlas->m_width) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteWidth());
+						unsigned int amountOfSpritesY = (textureOfAtlas->m_height) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteHeight());
 						for (unsigned int i = 0; i < amountOfSpritesY; i++)
 						{
 							for (unsigned int j = 0; j < amountOfSpritesX; j++)
@@ -589,6 +588,20 @@ void Doom::Editor::MenuSphereCollisionComponent()
 			}
 		}
 	}
+}
+
+bool Doom::Editor::MenuRemoveComponent(Component* com)
+{
+	ImGui::PushID(closedButtonsId);
+	if (ImGui::Button("x")) {
+		go->GetComponentManager()->RemoveComponent(com);
+		ImGui::PopID();
+		return false;
+	}
+	ImGui::PopID();
+	closedButtonsId++;
+	ImGui::SameLine();
+	return true;
 }
 
 bool Doom::Editor::MenuRemoveScript(ScriptComponent* sc)
@@ -858,6 +871,19 @@ void Doom::Editor::MenuInstancingStats()
 	ImGui::End();
 }
 
+void Doom::Editor::MenuStats()
+{
+	ImGui::Begin("Stats");
+	ImGui::Text("Render time %f", Renderer::s_Stats.m_BloomRenderTime + Renderer::s_Stats.m_GuiRenderTime
+		+ Renderer::s_Stats.m_CollisionRenderTime + Renderer::s_Stats.m_ObjectsRenderTime + Renderer::s_Stats.m_ShadowRenderTime);
+	ImGui::Text("Gui render time %f", Renderer::s_Stats.m_GuiRenderTime);
+	ImGui::Text("Shadow render time %f", Renderer::s_Stats.m_ShadowRenderTime);
+	ImGui::Text("Collision render time %f", Renderer::s_Stats.m_CollisionRenderTime);
+	ImGui::Text("Objects render time %f", Renderer::s_Stats.m_ObjectsRenderTime);
+	ImGui::Text("Bloom render time %f", Renderer::s_Stats.m_BloomRenderTime);
+	ImGui::End();
+}
+
 void Doom::Editor::ShortCuts()
 {
 	if (!Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
@@ -913,6 +939,21 @@ void Doom::Editor::MenuScriptComponent()
 			else {
 				ImGui::PopID();
 				return;
+			}
+		}
+	}
+}
+
+void Doom::Editor::MenuAllComponents()
+{
+	if (ImGui::CollapsingHeader("Components")) {
+		uint32_t size = go->GetComponentManager()->m_Components.size();
+		for (uint32_t i = 0; i < size; i++)
+		{
+			if (go->GetComponentManager()->m_Components[i]->GetComponentType().find("Doom::") == std::string::npos) {
+				MenuRemoveComponent(go->GetComponentManager()->m_Components[i]);
+				ImGui::SameLine();
+				ImGui::Text("%s", go->GetComponentManager()->m_Components[i]->GetComponentType());
 			}
 		}
 	}
@@ -977,14 +1018,14 @@ void Doom::Editor::Debug()
 	ImGui::Text("Position");
 	ImGui::Text("x: %f y: %f z: %f", Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y, Window::GetCamera().GetPosition().z);
 	ImGui::Text("Forward vector");
-	ImGui::Text("x: %f y: %f z: %f", Window::GetCamera().forwardV.x, Window::GetCamera().forwardV.y, Window::GetCamera().forwardV.z);
+	ImGui::Text("x: %f y: %f z: %f", Window::GetCamera().backV.x, Window::GetCamera().backV.y, Window::GetCamera().backV.z);
 	Window::GetCamera().SetRotation(glm::vec3(Window::GetCamera().m_Pitch, Window::GetCamera().m_Yaw, Window::GetCamera().m_Roll));
 	ImGui::End();
 	ImGui::Begin("Debug");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::Text("Objects amount %d", World::s_GameObjects.size());
-	ImGui::Text("Draw calls %d", Renderer::s_DrawCalls);
-	ImGui::Text("Vertices %d", Renderer::s_Vertices);
+	ImGui::Text("Draw calls %d", Renderer::s_Stats.m_DrawCalls);
+	ImGui::Text("Vertices %d", Renderer::s_Stats.m_Vertices);
 	ImGui::Text("Textures amount %d", Texture::s_Textures.size());
 	ImGui::Checkbox("Polygon mode",&Renderer::s_PolygonMode);
 	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::s_IsVisible);

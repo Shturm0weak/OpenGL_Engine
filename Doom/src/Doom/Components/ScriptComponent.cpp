@@ -14,6 +14,11 @@ void Doom::ScriptComponent::AssignScript(const char* filePath)
 	m_LState->CL(luaL_dofile(m_LState->m_L, filePath));
 }
 
+Doom::Component* Doom::ScriptComponent::Create()
+{
+	return new ScriptComponent();
+}
+
 Doom::ScriptComponent::ScriptComponent(const ScriptComponent& rhs)
 {
 

@@ -10,7 +10,7 @@
 
 namespace Doom {
 
-	class DOOM_API GameObject :public Listener
+	class DOOM_API GameObject
 	{
 	private:
 
@@ -32,6 +32,7 @@ namespace Doom {
 	public:
 
 		Transform* m_Transform = nullptr;
+		Listener* m_Listener = nullptr;
 
 		std::string m_Name = "Unnamed";
 		std::string m_Tag = "General";
@@ -54,6 +55,16 @@ namespace Doom {
 		template <typename T>
 		T* GetComponent() {
 			return m_ComponentManager->GetComponent<T>();
+		}
+
+		template<typename T>
+		T* AddComponent() {
+			return m_ComponentManager->AddComponent<T>();
+		}
+
+		template<typename T>
+		void RemoveComponent() {
+			m_ComponentManager->RemoveComponent<T>();
 		}
 
 		virtual ~GameObject();

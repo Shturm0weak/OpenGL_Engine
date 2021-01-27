@@ -5,18 +5,21 @@
 namespace Doom {
 
 	class DOOM_API Timer {
+	private:
 
-		static double m_Start;
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimePoint;
 	public:
 
-		static void Until(double seconds, Task task) {
-			if (m_Start > seconds) {
-				task();
-				m_Start = 0;
-			}
-			m_Start += DeltaTime::GetDeltaTime();
-		}
+		static double s_OutTime;
+
+		//@deprecated
+		//static void Until(double seconds, Task task) {
+		//	if (m_Start > seconds) {
+		//		task();
+		//		m_Start = 0;
+		//	}
+		//	m_Start += DeltaTime::GetDeltaTime();
+		//}
 
 		Timer() {
 			m_StartTimePoint = std::chrono::high_resolution_clock::now();
@@ -33,7 +36,8 @@ namespace Doom {
 			auto duration = end - start;
 			double ms = duration * 0.001;
 			std::setprecision(6);
-			std::cout << duration << "us (" << ms << "ms)\n";
+			s_OutTime = ms;
+			//std::cout << duration << "us (" << ms << "ms)\n";
 		}
 	};
 

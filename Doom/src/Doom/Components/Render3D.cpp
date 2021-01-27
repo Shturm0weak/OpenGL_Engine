@@ -30,24 +30,24 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 	m_RenderTechnic = rt;
 }
 
-void Doom::Renderer3D::LoadMesh(Mesh * mesh)
+void Doom::Renderer3D::LoadMesh(Mesh* mesh)
 {
 	if (mesh == nullptr)
 		return;
-	m_Tr = m_Owner->GetComponentManager()->GetComponent<Transform>();
 	EraseFromInstancing();
-	m_Mesh = mesh;
 	ChangeRenderTechnic(m_RenderTechnic);
 	if (!m_IsSkyBox) {
-		CubeCollider3D* cc = m_Owner->GetComponentManager()->GetComponent<CubeCollider3D>();
+		CubeCollider3D* cc = m_OwnerOfCom->GetComponentManager()->GetComponent<CubeCollider3D>();
 		if (cc == nullptr) {
-			cc = m_Owner->GetComponentManager()->AddComponent<CubeCollider3D>();
+			cc = m_OwnerOfCom->GetComponentManager()->AddComponent<CubeCollider3D>();
 			cc->m_IsBoundingBox = true;
 		}
-		cc->m_MinP = m_Mesh->m_TheLowestPoint;
-		cc->m_MaxP = m_Mesh->m_TheHighestPoint;
+		cc->m_MinP = mesh->m_TheLowestPoint;
+		cc->m_MaxP = mesh->m_TheHighestPoint;
 		cc->m_Offset = (cc->m_MaxP - (glm::abs(cc->m_MinP) + glm::abs(cc->m_MaxP)) * 0.5f);
 	}
+	m_Mesh = mesh;
+	m_Tr = m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>();
 	//std::cout << "offset " << cc->offset.x << " " << cc->offset.y << " " << cc->offset.z << "\n";
 	//std::cout << "the highest " << mesh->theHighestPoint.x << " " << mesh->theHighestPoint.y << " " << mesh->theHighestPoint.z << "\n";
 	//std::cout << "the lowest " << mesh->theLowestPoint.x << " " << mesh->theLowestPoint.y << " " << mesh->theLowestPoint.z << "\n";
@@ -83,11 +83,13 @@ Doom::Renderer3D::Renderer3D()
 {
 	m_RenderType = RenderType::TYPE_3D;
 	//SetType(ComponentType::RENDER3D);
-	m_Shader = Shader::Get("Default3D");
 	if(m_IsTransparent)
 		Renderer::s_Objects3dTransparent.push_back(this);
 	else
 		Renderer::s_Objects3d.push_back(this);
+	m_Shader = Shader::Get("Default3D");
+	m_DiffuseTexture = Texture::s_WhiteTexture;
+	m_NormalMapTexture = Texture::Get("InvalidTexture");
 }
 
 Doom::Renderer3D::~Renderer3D()
@@ -113,6 +115,11 @@ Doom::Renderer3D::~Renderer3D()
 	}
 }
 
+Doom::Component* Doom::Renderer3D::Create()
+{
+	return new Renderer3D();
+}
+
 #include "../Core/Timer.h"
 #include "DirectionalLight.h"
 
@@ -131,8 +138,8 @@ void Doom::Renderer3D::BakeShadows()
 			m_Mesh->m_Va->Bind();
 			m_Mesh->m_Ib->Bind();
 			m_Mesh->m_Vb->Bind();
-			Renderer::s_Vertices += m_Mesh->m_IndicesSize;
-			Renderer::s_DrawCalls++;
+			Renderer::s_Stats.m_Vertices += m_Mesh->m_IndicesSize;
+			Renderer::s_Stats.m_DrawCalls++;
 			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 			bakeShader->UnBind();
 			m_Mesh->m_Ib->UnBind();
@@ -167,6 +174,7 @@ void Doom::Renderer3D::MakeSolid()
 void Doom::Renderer3D::Render()
 {
 	if (m_RenderTechnic == RenderTechnic::Forward) {
+		m_Tr = GetOwnerOfComponent()->m_Transform;
 		if (m_IsWireMesh) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			ForwardRender(m_Tr->m_PosMat4, m_Tr->m_ViewMat4, m_Tr->m_ScaleMat4, m_Color);
@@ -262,8 +270,8 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 		m_Mesh->m_Ib->Bind();
 		m_Mesh->m_Vb->Bind();
 
-		Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
-		Renderer::s_DrawCalls++;
+		Renderer::s_Stats.m_Vertices += m_Mesh->m_Ib->GetCount();
+		Renderer::s_Stats.m_DrawCalls++;
 		if (!m_IsCullingFace)
 			glDisable(GL_CULL_FACE);
 		glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
@@ -293,8 +301,8 @@ void Doom::Renderer3D::RenderSkyBox()
 	m_Mesh->m_Va->Bind();
 	m_Mesh->m_Ib->Bind();
 	m_Mesh->m_Vb->Bind();
-	Renderer::s_Vertices += m_Mesh->m_Ib->GetCount();
-	Renderer::s_DrawCalls++;
+	Renderer::s_Stats.m_Vertices += m_Mesh->m_Ib->GetCount();
+	Renderer::s_Stats.m_DrawCalls++;
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	m_Shader->UnBind();

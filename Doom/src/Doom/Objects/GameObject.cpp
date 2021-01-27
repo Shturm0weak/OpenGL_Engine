@@ -31,7 +31,6 @@ Doom::GameObject::~GameObject()
 #ifdef _DEBUG
 	std::cout << "GameObject: <" << NAMECOLOR << m_Name << RESET << "> has been destroyed\n";
 #endif
-	EventSystem::GetInstance()->UnregisterAll(this);
 	delete m_ComponentManager;
 }
 

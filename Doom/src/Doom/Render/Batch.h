@@ -8,50 +8,44 @@
 
 namespace Doom {
 
-#define RENDERER_MAX_SPRITES   25000
-#define RENDERER_VERTEX_SIZE   sizeof(Vertex)
-#define RENDERER_SPRITE_SIZE   RENDERER_VERTEX_SIZE * 4
-#define RENDERER_BUFFER_SIZE   RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES
+#define RENDERER_MAX_SPRITES   1000
 #define RENDERER_INDICES_SIZE  RENDERER_MAX_SPRITES * 6
 
 	class DOOM_API Batch {
 	private:
 
-		struct Vertex {
-			glm::vec2 vertex;
-			glm::vec2 textcoords;
-			int m_static;
-			glm::vec4 m_color;
-			float isGui;
-			float texIndex;
-			glm::vec4 rotationMat0;
-			glm::vec4 rotationMat1;
-			glm::vec4 rotationMat2;
-			glm::vec4 rotationMat3;
-			glm::vec4 posMat0;
-			glm::vec4 posMat1;
-			glm::vec4 posMat2;
-			glm::vec4 posMat3;
-			glm::vec2 pos;
-			glm::vec2 size;
-			glm::vec2 viewportSize;
-			float raduis;
-			glm::vec2 panelSize;
-			glm::vec2 panelPos;
-			int relatedToPanel;
+		struct TextVertex {
+			glm::vec2 m_Vertex;
+			glm::vec2 m_UV;
+			int m_Static;
+			glm::vec4 m_Color;
+			float m_IsGui;
+			float m_TexIndex;
+		};
+
+		struct GOVertex {
+			glm::vec2 m_Vertex;
+			glm::vec2 m_UV;
+			glm::vec4 m_Color;
+			float m_TexIndex;
+			glm::vec4 m_RotationMat0;
+			glm::vec4 m_RotationMat1;
+			glm::vec4 m_RotationMat2;
+			glm::vec4 m_RotationMat3;
+			glm::vec2 m_Pos;
 		};
 
 		struct VertexLine {
-			glm::vec3 m_vertex;
-			glm::vec4 m_color;
-			glm::vec4 rotationMat0;
-			glm::vec4 rotationMat1;
-			glm::vec4 rotationMat2;
-			glm::vec4 rotationMat3;
-			glm::vec4 MVPMat0;
-			glm::vec4 MVPMat1;
-			glm::vec4 MVPMat2;
-			glm::vec4 MVPMat3;
+			glm::vec3 m_Vertex;
+			glm::vec4 m_Color;
+			glm::vec4 m_RotationMat0;
+			glm::vec4 m_RotationMat1;
+			glm::vec4 m_RotationMat2;
+			glm::vec4 m_RotationMat3;
+			glm::vec4 m_MVPMat0;
+			glm::vec4 m_MVPMat1;
+			glm::vec4 m_MVPMat2;
+			glm::vec4 m_MVPMat3;
 		};
 
 		struct VertAttribWrapper {
@@ -61,8 +55,10 @@ namespace Doom {
 
 			VertexLine* m_BufferL = nullptr;
 			VertexLine* m_BufferPtrL = nullptr;
-			Vertex* m_Buffer = nullptr;
-			Vertex* m_BufferPtr = nullptr;
+			TextVertex* m_BufferT = nullptr;
+			TextVertex* m_BufferPtrT = nullptr;
+			GOVertex* m_BufferG = nullptr;
+			GOVertex* m_BufferPtrG = nullptr;
 			GLuint m_Vao;
 			GLuint m_Vbo;
 			IndexBuffer* m_Ibo;
@@ -103,7 +99,7 @@ namespace Doom {
 		void Submit(Character* character);
 		void Submit(glm::mat4 pos,glm::mat4 view, glm::vec4 color,glm::vec2 scale, Texture* texture = nullptr);
 		void Submit(float* mesh2D, glm::vec4 color,Texture* texture = nullptr,glm::vec2 size = glm::vec2(0), glm::vec2 pos = glm::vec2(0),float raduis = 0);
-		void Submit(SpriteRenderer& gameobject);
+		void Submit(SpriteRenderer* gameobject);
 		void Submit(Line& line);
 		void Submit(glm::vec4 color, float* mesh);
 		void Submit(RectangleCollider2D& collision);
@@ -111,7 +107,7 @@ namespace Doom {
 		void flushCollision(Shader* shader);
 		void flushText(Shader* shader);
 		void flushLines(Shader* shader);
-		bool isValidBuffer() { return (m_GoB.m_Buffer != nullptr && m_IsBegan && m_GoB.m_Buffer != (void*)0x00000000); }
+		//bool isValidBuffer() { return (m_GoB.m_Buffer != nullptr && m_IsBegan && m_GoB.m_Buffer != (void*)0x00000000); }
 
 		void BeginText();
 		void EndText();

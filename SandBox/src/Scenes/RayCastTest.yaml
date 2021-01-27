@@ -3,7 +3,7 @@ Camera:
   Transform:
     Position: [0, 0, 0]
     Rotation: [0, 0, 0]
-  Zoom: 30
+  Zoom: 100
   FOV: 1
 GameObjects:
   - GameObject: 0
@@ -33,12 +33,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 1
@@ -68,12 +65,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 2
@@ -103,12 +97,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 3
@@ -138,12 +129,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 5
@@ -173,12 +161,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 6
@@ -208,12 +193,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 7
@@ -243,12 +225,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 8
@@ -278,12 +257,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 9
@@ -313,12 +289,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
   - GameObject: 10
@@ -348,12 +321,9 @@ GameObjects:
         - 0.5
         - 0
         - 1
-    Registered events:
-      []
     Rectangle collider 2D:
       Is Enable: true
       Is trigger: false
-      Tag: General
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
 Texture atlases:
