@@ -49,6 +49,12 @@ void Doom::SoundManager::Stop(Sound * sound)
 	alSourceStop(sound->GetId());
 }
 
+SoundManager& Doom::SoundManager::GetInstance()
+{
+	static SoundManager instance;
+	return instance;
+}
+
 Sound* SoundManager::GetSound(std::string name)
 {
 	auto sound = s_Sounds.find(name);

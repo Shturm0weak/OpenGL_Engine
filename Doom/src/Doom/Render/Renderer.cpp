@@ -33,7 +33,7 @@ void Doom::Renderer::SortTransparentObjects()
 			cc1 = go1->GetComponentManager()->GetComponent<CubeCollider3D>();
 		else
 			return false;
-		glm::vec3 camPos = Window::GetCamera().GetPosition();
+		glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
 		glm::vec3 pos0 = go0->GetPosition();
 		glm::vec3 pos1 = go1->GetPosition();
 		float d1 = glm::distance(camPos, pos0 + cc0->m_MinP);
@@ -56,13 +56,14 @@ void Doom::Renderer::SortTransparentObjects()
 
 void Doom::Renderer::RenderBloomEffect()
 {
+	Camera& camera = Window::GetInstance().GetCamera();
 	if (!s_BloomEffect)
 		return;
 
 	bool horizontal = true, first_iteration = true;
 	unsigned int amount = 10;
 
-	std::vector<FrameBuffer*> fb = Window::GetCamera().m_FrameBufferBlur;
+	std::vector<FrameBuffer*> fb = camera.m_FrameBufferBlur;
 
 	Shader* shader = Shader::Get("Blur");
 	for (unsigned int i = 0; i < amount; i++)
@@ -71,10 +72,10 @@ void Doom::Renderer::RenderBloomEffect()
 
 		shader->Bind();
 		shader->SetUniform1i("horizontal", horizontal);
-		int id = first_iteration ? Window::GetCamera().m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
+		int id = first_iteration ? camera.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
 		glBindTexture(GL_TEXTURE_2D, id);
 
-		Renderer::RenderForPostEffect(MeshManager::GetMesh("plane"), shader);
+		Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
 		
 		horizontal = !horizontal;
 		if (first_iteration)
@@ -84,16 +85,16 @@ void Doom::Renderer::RenderBloomEffect()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	Renderer::Clear();
 
-	Window::GetCamera().m_FrameBufferColor->Bind();
+	camera.m_FrameBufferColor->Bind();
 	shader = Shader::Get("Bloom");
 	shader->Bind();
-	glBindTextureUnit(0, Window::GetCamera().m_FrameBufferColor->m_Textures[0]);
+	glBindTextureUnit(0, camera.m_FrameBufferColor->m_Textures[0]);
 	shader->SetUniform1i("scene", 0);
 	glBindTextureUnit(1, fb[0]->m_Textures[0]);
 	shader->SetUniform1i("bloomBlurH", 1);
 	shader->SetUniform1f("exposure", Renderer::s_Exposure);
-	Renderer::RenderForPostEffect(MeshManager::GetMesh("plane"), shader);
-	Window::GetCamera().m_FrameBufferColor->UnBind();
+	Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
+	camera.m_FrameBufferColor->UnBind();
 
 	//ImGui::Begin("Blur");
 	//void* te = reinterpret_cast<void*>(fb[!horizontal]->m_Textures[0]);
@@ -118,7 +119,7 @@ void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 void Renderer::Render() {
 	{
 		Timer t;
-		if (Window::GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
+		if (Window::GetInstance().GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
 			glDisable(GL_DEPTH_TEST);
 			Render2DObjects();
 			RenderLines();
@@ -139,8 +140,8 @@ void Doom::Renderer::Render2DObjects()
 {
 	if (Renderer::s_Objects2d.size() > 0 || Particle::s_Particles.size())
 	{
-		Batch* batch = Batch::GetInstance();
-		batch->BeginGameObjects();
+		Batch& batch = Batch::GetInstance();
+		batch.BeginGameObjects();
 
 
 		{
@@ -158,11 +159,11 @@ void Doom::Renderer::Render2DObjects()
 		{
 			Particle* p = Particle::s_Particles[i];
 			if (p->Enable)
-				Batch::GetInstance()->Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX, p->scaleY), p->texture);
+				Batch::GetInstance().Submit(p->pos, p->view, p->color, glm::vec2(p->scaleX, p->scaleY), p->texture);
 		}
-		batch->EndGameObjects();
+		batch.EndGameObjects();
 	}
-	Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->m_BasicShader);
+	Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
 }
 
 void Doom::Renderer::Render3DObjects()
@@ -178,7 +179,7 @@ void Doom::Renderer::Render3DObjects()
 		}
 	}
 
-	Instancing::Instance()->Render();
+	Instancing::GetInstance()->Render();
 
 	if (s_PolygonMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -223,7 +224,7 @@ void Doom::Renderer::RenderCollision3D()
 	if (size > 0) {
 		for (size_t i = 0; i < size; i++)
 		{
-			if (CubeCollider3D::s_Colliders[i]->m_IsBoundingBox && Editor::GetInstance()->isBoundingBoxesVisible)
+			if (CubeCollider3D::s_Colliders[i]->m_IsBoundingBox && Editor::GetInstance().isBoundingBoxesVisible)
 				CubeCollider3D::s_Colliders[i]->Render();
 		}
 	}
@@ -239,20 +240,20 @@ void Doom::Renderer::RenderCollision3D()
 
 void Doom::Renderer::RenderLines()
 {
-	Batch::GetInstance()->BeginLines();
+	Batch::GetInstance().BeginLines();
 	uint32_t size = Line::s_Lines.size();
 	for (uint32_t i = 0; i < size; i++)
 	{
 		if (Line::s_Lines[i]->m_Enable) {
-			Batch::GetInstance()->Submit(*Line::s_Lines[i]);
+			Batch::GetInstance().Submit(*Line::s_Lines[i]);
 		}
 	}
-	Batch::GetInstance()->EndLines();
-	Batch::GetInstance()->flushLines(Batch::GetInstance()->m_LineShader);
+	Batch::GetInstance().EndLines();
+	Batch::GetInstance().flushLines(Batch::GetInstance().m_LineShader);
 }
 
 void Doom::Renderer::RenderText() {
-	Batch::GetInstance()->flushText(Batch::GetInstance()->m_TextShader);
+	Batch::GetInstance().flushText(Batch::GetInstance().m_TextShader);
 }
 
 void Doom::Renderer::RenderTransparent()
@@ -268,14 +269,14 @@ void Doom::Renderer::RenderTransparent()
 
 void Doom::Renderer::RenderCollision(){
 	if (RectangleCollider2D::s_IsVisible == true) {
-		Batch::GetInstance()->BeginGameObjects();
+		Batch::GetInstance().BeginGameObjects();
 		for (unsigned int i = 0; i < RectangleCollider2D::s_Collision2d.size(); i++) {
 			RectangleCollider2D* col = RectangleCollider2D::s_Collision2d[i];
 			if (col != nullptr && col->m_Enable == true) {
-				Batch::GetInstance()->Submit(*col);
+				Batch::GetInstance().Submit(*col);
 			}
 		}
-		Batch::GetInstance()->EndGameObjects();
-		Batch::GetInstance()->flushCollision(Batch::GetInstance()->m_CollisionShader);
+		Batch::GetInstance().EndGameObjects();
+		Batch::GetInstance().flushCollision(Batch::GetInstance().m_CollisionShader);
 	}
 }

@@ -34,7 +34,6 @@
     <ClInclude Include="src\game\StressTest.h" />
     <ClInclude Include="src\Hexagon\Hexagon.h" />
     <ClInclude Include="src\AimTrainer\AimTrainer.h" />
-    <ClInclude Include="src\Hexagon\TestComponent.h" />
     <ClInclude Include="src\Examples\Test.h" />
     <ClInclude Include="src\Examples\RayCastTest.h" />
     <ClInclude Include="src\Examples\StressTest.h" />
@@ -51,7 +50,6 @@
     <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
     <ClCompile Include="src\Hexagon\Hexagon.cpp" />
     <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
-    <ClCompile Include="src\Hexagon\TestComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BakeShadows.shader" />

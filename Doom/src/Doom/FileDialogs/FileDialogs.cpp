@@ -9,7 +9,7 @@ std::optional<std::string> Doom::FileDialogs::OpenFile(const char* filter)
 	CHAR szFile[260] = { 0 };
 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = glfwGetWin32Window(Window::GetWindow());
+	ofn.hwndOwner = glfwGetWin32Window(Window::GetInstance().GetWindow());
 	ofn.lpstrFile = szFile;
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFilter = filter;
@@ -27,7 +27,7 @@ std::optional<std::string> Doom::FileDialogs::SaveFile(const char* filter)
 	CHAR szFile[260] = { 0 };
 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = glfwGetWin32Window(Window::GetWindow());
+	ofn.hwndOwner = glfwGetWin32Window(Window::GetInstance().GetWindow());
 	ofn.lpstrFile = szFile;
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFilter = filter;

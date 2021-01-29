@@ -65,9 +65,9 @@ public:
 		GameObject* backGround = new GameObject("BackGround", 0, 0);
 		backGround->GetComponentManager()->AddComponent<SpriteRenderer>()->m_Color = glm::vec4(0.2, 0.2, 0.2, 1.0);
 		backGround->m_Transform->Scale(1000, 1000);
-		SoundManager::CreateSoundAsset("back", backSound);
+		SoundManager::GetInstance().CreateSoundAsset("back", backSound);
 		ai = new AI();
-		Window::GetCamera().Zoom(4.5);
+		Window::GetInstance().GetCamera().Zoom(4.5);
 		
 		plates = new Plate[9];
 		float offsetX = -3.f;
@@ -106,13 +106,13 @@ public:
 					plate->isEmpty = false;
 					if (turn == 0) {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
-						SoundManager::Play(backSound);
+						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
-						SoundManager::Play(backSound);
+						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 0;
 					}
@@ -129,13 +129,13 @@ public:
 					plate->isEmpty = false;
 					if (turn == 0) {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
-						SoundManager::Play(backSound);
+						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
 						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
-						SoundManager::Play(backSound);
+						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 0;
 					}
@@ -145,22 +145,6 @@ public:
 
 
 		timer += DeltaTime::s_Deltatime;
-
-		if (amountOfNonEmpty >= 9) {
-			end = true;
-			turn = 0;
-			Gui::GetInstance()->Begin();
-			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
-			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::YCENTER;
-			Gui::GetInstance()->Text("Draw", true, 0, 0, 40, COLORS::Yellow);
-			Gui::GetInstance()->Text("Press Enter to restart", true, 0, -80, 40, COLORS::Yellow);
-			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
-			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
-			Batch::GetInstance()->EndText();
-
-			if (Input::IsKeyPressed(Keycode::KEY_ENTER))
-				Restart();
-		}
 
 		whowin = WhoWin(plates);
 		if (whowin > -1) {
@@ -210,13 +194,29 @@ public:
 	}
 
 	void OnGuiRender() {
+		Gui& g = Gui::GetInstance();
+		if (amountOfNonEmpty >= 9) {
+			end = true;
+			turn = 0;
+			g.Begin();
+			g.m_XAlign = g.AlignHorizontally::XCENTER;
+			g.m_YAlign = g.AlignVertically::YCENTER;
+			g.Text("Draw", true, 0, 0, 40, COLORS::Yellow);
+			g.Text("Press Enter to restart", true, 0, -80, 40, COLORS::Yellow);
+			g.m_XAlign = g.AlignHorizontally::LEFT;
+			g.m_YAlign = g.AlignVertically::BOTTOM;
+			Batch::GetInstance().EndText();
+
+			if (Input::IsKeyPressed(Keycode::KEY_ENTER))
+				Restart();
+		}
 		if (whowin > -1) {
-			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::XCENTER;
-			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::YCENTER;
-			Gui::GetInstance()->Text("Player %d won!!!", true, -0, 0, 40, COLORS::Yellow, 0, whowin);
-			Gui::GetInstance()->Text("Press Enter to restart", true, -0, -80, 40, COLORS::Yellow, 0, whowin);
-			Gui::GetInstance()->m_XAlign = Gui::GetInstance()->AlignHorizontally::LEFT;
-			Gui::GetInstance()->m_YAlign = Gui::GetInstance()->AlignVertically::BOTTOM;
+			g.m_XAlign = g.AlignHorizontally::XCENTER;
+			g.m_YAlign = g.AlignVertically::YCENTER;
+			g.Text("Player %d won!!!", true, -0, 0, 40, COLORS::Yellow, 0, whowin);
+			g.Text("Press Enter to restart", true, -0, -80, 40, COLORS::Yellow, 0, whowin);
+			g.m_XAlign = g.AlignHorizontally::LEFT;
+			g.m_YAlign = g.AlignVertically::BOTTOM;
 		}
 	}
 

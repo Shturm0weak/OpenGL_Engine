@@ -1,8 +1,6 @@
 #Directories
 .vs/
+.git/
 bin-int/
-junk/
-x64/
-.gitignore/
-*.fbx
-*.stl
+gitignore
+premake.zip

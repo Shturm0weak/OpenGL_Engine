@@ -68,7 +68,7 @@ void Doom::SpriteRenderer::GetTransformedVertices(float* buffer)
 
 void Doom::SpriteRenderer::Render()
 {
-	Batch::GetInstance()->Submit(this);
+	Batch::GetInstance().Submit(this);
 }
 
 Component* Doom::SpriteRenderer::Create()
@@ -158,16 +158,17 @@ float * SpriteRenderer::GetUVs() const
 
 void SpriteRenderer::Setlayer(int layer)
 {
-	unsigned int size = World::s_GameObjects.size();
+	World& world = World::GetInstance();
+	unsigned int size = world.s_GameObjects.size();
 #ifdef _DEBUG
 	std::cout << m_OwnerOfCom->m_Name << " is set from layer " << m_OwnerOfCom->m_Id << " to " << layer << std::endl;
 #endif
-	World::s_GameObjects.erase(World::s_GameObjects.begin() + m_OwnerOfCom->m_Id);
-	World::s_GameObjects.insert(World::s_GameObjects.begin() + layer, m_OwnerOfCom);
-	for (unsigned int i = 0; i < World::s_GameObjects.size(); i++)
+	world.s_GameObjects.erase(world.s_GameObjects.begin() + m_OwnerOfCom->m_Id);
+	world.s_GameObjects.insert(world.s_GameObjects.begin() + layer, m_OwnerOfCom);
+	for (unsigned int i = 0; i < world.s_GameObjects.size(); i++)
 	{
-		World::s_GameObjects[i]->m_Id = i;
-		World::s_GameObjects[i]->m_Layer = i;
+		world.s_GameObjects[i]->m_Id = i;
+		world.s_GameObjects[i]->m_Layer = i;
 	}
 	return;
 }

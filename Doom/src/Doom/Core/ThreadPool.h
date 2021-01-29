@@ -24,17 +24,19 @@ namespace Doom {
 		bool m_IsStoped = false;
 		static bool m_IsInitialized;
 
-		void Infinite_loop_function();
+		void InfiniteLoopFunction();
 
-	public:
-
+		ThreadPool& operator=(const ThreadPool& rhs) { return *this; }
+		ThreadPool(const ThreadPool&) = delete;
 		ThreadPool(int n);
 		~ThreadPool();
 
+	public:
+
 		inline uint32_t GetAmountOfThreads() { return m_Threads.size(); }
-		void Shutdown()noexcept;
+		void Shutdown();
 		void Enqueue(Task task);
-		static ThreadPool* GetInstance() { return s_Instance; }
+		static ThreadPool& GetInstance() { return *s_Instance; }
 		static void Init();
 
 		friend class Editor;

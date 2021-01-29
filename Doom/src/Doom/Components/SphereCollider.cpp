@@ -34,7 +34,7 @@ Doom::SphereCollider::SphereCollider(const SphereCollider& rhs)
 }
 
 SphereCollider::SphereCollider() {
-	m_Mesh = MeshManager::GetMesh("sphere");
+	m_Mesh = MeshManager::GetInstance().GetMesh("sphere");
 	s_Spheres.push_back(this);
 	//SetType(ComponentType::SPHERECOLLIDER);
 }
@@ -48,7 +48,7 @@ void Doom::SphereCollider::Render()
 	else
 		m_Radius = sqrtf(scale.x * scale.x + scale.y * scale.y + scale.z * scale.z);
 	this->m_Shader->Bind();
-	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 	this->m_Shader->SetUniformMat4f("u_Model", glm::translate(GetOwnerOfComponent()->m_Transform->m_PosMat4, m_Offset));
 	this->m_Shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), glm::vec3(m_Radius, m_Radius, m_Radius)));
 	this->m_Shader->SetUniformMat4f("u_View", GetOwnerOfComponent()->m_Transform->m_ViewMat4);
@@ -74,7 +74,7 @@ bool Doom::SphereCollider::IntersectSphereToSphere(SphereCollider* sp) {
 	glm::vec3 scale = GetOwnerOfComponent()->GetScale();
 	float d = glm::distance(pos1, pos2);
 	if (d < m_Radius + sp->m_Radius) {
-		EventSystem::GetInstance()->SendEvent(EventType::ONCOLLISION,(Listener*)GetOwnerOfComponent(),(void*)(sp));
+		EventSystem::GetInstance().SendEvent(EventType::ONCOLLISION,(Listener*)GetOwnerOfComponent(),(void*)(sp));
 		return true;
 	}
 	return false;

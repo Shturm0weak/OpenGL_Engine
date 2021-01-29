@@ -22,7 +22,7 @@ namespace Utils {
 			size_t index = 0;
 			index = meshes.back().find("\\", index);
 			meshes.back().replace(index, 1, "/");
-			Doom::MeshManager::LoadMesh(GetNameFromFilePath(meshes.back()),meshes.back());
+			Doom::MeshManager::GetInstance().LoadMesh(GetNameFromFilePath(meshes.back()),meshes.back());
 		}
 	}
 

@@ -2,7 +2,7 @@
 
 void Doom::Application::Init() const
 {
-	ImGui::SetCurrentContext(Window::s_ImGuiContext);
+	ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
 	ImGuiStyle* style = &ImGui::GetStyle();
 	ImVec4* colors = style->Colors;
 
@@ -74,14 +74,14 @@ void Doom::Application::Init() const
 	case Doom::TYPE_2D:
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
-		Window::GetCamera().SetOrthographic((float)m_Width / m_Height);
+		Window::GetInstance().GetCamera().SetOrthographic((float)m_Width / m_Height);
 		break;
 	case Doom::TYPE_3D:
 
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
-		Window::GetCamera().SetPerspective(1, m_Width, m_Height, 0.1, 1000.0);
+		Window::GetInstance().GetCamera().SetPerspective(1, m_Width, m_Height, 0.1, 1000.0);
 		break;
 	default:
 		break;

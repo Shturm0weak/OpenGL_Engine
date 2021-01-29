@@ -74,12 +74,16 @@ namespace Doom {
 		VertAttribWrapper m_LinesB;
 
 		Shader* m_Shader = nullptr;
-		static Batch* s_Instance;
 		const unsigned int maxTextureSlots = 32;
 		bool m_IsBegan = false;
 		void initText();
 		void initGameObjects();
 		void initLines();
+
+		Batch();
+		Batch(const Batch&) = delete;
+		Batch& operator=(const Batch&) { return *this; }
+		~Batch();
 	public:
 
 		Shader* m_TextShader = Shader::Get("Font");
@@ -90,11 +94,7 @@ namespace Doom {
 		GLsizei m_GIndexCount = 0;
 		GLsizei m_LIndexCount = 0;
 
-		Batch();
-		~Batch();
-
-		static void Init();
-		inline static Batch* GetInstance() { return s_Instance; }
+		static Batch& GetInstance();
 
 		void Submit(Character* character);
 		void Submit(glm::mat4 pos,glm::mat4 view, glm::vec4 color,glm::vec2 scale, Texture* texture = nullptr);

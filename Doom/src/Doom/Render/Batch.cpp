@@ -13,13 +13,15 @@ Batch::Batch()
 	initLines();
 }
 
-void Batch::Init() {
-	s_Instance = new Batch();
-}
-
 Batch::~Batch()
 {
 
+}
+
+Batch& Doom::Batch::GetInstance()
+{
+	static Batch instance;
+	return instance;
 }
 
 void Batch::Submit(Character* c)
@@ -94,9 +96,9 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	};
 
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE) {
-		Batch::GetInstance()->EndGameObjects();
-		Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->m_BasicShader);
-		Batch::GetInstance()->BeginGameObjects();
+		Batch::GetInstance().EndGameObjects();
+		Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
+		Batch::GetInstance().BeginGameObjects();
 	}
 	m_GoB.m_TextureIndex = 0.0f;
 
@@ -276,9 +278,9 @@ void Batch::Submit(SpriteRenderer* c)
 {
 
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE) {
-		Batch::GetInstance()->EndGameObjects();
-		Batch::GetInstance()->flushGameObjects(Batch::GetInstance()->m_BasicShader);
-		Batch::GetInstance()->BeginGameObjects();
+		Batch::GetInstance().EndGameObjects();
+		Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
+		Batch::GetInstance().BeginGameObjects();
 	}
 	m_GoB.m_TextureIndex = 0.0f;
 
@@ -420,7 +422,7 @@ void Batch::flushGameObjects(Shader * shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().m_ViewProjectionMat4);
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().m_ViewProjectionMat4);
 	shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 	glDrawElements(GL_TRIANGLES, m_GIndexCount, GL_UNSIGNED_INT, NULL);
 	Renderer::s_Stats.m_DrawCalls++;
@@ -442,7 +444,7 @@ void Batch::flushCollision(Shader * shader)
 	glBindVertexArray(m_GoB.m_Vao);
 	m_GoB.m_Ibo->Bind();
 	shader->Bind();
-	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 	shader->SetUniform4fv("U_Color", COLORS::Green);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(3.0f);
@@ -508,15 +510,16 @@ void Batch::flushText(Shader* shader)
 		samplers[i] = i;
 	}
 
+	Gui& g = Gui::GetInstance();
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->SetUniformMat4f("u_Projection", Gui::GetInstance()->m_ViewProjecTionMat4RelatedToCamera);
-	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-	shader->SetUniform2fv("u_offset", Gui::GetInstance()->m_TextProps.m_ShadowOffset);
-	shader->SetUniform1f("u_width", Gui::GetInstance()->m_TextProps.m_Width);
-	shader->SetUniform1f("u_edge", Gui::GetInstance()->m_TextProps.m_Edge);
-	shader->SetUniform1f("u_borderwidth", Gui::GetInstance()->m_TextProps.m_BorderWidth);
-	shader->SetUniform1f("u_borderedge", Gui::GetInstance()->m_TextProps.m_BorderEdge);
-	shader->SetUniform4fv("u_outlineColor", Gui::GetInstance()->m_TextProps.m_OutLineColor);
+	shader->SetUniformMat4f("u_Projection", g.m_ViewProjecTionMat4RelatedToCamera);
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
+	shader->SetUniform2fv("u_offset",       g.m_TextProps.m_ShadowOffset);
+	shader->SetUniform1f("u_width",         g.m_TextProps.m_Width);
+	shader->SetUniform1f("u_edge",          g.m_TextProps.m_Edge);
+	shader->SetUniform1f("u_borderwidth",   g.m_TextProps.m_BorderWidth);
+	shader->SetUniform1f("u_borderedge",    g.m_TextProps.m_BorderEdge);
+	shader->SetUniform4fv("u_outlineColor", g.m_TextProps.m_OutLineColor);
 
 	glDrawElements(GL_TRIANGLES, m_TIndexCount, GL_UNSIGNED_INT, NULL);
 	Renderer::s_Stats.m_DrawCalls++;
@@ -538,7 +541,7 @@ void Doom::Batch::flushLines(Shader * shader)
 	glBindVertexArray(m_LinesB.m_Vao);
 	m_LinesB.m_Ibo->Bind();
 	shader->Bind();
-	shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 	glLineWidth(Line::s_Width);
 	glDrawElements(GL_LINES, m_LIndexCount, GL_UNSIGNED_INT, nullptr);
 	glLineWidth(1.0f);

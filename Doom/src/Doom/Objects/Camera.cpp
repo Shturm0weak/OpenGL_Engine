@@ -11,7 +11,7 @@ using namespace Doom;
 
 Camera::Camera(){
 	m_Position = glm::vec3(0, 0, 0);
-	EventSystem::GetInstance()->RegisterClient(EventType::ONWINDOWRESIZE, this);
+	EventSystem::GetInstance().RegisterClient(EventType::ONWINDOWRESIZE, this);
 }
 
 Doom::Camera::~Camera()
@@ -23,7 +23,7 @@ Doom::Camera::~Camera()
 }
 
 void Camera::RecalculateViewMatrix() {
-	ThreadPool::GetInstance()->Enqueue([=] {
+	ThreadPool::GetInstance().Enqueue([=] {
 	std::lock_guard<std::mutex> lock(m_Mtx);
 	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), m_Roll, glm::vec3(0, 0, 1))
 					* glm::rotate(glm::mat4(1.0f), m_Yaw, glm::vec3(0, 1, 0))
@@ -73,7 +73,7 @@ void Camera::WindowResize() {
 			break;
 		}
 		RecalculateViewMatrix();
-		Gui::GetInstance()->RecalculateProjectionMatrix();
+		Gui::GetInstance().RecalculateProjectionMatrix();
 		//glBindTexture(GL_TEXTURE_2D, frameBuffer->texture);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, props[0], props[1], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		//glBindTexture(GL_TEXTURE_2D, 0);
@@ -133,7 +133,7 @@ glm::vec3 Doom::Camera::GetRotation()
 glm::vec3 Doom::Camera::GetMouseDirVec()
 {
 	glm::vec2 pos;
-	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetCamera().GetAspectRatio() * g_Height);
+	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetInstance().GetCamera().GetAspectRatio() * g_Height);
 	pos.y = ViewPort::GetInstance()->GetStaticMousePosition().y / (g_Height);
 	glm::vec4 clipCoords = glm::vec4(pos.x, pos.y, -1.0f, 1.0f);
 	glm::vec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMat4);
@@ -210,8 +210,8 @@ void Camera::CameraMovement() {
 			MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
 		}
 		if (Input::IsKeyDown(Keycode::KEY_G)) {
-			if (Editor::GetInstance()->go != nullptr) {
-				Editor::GetInstance()->go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+			if (Editor::GetInstance().go != nullptr) {
+				Editor::GetInstance().go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 			}
 		}
 		Increase();
@@ -235,11 +235,11 @@ void Camera::CameraMovement() {
 			MovePosition(glm::vec3(0, -5.0f * DeltaTime::s_Deltatime, 0));
 		}
 		
-		Window::DisableCursor();
+		Window::GetInstance().DisableCursor();
 		glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
 		delta *= 0.2;
-		glm::vec3 rot = Window::GetCamera().GetRotation();
-		Window::GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
+		glm::vec3 rot = Window::GetInstance().GetCamera().GetRotation();
+		Window::GetInstance().GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
 		
 		glm::vec2 rightVec;
 		rightVec = { -(backV.z * 1) / (backV.x) ,1 };
@@ -272,7 +272,7 @@ void Camera::CameraMovement() {
 	}
 	}
 	else {
-		Window::ShowCursor();
+		Window::GetInstance().ShowCursor();
 	}
 	SetOnStart();
 }

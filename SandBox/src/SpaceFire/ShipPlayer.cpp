@@ -51,7 +51,7 @@ void ShipPlayer::ShipMovement()
 void ShipPlayer::ScreenBorders()
 {
 	glm::vec3 pos = GetOwnerOfComponent()->GetPosition();
-	double xBorder = (Window::GetCamera().GetAspectRatio() * Window::GetCamera().GetZoomLevel());
+	double xBorder = (Window::GetInstance().GetCamera().GetAspectRatio() * Window::GetInstance().GetCamera().GetZoomLevel());
 	if (pos.x > xBorder - sr->GetWidth() * 0.5) {
 		tr->Translate(xBorder - sr->GetWidth() * 0.5, pos.y);
 	}
@@ -59,7 +59,7 @@ void ShipPlayer::ScreenBorders()
 		tr->Translate(-xBorder + sr->GetWidth() * 0.5, pos.y);
 	}
 
-	double yBorder = (1 * Window::GetCamera().GetZoomLevel());
+	double yBorder = (1 * Window::GetInstance().GetCamera().GetZoomLevel());
 	if (pos.y > yBorder - sr->GetHeight() * 0.5) {
 		tr->Translate(pos.x, yBorder - sr->GetHeight() * 0.5);
 	}
@@ -72,13 +72,13 @@ void ShipPlayer::Init(std::string name, float x, float y)
 {
 	GetOwnerOfComponent()->m_Transform->Translate(x, y);
 	GetOwnerOfComponent()->m_Name = name;
-	SoundManager::CreateSoundAsset("fire", fireSound);
+	SoundManager::GetInstance().CreateSoundAsset("fire", fireSound);
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->m_Enable = false;
 	GetOwnerOfComponent()->AddChild((void*)bulletsPlaceHolder);
-	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (Component*)this);
-	EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (Component*)this);
-	EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLISION, (Component*)this);
+	EventSystem::GetInstance().RegisterClient(EventType::ONUPDATE, (Component*)this);
+	EventSystem::GetInstance().RegisterClient(EventType::ONSTART, (Component*)this);
+	EventSystem::GetInstance().RegisterClient(EventType::ONCOLLISION, (Component*)this);
 	GetOwnerOfComponent()->m_Listener = this;
 	col = GetOwnerOfComponent()->AddComponent<RectangleCollider2D>();
 	tr = GetOwnerOfComponent()->GetComponent<Transform>();
@@ -161,8 +161,8 @@ void ShipPlayer::OnCollision(void * _col)
 	else if (__col->GetOwnerOfComponent()->m_Tag == "Ammo") {
 		Ammo* a = static_cast<GameObject*>(__col->GetOwnerOfComponent())->GetComponent<Ammo>();
 		ammo += a->GetAmmo();
-		SoundManager::Play(SoundManager::GetSound("pickUp"));
-		World::DeleteObject(a->GetOwnerOfComponent()->m_Id);
+		SoundManager::GetInstance().Play(SoundManager::GetInstance().GetSound("pickUp"));
+		World::GetInstance().DeleteObject(a->GetOwnerOfComponent()->m_Id);
 	}
 }
 
@@ -207,7 +207,7 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 				}
 			}
 		}
-		SoundManager::Play(fireSound);
+		SoundManager::GetInstance().Play(fireSound);
 	}
 	timerFire += DeltaTime::s_Deltatime;
 }

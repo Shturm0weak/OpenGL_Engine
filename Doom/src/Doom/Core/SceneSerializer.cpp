@@ -85,29 +85,30 @@ YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec4& v) {
 
 void Doom::SceneSerializer::Serialize(const std::string& filePath)
 {
+	Camera& camera = Window::GetInstance().GetCamera();
 	s_CurrentSceneFilePath = filePath;
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene";
-	out << YAML::Value << ((Application*)World::s_Application)->m_Type;
+	out << YAML::Value << ((Application*)World::GetInstance().s_Application)->m_Type;
 	out << YAML::Key << "Camera";
 	out << YAML::BeginMap;
 	out << YAML::Key << "Transform";
 	out << YAML::BeginMap;
-	out << YAML::Key << "Position" << YAML::Value << Window::GetCamera().GetPosition();
-	out << YAML::Key << "Rotation" << YAML::Value << Window::GetCamera().GetRotation();
+	out << YAML::Key << "Position" << YAML::Value << camera.GetPosition();
+	out << YAML::Key << "Rotation" << YAML::Value << camera.GetRotation();
 	out << YAML::EndMap;
-	out << YAML::Key << "Zoom" << YAML::Value << Window::GetCamera().GetZoomLevel();
-	out << YAML::Key << "FOV" << YAML::Value << Window::GetCamera().GetFOV();
+	out << YAML::Key << "Zoom" << YAML::Value << camera.GetZoomLevel();
+	out << YAML::Key << "FOV" << YAML::Value <<  camera.GetFOV();
 	out << YAML::EndMap;
 
 	out << YAML::Key << "GameObjects";
 	out << YAML::Value << YAML::BeginSeq;
 
-	for (uint32_t i = 0; i < World::s_GameObjects.size(); i++)
+	for (uint32_t i = 0; i < World::GetInstance().s_GameObjects.size(); i++)
 	{
-		if (World::s_GameObjects[i]->m_IsSerializable)
-			SerializeGameObject(out, World::s_GameObjects[i]);
+		if (World::GetInstance().s_GameObjects[i]->m_IsSerializable)
+			SerializeGameObject(out, World::GetInstance().s_GameObjects[i]);
 	}
 
 	out << YAML::EndSeq;
@@ -146,7 +147,7 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 	glm::vec3 rotation = camTransform["Rotation"].as<glm::vec3>();
 	float fov = cam["FOV"].as<float>();
 	double zoom = cam["Zoom"].as<float>();
-	Camera& camera = Window::GetCamera();
+	Camera& camera = Window::GetInstance().GetCamera();
 	if (type == RenderType::TYPE_3D)
 		camera.SetFov(fov);
 	else
@@ -194,7 +195,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		if (isSkyBox) {
 			std::vector<std::string>faces = renderer3DComponent["Faces"].as<std::vector<std::string>>();
 			SkyBox* sb = new SkyBox(faces, nullptr);
-			MeshManager::GetMeshWhenLoaded("cube", (void*)(sb->GetComponentManager()->GetComponent<Renderer3D>()));
+			MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(sb->GetComponentManager()->GetComponent<Renderer3D>()));
 			return;
 		}
 	}
@@ -267,10 +268,10 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 			meshId = _meshId.as<uint32_t>();
 		}
 		std::string meshName = Utils::GetNameFromFilePath(meshPath);
-		MeshManager::AsyncLoadMesh(meshName, meshPath, meshId);
+		MeshManager::GetInstance().AsyncLoadMesh(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
 		r->m_RenderTechnic = ((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
-		MeshManager::GetMeshWhenLoaded(meshName, (void*)r);
+		MeshManager::GetInstance().GetMeshWhenLoaded(meshName, (void*)r);
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{

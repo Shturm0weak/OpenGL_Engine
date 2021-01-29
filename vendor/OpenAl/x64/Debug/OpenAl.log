@@ -1,0 +1,191 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(944,5): warning MSB8027: Two or more files with the name of alc.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are OpenAl\alc\alc.cpp, OpenAl\router\alc.cpp.
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(944,5): warning MSB8027: Two or more files with the name of null.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are OpenAl\alc\backends\null.cpp, OpenAl\alc\effects\null.cpp.
+  alc.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\alc.cpp': No such file or directory
+  alconfig.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\alconfig.cpp': No such file or directory
+  alu.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\alu.cpp': No such file or directory
+  ambdec.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\ambdec.cpp': No such file or directory
+  alsa.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\alsa.cpp': No such file or directory
+  base.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\base.cpp': No such file or directory
+  coreaudio.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\coreaudio.cpp': No such file or directory
+  dsound.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\dsound.cpp': No such file or directory
+  jack.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\jack.cpp': No such file or directory
+  loopback.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\loopback.cpp': No such file or directory
+  null.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\null.cpp': No such file or directory
+  oboe.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\oboe.cpp': No such file or directory
+  opensl.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\opensl.cpp': No such file or directory
+  oss.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\oss.cpp': No such file or directory
+  portaudio.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\portaudio.cpp': No such file or directory
+  pulseaudio.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\pulseaudio.cpp': No such file or directory
+  sdl2.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\sdl2.cpp': No such file or directory
+  sndio.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\sndio.cpp': No such file or directory
+  solaris.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\solaris.cpp': No such file or directory
+  wasapi.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\wasapi.cpp': No such file or directory
+  Generating Code...
+  Compiling...
+  wave.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\wave.cpp': No such file or directory
+  winmm.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\backends\winmm.cpp': No such file or directory
+  bformatdec.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\bformatdec.cpp': No such file or directory
+  bs2b.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\bs2b.cpp': No such file or directory
+  bsinc_tables.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\bsinc_tables.cpp': No such file or directory
+  converter.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\converter.cpp': No such file or directory
+  cpu_caps.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\cpu_caps.cpp': No such file or directory
+  autowah.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\autowah.cpp': No such file or directory
+  chorus.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\chorus.cpp': No such file or directory
+  compressor.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\compressor.cpp': No such file or directory
+  dedicated.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\dedicated.cpp': No such file or directory
+  distortion.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\distortion.cpp': No such file or directory
+  echo.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\echo.cpp': No such file or directory
+  equalizer.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\equalizer.cpp': No such file or directory
+  fshifter.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\fshifter.cpp': No such file or directory
+  modulator.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\modulator.cpp': No such file or directory
+  null.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\null.cpp': No such file or directory
+  pshifter.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\pshifter.cpp': No such file or directory
+  reverb.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\reverb.cpp': No such file or directory
+  vmorpher.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\effects\vmorpher.cpp': No such file or directory
+  Generating Code...
+  Compiling...
+  biquad.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\filters\biquad.cpp': No such file or directory
+  nfc.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\filters\nfc.cpp': No such file or directory
+  splitter.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\filters\splitter.cpp': No such file or directory
+  fpu_ctrl.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\fpu_ctrl.cpp': No such file or directory
+  helpers.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\helpers.cpp': No such file or directory
+  hrtf.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\hrtf.cpp': No such file or directory
+  mastering.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\mastering.cpp': No such file or directory
+  mixer_c.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\mixer\mixer_c.cpp': No such file or directory
+  mixer_neon.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\mixer\mixer_neon.cpp': No such file or directory
+  mixer_sse.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\mixer\mixer_sse.cpp': No such file or directory
+  mixer_sse2.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\mixer\mixer_sse2.cpp': No such file or directory
+  mixer_sse3.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\mixer\mixer_sse3.cpp': No such file or directory
+  mixer_sse41.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\mixer\mixer_sse41.cpp': No such file or directory
+  panning.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\panning.cpp': No such file or directory
+  ringbuffer.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\ringbuffer.cpp': No such file or directory
+  uhjfilter.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\uhjfilter.cpp': No such file or directory
+  uiddefs.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\uiddefs.cpp': No such file or directory
+  voice.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\alc\voice.cpp': No such file or directory
+  auxeffectslot.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\auxeffectslot.cpp': No such file or directory
+  buffer.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\buffer.cpp': No such file or directory
+  Generating Code...
+  Compiling...
+  effect.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\effect.cpp': No such file or directory
+  error.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\error.cpp': No such file or directory
+  event.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\event.cpp': No such file or directory
+  extension.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\extension.cpp': No such file or directory
+  filter.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\filter.cpp': No such file or directory
+  listener.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\listener.cpp': No such file or directory
+  source.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\source.cpp': No such file or directory
+  state.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\al\state.cpp': No such file or directory
+  alcomplex.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\alcomplex.cpp': No such file or directory
+  alexcpt.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\alexcpt.cpp': No such file or directory
+  alfstream.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\alfstream.cpp': No such file or directory
+  almalloc.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\almalloc.cpp': No such file or directory
+  alstring.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\alstring.cpp': No such file or directory
+  dynload.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\dynload.cpp': No such file or directory
+  polyphase_resampler.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\polyphase_resampler.cpp': No such file or directory
+  strutils.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\strutils.cpp': No such file or directory
+  threads.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\common\threads.cpp': No such file or directory
+  alffplay.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\examples\alffplay.cpp': No such file or directory
+  alstreamcb.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\examples\alstreamcb.cpp': No such file or directory
+  al.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\router\al.cpp': No such file or directory
+  Generating Code...
+  Compiling...
+  alc.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\router\alc.cpp': No such file or directory
+  router.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\router\router.cpp': No such file or directory
+  main.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\alsoft-config\main.cpp': No such file or directory
+  mainwindow.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\alsoft-config\mainwindow.cpp': No such file or directory
+  verstr.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\alsoft-config\verstr.cpp': No such file or directory
+  loaddef.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\makemhr\loaddef.cpp': No such file or directory
+  loadsofa.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\makemhr\loadsofa.cpp': No such file or directory
+  makemhr.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\makemhr\makemhr.cpp': No such file or directory
+  sofa-info.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\sofa-info.cpp': No such file or directory
+  sofa-support.cpp
+c1xx : fatal error C1083: Cannot open source file: 'OpenAl\utils\sofa-support.cpp': No such file or directory
+  Generating Code...

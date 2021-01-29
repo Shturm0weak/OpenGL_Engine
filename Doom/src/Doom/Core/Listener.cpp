@@ -24,8 +24,6 @@ void Listener::HandleEvent(Event* e) {
 		e->GetSender()->OnTranslate();
 	else if (type == EventType::ONWINDOWRESIZE)
 		OnWindowResize(e->GetParameter());
-	else if (type == EventType::ONMISS)
-		OnMiss();
 	else if (type == EventType::ONMAINTHREADPROCESS)
 		OnMainThreadProcess(e->GetParameter());
 }

@@ -10,25 +10,30 @@ namespace Doom {
 	class DOOM_API MeshManager {
 	private:
 
-		static std::mutex s_Mtx;
-		static std::map<std::string, Mesh*> s_Meshes;
-		static std::vector <Mesh*> s_NeedToInitMeshes;
-		static std::multimap<std::string, void*> s_MeshQueue;
-		static const char** s_NamesOfMeshes;
+		MeshManager& operator=(const MeshManager& rhs) { return *this; }
+		MeshManager(const MeshManager&) = delete;
+		MeshManager() {}
+
+		std::mutex s_Mtx;
+		std::map<std::string, Mesh*> s_Meshes;
+		std::vector <Mesh*> s_NeedToInitMeshes;
+		std::multimap<std::string, void*> s_MeshQueue;
+		const char** s_NamesOfMeshes;
 	public:
 
-		inline static int GetAmountOfMeshes() { return s_Meshes.size(); }
-		static void LoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
-		static void LoadScene(std::string filepath);
-		static void AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
-		static Mesh* GetMesh(std::string name);
-		static const char** GetListOfMeshes();
-		static void AddMesh(Mesh* mesh);
-		static void GetMeshWhenLoaded(std::string name, void* r);
-		static void DeleteMesh(std::string name);
-		static void DeleteMesh(Mesh* mesh);
-		static void ShutDown();
-		static void DispatchLoadedMeshes();
+		static MeshManager& GetInstance();
+		int GetAmountOfMeshes();
+		void LoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
+		void LoadScene(std::string filepath);
+		void AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
+		Mesh* GetMesh(std::string name);
+		const char** GetListOfMeshes();
+		void AddMesh(Mesh* mesh);
+		void GetMeshWhenLoaded(std::string name, void* r);
+		void DeleteMesh(std::string name);
+		void DeleteMesh(Mesh* mesh);
+		void ShutDown();
+		void DispatchLoadedMeshes();
 
 		friend class Renderer;
 		friend class Editor;

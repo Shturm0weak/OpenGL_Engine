@@ -7,6 +7,12 @@
 
 using namespace Doom;
 
+World& Doom::World::GetInstance()
+{
+	static World instance; 
+	return instance;
+}
+
 void Doom::World::ProccessLuaStates()
 {
 	for(auto l : LuaState::s_LuaStates)
@@ -76,13 +82,13 @@ GameObject* Doom::World::SelectObject()
 		p.push_back(glm::vec2(worldVertexPositions[4] + go->GetPosition().x, worldVertexPositions[5] + go->GetPosition().y));
 		p.push_back(glm::vec2(worldVertexPositions[6] + go->GetPosition().x, worldVertexPositions[7] + go->GetPosition().y));
 		if (ObjectCollided(p, i)) {
-			if (Editor::GetInstance()->go != go) {
-				Editor::GetInstance()->go = go;
+			if (Editor::GetInstance().go != go) {
+				Editor::GetInstance().go = go;
 				return go;
 			}
 		}
 	}
-	Editor::GetInstance()->go = nullptr;
+	Editor::GetInstance().go = nullptr;
 	return nullptr;
 
 }
@@ -112,8 +118,8 @@ void Doom::World::SelectObject3D()
 {
 	if (!ImGuizmo::IsOver() && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 		Ray3D::Hit hit;
-		glm::vec3 pos = Window::GetCamera().GetPosition();
-		glm::vec3 forward = Window::GetCamera().GetMouseDirVec();
+		glm::vec3 pos = Window::GetInstance().GetCamera().GetPosition();
+		glm::vec3 forward = Window::GetInstance().GetCamera().GetMouseDirVec();
 		std::map<float, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 10000, false);
 		for (auto i = d.begin(); i != d.end(); i++)
 		{
@@ -146,7 +152,7 @@ void Doom::World::SelectObject3D()
 						/*new Line(a, b);
 						new Line(a, c);
 						new Line(c, b);*/
-						Editor::GetInstance()->go = go;
+						Editor::GetInstance().go = go;
 						return;
 					}
 				}

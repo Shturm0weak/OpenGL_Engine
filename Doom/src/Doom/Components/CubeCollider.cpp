@@ -54,7 +54,7 @@ void Doom::CubeCollider3D::InitMesh()
 	Mesh* mesh = new Mesh("CubeCollider","src/Mesh/Primitives/cube.fbx");
 	mesh->m_VertAttrib = vertices;
 	mesh->m_Indices = indices;
-	MeshManager::AddMesh(mesh);
+	MeshManager::GetInstance().AddMesh(mesh);
 }
 
 Doom::CubeCollider3D::~CubeCollider3D()
@@ -69,7 +69,7 @@ Doom::CubeCollider3D::~CubeCollider3D()
 }
 
 CubeCollider3D::CubeCollider3D() {
-	m_Mesh = MeshManager::GetMesh("CubeCollider");
+	m_Mesh = MeshManager::GetInstance().GetMesh("CubeCollider");
 	m_Layout = new VertexBufferLayout();
 	m_Vb = new VertexBuffer(m_Mesh->m_VertAttrib, 36 * 3 * sizeof(float));
 	m_Va = new VertexArray();
@@ -88,7 +88,7 @@ void Doom::CubeCollider3D::Render()
 {
 	Transform* tr = m_OwnerOfCom->GetComponent<Transform>();
 	this->m_Shader->Bind();
-	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 	this->m_Shader->SetUniformMat4f("u_Model", glm::translate(tr->m_PosMat4,m_Offset * tr->GetScale())); //??? Probably I need to offset * glm::vec3 not just glm::vec3.y ???
 	this->m_Shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), (glm::abs(m_MinP) + glm::abs(m_MaxP)) * 0.5f) * tr->m_ScaleMat4);
 	this->m_Shader->SetUniformMat4f("u_View", tr->m_ViewMat4);

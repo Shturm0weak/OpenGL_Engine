@@ -7,7 +7,7 @@ using namespace Doom;
 ThreadPool::ThreadPool(int n)
 {
 	m_NumThreads = n;
-	Infinite_loop_function();
+	InfiniteLoopFunction();
 	
 }
 
@@ -16,7 +16,7 @@ ThreadPool::~ThreadPool()
 	Shutdown();
 }
 
-void ThreadPool::Infinite_loop_function()
+void ThreadPool::InfiniteLoopFunction()
 {
 	for (unsigned int i = 0u; i < m_NumThreads; ++i)
 	{
@@ -49,7 +49,7 @@ void ThreadPool::Infinite_loop_function()
 		m_IsThreadBusy.insert(std::make_pair(m_Threads.back().get_id(),false));
 	}
 }
-void ThreadPool::Shutdown() noexcept
+void ThreadPool::Shutdown()
 {
 	{
 		std::unique_lock <std::mutex> umutex(m_Mutex);

@@ -40,8 +40,8 @@ void Doom::Instancing::Render()
 		
 		m_Shader->Bind();
 		glBindTextureUnit(0, iter->second[0]->m_DiffuseTexture->m_RendererID);
-		m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
-		m_Shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
+		m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
+		m_Shader->SetUniform3fv("u_CameraPos", Window::GetInstance().GetCamera().GetPosition());
 
 		int dlightSize = DirectionalLight::s_DirLights.size();
 		m_Shader->SetUniform1i("dLightSize", dlightSize);
@@ -84,7 +84,7 @@ void Doom::Instancing::Render()
 
 		m_Shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		m_Shader->SetUniform1f("u_DrawShadows", m_DrawShadows);
-		glBindTextureUnit(2, Window::GetCamera().m_FrameBufferShadowMap->m_Textures[0]);
+		glBindTextureUnit(2, Window::GetInstance().GetCamera().m_FrameBufferShadowMap->m_Textures[0]);
 		m_Shader->SetUniform1i("u_ShadowMap", 2);
 		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 
@@ -230,7 +230,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				color = COLORS::DarkGray;
 			else if (k == 6)
 				color = COLORS::Orange;*/
-		ThreadPool::GetInstance()->Enqueue([=] {
+		ThreadPool::GetInstance().Enqueue([=] {
 			{
 				std::lock_guard lg(m_Mtx);
 				this->m_Ready[k] = false;
@@ -256,7 +256,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			}
 		});
 		}
-		ThreadPool::GetInstance()->Enqueue([=] {
+		ThreadPool::GetInstance().Enqueue([=] {
 			{
 				std::lock_guard lg(m_Mtx);
 				this->m_Ready[m_NThreads - 1] = false;
@@ -281,5 +281,14 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				m_CondVar.notify_all();
 			}
 		});
+	}
+}
+
+void Doom::Instancing::ShutDown()
+{
+	for (auto buffer : m_Buffers)
+	{
+		delete buffer.second.m_LayoutDynamic;
+		delete buffer.second.m_VboDynamic;
 	}
 }

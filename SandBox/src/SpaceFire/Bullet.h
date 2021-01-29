@@ -19,9 +19,9 @@ public:
 	}
 
 	void Init(std::string tag, glm::vec3 moveDir, std::string name = "Bullet") {
-		EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, this);
-		EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, this);
-		EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLISION, this);
+		EventSystem::GetInstance().RegisterClient(EventType::ONUPDATE, this);
+		EventSystem::GetInstance().RegisterClient(EventType::ONSTART, this);
+		EventSystem::GetInstance().RegisterClient(EventType::ONCOLLISION, this);
 		col = GetOwnerOfComponent()->AddComponent<RectangleCollider2D>();
 		tr = GetOwnerOfComponent()->GetComponent<Transform>();
 		sr = GetOwnerOfComponent()->AddComponent<SpriteRenderer>();

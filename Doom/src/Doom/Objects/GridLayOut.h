@@ -36,8 +36,8 @@ namespace Doom {
 			m_Lines.back()->m_Color = COLORS::Green;
 			m_Lines.push_back(new Line(glm::vec3(-half, 0.5f, -half), glm::vec3(-half, 0.5f, -half + 5)));
 			m_Lines.back()->m_Color = COLORS::Blue;
-			World::PopBack();
-			World::s_ObjId--;
+			World::GetInstance().PopBack();
+			World::GetInstance().s_ObjId--;
 		}
 	};
 }

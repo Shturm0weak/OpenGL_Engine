@@ -25,7 +25,7 @@ namespace Doom {
 		std::atomic<bool>* m_Ready = nullptr;
 		Shader* m_Shader = nullptr;
 		uint32_t m_SizeOfAttribs = 12 + 16;//pos, color,scale,(ambient,specular) + mat4 rotation
-		uint32_t m_NThreads = ThreadPool::GetInstance()->GetAmountOfThreads();
+		uint32_t m_NThreads = ThreadPool::GetInstance().GetAmountOfThreads();
 	public:
 
 		float m_DrawShadows = 1.0f; //TODO: Need to move somewhere
@@ -33,11 +33,12 @@ namespace Doom {
 
 		Instancing();
 
-		inline static Instancing* Instance() { static Instancing instance; return &instance; }
+		inline static Instancing* GetInstance() { static Instancing instance; return &instance; }
 		void Create(Mesh* mesh);
 		void Render();
 		void BakeShadows();
 		void PrepareVertexAtrrib();
+		void ShutDown();
 		friend class Renderer;
 	};
 

@@ -18,7 +18,6 @@ namespace Doom {
 		virtual void OnStart() {}
 		virtual void OnScale() {}
 		virtual void OnWindowResize(void* props) {}
-		virtual void OnMiss() {}
 		virtual void OnMainThreadProcess(void* task) {}
 		virtual void OnTranslate() {}
 

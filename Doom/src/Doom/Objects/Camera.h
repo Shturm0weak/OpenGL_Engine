@@ -15,11 +15,14 @@ namespace Doom {
 			PERSPECTIVE = 1,
 		};
 
-		CameraTypes m_Type = ORTHOGRAPHIC;
-
+		std::vector<FrameBuffer* > m_FrameBufferBlur;
+		glm::vec3 backV = { 0,0,-1 };
 		FrameBuffer* m_FrameBufferColor = nullptr;
 		FrameBuffer* m_FrameBufferShadowMap = nullptr;
-		std::vector<FrameBuffer* > m_FrameBufferBlur;
+		float m_ZnearSM = -50.0f;
+		float m_ZfarSM = 50.0f;
+		float m_RationProjectionSM = 50.0f;
+		CameraTypes m_Type = ORTHOGRAPHIC;
 
 		Camera();
 		~Camera();
@@ -28,12 +31,12 @@ namespace Doom {
 		glm::vec3 GetMouseDirVec();
 		glm::vec3 GetForwardV();
 
-		inline glm::vec3 GetPosition() const { return m_Position; }
-		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMat4; }
-		inline const glm::mat4& GetViewMatrix() const { return m_ViewMat4; }
-		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMat4; }
-		inline float GetAspectRatio() const { return m_Ratio; }
-		inline double GetZoomLevel() const { return m_ZoomLevel; }
+		glm::vec3 GetPosition() const { return m_Position; }
+		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMat4; }
+		const glm::mat4& GetViewMatrix() const { return m_ViewMat4; }
+		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMat4; }
+		float GetAspectRatio() const { return m_Ratio; }
+		double GetZoomLevel() const { return m_ZoomLevel; }
 
 		void OnWindowResize(void* _props);
 		void WindowResize();
@@ -73,12 +76,6 @@ namespace Doom {
 		float m_AspectRatio[4]; 
 		int* m_Props = nullptr;
 		bool m_IsWindowResized = false;
-	public:
-
-		glm::vec3 backV = { 0,0,-1 };
-		float m_ZnearSM = -50.0f;
-		float m_ZfarSM = 50.0f;
-		float m_RationProjectionSM = 50.0f;
 	};
 
 }

@@ -131,7 +131,7 @@ void Doom::Texture::Delete(Texture* texture)
 
 void Doom::Texture::AsyncLoadTexture(const std::string & filePath)
 {
-	ThreadPool::GetInstance()->Enqueue([=] {
+	ThreadPool::GetInstance().Enqueue([=] {
 		LoadTextureInRAM(filePath, true);
 		{
 			std::lock_guard<std::mutex> lock(s_LockTextureLoadingMtx);

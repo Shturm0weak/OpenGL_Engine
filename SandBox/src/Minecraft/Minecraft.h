@@ -64,7 +64,7 @@ public:
 
 		//MeshManager::LoadMesh("kompas", "src/Mesh/model.stl");
 		Renderer::s_BloomEffect = false;
-		ImGui::SetCurrentContext(Window::s_ImGuiContext);
+		ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
 		dirtImg = Texture::Create("src/Minecraft/Textures/dirtTexture.png");
 		float* seed = new float[width * height];
 		float* noise = new float[width * height];
@@ -84,10 +84,10 @@ public:
 				"src/SkyBox/skybox1/5left.png",
 				"src/SkyBox/skybox1/6right.png",
 		};
-		MeshManager::LoadMesh("cube", "src/Minecraft/Models/cube.fbx");
+		MeshManager::GetInstance().LoadMesh("cube", "src/Minecraft/Models/cube.fbx");
 		//MeshManager::LoadMesh("gladiator", "src/Mesh/Try.stl");
 		SkyBox* skybox = new SkyBox(faces, nullptr);
-		MeshManager::GetMeshWhenLoaded("cube", skybox->GetComponent<Renderer3D>());
+		MeshManager::GetInstance().GetMeshWhenLoaded("cube", skybox->GetComponent<Renderer3D>());
 		for (size_t i = 0; i < width; i++)
 		{
 			for (size_t j = 0; j < height; j++)
@@ -264,14 +264,14 @@ public:
 
 	virtual void OnUpdate() override {
 		time += DeltaTime::s_Deltatime;
-		glm::vec3 forward = glm::vec3(-Window::GetCamera().backV.x, Window::GetCamera().backV.y, -Window::GetCamera().backV.z);
-		Ray3D::RayCast(Window::GetCamera().GetPosition(), forward, &hit, 100);
+		glm::vec3 forward = glm::vec3(-Window::GetInstance().GetCamera().backV.x, Window::GetInstance().GetCamera().backV.y, -Window::GetInstance().GetCamera().backV.z);
+		Ray3D::RayCast(Window::GetInstance().GetCamera().GetPosition(), forward, &hit, 100);
 		if(hit.m_Object != nullptr){
 			if (Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 				if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
 					if (hit.m_Object != nullptr) {
 						int id = hit.m_Object->GetOwnerOfComponent()->m_Id;
-						World::DeleteObject(id);
+						World::GetInstance().DeleteObject(id);
 						hit.m_Object = nullptr;
 						dirtCount++;
 					}
@@ -280,7 +280,7 @@ public:
 					if (dirtCount == 0)
 						return;
 					glm::vec3 pos = hit.m_Object->GetOwnerOfComponent()->GetPosition();
-					glm::vec3 camPos = Window::GetCamera().GetPosition();
+					glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
 					glm::vec3 place = camPos + forward * hit.m_Distance;
 					glm::vec3 newPlace(0);
 					if (place.x > pos.x + 0.4999)
@@ -330,7 +330,7 @@ public:
 		cube.push_back(new GameObject("dirt" + std::to_string(i) + ":" + std::to_string(j)));
 		terrain->AddChild((void*)cube.back());
 		cube.back()->GetComponentManager()->AddComponent<Renderer3D>();
-		cube.back()->GetComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+		cube.back()->GetComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
 		cube.back()->GetComponent<Renderer3D>()->m_Material.m_Ambient = 0.4f;
 		cube.back()->GetComponent<Renderer3D>()->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 		cube.back()->GetComponent<Renderer3D>()->m_DiffuseTexture = dirtImg;

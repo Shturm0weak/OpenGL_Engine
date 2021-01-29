@@ -17,7 +17,7 @@ namespace Doom {
 		}
 
 		virtual void OnGuiRender() override {
-			Gui::GetInstance()->Text("%f", true, 0, 0, 40, COLORS::Red, 0, Window::GetFPS());
+			Gui::GetInstance().Text("%f", true, 0, 0, 40, COLORS::Red, 0, Window::GetInstance().GetFPS());
 		}
 	};
 

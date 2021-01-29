@@ -17,14 +17,14 @@ void ShipEnemy::OnCollision(void * _col)
 void ShipEnemy::Init(std::string name, float x, float y)
 {
 	GetOwnerOfComponent()->m_Name = name;
-	SoundManager::CreateSoundAsset("explosion",explosionSound);
+	SoundManager::GetInstance().CreateSoundAsset("explosion",explosionSound);
 	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->m_Enable = false;
 	GetOwnerOfComponent()->AddChild((void*)bulletsPlaceHolder);
 	GetOwnerOfComponent()->m_Listener = this;
-	EventSystem::GetInstance()->RegisterClient(EventType::ONUPDATE, (Component*)this);
-	EventSystem::GetInstance()->RegisterClient(EventType::ONSTART, (Component*)this);
-	EventSystem::GetInstance()->RegisterClient(EventType::ONCOLLISION, (Component*)this);
+	EventSystem::GetInstance().RegisterClient(EventType::ONUPDATE, (Component*)this);
+	EventSystem::GetInstance().RegisterClient(EventType::ONSTART, (Component*)this);
+	EventSystem::GetInstance().RegisterClient(EventType::ONCOLLISION, (Component*)this);
 	sr = GetOwnerOfComponent()->AddComponent<SpriteRenderer>();
 	col = GetOwnerOfComponent()->AddComponent<RectangleCollider2D>();
 	tr = GetOwnerOfComponent()->GetComponent<Transform>();
@@ -86,7 +86,7 @@ void ShipEnemy::Death()
 	GetOwnerOfComponent()->m_Enable = false;
 	col->m_Enable = false;
 	isDead = true;
-	SoundManager::Play(explosionSound);
+	SoundManager::GetInstance().Play(explosionSound);
 	ps->SetPosition(GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y);
 	ps->Restart();
 	psPlay = true;

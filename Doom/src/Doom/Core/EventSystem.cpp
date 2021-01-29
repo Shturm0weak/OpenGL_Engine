@@ -3,6 +3,11 @@
 
 using namespace Doom;
 
+int Doom::EventSystem::GetAmountOfEvents()
+{
+	return m_CurrentEvents.size();
+}
+
 bool EventSystem::AlreadyRegistered(EventType eventId, Listener* client) {
 
 	bool alreadyRegistered = false;
@@ -34,9 +39,9 @@ void EventSystem::DispatchEvent(Event* _event) {
 	}	
 }
 
-EventSystem* EventSystem::GetInstance() {
+EventSystem& EventSystem::GetInstance() {
 	static EventSystem instance;
-	return &instance;
+	return instance;
 }
 
 void EventSystem::RegisterClient(EventType event, Listener* client) {

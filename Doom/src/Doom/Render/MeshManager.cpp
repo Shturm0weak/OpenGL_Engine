@@ -8,6 +8,17 @@
 
 using namespace Doom;
 
+MeshManager& Doom::MeshManager::GetInstance()
+{
+	static MeshManager instance;
+	return instance;
+}
+
+int Doom::MeshManager::GetAmountOfMeshes()
+{
+	return s_Meshes.size();
+}
+
 void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t meshId)
 {
 	if (meshId > 0)
@@ -34,8 +45,8 @@ void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t mesh
 	mesh->m_IdOfMeshInFile = meshId;
 #undef _LOAD_MESH_
 	mesh->Init();
-	Instancing::Instance()->m_InstancedObjects.insert(std::make_pair(mesh, New));
-	Instancing::Instance()->Create(mesh);
+	Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(mesh, New));
+	Instancing::GetInstance()->Create(mesh);
 	std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
 }
 
@@ -49,7 +60,7 @@ void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath, ui
 {
 	if (meshId > 0)
 		name = name.append(std::to_string(meshId));
-	Doom::ThreadPool::GetInstance()->Enqueue([=] {
+	Doom::ThreadPool::GetInstance().Enqueue([=] {
 		auto iter = s_Meshes.find(name);
 		if (iter != s_Meshes.end())
 			return;
@@ -156,8 +167,8 @@ void MeshManager::DispatchLoadedMeshes()
 		{
 			s_NeedToInitMeshes[i]->Init();
 			std::vector<Renderer3D*> New;
-			Instancing::Instance()->m_InstancedObjects.insert(std::make_pair(s_NeedToInitMeshes[i], New));
-			Instancing::Instance()->Create(s_NeedToInitMeshes[i]);
+			Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(s_NeedToInitMeshes[i], New));
+			Instancing::GetInstance()->Create(s_NeedToInitMeshes[i]);
 		}
 		s_NeedToInitMeshes.clear();
 	}

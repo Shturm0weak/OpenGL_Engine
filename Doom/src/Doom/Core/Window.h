@@ -12,34 +12,37 @@ namespace Doom {
 	class DOOM_API Window {
 	private:
 
-		static GLFWwindow* s_Window;
-		static Camera* s_Camera;
-		static float s_ScrollYOffset;
-		static bool s_CursorStateChanged; //reset every frame
+		GLFWwindow* s_Window = nullptr;
+		Camera* s_Camera = new Camera();
+		float s_ScrollYOffset = 0;
+		bool s_CursorStateChanged = false; //reset every frame
 
 		Window() {}
+		Window(const Window&) = delete;
+		Window& operator=(const Window&) { return *this; }
 
 	public:
 
-		static ImGuiContext* s_ImGuiContext;
-		static ImGuiIO* s_ImGuiIO;
+		ImGuiContext* s_ImGuiContext = nullptr;
+		ImGuiIO* s_ImGuiIO = nullptr;
 
-		static void ClampCursorPos();
-		static void SetCursorPos(glm::dvec2 pos);
-		static int* GetSize();
-		static int GetCursorMode();
-		static void HideCursor();
-		static void ShowCursor();
-		static int Init(const char* Label, float width, float height, bool vsync);
-		static void SetCurrentContext(GLFWwindow* context);
-		static glm::dvec2 GlfwGetMousePos();
-		static float GetFPS();
-		static void DisableCursor();
-		inline static void Exit() { glfwSetWindowShouldClose(Window::GetWindow(), GLFW_TRUE); }
-		inline static Camera& GetCamera() { return *s_Camera; }
-		inline static float& GetScrollYOffset() { return s_ScrollYOffset; }
-		inline static bool GetCursorStateChanged() { return s_CursorStateChanged; }
-		inline static GLFWwindow* GetWindow() { return s_Window; }
+		static Window& GetInstance();
+		void ClampCursorPos();
+		void SetCursorPos(glm::dvec2 pos);
+		int* GetSize();
+		int GetCursorMode();
+		void HideCursor();
+		void ShowCursor();
+		int Init(const char* Label, float width, float height, bool vsync);
+		void SetCurrentContext(GLFWwindow* context);
+		glm::dvec2 GlfwGetMousePos();
+		float GetFPS();
+		void DisableCursor();
+		void Exit() { glfwSetWindowShouldClose(s_Window, GLFW_TRUE); }
+		Camera& GetCamera() { return *s_Camera; }
+		float& GetScrollYOffset() { return s_ScrollYOffset; }
+		bool GetCursorStateChanged() { return s_CursorStateChanged; }
+		GLFWwindow* GetWindow() { return s_Window; }
 
 		friend class Doom::EntryPoint;
 	};

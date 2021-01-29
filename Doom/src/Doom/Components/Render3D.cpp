@@ -9,7 +9,7 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 	if (m_IsTransparent)
 		return;
 	if (rt == RenderTechnic::Instancing) {
-		for (auto i = Instancing::Instance()->m_InstancedObjects.begin(); i != Instancing::Instance()->m_InstancedObjects.end(); i++)
+		for (auto i = Instancing::GetInstance()->m_InstancedObjects.begin(); i != Instancing::GetInstance()->m_InstancedObjects.end(); i++)
 		{
 			if (i->first == m_Mesh) {
 				i->second.push_back(this);
@@ -61,7 +61,7 @@ void Doom::Renderer3D::operator=(const Renderer3D& rhs)
 void Doom::Renderer3D::EraseFromInstancing()
 {
 	if (m_RenderTechnic == RenderTechnic::Instancing) {
-		for (auto i = Instancing::Instance()->m_InstancedObjects.begin(); i != Instancing::Instance()->m_InstancedObjects.end(); i++)
+		for (auto i = Instancing::GetInstance()->m_InstancedObjects.begin(); i != Instancing::GetInstance()->m_InstancedObjects.end(); i++)
 		{
 			if (m_Mesh != nullptr) {
 				auto iter = std::find(i->second.begin(), i->second.end(), this);
@@ -215,7 +215,7 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 		}
 		m_Shader->Bind();
 		glBindTextureUnit(0, m_DiffuseTexture->m_RendererID);
-		m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetViewProjectionMatrix());
+		m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 		m_Shader->SetUniformMat4f("u_Model", pos);
 		m_Shader->SetUniformMat4f("u_View", view);
 		m_Shader->SetUniformMat4f("u_Scale", scale);
@@ -251,14 +251,14 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 			sprintf(buffer, "pointLights[%i].quadratic", i);
 			m_Shader->SetUniform1f(buffer, pl->m_Quadratic);
 		}
-		m_Shader->SetUniform3fv("u_CameraPos", Window::GetCamera().GetPosition());
+		m_Shader->SetUniform3fv("u_CameraPos", Window::GetInstance().GetCamera().GetPosition());
 		m_Shader->SetUniform1f("u_Ambient", m_Material.m_Ambient);
 		m_Shader->SetUniform1f("u_Specular", m_Material.m_Specular);
 		m_Shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		m_Shader->SetUniform1i("u_DiffuseTexture", 0);
-		glBindTextureUnit(2, Window::GetCamera().m_FrameBufferShadowMap->m_Textures[0]);
+		glBindTextureUnit(2, Window::GetInstance().GetCamera().m_FrameBufferShadowMap->m_Textures[0]);
 		m_Shader->SetUniform1i("u_ShadowTexture", 2);
-		m_Shader->SetUniform1f("u_DrawShadows", Instancing::Instance()->m_DrawShadows); 
+		m_Shader->SetUniform1f("u_DrawShadows", Instancing::GetInstance()->m_DrawShadows); 
 		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 		if (m_IsUsingNormalMap) {
 			glBindTextureUnit(1, m_NormalMapTexture->m_RendererID);
@@ -290,10 +290,10 @@ void Doom::Renderer3D::RenderSkyBox()
 	glDisable(GL_CULL_FACE);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_DiffuseTexture->m_RendererID);
 	m_Shader->Bind();
-	Window::GetCamera().RecalculateViewMatrix();
-	m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetCamera().GetProjectionMatrix());
+	Window::GetInstance().GetCamera().RecalculateViewMatrix();
+	m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetProjectionMatrix());
 	m_Shader->SetUniformMat4f("u_Model", m_Tr->m_PosMat4);
-	m_Shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetCamera().GetViewMatrix())));
+	m_Shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetInstance().GetCamera().GetViewMatrix())));
 	m_Shader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
 	m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 	m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);

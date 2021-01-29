@@ -14,7 +14,7 @@ ViewPort* Doom::ViewPort::GetInstance()
 
 void Doom::ViewPort::Update()
 {
-	void* tex = reinterpret_cast<void*>(Window::GetCamera().m_FrameBufferColor->m_Textures[0]);
+	void* tex = reinterpret_cast<void*>(Window::GetInstance().GetCamera().m_FrameBufferColor->m_Textures[0]);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("ViewPort", &ViewPort::GetInstance()->m_IsToolOpen, ImGuiWindowFlags_NoScrollbar);
@@ -47,8 +47,8 @@ void Doom::ViewPort::Update()
 	//ViewPort::GetInstance()->GetViewPortPos().y), ImVec2(ViewPort::GetInstance()->GetViewPortPos().x + ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetViewPortPos().y + ViewPort::GetInstance()->GetSize().y), ImVec2(0, 1), ImVec2(1, 0));
 
 	//Need to fix Rotation doesn't change orientation of gizmos
-	if (Editor::GetInstance()->go != nullptr) {
-		Transform* tr = Editor::GetInstance()->go->GetComponent<Transform>();
+	if (Editor::GetInstance().go != nullptr) {
+		Transform* tr = Editor::GetInstance().go->GetComponent<Transform>();
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
 		float windowWidth = (float)ImGui::GetWindowWidth();
@@ -57,8 +57,8 @@ void Doom::ViewPort::Update()
 			ViewPort::GetInstance()->GetViewPortPos().y,
 			windowWidth,
 			windowHeight);
-		glm::mat4 cameraProjection = Window::GetCamera().GetProjectionMatrix();
-		glm::mat4 cameraView = Window::GetCamera().GetViewMatrix();
+		glm::mat4 cameraProjection = Window::GetInstance().GetCamera().GetProjectionMatrix();
+		glm::mat4 cameraView = Window::GetInstance().GetCamera().GetViewMatrix();
 		glm::mat4 transform = tr->GetTransform();
 		ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
 			(ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(transform));
@@ -79,16 +79,20 @@ void Doom::ViewPort::Update()
 
 void Doom::ViewPort::GetMousePositionToWorldSpaceImpl()
 {
-	glfwGetCursorPos(Window::GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
-	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * Window::GetCamera().GetAspectRatio() * 2 * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().x;
-	m_MousePosW.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (Window::GetSize()[1] / m_Size.y)) / Window::GetSize()[1]) + 0.5) * 2 * Window::GetCamera().GetZoomLevel() + Window::GetCamera().GetPosition().y;
+	Camera& camera = Window::GetInstance().GetCamera();
+	int* size = Window::GetInstance().GetSize();
+	glfwGetCursorPos(Window::GetInstance().GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
+	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * camera.GetAspectRatio() * 2 * camera.GetZoomLevel() + camera.GetPosition().x;
+	m_MousePosW.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (size[1] / m_Size.y)) / size[1]) + 0.5) * 2 * camera.GetZoomLevel() + camera.GetPosition().y;
 }
 void Doom::ViewPort::GetStaticMousePositionImpl()
 {
-	glfwGetCursorPos(Window::GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
+	Camera& camera = Window::GetInstance().GetCamera();
+	int* size = Window::GetInstance().GetSize();
+	glfwGetCursorPos(Window::GetInstance().GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
 	//For flattened screen!!!
-	m_StaticMousePos.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * Window::GetCamera().GetAspectRatio() * g_Width * 2;
-	m_StaticMousePos.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (Window::GetSize()[1] / m_Size.y)) / Window::GetSize()[1]) + 0.5) * g_Height * 2;
+	m_StaticMousePos.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * camera.GetAspectRatio() * g_Width * 2;
+	m_StaticMousePos.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (size[1] / m_Size.y)) / size[1]) + 0.5) * g_Height * 2;
 	//For normal screen!!!
 	//m_StaticMousePos.x = ((((m_CursorPos.x - m_ViewportPos.x) / (Window::GetSize()[0] - 1))) - 0.5) * Window::GetCamera().GetAspectRatio() * g_Width * 2;
 	//m_StaticMousePos.y = (((-((m_CursorPos.y + (Window::GetSize()[1] - m_Size.y)) / Window::GetSize()[1])) + 0.5)) * g_Height * 2;
@@ -96,9 +100,11 @@ void Doom::ViewPort::GetStaticMousePositionImpl()
 
 void Doom::ViewPort::GetMousePositionToScreenSpaceImpl()
 {
-	glfwGetCursorPos(Window::GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
-	m_MousePosS.x = ((((m_CursorPos.x - m_ViewportPos.x) / (Window::GetSize()[0] - 1))) - 0.5) * 2 * g_Width;
-	m_MousePosS.y = (((-((m_CursorPos.y + (Window::GetSize()[1] - m_Size.y)) / Window::GetSize()[1])) + 0.5)) * 2 * (float)g_Height / Window::GetCamera().GetAspectRatio();
+	Camera& camera = Window::GetInstance().GetCamera();
+	int* size = Window::GetInstance().GetSize();
+	glfwGetCursorPos(Window::GetInstance().GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
+	m_MousePosS.x = ((((m_CursorPos.x - m_ViewportPos.x) / (size[0] - 1))) - 0.5) * 2 * g_Width;
+	m_MousePosS.y = (((-((m_CursorPos.y + (size[1] - m_Size.y)) / size[1])) + 0.5)) * 2 * (float)g_Height / camera.GetAspectRatio();
 }
 
 void Doom::ViewPort::RecalculateMouseCoords()
@@ -110,10 +116,12 @@ void Doom::ViewPort::RecalculateMouseCoords()
 
 glm::dvec2 Doom::ViewPort::GetFromWorldToScreenSpaceImpl(glm::vec2 pos)
 {
-	return glm::dvec2(pos.x / (Window::GetCamera().GetAspectRatio() * Window::GetCamera().GetZoomLevel()) * g_Width, pos.y / Window::GetCamera().GetZoomLevel() * g_Height);
+	Camera& camera = Window::GetInstance().GetCamera();
+	return glm::dvec2(pos.x / (camera.GetAspectRatio() * camera.GetZoomLevel()) * g_Width, pos.y / camera.GetZoomLevel() * g_Height);
 }
 
 glm::dvec2 Doom::ViewPort::GetFromWorldToScreenSpace(float x, float y)
 {
-	return glm::dvec2(x / (Window::GetCamera().GetAspectRatio() * Window::GetCamera().GetZoomLevel()) * g_Width, y / (Window::GetCamera().GetZoomLevel() * Window::GetCamera().GetAspectRatio()) * g_Height);
+	Camera& camera = Window::GetInstance().GetCamera();
+	return glm::dvec2(x / (camera.GetAspectRatio() * camera.GetZoomLevel()) * g_Width, y / (camera.GetZoomLevel() * camera.GetAspectRatio()) * g_Height);
 }

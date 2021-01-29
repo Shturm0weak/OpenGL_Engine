@@ -2,7 +2,7 @@
 
 #define G 9.8
 
-class Player : public GameObject {
+class Player : public GameObject, public Listener{
 public:
 
 	Animator* anim = nullptr;
@@ -19,6 +19,8 @@ public:
 		anim = AddComponent<Animator>();
 		anim->SetAnimation("src/Animations");
 		anim->m_IsPlayingAnim = true;
+		EventSystem::GetInstance().RegisterClient(EventType::ONSTART, this);
+		EventSystem::GetInstance().RegisterClient(EventType::ONUPDATE, this);
 	}
 
 	void Movement() {
@@ -54,7 +56,7 @@ public:
 		Movement();
 		GetComponent<SpriteRenderer>()->m_Color = COLORS::White;
 		GetComponentManager()->GetComponent<RectangleCollider2D>()->IsCollidedSAT();
-		Window::GetCamera().SetPosition(GetPosition());
+		Window::GetInstance().GetCamera().SetPosition(GetPosition());
 	}
 
 	void OnCollision(void* col) {

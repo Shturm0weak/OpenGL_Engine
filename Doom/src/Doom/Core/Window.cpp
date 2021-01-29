@@ -57,14 +57,14 @@ int Doom::Window::Init(const char* Label, float width, float height, bool vsync)
 	glfwSwapInterval(vsync); // Enable vsync
 
 	glfwSetScrollCallback(Window::GetWindow(), [](GLFWwindow* window, double xoffset, double yoffset) {
-		Window::GetScrollYOffset() = yoffset;
+		Window::GetInstance().GetScrollYOffset() = yoffset;
 		});
 
 	glfwSetWindowSizeCallback(Window::GetWindow(), [](GLFWwindow* window, int width, int height) {
-		int* props = Window::GetSize();
+		int* props = Window::GetInstance().GetSize();
 		props[0] = width;
 		props[1] = height;
-		EventSystem::GetInstance()->SendEvent(EventType::ONWINDOWRESIZE, nullptr, props);
+		EventSystem::GetInstance().SendEvent(EventType::ONWINDOWRESIZE, nullptr, props);
 		});
 	s_ImGuiContext = ImGui::CreateContext();
 	s_ImGuiIO = &ImGui::GetIO();
@@ -93,6 +93,12 @@ void Doom::Window::DisableCursor()
 int Doom::Window::GetCursorMode()
 {
 	return glfwGetInputMode(Window::GetWindow(), GLFW_CURSOR);
+}
+
+Doom::Window& Doom::Window::GetInstance()
+{
+	static Window instance;
+	return instance;
 }
 
 void Doom::Window::ClampCursorPos()

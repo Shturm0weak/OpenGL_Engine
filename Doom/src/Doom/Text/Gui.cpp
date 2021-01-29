@@ -10,7 +10,7 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 	float scale = startscale / m_Font->m_Size;
 	std::vector<Character*> characters;
 	std::vector<unsigned int> newLines;
-	float ratio = Window::GetCamera().GetAspectRatio();
+	float ratio = Window::GetInstance().GetCamera().GetAspectRatio();
 	int counter1 = 0;
 	bool dotPass = false;
 	va_list argptr;
@@ -133,7 +133,7 @@ void Doom::Gui::Text(std::string str, int m_static, float x, float y, float star
 			m_Character->m_Position.y = ratio * y;
 		}
 		m_CharacterXOffset += m_Character->m_XAdvance * m_Character->m_Scale.x;
-		Batch::GetInstance()->Submit(m_Character);
+		Batch::GetInstance().Submit(m_Character);
 	}
 	va_end(argptr);
 }
@@ -151,7 +151,7 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 	}
 	float tempx = x;
 	float tempy = y;
-	float aRatio = Window::GetCamera().GetAspectRatio();
+	float aRatio = Window::GetInstance().GetCamera().GetAspectRatio();
 	this->m_BtnColor = btnColor;
 	bool tempResult = false;
 	bool returnResult = false;
@@ -180,7 +180,7 @@ bool Doom::Gui::Button(std::string str, float x, float y,float scale, float widt
 
 	float ratio = aRatio;
 	float _size = (g_Height * 2);
-	Batch::GetInstance()->Submit(vertecies, this->m_BtnColor,texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (m_EdgeRadius / (_size) * ratio));
+	Batch::GetInstance().Submit(vertecies, this->m_BtnColor,texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetInstance().GetCamera().GetZoomLevel(), (m_EdgeRadius / (_size) * ratio));
 
 	if (str.length() > 0) {
 		m_XAlign = AlignHorizontally::XCENTER;
@@ -211,8 +211,8 @@ void Doom::Gui::Panel(std::string label,float x, float y, float width, float hei
 	}
 
 	auto iter = m_Panels.find(label);
-
-	float aRatio = Window::GetCamera().GetAspectRatio();
+	Camera& camera = Window::GetInstance().GetCamera();
+	float aRatio = camera.GetAspectRatio();
 	glm::vec2 pos = glm::vec2(aRatio * x, aRatio * y);
 
 	double tempX = width * aRatio * 0.5f;
@@ -230,7 +230,7 @@ void Doom::Gui::Panel(std::string label,float x, float y, float width, float hei
 
 	iter->second.m_IsHovered = isHovered;
 	if (isHovered) {
-		iter->second.m_YScrollOffset -= Window::GetScrollYOffset() * 15;
+		iter->second.m_YScrollOffset -= Window::GetInstance().GetScrollYOffset() * 15;
 			if (changeColorWhenHovered && !m_IsInteracting) {
 				float alpha = color.a;
 				color *= 0.9;
@@ -241,11 +241,11 @@ void Doom::Gui::Panel(std::string label,float x, float y, float width, float hei
 	if (m_IsRelatedToPanel) {
 		m_RelatedPanelProperties.m_Pos = glm::vec2(x - width * 0.5f, iter->second.m_YScrollOffset + y + height * 0.5f);
 		m_RelatedPanelProperties.m_Size = glm::vec2(width, height);
-		m_RelatedPanelProperties.m_PanelPosForShader = glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel();
+		m_RelatedPanelProperties.m_PanelPosForShader = glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)camera.GetZoomLevel();
 		m_RelatedPanelProperties.m_PanelSizeForShader = glm::vec2(tempX / _size, tempY / _size);
 	}
 
-	Batch::GetInstance()->Submit(m_CurrentPanelCoods, color, texture, m_RelatedPanelProperties.m_PanelSizeForShader, m_RelatedPanelProperties.m_PanelPosForShader, (m_EdgeRadius / (_size)* ratio));
+	Batch::GetInstance().Submit(m_CurrentPanelCoods, color, texture, m_RelatedPanelProperties.m_PanelSizeForShader, m_RelatedPanelProperties.m_PanelPosForShader, (m_EdgeRadius / (_size)* ratio));
 
 	if (label.size() > 0 && label.find("##") == std::string::npos) {
 		glm::vec2 tempMargin = m_RelatedPanelProperties.m_Margin;
@@ -383,8 +383,8 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 void Doom::Gui::Image(float x, float y, float width, float height, Texture * texture, glm::vec4 color)
 {
 	//ApplyRelatedToPanelProperties(&x, &y); //TODO: Need somehow to fix it, kind a flag if a panel is existed
-
-	float aRatio = Window::GetCamera().GetAspectRatio();
+	Camera& camera = Window::GetInstance().GetCamera();
+	float aRatio = camera.GetAspectRatio();
 	glm::vec2 pos = glm::vec2(aRatio * x, aRatio * y);
 
 	double tempX = width * aRatio * 0.5f;
@@ -400,7 +400,7 @@ void Doom::Gui::Image(float x, float y, float width, float height, Texture * tex
 	float ratio = aRatio;
 	float _size = (g_Height * 2);
 
-	Batch::GetInstance()->Submit(verteces, color, texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (m_EdgeRadius / (_size)* ratio));
+	Batch::GetInstance().Submit(verteces, color, texture, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)camera.GetZoomLevel(), (m_EdgeRadius / (_size)* ratio));
 	
 	m_RelatedPanelProperties.m_YOffset += height + m_RelatedPanelProperties.m_Padding.y;
 }
@@ -414,7 +414,8 @@ bool Doom::Gui::CollapsingHeader(std::string label, float x, float y,glm::vec4 c
 	ApplyRelatedToPanelProperties(&x, &y);
 	x += m_RelatedPanelProperties.m_Size.x * 0.5f - m_RelatedPanelProperties.m_Margin.x;
 	y -= height * 0.5f;
-	float aRatio = Window::GetCamera().GetAspectRatio();
+	Camera& camera = Window::GetInstance().GetCamera();
+	float aRatio = camera.GetAspectRatio();
 	glm::vec2 pos = glm::vec2(aRatio * x, aRatio * y);
 
 	double tempX = width * aRatio * 0.5f;
@@ -442,7 +443,7 @@ bool Doom::Gui::CollapsingHeader(std::string label, float x, float y,glm::vec4 c
 		}
 	}
 
-	Batch::GetInstance()->Submit(verteces, color, nullptr, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)Window::GetCamera().GetZoomLevel(), (m_EdgeRadius / (_size)* ratio));
+	Batch::GetInstance().Submit(verteces, color, nullptr, glm::vec2(tempX / _size, tempY / _size), glm::vec2(pos.x / (_size / ratio), pos.y / _size) * (float)camera.GetZoomLevel(), (m_EdgeRadius / (_size)* ratio));
 
 	auto iter = m_Interactable.find(label);
 	if (iter != m_Interactable.end()) {
@@ -498,13 +499,13 @@ void Doom::Gui::UnRelateToPanel()
 
 void Doom::Gui::Begin() const
 {
-	Batch::GetInstance()->m_TIndexCount = 0;
-	Batch::GetInstance()->BeginText();
+	Batch::GetInstance().m_TIndexCount = 0;
+	Batch::GetInstance().BeginText();
 }
 
 void Doom::Gui::End() const
 {
-	Batch::GetInstance()->EndText();
+	Batch::GetInstance().EndText();
 }
 
 inline void Doom::Gui::FontBind(Font * font)
@@ -566,7 +567,7 @@ void Doom::Gui::FindCharInFont(std::vector<Character*>& localCharV, char c)
 
 void Doom::Gui::RecalculateProjectionMatrix()
 {
-	float aspectRatio = Window::GetCamera().GetAspectRatio();
+	float aspectRatio = Window::GetInstance().GetCamera().GetAspectRatio();
 	m_ViewProjecTionMat4RelatedToCamera = glm::ortho(-aspectRatio * (float)g_Width, aspectRatio * (float)g_Width, (float)-g_Height, (float)g_Height, -1.0f, 1.0f);
 }
 

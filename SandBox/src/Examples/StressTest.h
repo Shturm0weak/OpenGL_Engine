@@ -49,29 +49,30 @@ public:
 		glm::vec2 posInScreen = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
 		if(MoveWithMouse)
 			pos = posInScreen;
-		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->ARIAL]);
-		Gui::GetInstance()->RelateToPanel();
-		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin = glm::vec2(30);
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 15;
-		Gui::GetInstance()->Panel("##Properties", pos.x, pos.y, 1000, 700, glm::vec4(0.3, 0.3, 0.3, 0.8));
-		if (Gui::GetInstance()->Button("Exit", 0, 0, 20, 100, 50, COLORS::Silver, COLORS::Silver * 0.8f)) {
-			Window::Exit();
+		Gui& g = Gui::GetInstance();
+		g.FontBind(g.GetStandartFonts()[g.ARIAL]);
+		g.RelateToPanel();
+		g.m_RelatedPanelProperties.m_AutoAllignment = true;
+		g.m_RelatedPanelProperties.m_Margin = glm::vec2(30);
+		g.m_RelatedPanelProperties.m_Padding.y = 15;
+		g.Panel("##Properties", pos.x, pos.y, 1000, 700, glm::vec4(0.3, 0.3, 0.3, 0.8));
+		if (g.Button("Exit", 0, 0, 20, 100, 50, COLORS::Silver, COLORS::Silver * 0.8f)) {
+		Window::GetInstance().Exit();
 		}
-		Gui::GetInstance()->Bar(0, 0, hp, 100, COLORS::Red, COLORS::Silver, 150, 25);
-		isHovered = Gui::GetInstance()->IsPanelHovered();
-		Gui::GetInstance()->CheckBox("Does mouse intersect the panel?", &isHovered, 0, 0, 20, COLORS::White);
-		Gui::GetInstance()->Text("Panel coords.", true, 0, 0, 20);
-		Gui::GetInstance()->Text("X: %f Y: %f", true, 0, 0, 20, COLORS::White, 2, pos.x, pos.y);
-		Gui::GetInstance()->CheckBox("Check box", &value, 0, 0, 20, COLORS::White);
-		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PLAYBALL]);
-		Gui::GetInstance()->Button("Pointless", 0, 0, 20, 150, 50, COLORS::Silver, COLORS::Silver * 0.8f);
-		Gui::GetInstance()->Text("FPS: %f", true, 0, 0, 20, COLORS::White, 2, Window::GetFPS());
-		Gui::GetInstance()->Bar(0, 0, panelRadius, 100, COLORS::Yellow, COLORS::Silver, 150, 25);
-		Gui::GetInstance()->SliderFloat("Bar", &panelRadius, 0, 100, 0, 0, 200, 25);
-		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = false;
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin = glm::vec2(0);
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 0;
-		Gui::GetInstance()->UnRelateToPanel();
+		g.Bar(0, 0, hp, 100, COLORS::Red, COLORS::Silver, 150, 25);
+		isHovered = g.IsPanelHovered();
+		g.CheckBox("Does mouse intersect the panel?", &isHovered, 0, 0, 20, COLORS::White);
+		g.Text("Panel coords.", true, 0, 0, 20);
+		g.Text("X: %f Y: %f", true, 0, 0, 20, COLORS::White, 2, pos.x, pos.y);
+		g.CheckBox("Check box", &value, 0, 0, 20, COLORS::White);
+		g.FontBind(g.GetStandartFonts()[g.PLAYBALL]);
+		g.Button("Pointless", 0, 0, 20, 150, 50, COLORS::Silver, COLORS::Silver * 0.8f);
+		g.Text("FPS: %f", true, 0, 0, 20, COLORS::White, 2, Window::GetInstance().GetFPS());
+		g.Bar(0, 0, panelRadius, 100, COLORS::Yellow, COLORS::Silver, 150, 25);
+		g.SliderFloat("Bar", &panelRadius, 0, 100, 0, 0, 200, 25);
+		g.m_RelatedPanelProperties.m_AutoAllignment = false;
+		g.m_RelatedPanelProperties.m_Margin = glm::vec2(0);
+		g.m_RelatedPanelProperties.m_Padding.y = 0;
+		g.UnRelateToPanel();
 	}
  };

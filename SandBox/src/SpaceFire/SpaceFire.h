@@ -38,13 +38,13 @@ public:
 		uint64_t ptr = uint64_t(f);
 		float f1 = *(float*)(void*)ptr;
 		Renderer::s_BloomEffect = false;
-		Window::GetCamera().Zoom(20);
-		SoundManager::CreateSoundAsset("back", backSound);
-		SoundManager::SetVolume(0.3f);
+		Window::GetInstance().GetCamera().Zoom(20);
+		SoundManager::GetInstance().CreateSoundAsset("back", backSound);
+		SoundManager::GetInstance().SetVolume(0.3f);
 		backSound->SetVolume(0.03f);
-		SoundManager::Loop(backSound);
-		Gui::GetInstance()->FontBind(Gui::GetInstance()->GetStandartFonts()[Gui::GetInstance()->PEAK]);
-		ImGui::SetCurrentContext(Window::s_ImGuiContext);
+		SoundManager::GetInstance().Loop(backSound);
+		Gui::GetInstance().FontBind(Gui::GetInstance().GetStandartFonts()[Gui::GetInstance().PEAK]);
+		ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
 		ammoTexture = Texture::Create("src/SpaceFire/Images/Ammo.png");
 		backgroundTexture = Texture::Create("src/SpaceFire/Images/SpaceBack.png");
 		background1 = new GameObject("BackGround1");
@@ -72,30 +72,32 @@ public:
 	void Menu() {
 		double x = 0;
 		double y = 0;
-
-		Gui::GetInstance()->RelateToPanel();
-		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 20;
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin = glm::vec2(50,40);
-		Gui::GetInstance()->Panel("##1",x, y, 450, 200, COLORS::DarkGray * 0.8f);
-		if (Gui::GetInstance()->Button("Exit", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
-			Window::Exit();
+		Gui& g = Gui::GetInstance();
+		g.RelateToPanel();
+		g.m_RelatedPanelProperties.m_AutoAllignment = true;
+		g.m_RelatedPanelProperties.m_Padding.y = 20;
+		g.m_RelatedPanelProperties.m_Margin = glm::vec2(50,40);
+		g.Panel("##1",x, y, 450, 200, COLORS::DarkGray * 0.8f);
+		if (g.Button("Exit", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+			Window::GetInstance().Exit();
 		}
-		if (Gui::GetInstance()->Button("Restart", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+		if (g.Button("Restart", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			pl->Respawn();
 			pause = false;
 			spawnTimer = 16;
 		}
-		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = false;
-		Gui::GetInstance()->UnRelateToPanel();
+		g.m_RelatedPanelProperties.m_AutoAllignment = false;
+		g.UnRelateToPanel();
 		if (Input::IsKeyPressed(Keycode::KEY_ENTER)) {
 			pl->Respawn();
 		}
 	}
 
 	void OnGuiRender() {
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin.x = 0;
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Margin.y = 0;
+		Camera& camera = Window::GetInstance().GetCamera();
+		Gui& g = Gui::GetInstance();
+		g.m_RelatedPanelProperties.m_Margin.x = 0;
+		g.m_RelatedPanelProperties.m_Margin.y = 0;
 		for (size_t i = 0; i < enemies.size(); i++)
 		{
 			if (enemies[i]->isDead)
@@ -103,7 +105,7 @@ public:
 			glm::dvec2 pos = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetPosition().x - enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetWidth() / 2.0), (enemies[i]->GetOwnerOfComponent()->GetPosition().y + enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetHeight() / 2.0));
 			glm::vec2 size = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>())->GetWidth(), 0);
 		
-			Gui::GetInstance()->Bar(pos.x, pos.y + 30, enemies[i]->hp, 100, COLORS::Red, COLORS::DarkGray, size.x,25 / (Window::GetCamera().GetZoomLevel() / 10));
+			g.Bar(pos.x, pos.y + 30, enemies[i]->hp, 100, COLORS::Red, COLORS::DarkGray, size.x,25 / (camera.GetZoomLevel() / 10));
 		}
 
 		if (pl->isDead || pause) {
@@ -111,13 +113,13 @@ public:
 		}
 		else {
 			Debug();
-			//Gui::GetInstance()->Text("HP %f", true,1350, -800, fontSize, COLORS::White, 0, pl->hp);
-			Gui::GetInstance()->Bar(g_Width * 0.7, -g_Height / Window::GetCamera().GetAspectRatio() * 0.8, pl->hp, 100, COLORS::Red, COLORS::DarkGray, 200, 25);
-			Gui::GetInstance()->Text("Kills %d", true, g_Width * 0.7, -g_Height / Window::GetCamera().GetAspectRatio() * 0.9, fontSize, COLORS::White, 0, pl->kills);
-			Gui::GetInstance()->m_YAlign = Gui::AlignVertically::YCENTER;
-			Gui::GetInstance()->Text("%d", true, -g_Width * 0.85, -g_Height / Window::GetCamera().GetAspectRatio() * 0.8, fontSize, COLORS::White, 0, pl->ammo);
-			Gui::GetInstance()->m_YAlign = Gui::AlignVertically::TOP;
-			Gui::GetInstance()->Image(-g_Width * 0.9, -g_Height / Window::GetCamera().GetAspectRatio() * 0.8, 100, 100, ammoTexture, COLORS::White);
+			//g.Text("HP %f", true,1350, -800, fontSize, COLORS::White, 0, pl->hp);
+			g.Bar(g_Width * 0.7, -g_Height / camera.GetAspectRatio() * 0.8, pl->hp, 100, COLORS::Red, COLORS::DarkGray, 200, 25);
+			g.Text("Kills %d", true, g_Width * 0.7, -g_Height / camera.GetAspectRatio() * 0.9, fontSize, COLORS::White, 0, pl->kills);
+			g.m_YAlign = Gui::AlignVertically::YCENTER;
+			g.Text("%d", true, -g_Width * 0.85, -g_Height / camera.GetAspectRatio() * 0.8, fontSize, COLORS::White, 0, pl->ammo);
+			g.m_YAlign = Gui::AlignVertically::TOP;
+			g.Image(-g_Width * 0.9, -g_Height / camera.GetAspectRatio() * 0.8, 100, 100, ammoTexture, COLORS::White);
 		}
 
 		if (Input::IsKeyPressed(Keycode::KEY_ESCAPE) && !pl->isDead) {
@@ -126,7 +128,7 @@ public:
 	}
 
 	void OnUpdate() {
-		EventSystem::GetInstance()->StopProcessEvents(pause);
+		EventSystem::GetInstance().StopProcessEvents(pause);
 		if (background1->GetPosition().y <= -100)
 			background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
 		if (background2->GetPosition().y <= -100)
@@ -152,18 +154,20 @@ public:
 	}
 
 	void Debug() {
+		Camera& camera = Window::GetInstance().GetCamera();
+		Gui& g = Gui::GetInstance();
 		fps = 1000.f / (DeltaTime::s_Deltatime * 1000.f);
-		Gui::GetInstance()->m_XAlign = Gui::AlignHorizontally::LEFT;
-		Gui::GetInstance()->RelateToPanel();
-		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = true;
-		Gui::GetInstance()->m_RelatedPanelProperties.m_Padding.y = 10;
-		Gui::GetInstance()->Panel("##2",g_Width * 0.5, g_Height / Window::GetCamera().GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
-		Gui::GetInstance()->Text("FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
-		Gui::GetInstance()->Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
-		Gui::GetInstance()->Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, Window::GetCamera().GetPosition().x, Window::GetCamera().GetPosition().y);
-		Gui::GetInstance()->Text("Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetOwnerOfComponent()->GetPosition().x, pl->GetOwnerOfComponent()->GetPosition().y);
-		Gui::GetInstance()->m_XAlign = Gui::AlignHorizontally::LEFT;
-		Gui::GetInstance()->m_RelatedPanelProperties.m_AutoAllignment = false;
-		Gui::GetInstance()->UnRelateToPanel();
+		g.m_XAlign = Gui::AlignHorizontally::LEFT;
+		g.RelateToPanel();
+		g.m_RelatedPanelProperties.m_AutoAllignment = true;
+		g.m_RelatedPanelProperties.m_Padding.y = 10;
+		g.Panel("##2",g_Width * 0.5, g_Height / camera.GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
+		g.Text("FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
+		g.Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
+		g.Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, camera.GetPosition().x, camera.GetPosition().y);
+		g.Text("Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetOwnerOfComponent()->GetPosition().x, pl->GetOwnerOfComponent()->GetPosition().y);
+		g.m_XAlign = Gui::AlignHorizontally::LEFT;
+		g.m_RelatedPanelProperties.m_AutoAllignment = false;
+		g.UnRelateToPanel();
 	}
 };

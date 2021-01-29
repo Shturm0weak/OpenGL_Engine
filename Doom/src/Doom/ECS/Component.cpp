@@ -20,5 +20,5 @@ void Doom::Component::RemoveComponent()
 
 Doom::Component::~Component()
 {
-	EventSystem::GetInstance()->UnregisterAll(this);
+	EventSystem::GetInstance().UnregisterAll(this);
 }

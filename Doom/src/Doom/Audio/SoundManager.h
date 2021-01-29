@@ -6,23 +6,28 @@ namespace Doom {
 	class DOOM_API SoundManager {
 	private:
 
-		static ALCdevice* s_AlcDevice;
-		static ALCcontext* s_AlcContext;
+		ALCdevice* s_AlcDevice = nullptr;
+		ALCcontext* s_AlcContext = nullptr;
+		
+		SoundManager() {}
+		SoundManager(const SoundManager&) = delete;
+		SoundManager& operator=(const SoundManager&) { return *this; }
 	public:
 
-		static std::map<std::string, Sound*> s_Sounds;
+		std::map<std::string, Sound*> s_Sounds;
 
-		static Sound* GetSound(std::string name);
-		static void CreateSoundAsset(std::string name,Sound* sound);
-		static void Init();
-		static void Resume(Sound* sound);
-		static void Play(Sound* sound);
-		static void Loop(Sound* sound);
-		static void Pause(Sound* sound);
-		static void Stop(Sound* sound);
-		static void SetVolume(float volume);
-		static void UpdateSourceState();
-		static void ShutDown();
+		static SoundManager& GetInstance();
+		Sound* GetSound(std::string name);
+		void CreateSoundAsset(std::string name,Sound* sound);
+		void Init();
+		void Resume(Sound* sound);
+		void Play(Sound* sound);
+		void Loop(Sound* sound);
+		void Pause(Sound* sound);
+		void Stop(Sound* sound);
+		void SetVolume(float volume);
+		void UpdateSourceState();
+		void ShutDown();
 	};
 
 }

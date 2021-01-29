@@ -30,15 +30,11 @@ DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
 
 DOOM_API std::vector <RectangleCollider2D*> RectangleCollider2D::s_Collision2d;
 DOOM_API Shader* RectangleCollider2D::s_Shader;
-DOOM_API Batch* Batch::s_Instance;
 DOOM_API bool Renderer::s_PolygonMode = false;
 DOOM_API Renderer::Stats Renderer::s_Stats;
 DOOM_API float Renderer::s_Exposure = 1.5f;
 DOOM_API bool Renderer::s_BloomEffect = true;
 DOOM_API float Renderer::s_Brightness = 1.0;
-
-DOOM_API int World::s_ObjId = 0;
-DOOM_API int World::s_ColId = 0;
 
 DOOM_API std::vector<std::string> Editor::s_TexturesPath;
 DOOM_API std::vector<Texture*> Editor::s_Texture;
@@ -56,13 +52,6 @@ DOOM_API ThreadPool* ThreadPool::s_Instance = nullptr;
 DOOM_API bool ThreadPool::m_IsInitialized;
 
 DOOM_API Input* Input::s_Instance = new WindowsInput();
-
-DOOM_API GLFWwindow* Window::s_Window = nullptr;
-DOOM_API ImGuiIO* Window::s_ImGuiIO = nullptr;
-DOOM_API ImGuiContext* Window::s_ImGuiContext = nullptr;
-DOOM_API float Window::s_ScrollYOffset = 0;
-DOOM_API Camera* Window::s_Camera = new Camera();
-DOOM_API bool Window::s_CursorStateChanged = false;
 
 DOOM_API float DeltaTime::s_Time;
 DOOM_API float DeltaTime::s_Lasttime = (float)glfwGetTime();
@@ -93,28 +82,14 @@ DOOM_API std::map<std::string,Shader*> Shader::s_Shaders;
 
 DOOM_API std::vector<Particle*> Particle::s_Particles;
 
-DOOM_API ALCdevice* SoundManager::s_AlcDevice = nullptr;
-DOOM_API ALCcontext* SoundManager::s_AlcContext = nullptr;
-DOOM_API std::map<std::string,Sound*> SoundManager::s_Sounds;
-
-DOOM_API std::map<std::string, Mesh*> MeshManager::s_Meshes;
-DOOM_API std::multimap<std::string, void*> MeshManager::s_MeshQueue;
-DOOM_API std::vector <Mesh*> MeshManager::s_NeedToInitMeshes;
-DOOM_API const char** MeshManager::s_NamesOfMeshes;
-DOOM_API std::mutex MeshManager::s_Mtx;
 DOOM_API Shader* Font::s_Shader = nullptr;
 DOOM_API const char** Shader::s_NamesOfShaders;
 
 DOOM_API std::vector<PointLight*> PointLight::s_PointLights;
 DOOM_API std::vector<DirectionalLight*> DirectionalLight::s_DirLights;
 
-//storage of all references to our objects in the scene
-DOOM_API std::vector <GameObject*> World::s_GameObjects;
-
 DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 DOOM_API float RectangleCollider2D::m_Vertices[8] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f,  0.5f, -0.5f,  0.5f };
 DOOM_API std::vector<std::string> Ray3D::m_IgnoreMask;
 
 DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/aimtrainer.yaml";
-
-DOOM_API void* World::s_Application = nullptr;

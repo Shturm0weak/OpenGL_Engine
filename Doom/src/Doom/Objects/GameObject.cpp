@@ -7,13 +7,13 @@ using namespace Doom;
 
 GameObject::GameObject(const std::string name,float x, float y,float z) {
 	this->m_Name = name;
-	m_Layer = World::s_GameObjects.size();
-	m_Id = World::s_ObjId;
-	World::s_ObjId++;
+	m_Layer = World::GetInstance().s_GameObjects.size();
+	m_Id = World::GetInstance().s_ObjId;
+	World::GetInstance().s_ObjId++;
 	m_ComponentManager = new ComponentManager(this);
 	m_Transform = m_ComponentManager->AddComponent<Transform>();
 	m_Transform->Translate(x, y, z);
-	World::s_GameObjects.push_back(this);
+	World::GetInstance().s_GameObjects.push_back(this);
 }
 
 Doom::GameObject::GameObject(const GameObject& rhs)
@@ -79,7 +79,7 @@ void Doom::GameObject::Copy(const GameObject& rhs)
 	m_ComponentManager->operator=(*rhs.m_ComponentManager);
 	for (uint32_t i = 0; i < rhs.m_Childs.size(); i++)
 	{
-		GameObject* go = World::CreateGameObject();
+		GameObject* go = World::GetInstance().CreateGameObject();
 		go->operator=(*(GameObject*)rhs.m_Childs[i]);
 		AddChild(go);
 	}

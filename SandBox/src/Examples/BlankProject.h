@@ -7,7 +7,7 @@ public:
 	float u_EdgeSubstruct = 0.3;
 	float u_GlowStrength = 10;
 	Obj() : GameObject() {
-		GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+		GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
 		GetComponent<Renderer3D>()->m_Shader = Shader::Get("Tron");
 		Renderer3D* r = GetComponentManager()->GetComponent<Renderer3D>();
 		r->m_FloatUniforms.insert(std::make_pair("u_EdgeThickness", u_EdgeThickness));
@@ -38,7 +38,7 @@ public:
 				"src/SkyBox/skyBox1/6right.png",
 	};
 	virtual void OnStart() {
-		ImGui::SetCurrentContext(Window::s_ImGuiContext);
+		ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
 		//l = new Line(start, end);
 		//shader = Shader::Get("Tron");
 		//GameObject* dirLight = new GameObject("Directional Light", 0, 0, 0);

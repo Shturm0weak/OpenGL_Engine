@@ -15,7 +15,7 @@
 #include "Examples/Test.h"
 
 int main(){
-	TicTacToe app;
+	SpaceFire app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

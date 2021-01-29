@@ -7,7 +7,7 @@ public:
 	void Init(int amount) {
 		ammo = amount;
 		GetOwnerOfComponent()->AddComponent<SpriteRenderer>();
-		SoundManager::CreateSoundAsset("pickUp", pickUp);
+		SoundManager::GetInstance().CreateSoundAsset("pickUp", pickUp);
 	 }
 
 	static Component* Create() {

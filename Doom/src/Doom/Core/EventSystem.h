@@ -10,10 +10,10 @@ using std::list;
 using std::pair;
 
 #include "Event.h"
-#include "Listener.h"
 #include <iostream>
 #include "ThreadPool.h"
 #include "Core.h"
+#include "Listener.h"
 
 namespace Doom {
 
@@ -23,7 +23,6 @@ namespace Doom {
 		ONWINDOWRESIZE,
 		ONMAINTHREADPROCESS,
 		ONCOLLISION,
-		ONMISS,
 		ONMOVE,
 		ONROTATE,
 		ONSCALE,
@@ -46,18 +45,16 @@ namespace Doom {
 		bool m_IsProcessingEvents = true;
 
 		void DispatchEvent(Event* event);
+
 		EventSystem& operator=(const EventSystem& rhs) { return *this; }
 
+		EventSystem(const EventSystem&) = delete;
 		EventSystem() {}
-		
 	public:
 
-		EventSystem(EventSystem& rhs) {}
-		~EventSystem() { this->Shutdown(); }
-
-		int GetAmountOfEvents() { return m_CurrentEvents.size(); }
+		int GetAmountOfEvents();
 		bool AlreadyRegistered(EventType eventId, Listener* client);
-		static EventSystem* GetInstance();
+		static EventSystem& GetInstance();
 		void StopProcessEvents(bool value);
 		void RegisterClient(EventType event, Listener* client);
 		void UnregisterClient(EventType event, Listener* client);
@@ -75,21 +72,17 @@ namespace Doom {
 	public:
 		
 		MainThread() {
-			EventSystem::GetInstance()->RegisterClient(EventType::ONMAINTHREADPROCESS, (Listener*)this);
+			EventSystem::GetInstance().RegisterClient(EventType::ONMAINTHREADPROCESS, (Listener*)this);
 		}
 
-		static void Init() {
-			static MainThread mainthread;
+		static MainThread& GetInstance() {
+			static MainThread instance; return instance;
 		}
 
-		static MainThread* GetInstance() {
-			static MainThread mainthread; return &mainthread;
-		}
-
-		virtual void OnMainThreadProcess(void* _task) override {
-			m_Task = *static_cast<Task*>(_task);
+		virtual void OnMainThreadProcess(void* task) override {
+			m_Task = *static_cast<Task*>(task);
 			m_Task();
-			delete _task;
+			delete task;
 		}
 	};
 

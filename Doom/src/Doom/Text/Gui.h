@@ -79,7 +79,7 @@ namespace Doom {
 		AlignHorizontally m_XAlign = LEFT;
 		AlignVertically m_YAlign = TOP;
 
-		static Gui* GetInstance() { static Gui gui; return &gui; }
+		static Gui& GetInstance() { static Gui instance; return instance; }
 		//x,y in pixels
 		void Text(std::string text, int m_static = 1, float x = 0, float y = 0, float fontScale = 20, glm::vec4 color = COLORS::White, int charsAfterComma = 0, ...);
 		//x,y,width and height in pixels
@@ -98,8 +98,8 @@ namespace Doom {
 		void RecalculateProjectionMatrix();
 		void ShutDown();
 
-		inline void FontBind(Font* font);
-		inline std::vector<Font*>& GetStandartFonts() {return m_StandartFonts;}
+		void FontBind(Font* font);
+		std::vector<Font*>& GetStandartFonts() { return m_StandartFonts; }
 	private:
 		
 		bool m_IsRelatedToPanel = false;
@@ -122,7 +122,9 @@ namespace Doom {
 		void ApplyRelatedToPanelProperties(float* x, float* y);
 		void FindCharInFont(std::vector<Character*>& localCharV, char c);
 
-		Gui() {RecalculateProjectionMatrix();}
+		Gui& operator=(const Gui& rhs) { return *this; }
+		Gui(const Gui&) = delete;
+		Gui() { RecalculateProjectionMatrix(); }
 		~Gui() {}
 
 		friend class EntryPoint;

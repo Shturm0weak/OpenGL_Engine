@@ -12,6 +12,7 @@ namespace Doom {
 
 	class DOOM_API Editor {
 	private:
+
 		std::mutex mtx_updateNormals;
 		float campos[2] = { 0,0 };
 		bool isBoundingBoxesVisible = false;
@@ -46,6 +47,8 @@ namespace Doom {
 		static std::vector<Texture*> s_Texture;
 		static std::vector<std::string> s_TexturesPath;
 		float uvsOffset[2];
+		Editor() {}
+		Editor(const Editor&) = delete;
 		Editor& operator=(const Editor& rhs) { return *this; }
 		void CreateTextureAtlas();
 		GameObject* copiedGo = nullptr;
@@ -80,11 +83,12 @@ namespace Doom {
 		void MenuStats();
 
 	public:
+
 		bool drawNormals = false;
 		static std::vector<Texture*> s_TextureVecTemp;
 		GameObject* go = nullptr;
 		bool isItemActive = false;
-		static Editor* GetInstance();
+		static Editor& GetInstance();
 		void ShortCuts();
 		void MenuBar();
 		void EditorUpdateMyGui();

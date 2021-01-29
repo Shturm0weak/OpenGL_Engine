@@ -1,5 +1,4 @@
 #include "Hexagon.h"
-#include "TestComponent.h"
 
 void Doom::Hexagon::PerlinNoise2D(int nWidth, int nHeight, float* fSeed, int nOctaves, float fBias, float* fOutput)
 {
@@ -54,8 +53,6 @@ glm::vec4 Doom::Hexagon::Colors(float value)
 
 void Doom::Hexagon::OnStart()
 {
-	GameObject* test = new GameObject("test");
-	test->AddComponent<TestComponent>();
 	float* seed = new float[width * height];
 	float* noise = new float[width * height];
 
@@ -74,7 +71,7 @@ void Doom::Hexagon::OnStart()
 	}*/
 	delete[] seed;
 
-	Mesh* hex = MeshManager::GetMesh("hex");
+	Mesh* hex = MeshManager::GetInstance().GetMesh("hex");
 	float hexX = hex->m_TheHighestPoint.x * 2;
 	float hexZ = hex->m_TheHighestPoint.z * 2;
 	for (uint32_t i = 0; i < width; i++)
@@ -87,7 +84,7 @@ void Doom::Hexagon::OnStart()
 			else
 				go->m_Transform->Translate(j * hexX, 0, i * 1.5f);
 			Renderer3D* r = go->AddComponent<Renderer3D>();
-			r->LoadMesh(MeshManager::GetMesh("hex"));
+			r->LoadMesh(MeshManager::GetInstance().GetMesh("hex"));
 			r->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 			r->m_Color = Colors(noise[i * (int)width + j]);
 			go->m_Transform->RotateOnce(glm::vec3(-90,0,0));
