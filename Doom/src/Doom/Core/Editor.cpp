@@ -95,6 +95,11 @@ void Editor::EditorUpdate()
 					std::string path = (*filePath).substr(0, index);
 					//path.replace(path.begin(), path.end(), '\\', '/');
 					std::vector<std::string> files = Utils::GetFilesName(path, ".png");
+					for (uint32_t i = 0; i < files.size(); i++)
+					{
+						uint64_t index = files[i].find("src");
+						files[i] = files[i].substr(index, files.size() - index);
+					}
 					if (files.size() >= 6) {
 						SkyBox* skybox = new SkyBox(files, nullptr);
 						MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(skybox->GetComponentManager()->GetComponent<Renderer3D>()));

@@ -2,5 +2,3 @@
 .vs/
 .git/
 bin-int/
-gitignore
-premake.zip

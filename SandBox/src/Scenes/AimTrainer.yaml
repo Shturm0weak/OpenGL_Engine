@@ -1,8 +1,8 @@
 Scene: 1
 Camera:
   Transform:
-    Position: [-33.1941643, 73.9969025, 15.531436]
-    Rotation: [-1.01316416, -1.16299331, 0]
+    Position: [1.07395935, 16.139534, 4.57329988]
+    Rotation: [-0.608683169, 0.227883846, 0]
   Zoom: 1
   FOV: 1
 GameObjects:
@@ -15,8 +15,6 @@ GameObjects:
     Directional light:
       Intensity: 1
       Color: [1, 1, 1]
-    Registered events:
-      []
   - GameObject: 1
     Name: Unnamed
     Transform:
@@ -45,8 +43,6 @@ GameObjects:
         Mesh Id: 0
     Cube collider:
       Bounding box: true
-    Registered events:
-      []
   - GameObject: 2
     Name: Unnamed
     Transform:
@@ -75,8 +71,6 @@ GameObjects:
         Mesh Id: 0
     Cube collider:
       Bounding box: true
-    Registered events:
-      []
   - GameObject: 3
     Name: Unnamed
     Transform:
@@ -105,8 +99,6 @@ GameObjects:
         Mesh Id: 0
     Cube collider:
       Bounding box: true
-    Registered events:
-      []
   - GameObject: 4
     Name: Unnamed
     Transform:
@@ -135,8 +127,6 @@ GameObjects:
         Mesh Id: 0
     Cube collider:
       Bounding box: true
-    Registered events:
-      []
   - GameObject: 5
     Name: Unnamed
     Transform:
@@ -165,9 +155,7 @@ GameObjects:
         Mesh Id: 0
     Cube collider:
       Bounding box: true
-    Registered events:
-      []
-  - GameObject: 6
+  - GameObject: 7
     Name: SkyBox
     Transform:
       Position: [0, 0, 0]
@@ -188,14 +176,12 @@ GameObjects:
       Use normal map: false
       Is culling face: true
       Faces:
-        [C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\1back.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\2front.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\3top.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\4bottom.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\5left.png, C:\Users\Alexandr\source\repos\DoomEngine\SandBox\src\SkyBox\skybox1\6right.png]
+        [src\SkyBox\skybox1\1back.png, src\SkyBox\skybox1\2front.png, src\SkyBox\skybox1\3top.png, src\SkyBox\skybox1\4bottom.png, src\SkyBox\skybox1\5left.png, src\SkyBox\skybox1\6right.png]
       Textures:
         Diffuse: ""
         Normal: InvalidTexture
       Mesh:
         Mesh: src/Mesh/Primitives/cube.fbx
         Mesh Id: 0
-    Registered events:
-      []
 Texture atlases:
   []
