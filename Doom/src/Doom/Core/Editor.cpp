@@ -97,8 +97,11 @@ void Editor::EditorUpdate()
 					std::vector<std::string> files = Utils::GetFilesName(path, ".png");
 					for (uint32_t i = 0; i < files.size(); i++)
 					{
-						uint64_t index = files[i].find("src");
-						files[i] = files[i].substr(index, files.size() - index);
+						int64_t index = files[i].find("src");
+						if (index == -1)
+							std::cout << RED << "ERROR:<" << NAMECOLOR << "SkyBox texture[" << i << "]" << RED << "> is not in the 'src' folder!" << RESET << std::endl;
+						else
+							files[i] = files[i].substr(index, files.size() - index);
 					}
 					if (files.size() >= 6) {
 						SkyBox* skybox = new SkyBox(files, nullptr);
@@ -852,11 +855,11 @@ void Doom::Editor::ShaderMenu()
 void Doom::Editor::MenuShadowMap()
 {
 	Camera& camera = Window::GetInstance().GetCamera();
-	void* my_tex_id = reinterpret_cast<void*>(camera.m_FrameBufferBlur[0]->m_Textures[0]);
+	void* my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferBlur[0]->m_Textures[0]);
 	ImGui::Begin("FrameBuffer Bloom");
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::End();
-	my_tex_id = reinterpret_cast<void*>(camera.m_FrameBufferShadowMap->m_Textures[0]);
+	my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 	ImGui::Begin("FrameBuffer Shadow Map");
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::SliderFloat("Znear", &camera.m_ZnearSM, -500, 500);

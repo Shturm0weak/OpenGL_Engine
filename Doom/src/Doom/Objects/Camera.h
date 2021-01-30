@@ -15,10 +15,7 @@ namespace Doom {
 			PERSPECTIVE = 1,
 		};
 
-		std::vector<FrameBuffer* > m_FrameBufferBlur;
 		glm::vec3 backV = { 0,0,-1 };
-		FrameBuffer* m_FrameBufferColor = nullptr;
-		FrameBuffer* m_FrameBufferShadowMap = nullptr;
 		float m_ZnearSM = -50.0f;
 		float m_ZfarSM = 50.0f;
 		float m_RationProjectionSM = 50.0f;

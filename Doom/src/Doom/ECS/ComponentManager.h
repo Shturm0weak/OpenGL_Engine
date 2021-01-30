@@ -142,6 +142,10 @@ namespace Doom {
 					return static_cast<T*>(com);
 				}
 			}
+//I wouldn't wanna see that 'cause it can be called every frame
+//#ifdef _DEBUG
+//			std::cout << BOLDYELLOW << "WARNING:" << NAMECOLOR << m_Owner->m_Name << RESET << ": has no <" NAMECOLOR << Utils::GetComponentTypeName<T>() << RESET << "> component" << std::endl;
+//#endif
 			return nullptr;
 		}
 

@@ -20,11 +20,16 @@ namespace Doom {
 		Window() {}
 		Window(const Window&) = delete;
 		Window& operator=(const Window&) { return *this; }
+		~Window();
 
 	public:
 
 		ImGuiContext* s_ImGuiContext = nullptr;
 		ImGuiIO* s_ImGuiIO = nullptr;
+
+		FrameBuffer* m_FrameBufferColor = nullptr;
+		FrameBuffer* m_FrameBufferShadowMap = nullptr;
+		std::vector<FrameBuffer*> m_FrameBufferBlur;
 
 		static Window& GetInstance();
 		void ClampCursorPos();

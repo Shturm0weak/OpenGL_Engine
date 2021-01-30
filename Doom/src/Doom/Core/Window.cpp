@@ -95,6 +95,14 @@ int Doom::Window::GetCursorMode()
 	return glfwGetInputMode(Window::GetWindow(), GLFW_CURSOR);
 }
 
+Doom::Window::~Window()
+{
+	delete m_FrameBufferBlur[0];
+	delete m_FrameBufferBlur[1];
+	delete m_FrameBufferColor;
+	delete m_FrameBufferShadowMap;
+}
+
 Doom::Window& Doom::Window::GetInstance()
 {
 	static Window instance;

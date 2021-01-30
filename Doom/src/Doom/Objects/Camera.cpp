@@ -16,10 +16,7 @@ Camera::Camera(){
 
 Doom::Camera::~Camera()
 {
-	delete m_FrameBufferBlur[0];
-	delete m_FrameBufferBlur[1];
-	delete m_FrameBufferColor;
-	delete m_FrameBufferShadowMap;
+
 }
 
 void Camera::RecalculateViewMatrix() {

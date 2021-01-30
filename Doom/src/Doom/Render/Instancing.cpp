@@ -84,7 +84,7 @@ void Doom::Instancing::Render()
 
 		m_Shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		m_Shader->SetUniform1f("u_DrawShadows", m_DrawShadows);
-		glBindTextureUnit(2, Window::GetInstance().GetCamera().m_FrameBufferShadowMap->m_Textures[0]);
+		glBindTextureUnit(2, Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 		m_Shader->SetUniform1i("u_ShadowMap", 2);
 		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 

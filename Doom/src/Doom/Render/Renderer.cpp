@@ -56,14 +56,14 @@ void Doom::Renderer::SortTransparentObjects()
 
 void Doom::Renderer::RenderBloomEffect()
 {
-	Camera& camera = Window::GetInstance().GetCamera();
+	Window& window = Window::GetInstance();
 	if (!s_BloomEffect)
 		return;
 
 	bool horizontal = true, first_iteration = true;
 	unsigned int amount = 10;
 
-	std::vector<FrameBuffer*> fb = camera.m_FrameBufferBlur;
+	std::vector<FrameBuffer*> fb = window.m_FrameBufferBlur;
 
 	Shader* shader = Shader::Get("Blur");
 	for (unsigned int i = 0; i < amount; i++)
@@ -72,7 +72,7 @@ void Doom::Renderer::RenderBloomEffect()
 
 		shader->Bind();
 		shader->SetUniform1i("horizontal", horizontal);
-		int id = first_iteration ? camera.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
+		int id = first_iteration ? window.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
 		glBindTexture(GL_TEXTURE_2D, id);
 
 		Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
@@ -85,16 +85,16 @@ void Doom::Renderer::RenderBloomEffect()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	Renderer::Clear();
 
-	camera.m_FrameBufferColor->Bind();
+	window.m_FrameBufferColor->Bind();
 	shader = Shader::Get("Bloom");
 	shader->Bind();
-	glBindTextureUnit(0, camera.m_FrameBufferColor->m_Textures[0]);
+	glBindTextureUnit(0, window.m_FrameBufferColor->m_Textures[0]);
 	shader->SetUniform1i("scene", 0);
 	glBindTextureUnit(1, fb[0]->m_Textures[0]);
 	shader->SetUniform1i("bloomBlurH", 1);
 	shader->SetUniform1f("exposure", Renderer::s_Exposure);
 	Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
-	camera.m_FrameBufferColor->UnBind();
+	window.m_FrameBufferColor->UnBind();
 
 	//ImGui::Begin("Blur");
 	//void* te = reinterpret_cast<void*>(fb[!horizontal]->m_Textures[0]);
@@ -117,21 +117,67 @@ void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 }
 
 void Renderer::Render() {
+	int size[2];
+	Renderer::s_Stats.Reset();
+	if (Instancing::GetInstance()->m_DrawShadows > 0.5f) {
+		Timer t;
+		FrameBuffer* shadowMap = Window::GetInstance().m_FrameBufferShadowMap;
+		glfwGetWindowSize(Window::GetInstance().GetWindow(), &size[0], &size[1]);
+		glViewport(0, 0, shadowMap->size.x, shadowMap->size.y);
+		shadowMap->Bind();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		Renderer::BakeShadows();
+		Instancing::GetInstance()->BakeShadows();
+		shadowMap->UnBind();
+	}
+	Renderer::s_Stats.m_ShadowRenderTime = Timer::s_OutTime;
+
+	glViewport(0, 0, size[0], size[1]);
+	glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
+	Renderer::Clear();
+	Renderer::RenderScene();
+	Window::GetInstance().GetScrollYOffset() = 0;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	Renderer::Clear();
+	Instancing::GetInstance()->PrepareVertexAtrrib();
+
 	{
 		Timer t;
-		if (Window::GetInstance().GetCamera().m_Type == Camera::CameraTypes::ORTHOGRAPHIC) {
-			glDisable(GL_DEPTH_TEST);
-			Render2DObjects();
-			RenderLines();
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LESS);
-			return;
-		}
-		RenderCollision();
-		Render3DObjects();
-		RenderLines();
-		Render2DObjects();
-		RenderTransparent();
+		Renderer::RenderBloomEffect();
+	}
+	Renderer::s_Stats.m_BloomRenderTime = Timer::s_OutTime;
+
+	Shader* shader = Shader::Get("QuadFullScreen");
+	{
+		Timer t;
+		Renderer::Clear();
+		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
+		shader->Bind();
+		glBindTexture(GL_TEXTURE_2D, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
+		Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
+		Renderer::RenderCollision();
+		Renderer::RenderCollision3D();
+	}
+	Renderer::s_Stats.m_CollisionRenderTime = Timer::s_OutTime;
+
+	{
+		Timer t;
+		Renderer::RenderText();
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		shader->UnBind();
+	}
+	Renderer::s_Stats.m_GuiRenderTime = Timer::s_OutTime;
+}
+
+void Renderer::RenderScene() {
+	{
+		Timer t;
+		Render2D();
+		Render3D();
 	}
 	s_Stats.m_ObjectsRenderTime = Timer::s_OutTime;
 }
@@ -203,11 +249,33 @@ void Doom::Renderer::BakeShadows()
 	}
 }
 
+void Doom::Renderer::Render3D()
+{
+	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_3D) {
+		RenderCollision();
+		Render3DObjects();
+		RenderLines();
+		Render2DObjects();
+		RenderTransparent();
+	}
+}
+
 void Doom::Renderer::UpdateLightSpaceMatrices()
 {
 	for (DirectionalLight* light : DirectionalLight::s_DirLights)
 	{
 		light->UpdateLightMatrix();
+	}
+}
+
+void Doom::Renderer::Render2D()
+{
+	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_2D) {
+		glDisable(GL_DEPTH_TEST);
+		Render2DObjects();
+		RenderLines();
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
 	}
 }
 

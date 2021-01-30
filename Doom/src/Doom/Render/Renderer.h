@@ -42,12 +42,21 @@ namespace Doom {
 		static bool s_BloomEffect;
 		static float s_Brightness;
 
+	private:
+
+		static std::vector <SpriteRenderer*> s_Objects2d;
+		static std::vector <Renderer3D*> s_Objects3d;
+		static std::vector <Renderer3D*> s_Objects3dTransparent;
+
 		static void Render2DObjects();
 		static void Render3DObjects();
+		static void Render3D();
+		static void Render2D();
 		static void BakeShadows();
 		static void UpdateLightSpaceMatrices();
 		static void RenderCollision3D();
 		static void Render();
+		static void RenderScene();
 		static void RenderLines();
 		static void RenderText();
 		static void RenderTransparent();
@@ -56,12 +65,8 @@ namespace Doom {
 		static void SortTransparentObjects();
 		static void RenderForPostEffect(Mesh* mesh, Shader* shader);
 		static void RenderBloomEffect();
-	private:
 
-		static std::vector <SpriteRenderer*> s_Objects2d;
-		static std::vector <Renderer3D*> s_Objects3d;
-		static std::vector <Renderer3D*> s_Objects3dTransparent;
-
+		friend class EntryPoint;
 		friend class Renderer2DLayer;
 		friend class GameObject;
 		friend class SpriteRenderer;
