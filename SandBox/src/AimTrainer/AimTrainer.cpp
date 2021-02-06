@@ -15,30 +15,33 @@ using namespace Doom;
 
 void Doom::AimTrainer::RayCast()
 {
-	if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
+	if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
+	{
 		Ray3D::Hit hit;
 		glm::vec3 dir = Window::GetInstance().GetCamera().GetForwardV();
 		Ray3D::Normilize(dir);
 		std::map<float, CubeCollider3D*> intersects = Ray3D::RayCast(Window::GetInstance().GetCamera().GetPosition(), dir, &hit, 10000, false, m_IgnoreMask);
 		//new Line(Window::GetCamera().GetPosition(), Window::GetCamera().GetPosition() + dir * 100.f);
-		if (hit.m_Object != nullptr) {
+		if (hit.m_Object != nullptr)
+		{
 			SoundManager::GetInstance().Play(SoundManager::GetInstance().GetSound("Hit"));
-			if (hit.m_Object->GetOwnerOfComponent()->m_Tag == "Start") {
+			if (hit.m_Object->GetOwnerOfComponent()->m_Tag == "Start")
+			{
 				SpawnObject();
 				SpawnObject();
 				SpawnObject();
 				SpawnObject();
 			}
-			else {
+			else 
+			{
 				m_Objs.erase(hit.m_Object->GetOwnerOfComponent());
 				SpawnObject();
 				m_Hits++;
 			}
 			World::GetInstance().DeleteObject(hit.m_Object->GetOwnerOfComponent()->m_Id);
 		}
-		else {
+		else
 			m_Missed++;
-		}
 	}
 }
 
@@ -70,19 +73,20 @@ void Doom::AimTrainer::SpawnObject()
 
 void Doom::AimTrainer::UpdateObjects()
 {
-	for (auto iter = m_Objs.begin(); iter != m_Objs.end();) {
+	for (auto iter = m_Objs.begin(); iter != m_Objs.end();) 
+	{
 		iter->second += DeltaTime::GetDeltaTime();
 		iter->first->m_Transform->Scale(glm::vec3(sin(iter->second)));
 
-		if (iter->first->m_Transform->GetScale().x < 0.2) {
+		if (iter->first->m_Transform->GetScale().x < 0.2) 
+		{
 			World::GetInstance().DeleteObject(iter->first->m_Id);
 			m_Objs.erase(iter++);
 			SpawnObject();
 			m_Missed++;
 		}
-		else {
+		else
 			iter++;
-		}
 	}
 }
 
@@ -125,19 +129,23 @@ void AimTrainer::OnStart()
 void AimTrainer::OnUpdate()
 {
 	m_Time += DeltaTime::s_Deltatime;
-	if (Input::IsKeyPressed(Keycode::KEY_ESCAPE)) {
-		if (m_Pause == false) {
+	if (Input::IsKeyPressed(Keycode::KEY_ESCAPE)) 
+	{
+		if (m_Pause == false) 
+		{
 			Window::GetInstance().ShowCursor();
 			m_Pause = true;
 		}
-		else if (m_Pause == true) {
+		else if (m_Pause == true) 
+		{
 			Window::GetInstance().DisableCursor();
 			m_Pause = false;
 			m_Options = false;
 			m_ChooseCrossHair = false;
 		}
 	}
-	if (!m_Pause) {
+	if (!m_Pause) 
+	{
 		CameraMovement();
 		RayCast();
 		UpdateObjects();
@@ -149,7 +157,8 @@ void AimTrainer::OnClose()
 	m_Objs.clear();
 }
 
-void Doom::AimTrainer::MainMenu() {
+void Doom::AimTrainer::MainMenu() 
+{
 	Gui& g = Gui::GetInstance().GetInstance();
 	g.m_XAlign = Gui::AlignHorizontally::XCENTER;
 	g.RelateToPanel();
@@ -163,19 +172,18 @@ void Doom::AimTrainer::MainMenu() {
 		Window::GetInstance().DisableCursor();
 	}
 	g.m_XAlign = g.XCENTER;
-	if (g.Button("Options", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f)) {
+	if (g.Button("Options", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f))
 		m_Options = true;
-	}
 	g.m_XAlign = g.XCENTER;
-	if (g.Button("Exit", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f)) {
+	if (g.Button("Exit", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f))
 		Window::GetInstance().Exit();
-	}
 	g.m_RelatedPanelProperties.m_AutoAllignment = false;
 	g.UnRelateToPanel();
 	g.m_XAlign = g.LEFT;
 }
 
-void Doom::AimTrainer::OptionsMenu() {
+void Doom::AimTrainer::OptionsMenu()
+{
 	Gui& g = Gui::GetInstance();
 	g.m_XAlign = Gui::AlignHorizontally::XCENTER;
 	g.RelateToPanel();
@@ -190,20 +198,19 @@ void Doom::AimTrainer::OptionsMenu() {
 	g.SliderFloat("Mouse sensetivity", &m_MouseSensetivity, 0.1f, 3.0f, 0, 0, 200, 50);
 	g.CheckBox("Draw shadows", &m_DrawShadows, 0, 0, 25);
 	g.CheckBox("Bloom", &Renderer::s_BloomEffect, 0, 0, 25);
-	if (g.Button("Choose crosshair", 0, 0, 30, 400, 50, COLORS::Gray * 0.8f)) {
+	if (g.Button("Choose crosshair", 0, 0, 30, 400, 50, COLORS::Gray * 0.8f))
 		m_ChooseCrossHair = true;
-	}
 	Instancing::GetInstance()->m_DrawShadows = m_DrawShadows ? 1.0f : 0.0f;
 	SoundManager::GetInstance().SetVolume(m_AudioVolume);
 	g.m_RelatedPanelProperties.m_AutoAllignment = false;
-	if (g.Button("Back", 0, -475, 30, 200, 50, COLORS::Gray * 0.8f)) {
+	if (g.Button("Back", 0, -475, 30, 200, 50, COLORS::Gray * 0.8f))
 		m_Options = false;
-	}
 	g.UnRelateToPanel();
 	g.m_XAlign = g.LEFT;
 }
 
-void Doom::AimTrainer::ChooseCrossHairMenu() {
+void Doom::AimTrainer::ChooseCrossHairMenu() 
+{
 	Gui& g = Gui::GetInstance();
 	g.m_XAlign = Gui::AlignHorizontally::XCENTER;
 	g.RelateToPanel();
@@ -218,14 +225,15 @@ void Doom::AimTrainer::ChooseCrossHairMenu() {
 	{
 		float size = 100;
 		pos.x = (size + size * 0.5f) * counter;
-		if (pos.x + size * 0.5f + g.m_RelatedPanelProperties.m_Margin.x >= 800) {
+		if (pos.x + size * 0.5f + g.m_RelatedPanelProperties.m_Margin.x >= 800) 
+		{
 			pos.y -= (size + size * 0.5f);
 			pos.x = 0;
 			counter = 0;
 		}
-		else
-			counter++;
-		if (g.Button("", pos.x, pos.y, 30, size, size, COLORS::Gray * 0.8f, COLORS::Gray * 0.5f, COLORS::White, textures[i])) {
+		else counter++;
+		if (g.Button("", pos.x, pos.y, 30, size, size, COLORS::Gray * 0.8f, COLORS::Gray * 0.5f, COLORS::White, textures[i])) 
+		{
 			m_ChooseCrossHair = false;
 			m_CrossHair = textures[i];
 		}
@@ -238,7 +246,8 @@ void Doom::AimTrainer::ChooseCrossHairMenu() {
 void Doom::AimTrainer::OnGuiRender()
 {
 	Timer t;
-	if (!m_Pause) {
+	if (!m_Pause) 
+	{
 		Gui& g = Gui::GetInstance();
 		if (m_CrossHair != nullptr)
 			g.Image(0, 0, 50 * m_CrossHairScale, 50 * m_CrossHairScale, m_CrossHair);
@@ -253,7 +262,8 @@ void Doom::AimTrainer::OnGuiRender()
 		g.Text("%d", 1, 0, 600, 80, COLORS::White, 0, m_Hits);
 		g.m_XAlign = g.LEFT;
 	}
-	else {
+	else 
+	{
 		if (m_ChooseCrossHair)
 			ChooseCrossHairMenu();
 		else if (!m_Options)

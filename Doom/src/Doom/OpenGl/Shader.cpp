@@ -21,11 +21,13 @@ Shader::~Shader()
 Shader* Doom::Shader::Create(const std::string& name, const std::string& path)
 {
 	auto iter = s_Shaders.find(name);
-	if (iter == s_Shaders.end()) {
+	if (iter == s_Shaders.end()) 
+	{
 		s_Shaders.insert(std::make_pair(name, new Shader(name, path)));
 		return Get(name);
 	}
-	else {
+	else 
+	{
 #ifdef _DEBUG
 		std::cout << BOLDYELLOW << "Shader: <" << NAMECOLOR << name << BOLDYELLOW << "> has been already existed!" << RESET << std::endl;
 #endif
@@ -36,11 +38,9 @@ Shader* Doom::Shader::Create(const std::string& name, const std::string& path)
 Shader * Doom::Shader::Get(const std::string& name, bool showErrors)
 {
 	auto iter = s_Shaders.find(name);
-	if (iter != s_Shaders.end())
-		return iter->second;
-	else if (showErrors){
+	if (iter != s_Shaders.end()) return iter->second;
+	else if (showErrors)
 		std::cout << BOLDYELLOW << "Shader: <" << NAMECOLOR << name << BOLDYELLOW << "> doesn't exist!" << RESET << std::endl;
-	}
 	return nullptr;
 }
 
@@ -110,7 +110,8 @@ const char ** Doom::Shader::GetListOfShaders()
 		delete[] s_NamesOfShaders;
 	s_NamesOfShaders = new const char*[s_Shaders.size()];
 	uint32_t i = 0;
-	for (auto mesh = s_Shaders.begin(); mesh != s_Shaders.end(); mesh++) {
+	for (auto mesh = s_Shaders.begin(); mesh != s_Shaders.end(); mesh++)
+	{
 		s_NamesOfShaders[i] = mesh->first.c_str();
 		i++;
 	}
@@ -155,17 +156,15 @@ ShaderProgramSource Shader::Parseshader(const std::string& filepath)
 	std::stringstream ss[2];
 	while (getline(stream, line))
 	{
-		if (line.find("#shader") != std::string::npos) {
-			if (line.find("vertex") != std::string::npos) {
+		if (line.find("#shader") != std::string::npos)
+		{
+			if (line.find("vertex") != std::string::npos) 
 				shadertp = shadertype::VERTEX;
-			}
-			else if (line.find("fragment") != std::string::npos) {
+			else if (line.find("fragment") != std::string::npos)
 				shadertp = shadertype::FRAGMENT;
-			}
 		}
-		else {
+		else
 			ss[(int)shadertp] << line << '\n';
-		}
 	}
 	return { ss[0].str(),ss[1].str() };
 }
@@ -179,7 +178,8 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 
 	int result;
 	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-	if (result == GL_FALSE) {
+	if (result == GL_FALSE)
+	{
 		int length;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 		char* message = new char[length * sizeof(char)];

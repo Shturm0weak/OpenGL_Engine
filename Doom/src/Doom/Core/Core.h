@@ -16,12 +16,14 @@
 static int g_Height = 1080;
 static int g_Width = 1080;
 
-static void GlClearError() {
+static void GlClearError() 
+{
 	while (glGetError() != 0);
 }
 
 static void GlCheckError() {
-	while (GLenum error = glGetError()) {
+	while (GLenum error = glGetError()) 
+	{
 		std::cout << "Opengl error: " << error << std::endl;
 	}
 }

@@ -11,10 +11,8 @@ void Doom::DirectionalLight::Copy(const DirectionalLight& rhs)
 
 glm::mat4 Doom::DirectionalLight::GetLightSpaceMatrix()
 {
-	if (s_DirLights.size() > 0)
-		return s_DirLights[0]->lightSpaceMatrix;
-	else
-		return glm::mat4(1.0f);
+	if (s_DirLights.size() > 0) return s_DirLights[0]->lightSpaceMatrix;
+	else return glm::mat4(1.0f);
 }
 
 void Doom::DirectionalLight::UpdateLightMatrix()
@@ -52,7 +50,6 @@ Doom::DirectionalLight::DirectionalLight()
 Doom::DirectionalLight::~DirectionalLight()
 {
 	auto iter = std::find(s_DirLights.begin(), s_DirLights.end(), this);
-	if (iter != s_DirLights.end()) {
+	if (iter != s_DirLights.end()) 
 		s_DirLights.erase(iter);
-	}
 }

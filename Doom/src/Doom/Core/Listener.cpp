@@ -3,16 +3,17 @@
 
 using namespace Doom;
 
-void Listener::HandleEvent(Event* e) {
+void Listener::HandleEvent(Event* e)
+{
 	EventType type = (EventType)e->GetEventId();
 	if (type == EventType::ONUPDATE)
 		OnUpdate();
 	else if (type == EventType::ONSTART)
 		OnStart();
-	else if (type == EventType::ONCOLLISION) {
-		if (e->GetParameter() != nullptr) {
+	else if (type == EventType::ONCOLLISION)
+	{
+		if (e->GetParameter() != nullptr)
 			e->GetSender()->OnCollision(e->GetParameter());
-		}
 	}
 	else if (type == EventType::ONMOVE)
 		e->GetSender()->OnMove();

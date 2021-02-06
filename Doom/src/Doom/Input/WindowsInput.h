@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Input.h"
 #include <map>
 
@@ -6,6 +7,7 @@ namespace Doom {
 
 	class DOOM_API WindowsInput : public Input {
 	protected:
+
 		//std::map<int, double> pressedButtonsTime;
 		//std::map<int, bool> pressedMouseButtons;
 		//std::map<int, bool> pressedKeysButtons;

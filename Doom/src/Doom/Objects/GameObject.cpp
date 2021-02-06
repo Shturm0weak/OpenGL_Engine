@@ -5,7 +5,8 @@
 
 using namespace Doom;
 
-GameObject::GameObject(const std::string name,float x, float y,float z) {
+GameObject::GameObject(const std::string name,float x, float y,float z) 
+{
 	this->m_Name = name;
 	m_Layer = World::GetInstance().s_GameObjects.size();
 	m_Id = World::GetInstance().s_ObjId;
@@ -63,7 +64,8 @@ void Doom::GameObject::RemoveChild(void * child)
 {
 	for (size_t i = 0; i < m_Childs.size(); i++)
 	{
-		if (m_Childs[i] == child) {
+		if (m_Childs[i] == child)
+		{
 			m_Childs.erase(m_Childs.begin() + i);
 			return;
 		}

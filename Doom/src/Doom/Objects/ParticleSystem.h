@@ -1,8 +1,6 @@
 #pragma once
 #include <random>
 
-//!!!@Deprecated!!!\\
-
 namespace Doom {
 
 	struct DOOM_API Particle {
@@ -23,7 +21,8 @@ namespace Doom {
 		bool isDead = false;
 		bool Enable = true;
 		
-		Particle() {
+		Particle()
+		{
 			s_Particles.push_back(this);
 		}
 

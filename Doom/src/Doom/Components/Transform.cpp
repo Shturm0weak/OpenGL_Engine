@@ -16,7 +16,8 @@ Doom::Transform::Transform(const Transform& rhs)
 	Copy(rhs);
 }
 
-Transform::Transform() {
+Transform::Transform() 
+{
 	//SetType(ComponentType::TRANSFORM);
 }
 
@@ -73,7 +74,8 @@ glm::mat4 Doom::Transform::GetTransform()
 	return m_PosMat4  * m_ViewMat4 * m_ScaleMat4;
 }
 
-void Transform::Move(float speedX,float speedY,float speedZ) {
+void Transform::Move(float speedX,float speedY,float speedZ) 
+{
 	glm::vec3 position = Utils::GetPosition(m_PosMat4);
 	position.x += speedX * DeltaTime::GetDeltaTime();
 	position.y += speedY * DeltaTime::GetDeltaTime();
@@ -83,7 +85,8 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	//RealVertexPositions();
 
-	if (m_OwnerOfCom->m_Enable) {
+	if (m_OwnerOfCom->m_Enable) 
+	{
 		unsigned int size = m_OwnerOfCom->GetChilds().size();
 		for (unsigned int i = 0; i < size; i++)
 		{
@@ -95,13 +98,13 @@ void Transform::Move(float speedX,float speedY,float speedZ) {
 	EventSystem::GetInstance().SendEvent(EventType::ONMOVE,(Listener*)m_OwnerOfCom);
 }
 
-void Transform::RotateOnce(float x, float y, float z,bool isRad) {
+void Transform::RotateOnce(float x, float y, float z,bool isRad)
+{
 	m_Rotation.x = x;
 	m_Rotation.y = y;
 	m_Rotation.z = z;
-		if (!isRad) {
+		if (!isRad)
 			m_Rotation = glm::radians(m_Rotation);
-		}
 		//m_ViewMat4 = glm::mat4(1.0f);
 		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
 		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
@@ -148,13 +151,13 @@ void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
 	}*/
 }
 
-void Transform::Rotate(float x, float y, float z, bool isRad) {
+void Transform::Rotate(float x, float y, float z, bool isRad) 
+{
 	m_Rotation.x = x;
 	m_Rotation.y = y;
 	m_Rotation.z = z;
-	if (!isRad) {
+	if (!isRad)
 		m_Rotation = glm::radians(m_Rotation);
-	}
 	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
@@ -175,7 +178,8 @@ void Transform::Rotate(float x, float y, float z, bool isRad) {
 	}*/
 }
 
-void Transform::Scale(float scaleX, float scaleY,float scaleZ) {
+void Transform::Scale(float scaleX, float scaleY,float scaleZ)
+{
 	glm::vec3 vScale(scaleX, scaleY, scaleZ);
 	m_ScaleMat4 = glm::scale(glm::mat4(1.f), vScale);
 	
@@ -217,7 +221,8 @@ void Transform::Translate(float x, float y,float z)
 	EventSystem::GetInstance().SendEvent(EventType::ONTRANSLATE, (Listener*)m_OwnerOfCom);
 }
 
-void Transform::Move(glm::vec3 vdir) {
+void Transform::Move(glm::vec3 vdir) 
+{
 	glm::vec3 position = Utils::GetPosition(m_PosMat4);
 	position.x += vdir.x * DeltaTime::GetDeltaTime();
 	position.y += vdir.y * DeltaTime::GetDeltaTime();
@@ -227,7 +232,8 @@ void Transform::Move(glm::vec3 vdir) {
 	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	//RealVertexPositions();
 
-	if (m_OwnerOfCom->m_Enable) {
+	if (m_OwnerOfCom->m_Enable) 
+	{
 		unsigned int size = m_OwnerOfCom->GetChilds().size();
 		for (unsigned int i = 0; i < size; i++)
 		{
@@ -239,13 +245,10 @@ void Transform::Move(glm::vec3 vdir) {
 	EventSystem::GetInstance().SendEvent(EventType::ONMOVE, (Listener*)m_OwnerOfCom);
 }
 
-void Transform::RotateOnce(glm::vec3 vangles, bool isRad) {
-	if (isRad) {
-		m_Rotation = vangles;
-	}
-	else {
-		m_Rotation = glm::radians(vangles);
-	}
+void Transform::RotateOnce(glm::vec3 vangles, bool isRad) 
+{
+	if (isRad) m_Rotation = vangles;
+	else m_Rotation = glm::radians(vangles);
 	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
 	//m_ViewMat4 = glm::mat4(1.0f);
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
@@ -275,13 +278,10 @@ void Transform::RotateOnce(glm::vec3 vangles, bool isRad) {
 	//}
 }
 
-void Transform::Rotate(glm::vec3 vangles, bool isRad) {
-	if (isRad) {
-		m_Rotation = vangles;
-	}
-	else {
-		m_Rotation = glm::radians(vangles);
-	}
+void Transform::Rotate(glm::vec3 vangles, bool isRad)
+{
+	if (isRad) m_Rotation = vangles;
+	else m_Rotation = glm::radians(vangles);
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
 	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
@@ -302,7 +302,8 @@ void Transform::Rotate(glm::vec3 vangles, bool isRad) {
 	}*/
 }
 
-void Transform::Scale(glm::vec3 vscale) {
+void Transform::Scale(glm::vec3 vscale)
+{
 	m_ScaleMat4 = glm::scale(glm::mat4(1.f), vscale);
 	
 	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
@@ -321,7 +322,8 @@ void Transform::Scale(glm::vec3 vscale) {
 void Transform::Translate(glm::vec3 vpos)
 {
 	glm::vec3 position = Utils::GetPosition(m_PosMat4);
-	if (m_OwnerOfCom->m_Enable) {
+	if (m_OwnerOfCom->m_Enable)
+	{
 		uint32_t size = m_OwnerOfCom->GetChilds().size();
 		for (uint32_t i = 0; i < size; i++)
 		{

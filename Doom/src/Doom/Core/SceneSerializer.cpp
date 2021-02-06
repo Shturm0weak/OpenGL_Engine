@@ -60,13 +60,15 @@ namespace YAML {
 	};
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec3& v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec3& v)
+{
 	out << YAML::Flow;
 	out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, float* v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, float* v) 
+{
 	out << YAML::Flow;
 	out << YAML::BeginSeq <<
 		v[0] << v[1] << v[2] << v[3] <<
@@ -77,7 +79,8 @@ YAML::Emitter& operator<<(YAML::Emitter& out, float* v) {
 	return out;
 }
 
-YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec4& v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec4& v) 
+{
 	out << YAML::Flow;
 	out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
 	return out;
@@ -156,7 +159,8 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 	camera.SetRotation(rotation);
 
 	auto textureAtlases = data["Texture atlases"];
-	if (textureAtlases) {
+	if (textureAtlases) 
+	{
 		for (auto ta : textureAtlases)
 		{
 			DeSerializeTextureAtlas(ta);
@@ -166,7 +170,8 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 	std::map<GameObject*, std::vector<int>> childs;
 
 	auto gameobjects = data["GameObjects"];
-	if (gameobjects) {
+	if (gameobjects)
+	{
 		for (auto go : gameobjects)
 		{
 			DeSerializeGameObject(go, childs);
@@ -190,9 +195,11 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	std::string name = go["Name"].as<std::string>();
 	int id = go["GameObject"].as<int>();
 	auto renderer3DComponent = go["Renderer3D"];
-	if (renderer3DComponent) {
+	if (renderer3DComponent)
+	{
 		bool isSkyBox = renderer3DComponent["SkyBox"].as<bool>();
-		if (isSkyBox) {
+		if (isSkyBox) 
+		{
 			std::vector<std::string>faces = renderer3DComponent["Faces"].as<std::vector<std::string>>();
 			SkyBox* sb = new SkyBox(faces, nullptr);
 			MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(sb->GetComponentManager()->GetComponent<Renderer3D>()));
@@ -204,7 +211,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	obj->m_Id = id;
 
 	auto transformComponent = go["Transform"];
-	if (transformComponent) {
+	if (transformComponent)
+	{
 		Transform* tr = obj->GetComponent<Transform>();
 		glm::vec3 position = transformComponent["Position"].as<glm::vec3>();
 		glm::vec3 scale = transformComponent["Scale"].as<glm::vec3>();
@@ -214,7 +222,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		tr->RotateOnce(rotation.x, rotation.y, rotation.z, true);
 	}
 
-	if (renderer3DComponent) {
+	if (renderer3DComponent)
+	{
 		Renderer3D* r = obj->GetComponentManager()->AddComponent<Renderer3D>();
 		auto mat = renderer3DComponent["Material"];
 		r->m_Material.m_Ambient = mat["Ambient"].as<float>();
@@ -222,10 +231,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		r->m_Color = mat["Color"].as<glm::vec4>();
 		r->m_Shader = Shader::Get(Utils::GetNameFromFilePath(renderer3DComponent["Shader"].as<std::string>(), 6));
 		bool isTransparent = renderer3DComponent["Transparent"].as<bool>();
-		if (isTransparent)
-			r->MakeTransparent();
-		else
-			r->MakeSolid();
+		if (isTransparent) r->MakeTransparent();
+		else r->MakeSolid();
 		r->m_IsCastingShadows = renderer3DComponent["Casting shadows"].as<bool>();
 		r->m_IsWireMesh = renderer3DComponent["Wire mesh"].as<bool>();
 		r->m_IsUsingNormalMap = renderer3DComponent["Use normal map"].as<bool>();
@@ -238,7 +245,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		std::string normal = textures["Normal"].as<std::string>();
 		if (diffuse == "WhiteTexture")
 			r->m_DiffuseTexture = Texture::s_WhiteTexture;
-		else {
+		else 
+		{
 			r->m_DiffuseTexture = Texture::Create(diffuse);
 			//Texture::AsyncLoadTexture(diffuse);
 			//Texture::GetAsync(obj, [=] {
@@ -250,7 +258,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		}
 		if (normal == "InvalidTexture")
 			r->m_NormalMapTexture = Texture::Get("InvalidTexture");
-		else {
+		else 
+		{
 			r->m_NormalMapTexture = Texture::Create(normal);
 			/*Texture::AsyncLoadTexture(normal);
 			Texture::GetAsync(r, [=] {
@@ -264,9 +273,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		std::string meshPath = mesh["Mesh"].as<std::string>();
 		auto _meshId = mesh["Mesh Id"];
 		uint32_t meshId = 0;
-		if (_meshId) {
+		if (_meshId)
 			meshId = _meshId.as<uint32_t>();
-		}
 		std::string meshName = Utils::GetNameFromFilePath(meshPath);
 		MeshManager::GetInstance().AsyncLoadMesh(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
@@ -281,14 +289,16 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	}
 
 	auto dirLightComponent = go["Directional light"];
-	if (dirLightComponent) {
+	if (dirLightComponent) 
+	{
 		DirectionalLight* dl = obj->GetComponentManager()->AddComponent<DirectionalLight>();
 		dl->m_Intensity = dirLightComponent["Intensity"].as<float>();
 		dl->m_Color = dirLightComponent["Color"].as<glm::vec3>();
 	}
 
 	auto pointLightComponent = go["Point light"];
-	if (pointLightComponent) {
+	if (pointLightComponent) 
+	{
 		PointLight* pl = obj->GetComponentManager()->AddComponent<PointLight>();
 		auto atenuation = pointLightComponent["Attenuation"];
 		pl->m_Constant = atenuation["Constant"].as<float>();
@@ -298,13 +308,15 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	}
 
 	auto sphereColliderComponent = go["Sphere collider"];
-	if (sphereColliderComponent) {
+	if (sphereColliderComponent)
+	{
 		SphereCollider* sc = obj->GetComponentManager()->AddComponent<SphereCollider>();
 		sc->m_IsInBoundingBox = sphereColliderComponent["Inside of bounding box"].as<bool>();
 	}
 
 	auto spriteRendererComponent = go["Sprite renderer"];
-	if (spriteRendererComponent) {
+	if (spriteRendererComponent) 
+	{
 		SpriteRenderer* sr = obj->GetComponentManager()->AddComponent<SpriteRenderer>();
 		sr->m_Color = spriteRendererComponent["Color"].as<glm::vec4>();
 		sr->m_Texture = (Texture::Create(spriteRendererComponent["Texture"].as<std::string>()));
@@ -316,7 +328,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	}
 
 	auto RectangularCollider2DComponent = go["Rectangle collider 2D"];
-	if (RectangularCollider2DComponent) {
+	if (RectangularCollider2DComponent)
+	{
 		RectangleCollider2D* rc = obj->GetComponentManager()->AddComponent<RectangleCollider2D>();
 		rc->m_Enable = RectangularCollider2DComponent["Is Enable"].as<bool>();
 		rc->m_IsTrigger = RectangularCollider2DComponent["Is trigger"].as<bool>();
@@ -326,7 +339,8 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	}
 
 	auto childsId = go["Childs id"];
-	if (childsId) {
+	if (childsId) 
+	{
 		std::vector<int> ids = childsId.as<std::vector<int>>();
 		childs.insert(std::make_pair(obj, ids));
 	}
@@ -384,7 +398,8 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 
 void Doom::SceneSerializer::SerializeGameObjectChilds(YAML::Emitter& out, GameObject* go)
 {
-	if (go->GetChilds().size() > 0) {
+	if (go->GetChilds().size() > 0) 
+	{
 		out << YAML::Key << "Childs id";
 		std::vector<int> ids;
 		for (uint32_t i = 0; i < go->GetChilds().size(); i++)
@@ -397,7 +412,8 @@ void Doom::SceneSerializer::SerializeGameObjectChilds(YAML::Emitter& out, GameOb
 
 void Doom::SceneSerializer::SerializeTransformComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<Transform>() != nullptr) {
+	if (cm->GetComponent<Transform>() != nullptr)
+	{
 		Transform* tr = cm->GetComponent<Transform>();
 		out << YAML::Key << "Transform";
 		out << YAML::BeginMap;
@@ -410,9 +426,11 @@ void Doom::SceneSerializer::SerializeTransformComponent(YAML::Emitter& out, Comp
 
 void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<Renderer3D>() != nullptr) {
+	if (cm->GetComponent<Renderer3D>() != nullptr) 
+	{
 		Renderer3D* r = cm->GetComponent<Renderer3D>();
-		if (typeid(*r) == typeid(Renderer3D)) {
+		if (typeid(*r) == typeid(Renderer3D)) 
+		{
 			out << YAML::Key << "Renderer3D";
 			out << YAML::BeginMap;
 
@@ -433,7 +451,8 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 			out << YAML::Key << "Use normal map" << YAML::Value << r->m_IsUsingNormalMap;
 			out << YAML::Key << "Is culling face" << YAML::Value << r->m_IsCullingFace;
 
-			if (r->m_IsSkyBox) {
+			if (r->m_IsSkyBox)
+			{
 				SkyBox* sb = static_cast<SkyBox*>(r->GetOwnerOfComponent());
 				out << YAML::Key << "Faces";
 				out << YAML::BeginMap;
@@ -442,7 +461,8 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 				out << YAML::EndMap;
 			}
 
-			if (r->m_FloatUniforms.size() > 0) {
+			if (r->m_FloatUniforms.size() > 0)
+			{
 				out << YAML::Key << "Uniforms float";
 				//out << YAML::BeginMap;
 				out << YAML::Value << r->m_FloatUniforms;
@@ -468,9 +488,11 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 
 void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<SpriteRenderer>() != nullptr) {
+	if (cm->GetComponent<SpriteRenderer>() != nullptr) 
+	{
 		SpriteRenderer* sr = cm->GetComponent<SpriteRenderer>();
-		if (typeid(*sr) == typeid(SpriteRenderer)) {
+		if (typeid(*sr) == typeid(SpriteRenderer)) 
+		{
 			out << YAML::Key << "Sprite renderer";
 			out << YAML::BeginMap;
 			out << YAML::Key << "Color" << YAML::Value << sr->m_Color;
@@ -489,7 +511,8 @@ void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter& out,
 
 void Doom::SceneSerializer::SerializeDirectionalLightComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<DirectionalLight>() != nullptr) {
+	if (cm->GetComponent<DirectionalLight>() != nullptr)
+	{
 		DirectionalLight* dl = cm->GetComponent<DirectionalLight>();
 		out << YAML::Key << "Directional light";
 		out << YAML::BeginMap;
@@ -501,7 +524,8 @@ void Doom::SceneSerializer::SerializeDirectionalLightComponent(YAML::Emitter& ou
 
 void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<PointLight>() != nullptr) {
+	if (cm->GetComponent<PointLight>() != nullptr)
+	{
 		PointLight* pl = cm->GetComponent<PointLight>();
 		out << YAML::Key << "Point light";
 		out << YAML::BeginMap;
@@ -518,7 +542,8 @@ void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter& out, Com
 
 void Doom::SceneSerializer::SerializeCubeColliderComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<CubeCollider3D>() != nullptr) {
+	if (cm->GetComponent<CubeCollider3D>() != nullptr) 
+	{
 		CubeCollider3D* cc = cm->GetComponent<CubeCollider3D>();
 		out << YAML::Key << "Cube collider";
 		out << YAML::BeginMap;
@@ -529,7 +554,8 @@ void Doom::SceneSerializer::SerializeCubeColliderComponent(YAML::Emitter& out, C
 
 void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<SphereCollider>() != nullptr) {
+	if (cm->GetComponent<SphereCollider>() != nullptr) 
+	{
 		SphereCollider* cc = cm->GetComponent<SphereCollider>();
 		out << YAML::Key << "Sphere collider";
 		out << YAML::BeginMap;
@@ -545,7 +571,8 @@ void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter& out, GameOb
 
 void Doom::SceneSerializer::SerializeRectangularCollider(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<RectangleCollider2D>() != nullptr) {
+	if (cm->GetComponent<RectangleCollider2D>() != nullptr) 
+	{
 		RectangleCollider2D* rc = cm->GetComponent<RectangleCollider2D>();
 		out << YAML::Key << "Rectangle collider 2D";
 		out << YAML::BeginMap;

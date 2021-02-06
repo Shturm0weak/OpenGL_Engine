@@ -9,7 +9,8 @@
 
 using namespace Doom;
 
-Camera::Camera(){
+Camera::Camera()
+{
 	m_Position = glm::vec3(0, 0, 0);
 	EventSystem::GetInstance().RegisterClient(EventType::ONWINDOWRESIZE, this);
 }
@@ -19,7 +20,8 @@ Doom::Camera::~Camera()
 
 }
 
-void Camera::RecalculateViewMatrix() {
+void Camera::RecalculateViewMatrix() 
+{
 	ThreadPool::GetInstance().Enqueue([=] {
 	std::lock_guard<std::mutex> lock(m_Mtx);
 	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), m_Roll, glm::vec3(0, 0, 1))
@@ -50,12 +52,12 @@ void Doom::Camera::MovePosition(const glm::vec3 position)
 	//std::cout << "x " << m_Position.x << " y " << m_Position.y << " z " << m_Position.z << std::endl;
 }
 
-void Camera::WindowResize() {
-	if (m_IsWindowResized) {
-		if (m_Props == nullptr)
-			return;
-		if (m_Props[0] == 0 || m_Props[1] == 0)
-			return;
+void Camera::WindowResize()
+{
+	if (m_IsWindowResized)
+	{
+		if (m_Props == nullptr) return;
+		if (m_Props[0] == 0 || m_Props[1] == 0) return;
 		glViewport(0, 0, m_Props[0], m_Props[1]);
 		m_Ratio = ViewPort::GetInstance()->GetSize().x / ViewPort::GetInstance()->GetSize().y;
 		switch (m_Type)
@@ -167,115 +169,112 @@ void Camera::OnWindowResize(void * _props)
 }
 
 void Camera::Increase() {
-	if (Input::IsKeyDown(Keycode::KEY_LEFT_CONTROL)) {
-		if (Input::IsKeyDown(Keycode::KEY_PAGE_UP)) {
+	if (Input::IsKeyDown(Keycode::KEY_LEFT_CONTROL))
+	{
+		if (Input::IsKeyDown(Keycode::KEY_PAGE_UP)) 
+		{
 			Zoom(abs(GetZoomLevel() + (1 * DeltaTime::GetDeltaTime())));
 		}
-		else if (Input::IsKeyDown(Keycode::KEY_PAGE_DOWN)) {
-			if (GetZoomLevel() <= 0)
-				return;
+		else if (Input::IsKeyDown(Keycode::KEY_PAGE_DOWN)) 
+		{
+			if (GetZoomLevel() <= 0) return;
 			Zoom(abs(GetZoomLevel() - (1 * DeltaTime::GetDeltaTime())));
 		}
 	}
 }
 
 void Camera::SetOnStart() {
-	if (Input::IsKeyPressed(Keycode::KEY_F)) {
+	if (Input::IsKeyPressed(Keycode::KEY_F)) 
 		SetPosition(glm::vec3(0, 0, 0));
-	}
 }
 
-void Camera::CameraMovement() {
-	if (ViewPort::GetInstance()->m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
-	if (m_Type == ORTHOGRAPHIC) {
-		if (Input::IsKeyDown(Keycode::KEY_UP)) {
-			MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
+void Camera::CameraMovement()
+{
+	if (ViewPort::GetInstance()->m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) 
+	{
+		if (m_Type == ORTHOGRAPHIC)
+		{
+			if (Input::IsKeyDown(Keycode::KEY_UP))
+				MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
+			if (Input::IsKeyDown(Keycode::KEY_DOWN))
+				MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
+			if (Input::IsKeyDown(Keycode::KEY_RIGHT))
+				MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
+			if (Input::IsKeyDown(Keycode::KEY_LEFT))
+				MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
+			if (Input::IsKeyDown(Keycode::KEY_BACKSPACE))
+				MovePosition(glm::vec3(0, 0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
+			if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT))
+				MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
+			if (Input::IsKeyDown(Keycode::KEY_G))
+			{
+				if (Editor::GetInstance().go != nullptr)
+					Editor::GetInstance().go->GetComponentManager()->GetComponent<Transform>()->Translate(
+						ViewPort::GetInstance()->GetMousePositionToWorldSpace().x,
+						ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+			}
+			Increase();
 		}
-		if (Input::IsKeyDown(Keycode::KEY_DOWN)) {
-			MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
-		}
-		if (Input::IsKeyDown(Keycode::KEY_RIGHT)) {
-			MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
-		}
-		if (Input::IsKeyDown(Keycode::KEY_LEFT)) {
-			MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
-		}
-		if (Input::IsKeyDown(Keycode::KEY_BACKSPACE)) {
-			MovePosition(glm::vec3(0, 0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
-		}
-		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
-			MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
-		}
-		if (Input::IsKeyDown(Keycode::KEY_G)) {
-			if (Editor::GetInstance().go != nullptr) {
-				Editor::GetInstance().go->GetComponentManager()->GetComponent<Transform>()->Translate(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+		else 
+		{
+			float speed = 2.f;
+			if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT))
+				speed *= 10;
+			backV *= speed * DeltaTime::s_Deltatime;
+			if (Input::IsKeyDown(Keycode::KEY_W))
+				MovePosition(glm::vec3(-backV.x, backV.y, -backV.z));
+			if (Input::IsKeyDown(Keycode::KEY_S))
+				MovePosition(glm::vec3(backV.x, -backV.y, backV.z));
+			if (Input::IsKeyDown(Keycode::SPACE))
+				MovePosition(glm::vec3(0, 5.0f * DeltaTime::s_Deltatime, 0));
+			if (Input::IsKeyDown(Keycode::KEY_C))
+				MovePosition(glm::vec3(0, -5.0f * DeltaTime::s_Deltatime, 0));
+		
+			Window::GetInstance().DisableCursor();
+			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
+			delta *= 0.2;
+			glm::vec3 rot = Window::GetInstance().GetCamera().GetRotation();
+			Window::GetInstance().GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
+		
+			glm::vec2 rightVec;
+			rightVec = { -(backV.z * 1) / (backV.x) ,1 };
+			if (isinf(rightVec.x))
+				rightVec = {1,0};
+			rightVec *= (1.f / sqrt(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
+			rightVec *= DeltaTime::s_Deltatime * speed;
+			double angle = (m_Yaw * 360.0f) / (2 * 3.14159f);
+			if (Input::IsKeyDown(Keycode::KEY_D)) 
+			{
+				if (angle > 0 && angle < 180)
+					MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
+				else if (angle >= 180)
+					MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+				else if (angle <= -180)
+					MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
+				else
+					MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+
+			}
+			if (Input::IsKeyDown(Keycode::KEY_A))
+			{
+				if (angle > 0 && angle < 180)
+					MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+				else if (angle >= 180)
+					MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
+				else if (angle <= -180)
+					MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
+				else
+					MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
 			}
 		}
-		Increase();
 	}
-	else {
-		float speed = 2.f;
-		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) {
-			speed *= 10;
-		}
-		backV *= speed * DeltaTime::s_Deltatime;
-		if (Input::IsKeyDown(Keycode::KEY_W)) {
-			MovePosition(glm::vec3(-backV.x, backV.y, -backV.z));
-		}
-		if (Input::IsKeyDown(Keycode::KEY_S)) {
-			MovePosition(glm::vec3(backV.x, -backV.y, backV.z));
-		}
-		if (Input::IsKeyDown(Keycode::SPACE)) {
-			MovePosition(glm::vec3(0, 5.0f * DeltaTime::s_Deltatime, 0));
-		}
-		if (Input::IsKeyDown(Keycode::KEY_C)) {
-			MovePosition(glm::vec3(0, -5.0f * DeltaTime::s_Deltatime, 0));
-		}
-		
-		Window::GetInstance().DisableCursor();
-		glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
-		delta *= 0.2;
-		glm::vec3 rot = Window::GetInstance().GetCamera().GetRotation();
-		Window::GetInstance().GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
-		
-		glm::vec2 rightVec;
-		rightVec = { -(backV.z * 1) / (backV.x) ,1 };
-		if (isinf(rightVec.x))
-			rightVec = {1,0};
-		rightVec *= (1.f / sqrt(rightVec.x * rightVec.x + rightVec.y * rightVec.y));
-		rightVec *= DeltaTime::s_Deltatime * speed;
-		double angle = (m_Yaw * 360.0f) / (2 * 3.14159f);
-		if (Input::IsKeyDown(Keycode::KEY_D)) {
-			if (angle > 0 && angle < 180)
-				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
-			else if (angle >= 180)
-				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
-			else if (angle <= -180)
-				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
-			else
-				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
-
-		}
-		if (Input::IsKeyDown(Keycode::KEY_A)) {
-			if (angle > 0 && angle < 180)
-				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
-			else if (angle >= 180)
-				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
-			else if (angle <= -180)
-				MovePosition(glm::vec3(rightVec.x, 0, rightVec.y));
-			else
-				MovePosition(glm::vec3(-rightVec.x, 0, -rightVec.y));
-		}
-	}
-	}
-	else {
+	else 
+	{
 		Window::GetInstance().ShowCursor();
 	}
 	SetOnStart();
 }
 
-float Camera::GetRationWH() const
-{ return ((float)ViewPort::GetInstance()->GetSize()[0] / (float)ViewPort::GetInstance()->GetSize()[1]); }
-float Camera::GetRationHW() const
-{ return ((float)ViewPort::GetInstance()->GetSize()[1] / (float)ViewPort::GetInstance()->GetSize()[0]); }
+float Camera::GetRationWH() const { return ((float)ViewPort::GetInstance()->GetSize()[0] / (float)ViewPort::GetInstance()->GetSize()[1]); }
+float Camera::GetRationHW() const { return ((float)ViewPort::GetInstance()->GetSize()[1] / (float)ViewPort::GetInstance()->GetSize()[0]); }
 

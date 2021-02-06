@@ -13,10 +13,8 @@ Doom::TextureAtlas::~TextureAtlas()
 Doom::TextureAtlas * Doom::TextureAtlas::CreateTextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture * texture)
 {
 	TextureAtlas* ta = GetTextureAtlas(name);
-	if (ta == nullptr)
-		return new TextureAtlas(name, spriteWidth, spriteHeight, texture);
-	else
-		return ta;
+	if (ta == nullptr) return new TextureAtlas(name, spriteWidth, spriteHeight, texture);
+	else return ta;
 }
 
 float * Doom::TextureAtlas::GetSpriteUVs(float x, float y)
@@ -35,30 +33,29 @@ float * Doom::TextureAtlas::GetSpriteUVs(float x, float y)
 Doom::TextureAtlas * Doom::TextureAtlas::GetTextureAtlas(std::string name)
 {
 	auto iter = s_TextureAtlases.find(name);
-	if (iter != s_TextureAtlases.end()) {
-		return iter->second;
-	}
-	else
-		return nullptr;
+	if (iter != s_TextureAtlases.end()) return iter->second;
+	else return nullptr;
 }
 
 Doom::TextureAtlas * Doom::TextureAtlas::GetTextureAtlas(int id)
 {
 	int count = 0;
-	for (auto iter = s_TextureAtlases.begin(); iter != s_TextureAtlases.end(); iter++) {
-		if (count == id)
-			return iter->second;
+	for (auto iter = s_TextureAtlases.begin(); iter != s_TextureAtlases.end(); iter++) 
+	{
+		if (count == id) return iter->second;
 		count++;
 	}
 	return nullptr;
 }
 
-const char** Doom::TextureAtlas::GetTextureAtlases() {
+const char** Doom::TextureAtlas::GetTextureAtlases() 
+{
 	if (s_NamesOfTextureAtlases != nullptr)
 		delete[] s_NamesOfTextureAtlases;
 	s_NamesOfTextureAtlases = new const char*[s_TextureAtlases.size()];
 	uint32_t count = 0;
-	for (auto iter = s_TextureAtlases.begin(); iter != s_TextureAtlases.end(); iter++) {
+	for (auto iter = s_TextureAtlases.begin(); iter != s_TextureAtlases.end(); iter++) 
+	{
 		s_NamesOfTextureAtlases[count] = iter->second->m_Name.c_str();
 		count++;
 	}

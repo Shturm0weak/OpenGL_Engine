@@ -21,7 +21,8 @@ void ThreadPool::InfiniteLoopFunction()
 	for (unsigned int i = 0u; i < m_NumThreads; ++i)
 	{
 		m_Threads.emplace_back([=] {
-				while (true) {
+				while (true) 
+				{
 					if (m_MainId == std::this_thread::get_id())
 						return;
 					auto iter = m_IsThreadBusy.find(std::this_thread::get_id());
@@ -30,9 +31,7 @@ void ThreadPool::InfiniteLoopFunction()
 					{
 						std::unique_lock <std::mutex> umutex(m_Mutex);
 						m_CondVar.wait(umutex, [=] { return m_IsStoped || !m_Tasks.empty(); });
-						if (m_Tasks.empty() && m_IsStoped){
-							break;
-						}
+						if (m_Tasks.empty() && m_IsStoped) break;
 
 						task = std::move(m_Tasks.front());
 						m_Tasks.pop(); 
@@ -56,14 +55,16 @@ void ThreadPool::Shutdown()
 		m_IsStoped = true;
 	}
 	m_CondVar.notify_all();
-	for (thread& thread : m_Threads) {
+	for (thread& thread : m_Threads)
+	{
 		thread.detach();
 	}
 }
 
 void ThreadPool::Init()
 {
-	if (m_IsInitialized == false) {
+	if (m_IsInitialized == false)
+	{
 		s_Instance = new ThreadPool(thread::hardware_concurrency());
 		std::cout << BOLDGREEN << "Initialized Thread pool" << RESET << std::endl;
 		m_IsInitialized = true;

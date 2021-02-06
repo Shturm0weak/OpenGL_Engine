@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Character.h"
 #include "Render/Batch.h"
 #include <stdarg.h>

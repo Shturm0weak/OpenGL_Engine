@@ -27,4 +27,5 @@ namespace Doom {
 
 		Ray2D(glm::vec2 start, glm::vec2 direction, float length);
 	};
+
 }

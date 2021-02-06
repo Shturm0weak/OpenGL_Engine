@@ -4,7 +4,8 @@
 
 void Doom::ScriptComponent::AssignScript(const char* filePath)
 {
-	if (m_LState != nullptr) {
+	if (m_LState != nullptr) 
+	{
 		delete m_LState;
 		m_LState = nullptr;
 	}
@@ -31,7 +32,6 @@ Doom::ScriptComponent::ScriptComponent()
 
 Doom::ScriptComponent::~ScriptComponent()
 {
-	if (m_LState != nullptr) {
+	if (m_LState != nullptr)
 		delete m_LState;
-	}
 }

@@ -40,20 +40,24 @@ ParticleSystem::ParticleSystem(float x, float y ,int amount,double lifeTime,floa
 	}
 }
 
-void ParticleSystem::Play() {
+void ParticleSystem::Play()
+{
 	for (unsigned int i = 0; i < AmountOfParticles; i++)
 	{
-		if (particlesPool[i].timeToSpawn < timer && !particlesPool[i].isDead) {
+		if (particlesPool[i].timeToSpawn < timer && !particlesPool[i].isDead)
+		{
 			particlesPool[i].Enable = true;
 		}
-		if (particlesPool[i].lifeTime > this->lifeTime && !particlesPool[i].isDead) {
+		if (particlesPool[i].lifeTime > this->lifeTime && !particlesPool[i].isDead)
+		{
 			particlesPool[i].Enable = false;
 			particlesPool[i].lifeTime = 0;
 			particlesPool[i].isDead = true;
 			if (isLoop)
 				Restart();
 		}
-		if (particlesPool[i].Enable) {
+		if (particlesPool[i].Enable) 
+		{
 			particlesPool[i].x += (particlesPool[i].speeddirx * speedMultiplier) * DeltaTime::s_Deltatime;
 			particlesPool[i].y += (particlesPool[i].speeddiry * speedMultiplier - gravityAcceleration) * DeltaTime::s_Deltatime;
 
@@ -61,7 +65,8 @@ void ParticleSystem::Play() {
 
 			gravityAcceleration += (0.05 * DeltaTime::s_Deltatime) * gravity;
 			particlesPool[i].lifeTime += DeltaTime::s_Deltatime;
-			if (isRotating) {
+			if (isRotating) 
+			{
 				float angle = (-theta0 * (2 * 3.14159f) / 360.0f);
 				particlesPool[i].view = glm::rotate(particlesPool[i].view, angle * DeltaTime::s_Deltatime, glm::vec3(0, 0, 1));
 			}
@@ -75,7 +80,8 @@ void ParticleSystem::Play() {
 	timer += DeltaTime::s_Deltatime;
 }
 
-void ParticleSystem::Restart() {
+void ParticleSystem::Restart()
+{
 	std::random_device rd;
 	std::mt19937 e2(rd());
 	for (unsigned int i = 0; i < AmountOfParticles; i++)

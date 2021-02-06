@@ -2,8 +2,7 @@
 
 namespace Doom {
 
-	enum DOOM_API Keycode
-	{
+	enum DOOM_API Keycode {
 		SPACE = 32,
 
 		APOSTROPHE = 39, /* ' */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef  SPRITERENDERER_H
-#define SPRITERENDERER_H
 
 #include "IRenderer.h"
 #include "Transform.h"
@@ -61,7 +59,5 @@ namespace Doom {
 		void ReverseUVs();
 		void SetUVs(float* uvs);
 		void Setlayer(int layer);
-
 	};
 }
-#endif

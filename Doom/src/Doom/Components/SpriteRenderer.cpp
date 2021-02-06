@@ -30,9 +30,8 @@ Doom::SpriteRenderer::SpriteRenderer()
 Doom::SpriteRenderer::~SpriteRenderer()
 {
 	auto iter = std::find(Renderer::s_Objects2d.begin(), Renderer::s_Objects2d.end(), this);
-	if (iter != Renderer::s_Objects2d.end()) {
+	if (iter != Renderer::s_Objects2d.end()) 
 		Renderer::s_Objects2d.erase(iter);
-	}
 }
 
 void Doom::SpriteRenderer::operator=(const SpriteRenderer& rhs)
@@ -47,10 +46,13 @@ void Doom::SpriteRenderer::GetTransformedVertices(float* buffer)
 	glm::mat4 scaleXview = tr->m_ViewMat4 * tr->m_ScaleMat4;
 	float* pSource;
 	pSource = (float*)glm::value_ptr(scaleXview);
-	for (unsigned int i = 0; i < 4; i++) {
-		for (unsigned int j = 0; j < 4; j++) {
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		for (unsigned int j = 0; j < 4; j++) 
+		{
 			WorldVerPos[i * 4 + j] = 0;
-			for (unsigned int k = 0; k < 4; k++) {
+			for (unsigned int k = 0; k < 4; k++)
+			{
 				WorldVerPos[i * 4 + j] += m_Mesh2D[i * 4 + k] * pSource[k * 4 + j];
 			}
 		}

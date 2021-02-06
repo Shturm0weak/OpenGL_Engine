@@ -8,15 +8,15 @@ namespace Doom {
 	struct Triangle {
 		std::vector<glm::dvec2> verteces;
 
-		Triangle(glm::dvec2 a, glm::dvec2 b, glm::dvec2 c) {
+		Triangle(glm::dvec2 a, glm::dvec2 b, glm::dvec2 c)
+		{
 			verteces.push_back(a);
 			verteces.push_back(b);
 			verteces.push_back(c);
 		}
 	};
 
-	class FEM : public Application
-	{
+	class FEM : public Application {
 	public:
 
 		//TODO: Write array of 2 triangles try to sort and store them in appropriate way!!!

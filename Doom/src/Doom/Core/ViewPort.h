@@ -33,17 +33,17 @@ namespace Doom {
 		void Update();
 		glm::dvec2 GetFromWorldToScreenSpaceImpl(glm::vec2 pos);
 		glm::dvec2 GetFromWorldToScreenSpace(float x, float y);
-		inline glm::dvec2 GetMousePositionToScreenSpace() { return m_MousePosS; }
-		inline glm::dvec2 GetStaticMousePosition() { return m_StaticMousePos; }
-		inline glm::dvec2 GetMousePositionToWorldSpace() { return m_MousePosW; }
-		inline glm::dvec2 GetMouseDragDelta() { return m_MouseDragDelta; }
-		inline glm::vec2 GetViewPortPos() const { return m_ViewportPos; }
-		inline glm::vec2 GetSize() const { return m_Size; }
-		inline void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
-		inline void SetSize(glm::vec2 size) { m_Size = size; }
-		inline void SetViewPortPos(float x, float y) { m_ViewportPos.x = x; m_ViewportPos.y = y; }
-		inline void SetViewPortPos(glm::vec2 viewportPos) { m_ViewportPos = viewportPos; }
-		inline float GetAspectRatio() {return m_Size.x / m_Size.y;}
+		glm::dvec2 GetMousePositionToScreenSpace() { return m_MousePosS; }
+		glm::dvec2 GetStaticMousePosition() { return m_StaticMousePos; }
+		glm::dvec2 GetMousePositionToWorldSpace() { return m_MousePosW; }
+		glm::dvec2 GetMouseDragDelta() { return m_MouseDragDelta; }
+		glm::vec2 GetViewPortPos() const { return m_ViewportPos; }
+		glm::vec2 GetSize() const { return m_Size; }
+		void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
+		void SetSize(glm::vec2 size) { m_Size = size; }
+		void SetViewPortPos(float x, float y) { m_ViewportPos.x = x; m_ViewportPos.y = y; }
+		void SetViewPortPos(glm::vec2 viewportPos) { m_ViewportPos = viewportPos; }
+		float GetAspectRatio() {return m_Size.x / m_Size.y;}
 
 		friend class Doom::Editor;
 		friend class Doom::Window;

@@ -16,8 +16,7 @@ std::optional<std::string> Doom::FileDialogs::OpenFile(const char* filter)
 	ofn.nFilterIndex = 1;
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-	if (GetOpenFileNameA(&ofn) == TRUE)
-		return ofn.lpstrFile;
+	if (GetOpenFileNameA(&ofn) == TRUE) return ofn.lpstrFile;
 	return std::nullopt;
 }
 
@@ -37,7 +36,6 @@ std::optional<std::string> Doom::FileDialogs::SaveFile(const char* filter)
 	// Sets the default extension by extracting it from the filter
 	ofn.lpstrDefExt = strchr(filter, '\0') + 1;
 
-	if (GetSaveFileNameA(&ofn) == TRUE)
-		return ofn.lpstrFile;
+	if (GetSaveFileNameA(&ofn) == TRUE) return ofn.lpstrFile;
 	return std::nullopt;
 }

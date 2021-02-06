@@ -6,7 +6,8 @@ using namespace Doom;
 Doom::SphereCollider::~SphereCollider()
 {
 	auto iter = std::find(s_Spheres.begin(), s_Spheres.end(), this);
-	if (iter != s_Spheres.end()) {
+	if (iter != s_Spheres.end()) 
+	{
 		s_Spheres.erase(iter);
 	}
 }
@@ -43,10 +44,8 @@ void Doom::SphereCollider::Render()
 {
 	Transform* tr = m_OwnerOfCom->GetComponent<Transform>();
 	glm::vec3 scale = tr->GetScale();
-	if (m_IsInBoundingBox)
-		m_Radius = scale.y;
-	else
-		m_Radius = sqrtf(scale.x * scale.x + scale.y * scale.y + scale.z * scale.z);
+	if (m_IsInBoundingBox) m_Radius = scale.y;
+	else m_Radius = sqrtf(scale.x * scale.x + scale.y * scale.y + scale.z * scale.z);
 	this->m_Shader->Bind();
 	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 	this->m_Shader->SetUniformMat4f("u_Model", glm::translate(GetOwnerOfComponent()->m_Transform->m_PosMat4, m_Offset));
@@ -67,13 +66,13 @@ void Doom::SphereCollider::Render()
 }
 
 bool Doom::SphereCollider::IntersectSphereToSphere(SphereCollider* sp) {
-	if (sp == this)
-		return false;
+	if (sp == this) return false;
 	glm::vec3 pos1 = GetOwnerOfComponent()->GetPosition() + m_Offset;
 	glm::vec3 pos2 = sp->GetOwnerOfComponent()->GetPosition() + m_Offset;
 	glm::vec3 scale = GetOwnerOfComponent()->GetScale();
 	float d = glm::distance(pos1, pos2);
-	if (d < m_Radius + sp->m_Radius) {
+	if (d < m_Radius + sp->m_Radius) 
+	{
 		EventSystem::GetInstance().SendEvent(EventType::ONCOLLISION,(Listener*)GetOwnerOfComponent(),(void*)(sp));
 		return true;
 	}

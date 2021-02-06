@@ -10,7 +10,8 @@ Component* Doom::RectangleCollider2D::Create()
 	return new RectangleCollider2D();
 }
 
-RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
+RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y)
+{
 	this->m_OwnerOfCom = owner;
 	World::GetInstance().s_ColId++;
 	s_Collision2d.push_back(this);
@@ -22,22 +23,23 @@ RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y){
 Doom::RectangleCollider2D::~RectangleCollider2D()
 {
 	auto iter = std::find(s_Collision2d.begin(), s_Collision2d.end(), this);
-	if (iter != s_Collision2d.end()) {
+	if (iter != s_Collision2d.end()) 
 		s_Collision2d.erase(iter);
-	}
 }
 
-void RectangleCollider2D::CalculateRealVerPos() {
-
-	if (this == nullptr)
-		return;
+void RectangleCollider2D::CalculateRealVerPos() 
+{
+	if (this == nullptr) return;
 	float* pSource;
 	Transform* tr = GetOwnerOfComponent()->m_Transform;
 	pSource = (float*)glm::value_ptr(tr->m_ViewMat4 * tr->m_ScaleMat4);
-	for (unsigned int i = 0; i < 4; i++) {
-		for (unsigned int j = 0; j < 4; j++) {
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		for (unsigned int j = 0; j < 4; j++)
+		{
 			m_TransformedVerPos[i * 4 + j] = 0;
-			for (unsigned int k = 0; k < 4; k++) {
+			for (unsigned int k = 0; k < 4; k++)
+			{
 				m_TransformedVerPos[i * 4 + j] += m_Vertices[i * 2 + k] * pSource[k * 4 + j];
 			}
 		}
@@ -56,11 +58,13 @@ void Doom::RectangleCollider2D::CalculateEdges()
 	p.push_back(glm::vec2(m_TransformedVerPos[12] + ownerPos.x, m_TransformedVerPos[13] + ownerPos.y));
 }
 
-float* RectangleCollider2D::GetVertexPositions() {
+float* RectangleCollider2D::GetVertexPositions()
+{
 	return m_TransformedVerPos;
 }
 
-void RectangleCollider2D::SetOffset(float x, float y) {
+void RectangleCollider2D::SetOffset(float x, float y) 
+{
 	m_Offset.x = x;
 	m_Offset.y = y;
 }
@@ -141,25 +145,27 @@ void RectangleCollider2D::SetOffset(float x, float y) {
 	}
 }*/
 
-void RectangleCollider2D::IsCollidedSAT() {
+void RectangleCollider2D::IsCollidedSAT() 
+{
 	m_IsCollided = false;
-	if (this == nullptr) {
-		return;
-	}
-	if (m_Enable == true) {
+	if (this == nullptr) return;
+	if (m_Enable == true)
+	{
 		//for (size_t i = 0; i < 5; i++) //This is the temporary way to handle the error displacement of big ration of unit vector
 		//{
 		uint32_t sizeCol = s_Collision2d.size();
 		for (unsigned int i = 0; i < sizeCol; i++)
 		{
-			if (s_Collision2d[i]->m_Enable == true) {
+			if (s_Collision2d[i]->m_Enable == true) 
+			{
 				m_Col = s_Collision2d[i];
-				if (this != m_Col) {
-					if (m_Col == nullptr) {
-						return;
-					}
-					if (m_Col->m_IsTrigger) {
-						if (ShapeOverlap_SAT(*this, *m_Col)) {
+				if (this != m_Col) 
+				{
+					if (m_Col == nullptr) return;
+					if (m_Col->m_IsTrigger) 
+					{
+						if (ShapeOverlap_SAT(*this, *m_Col)) 
+						{
 							m_IsCollided = true;
 							m_CollidedObject = m_Col;
 							//std::cout << "Handle Collision " << GetOwnerOfComponent()->m_Name << "\n";
@@ -168,14 +174,13 @@ void RectangleCollider2D::IsCollidedSAT() {
 							//EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
 							EventSystem::GetInstance().SendEvent(EventType::ONCOLLISION, m_OwnerOfCom->m_Listener, (void*)this->m_CollidedObject);
 						}
-						else {
+						else 
+						{
 							m_IsCollided = false;
 							m_CollidedObject = nullptr;
 						}
 					}
-					else {
-						ShapeOverlap_SAT_STATIC(*this, *m_Col);
-					}
+					else ShapeOverlap_SAT_STATIC(*this, *m_Col);
 				}
 			}
 		//}
@@ -187,20 +192,18 @@ void RectangleCollider2D::IsCollidedDIAGS()
 {
 	m_IsCollided = false;
 	m_CollidedObject = nullptr;
-	if (this == nullptr) {
-		return;
-	}
-	if (m_Enable == true) {
+	if (this == nullptr) return;
+	if (m_Enable == true) 
+	{
 		uint32_t sizeCol = s_Collision2d.size();
 		for (unsigned int i = 0; i < sizeCol; i++)
 		{
-			if (s_Collision2d[i]->m_Enable == true) {
+			if (s_Collision2d[i]->m_Enable == true) 
+			{
 				m_Col = s_Collision2d[i];
-				if (this != m_Col) {
-					if (m_Col == nullptr) {
-						return;
-					}
-					
+				if (this != m_Col) 
+				{
+					if (m_Col == nullptr) return;
 					for (unsigned int p = 0; p < this->p.size(); p++)
 					{
 						glm::vec3 ownerPos = GetOwnerOfComponent()->m_Transform->GetPosition();
@@ -229,7 +232,8 @@ void RectangleCollider2D::IsCollidedDIAGS()
 								m_IsCollided = true;
 							}
 						}
-						if (m_IsTrigger == false) {
+						if (m_IsTrigger == false) 
+						{
 							m_Transform = m_OwnerOfCom->m_ComponentManager->GetComponent<Transform>();
 							m_Transform->Translate(m_OwnerOfCom->GetPosition().x - m_Displacement.x, m_OwnerOfCom->GetPosition().y - m_Displacement.y);
 							m_Transform = nullptr;
@@ -302,8 +306,7 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 			// Calculate actual overlap along projected axis, and store the minimum
 			overlap = std::fmin(std::fmin(max_r1, max_r2) - std::fmax(min_r1, min_r2), overlap);
 
-			if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
-				return false;
+			if (!(max_r2 >= min_r1 && max_r1 >= min_r2)) return false;
 		}
 	}
 
@@ -384,8 +387,7 @@ bool RectangleCollider2D::ShapeOverlap_SAT(RectangleCollider2D &r1, RectangleCol
 			// Calculate actual overlap along projected axis, and store the minimum
 			overlap = std::fmin(std::fmin(max_r1, max_r2) - std::fmax(min_r1, min_r2), overlap);
 
-			if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
-				return false;
+			if (!(max_r2 >= min_r1 && max_r1 >= min_r2)) return false;
 		}
 	}
 	return true;

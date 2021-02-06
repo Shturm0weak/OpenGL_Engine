@@ -3,15 +3,18 @@
 
 using namespace Doom;
 
-VertexArray::VertexArray() {
+VertexArray::VertexArray()
+{
 	glGenVertexArrays(1, &m_RendererID);
 }
 
-VertexArray::~VertexArray(){
+VertexArray::~VertexArray()
+{
 	glDeleteVertexArrays(1, &m_RendererID);
 }
 
-void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout,const GLuint offsetOfGlVertexAttribArray,const GLuint devisor) {
+void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout,const GLuint offsetOfGlVertexAttribArray,const GLuint devisor) 
+{
 	Bind();
 	vb.Bind();
 	const auto& elements = layout.GetElements();
@@ -26,11 +29,13 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 	}
 }
 
-void VertexArray::Bind() const {
+void VertexArray::Bind() const
+{
 	glBindVertexArray(m_RendererID);
 }
 
-void VertexArray::UnBind() const {
+void VertexArray::UnBind() const
+{
 	glBindVertexArray(0);
 }
 

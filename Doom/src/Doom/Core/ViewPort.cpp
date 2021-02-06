@@ -26,15 +26,16 @@ void Doom::ViewPort::Update()
 	else
 		ViewPort::GetInstance()->m_IsActive = false;
 
-	if (ImGui::IsWindowHovered())
+	if (ImGui::IsWindowHovered()) 
 		ViewPort::GetInstance()->m_IsHovered = true;
 	else
 		ViewPort::GetInstance()->m_IsHovered = false;
-	if (ViewPort::GetInstance()->GetSize().x != ImGui::GetWindowSize().x || ViewPort::GetInstance()->GetSize().y != ImGui::GetWindowSize().y) {
+	if (ViewPort::GetInstance()->GetSize().x != ImGui::GetWindowSize().x || ViewPort::GetInstance()->GetSize().y != ImGui::GetWindowSize().y) 
+	{
 		ViewPort::GetInstance()->SetSize(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
 		ViewPort::GetInstance()->m_IsViewportResized = true;
 	}
-	else
+	else 
 		ViewPort::GetInstance()->m_IsViewportResized = false;
 
 	ViewPort::GetInstance()->SetViewPortPos(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
@@ -47,7 +48,8 @@ void Doom::ViewPort::Update()
 	//ViewPort::GetInstance()->GetViewPortPos().y), ImVec2(ViewPort::GetInstance()->GetViewPortPos().x + ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetViewPortPos().y + ViewPort::GetInstance()->GetSize().y), ImVec2(0, 1), ImVec2(1, 0));
 
 	//Need to fix Rotation doesn't change orientation of gizmos
-	if (Editor::GetInstance().go != nullptr) {
+	if (Editor::GetInstance().go != nullptr) 
+	{
 		Transform* tr = Editor::GetInstance().go->GetComponent<Transform>();
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
@@ -63,7 +65,8 @@ void Doom::ViewPort::Update()
 		ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
 			(ImGuizmo::OPERATION)m_GizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
-		if(ImGuizmo::IsUsing()){
+		if(ImGuizmo::IsUsing())
+		{
 			glm::vec3 translation, rotation, scale;
 			Utils::DecomposeTransform(transform, translation, rotation, scale);
 			glm::vec3 deltaRotation = (rotation) - (tr->GetRotation());

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef  COLLISION_H
-#define COLLISION_H
 
 #include "../ECS/Component.h"
 #include "../Core/EventSystem.h"
@@ -70,4 +68,3 @@ namespace Doom {
 	};
 
 }
-#endif

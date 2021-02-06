@@ -6,11 +6,13 @@ using namespace Doom;
 
 Mesh * StlLoader::LoadMesh(std::string name, std::string filePath)
 {
-	if (StlFileHasASCIIFormat(filePath)) {
+	if (StlFileHasASCIIFormat(filePath)) 
+	{
 		return ReadFromSTLASCII(name,filePath);
 		//std::cout << "ASCII\n";
 	}
-	else {
+	else 
+	{
 		return ReadFromSTLBinary(name,filePath);
 		//std::cout << "Binary\n";
 	}
@@ -28,7 +30,8 @@ Mesh* Doom::StlLoader::ReadFromSTLASCII(std::string name, std::string filePath)
 	{
 		std::string token;
 		in >> token;
-		if (token == "normal") {
+		if (token == "normal") 
+		{
 			for (uint32_t i = 0; i < 3; i++)
 			{
 				std::string value;
@@ -36,7 +39,8 @@ Mesh* Doom::StlLoader::ReadFromSTLASCII(std::string name, std::string filePath)
 				normals.push_back(std::stod(value));
 			}
 		}
-		if (token == "vertex") {
+		if (token == "vertex") 
+		{
 			indicesSize++;
 			for (uint32_t i = 0; i < 3; i++)
 			{

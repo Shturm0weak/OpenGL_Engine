@@ -1,5 +1,4 @@
-#ifndef BASIC2D_H
-#define BASIC2D_H
+#pragma once
 
 #include "../ECS/ComponentManager.h"
 #include "../Core/Listener.h"
@@ -28,7 +27,6 @@ namespace Doom {
 		friend class Doom::Batch;
 		friend class Doom::Renderer;
 		friend class Doom::Ray2D;
-
 	public:
 
 		Transform* m_Transform = nullptr;
@@ -53,17 +51,20 @@ namespace Doom {
 		void RemoveChild(void* child);
 
 		template <typename T>
-		T* GetComponent() {
+		T* GetComponent() 
+		{
 			return m_ComponentManager->GetComponent<T>();
 		}
 
 		template<typename T>
-		T* AddComponent() {
+		T* AddComponent() 
+		{
 			return m_ComponentManager->AddComponent<T>();
 		}
 
 		template<typename T>
-		void RemoveComponent() {
+		void RemoveComponent()
+		{
 			m_ComponentManager->RemoveComponent<T>();
 		}
 
@@ -75,6 +76,4 @@ namespace Doom {
 	};
 
 }
-
-#endif 
 

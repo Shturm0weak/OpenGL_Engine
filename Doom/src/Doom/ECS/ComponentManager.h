@@ -1,6 +1,4 @@
 #pragma once
-#ifndef COMPONENTMANAGER_H
-#define COMPONENTMANAGER_H
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -30,13 +28,16 @@ namespace Doom {
 		std::vector <Component*> m_Components;
 
 		template<class T>
-		void CopyComponent(ComponentManager& rhs) {
-			if (rhs.GetComponent<T>() != nullptr) {
+		void CopyComponent(ComponentManager& rhs) 
+		{
+			if (rhs.GetComponent<T>() != nullptr)
+			{
 				AddComponent<T>()->operator=(*rhs.GetComponent<T>());
 			}
 		}
 
-		void Copy(ComponentManager& rhs) {
+		void Copy(ComponentManager& rhs) 
+		{
 			CopyComponent<Transform>(rhs);
 			CopyComponent<PointLight>(rhs);
 			CopyComponent<DirectionalLight>(rhs);
@@ -50,13 +51,18 @@ namespace Doom {
 		friend class Editor;
 	public:
 
-		ComponentManager(ComponentManager& rhs) {
+		ComponentManager(ComponentManager& rhs) 
+		{
 			Copy(rhs);
 		}
-		ComponentManager(GameObject* owner) {
+
+		ComponentManager(GameObject* owner)
+		{
 			this->m_Owner = owner;
 		}
-		~ComponentManager() {
+
+		~ComponentManager()
+		{
 			delete[] m_NamesOfMembers;
 
 			std::vector<ScriptComponent*> scripts = GetScripts();
@@ -71,13 +77,15 @@ namespace Doom {
 			}
 		}
 
-		void operator=(ComponentManager& rhs) {
+		void operator=(ComponentManager& rhs)
+		{
 			Copy(rhs);
 		}
 
 		inline int GetAmountOfComponents() { return m_Components.size(); }
 
-		const char** GetItems() {
+		const char** GetItems() 
+		{
 			if (m_NamesOfMembers != nullptr)
 				delete[] m_NamesOfMembers;
 			m_NamesOfMembers = new const char* [m_Components.size()];
@@ -90,7 +98,8 @@ namespace Doom {
 
 		std::vector<ScriptComponent*> GetScripts() {
 			std::vector<ScriptComponent*> scripts;
-			for (Component* com : m_Components) {
+			for (Component* com : m_Components)
+			{
 				if (com->m_Type == Utils::GetComponentTypeName<ScriptComponent>())
 					scripts.push_back(static_cast<ScriptComponent*>(com));
 			}
@@ -98,16 +107,17 @@ namespace Doom {
 		}
 
 		template <class T>
-		void RemoveComponent() {
+		void RemoveComponent() 
+		{
 			T* com = nullptr;
 			com = GetComponent<T>();
-			if (com == nullptr)
-				return;
+			if (com == nullptr) return;
 			int _id = com->m_Id;
 			if (com->m_Id < m_Components.size())
 				m_Components.erase(m_Components.begin() + com->m_Id);
 			unsigned int _size = m_Components.size();
-			if (com->m_Id != _size) {
+			if (com->m_Id != _size) 
+			{
 				for (unsigned int i = com->m_Id; i < _size; i++)
 				{
 					m_Components[i]->m_Id = i;
@@ -117,14 +127,16 @@ namespace Doom {
 			return;
 		}
 
-		void RemoveComponent(Component* com) {
+		void RemoveComponent(Component* com)
+		{
 			if (com == nullptr)
 				return;
 			int _id = com->m_Id;
 			if (com->m_Id < m_Components.size())
 				m_Components.erase(m_Components.begin() + com->m_Id);
 			unsigned int _size = m_Components.size();
-			if (com->m_Id != _size) {
+			if (com->m_Id != _size) 
+			{
 				for (unsigned int i = com->m_Id; i < _size; i++)
 				{
 					m_Components[i]->m_Id = i;
@@ -137,8 +149,10 @@ namespace Doom {
 		template<class T>
 		T* GetComponent()
 		{
-			for (auto com : m_Components) {
-				if (com->m_Type == Utils::GetComponentTypeName<T>()) {
+			for (auto com : m_Components) 
+			{
+				if (com->m_Type == Utils::GetComponentTypeName<T>())
+				{
 					return static_cast<T*>(com);
 				}
 			}
@@ -150,8 +164,10 @@ namespace Doom {
 		}
 
 		template<class T>
-		T* AddComponent() {
-			if ((GetComponent<T>() != nullptr && GetComponent<T>()->m_Type == Utils::GetComponentTypeName<ScriptComponent>()) || GetComponent<T>() == nullptr) {
+		T* AddComponent() 
+		{
+			if ((GetComponent<T>() != nullptr && GetComponent<T>()->m_Type == Utils::GetComponentTypeName<ScriptComponent>()) || GetComponent<T>() == nullptr)
+			{
 				Component* object = T::Create();
 				object->m_OwnerOfCom = (this->m_Owner);
 				object->SetType(Utils::GetComponentTypeName<T>());
@@ -166,4 +182,3 @@ namespace Doom {
 		}
 	};
 }
-#endif

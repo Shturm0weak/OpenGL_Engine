@@ -50,8 +50,10 @@ void Doom::CubeCollider3D::InitMesh()
 	};
 	uint32_t* indices = new uint32_t[36];
 	for (size_t i = 0; i < 36; i++)
+	{
 		indices[i] = i;
-	Mesh* mesh = new Mesh("CubeCollider","src/Mesh/Primitives/cube.fbx");
+	}
+	Mesh* mesh = new Mesh("CubeCollider", "src/Mesh/Primitives/cube.fbx");
 	mesh->m_VertAttrib = vertices;
 	mesh->m_Indices = indices;
 	MeshManager::GetInstance().AddMesh(mesh);
@@ -63,12 +65,12 @@ Doom::CubeCollider3D::~CubeCollider3D()
 	delete m_Ib;
 	delete m_Va;
 	auto iter = std::find(s_Colliders.begin(), s_Colliders.end(), this);
-	if (iter != s_Colliders.end()) {
+	if (iter != s_Colliders.end()) 
 		s_Colliders.erase(iter);
-	}
 }
 
-CubeCollider3D::CubeCollider3D() {
+CubeCollider3D::CubeCollider3D() 
+{
 	m_Mesh = MeshManager::GetInstance().GetMesh("CubeCollider");
 	m_Layout = new VertexBufferLayout();
 	m_Vb = new VertexBuffer(m_Mesh->m_VertAttrib, 36 * 3 * sizeof(float));

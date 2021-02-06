@@ -5,7 +5,7 @@ using namespace Doom;
 void SoundManager::CreateSoundAsset(std::string name,Sound * sound)
 {
 	alGenBuffers(1, &sound->m_Buffer);
-	alBufferData(sound->m_Buffer, AL_FORMAT_STEREO16, sound->soundBuffer, sound->numberOfSamples * sound->m_Channels * 2, sound->m_SampleRate);
+	alBufferData(sound->m_Buffer, AL_FORMAT_STEREO16, sound->m_SoundBuffer, sound->m_NumberOfSamples * sound->m_Channels * 2, sound->m_SampleRate);
 	alGenSources(1, &sound->m_Source);
 	alSourcei(sound->m_Source, AL_BUFFER, sound->m_Buffer);
 	s_Sounds.insert(std::make_pair(name,sound));

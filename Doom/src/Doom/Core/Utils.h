@@ -8,16 +8,19 @@ namespace fs = std::filesystem;
 
 namespace Utils {
 
-	static std::string GetNameFromFilePath(const std::string& path, int resolutionLength = 3) {
+	static std::string GetNameFromFilePath(const std::string& path, int resolutionLength = 3)
+	{
 		int index = path.find_last_of("/");
 		if (index == -1)
 			index = path.find_last_of("\\");
 		return path.substr(index + 1, path.length() - index - 2 - resolutionLength);
 	}
 
-	static void LoadMeshesFromFolder(const std::string& path) {
+	static void LoadMeshesFromFolder(const std::string& path)
+	{
 		std::vector<std::string> meshes;
-		for (const auto & entry : fs::directory_iterator(path)) {
+		for (const auto & entry : fs::directory_iterator(path))
+		{
 			meshes.push_back(entry.path().string());
 			size_t index = 0;
 			index = meshes.back().find("\\", index);
@@ -26,9 +29,11 @@ namespace Utils {
 		}
 	}
 
-	static void LoadShadersFromFolder(const std::string& path) {
+	static void LoadShadersFromFolder(const std::string& path) 
+	{
 		std::vector<std::string> shaders;
-		for (const auto & entry : fs::directory_iterator(path)) {
+		for (const auto & entry : fs::directory_iterator(path))
+		{
 			shaders.push_back(entry.path().string());
 			size_t index = 0;
 			index = shaders.back().find("\\", index);
@@ -37,11 +42,14 @@ namespace Utils {
 		}
 	}
 
-	static void LoadTexturesFromFolder(const std::string& path) {
+	static void LoadTexturesFromFolder(const std::string& path)
+	{
 		std::vector<std::string> textures;
-		for (const auto & entry : fs::directory_iterator(path)) {
+		for (const auto & entry : fs::directory_iterator(path)) 
+		{
 			std::string pathToTexture = entry.path().string();
-			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length())
+			{
 				textures.push_back(entry.path().string());
 				size_t index = 0;
 				index = textures.back().find("\\", index);
@@ -51,9 +59,11 @@ namespace Utils {
 		}
 	}
 
-	static std::vector<std::string> GetFilesName(const std::string& path, const char* filter) {
+	static std::vector<std::string> GetFilesName(const std::string& path, const char* filter)
+	{
 		std::vector<std::string> files;
-		for (const auto& entry : fs::directory_iterator(path)) {
+		for (const auto& entry : fs::directory_iterator(path)) 
+		{
 			std::string pathToTexture = entry.path().string();
 			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
 				files.push_back(entry.path().string());
@@ -62,12 +72,14 @@ namespace Utils {
 		return files;
 	}
 
-	static glm::vec3 GetPosition(glm::mat4& pos) {
+	static glm::vec3 GetPosition(glm::mat4& pos) 
+	{
 		float* matPtr = glm::value_ptr(pos);
 		return glm::vec3(matPtr[12], matPtr[13], matPtr[14]);
 	}
 
-	static glm::vec3 GetScale(glm::mat4& scale) {
+	static glm::vec3 GetScale(glm::mat4& scale) 
+	{
 		float* matPtr = glm::value_ptr(scale);
 		return glm::vec3(matPtr[0], matPtr[5], matPtr[10]);
 	}
@@ -82,8 +94,7 @@ namespace Utils {
 		mat4 LocalMatrix(transform);
 
 		// Normalize the matrix.
-		if (epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), epsilon<T>()))
-			return false;
+		if (epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), epsilon<T>())) return false;
 
 		// First, isolate perspective.  This is the messiest.
 		if (
@@ -131,11 +142,13 @@ namespace Utils {
 #endif
 
 		rotation.y = asin(-Row[0][2]);
-		if (cos(rotation.y) != 0) {
+		if (cos(rotation.y) != 0)
+		{
 			rotation.x = atan2(Row[1][2], Row[2][2]);
 			rotation.z = atan2(Row[0][1], Row[0][0]);
 		}
-		else {
+		else
+		{
 			rotation.x = atan2(-Row[2][0], Row[1][1]);
 			rotation.z = 0;
 		}
@@ -143,22 +156,26 @@ namespace Utils {
 	}
 
 	template<class T>
-	std::map<char*, uint32_t>::iterator PreAllocateMemory(std::map<char*, uint32_t>& memoryPool, std::vector<char*> freeMemory) {
+	std::map<char*, uint32_t>::iterator PreAllocateMemory(std::map<char*, uint32_t>& memoryPool, std::vector<char*> freeMemory)
+	{
 		std::map<char*, uint32_t>::iterator iter;
-		if (freeMemory.size() > 0) {
+		if (freeMemory.size() > 0)
+		{
 			for (auto iterMP = memoryPool.begin(); iterMP != memoryPool.end(); iterMP++)
 			{
 				if((uint64_t)(iterMP->first) < (uint64_t)freeMemory.back() && (uint64_t)freeMemory.back() < (uint64_t)(iterMP->first) + MAX_PREALLOCATED_INSTANCES)
 					iter = iterMP;
 			}
 		}
-		else if (memoryPool.size() == 0) {
+		else if (memoryPool.size() == 0)
+		{
 			char* newPreAllocMemory = new char[MAX_PREALLOCATED_INSTANCES * sizeof(T)];
 			memoryPool.insert(std::make_pair(newPreAllocMemory, 0));
 		}
 		char* memoryPtr = memoryPool.rbegin()->first;
 		iter = memoryPool.find(memoryPtr);
-		if (iter->second == MAX_PREALLOCATED_INSTANCES) {
+		if (iter->second == MAX_PREALLOCATED_INSTANCES) 
+		{
 			char* newPreAllocMemory = new char[MAX_PREALLOCATED_INSTANCES * sizeof(T)];
 			iter = memoryPool.insert(std::make_pair(newPreAllocMemory, 0)).first;
 			memoryPtr = newPreAllocMemory;
@@ -167,7 +184,8 @@ namespace Utils {
 	}
 
 	template<typename T>
-	static std::string GetComponentTypeName() {
+	static std::string GetComponentTypeName()
+	{
 		std::string name = typeid(T).name();
 		name = name.substr(6);
 		return name;

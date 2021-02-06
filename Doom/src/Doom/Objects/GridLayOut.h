@@ -10,7 +10,8 @@ namespace Doom {
 		float m_Length = 50;
 	public:
 
-		GridLayOut() {
+		GridLayOut() 
+		{
 			this->m_Name = "Grid";
 			this->m_Enable = false;
 			Line::s_Width = 3;

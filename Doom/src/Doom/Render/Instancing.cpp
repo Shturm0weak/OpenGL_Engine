@@ -76,7 +76,8 @@ void Doom::Instancing::Render()
 		}
 
 		m_Shader->SetUniform1i("u_DiffuseTexture", 0);
-		if (iter->second[0]->m_IsUsingNormalMap) {
+		if (iter->second[0]->m_IsUsingNormalMap) 
+		{
 			glBindTextureUnit(1, iter->second[0]->m_NormalMapTexture->m_RendererID);
 			m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
@@ -159,7 +160,8 @@ void Doom::Instancing::BakeShadows()
 		m_CondVar.wait(lk, [=] {
 			for (uint32_t i = 0; i < m_NThreads; i++)
 			{
-				if (m_Ready[i] == false) {
+				if (m_Ready[i] == false)
+				{
 					return false;
 				}
 			}
@@ -204,7 +206,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 		if (objsSize == 0)
 			continue;
 
-		if (gliter->second.m_PrevObjectSize != objsSize && gliter->second.m_VertAttrib == nullptr) {
+		if (gliter->second.m_PrevObjectSize != objsSize && gliter->second.m_VertAttrib == nullptr)
+		{
 			delete[] gliter->second.m_VertAttrib;
 			gliter->second.m_VertAttrib = nullptr;
 			gliter->second.m_VertAttrib = new float[objsSize * m_SizeOfAttribs];

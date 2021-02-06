@@ -17,7 +17,8 @@ using namespace Doom;
 
 #define _IS_GAME_BUILD
 
-EntryPoint::EntryPoint(Doom::Application* app) {
+EntryPoint::EntryPoint(Doom::Application* app)
+{
 	app == nullptr ? new Application : m_App = app;
 	World::GetInstance().s_Application = m_App;
 
@@ -49,7 +50,8 @@ EntryPoint::EntryPoint(Doom::Application* app) {
 	window.m_FrameBufferColor->UnBind();
 	window.m_FrameBufferBlur.push_back(new FrameBuffer(size[0], size[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
 	window.m_FrameBufferBlur.push_back(new FrameBuffer(size[0], size[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
-	if (this->m_App->m_Type == TYPE_3D) {
+	if (this->m_App->m_Type == TYPE_3D) 
+	{
 		//GridLayOut* grid = new GridLayOut();
 		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
 	}
@@ -64,7 +66,8 @@ void EntryPoint::Run()
 	m_App->OnStart();
 #endif
 	EventSystem::GetInstance().SendEvent(EventType::ONSTART, nullptr);
-	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow())) {
+	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow())) 
+	{
 		RectangleCollider2D::CollidersToInit();
 		Window::GetInstance().s_CursorStateChanged = false;
 		Gui::GetInstance().m_IsAnyPanelHovered = false;
@@ -72,7 +75,8 @@ void EntryPoint::Run()
 		DeltaTime::calculateDeltaTime();
 		Editor::GetInstance().ShortCuts();
 
-		if (FirstFrame) {
+		if (FirstFrame) 
+		{
 			DeltaTime::s_Deltatime = 0.000001;
 			FirstFrame = false;
 		}
@@ -87,15 +91,12 @@ void EntryPoint::Run()
 		Window::GetInstance().GetCamera().WindowResize();
 
 //#ifndef _IS_GAME_BUILD
-		if (Input::IsKeyPressed(Keycode::KEY_E)) {
+		if (Input::IsKeyPressed(Keycode::KEY_E))
 			isEditorEnable = !isEditorEnable;
-		}
-		if (m_App->m_Type == RenderType::TYPE_3D) {
+		if (m_App->m_Type == RenderType::TYPE_3D)
 			World::GetInstance().SelectObject3D();
-		}
-		if (isEditorEnable) {
+		if (isEditorEnable)
 			Editor::GetInstance().EditorUpdate();
-		}
 		Window::GetInstance().GetCamera().CameraMovement();
 //#endif
 		MeshManager::GetInstance().DispatchLoadedMeshes();
@@ -105,9 +106,8 @@ void EntryPoint::Run()
 		World::GetInstance().ProccessLuaStates();
 		EventSystem::GetInstance().ProcessEvents();
 
-		if (m_App->m_Type == RenderType::TYPE_3D) {
+		if (m_App->m_Type == RenderType::TYPE_3D)
 			Renderer::SortTransparentObjects();
-		}
 
 		Renderer::UpdateLightSpaceMatrices();
 
@@ -121,7 +121,8 @@ void EntryPoint::Run()
 		Renderer::Render();
 
 		ViewPort::GetInstance()->Update();
-		if (ViewPort::GetInstance()->m_IsViewportResized) {
+		if (ViewPort::GetInstance()->m_IsViewportResized)
+		{
 			Window& window = Window::GetInstance();
 			int* size = Window::GetInstance().GetSize();
 			window.m_FrameBufferColor->  Resize(size[0], size[1]);
@@ -140,7 +141,8 @@ void EntryPoint::Run()
 #endif
 }
 
-EntryPoint::~EntryPoint() {
+EntryPoint::~EntryPoint()
+{
 	World::GetInstance().ShutDown();
 	MeshManager::GetInstance().ShutDown();
 	Gui::GetInstance().ShutDown();

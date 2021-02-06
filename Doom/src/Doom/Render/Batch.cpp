@@ -27,7 +27,8 @@ Batch& Doom::Batch::GetInstance()
 void Batch::Submit(Character* c)
 {
 
-	if (m_TextB.m_TextureSlotsIndex > maxTextureSlots - 1) {
+	if (m_TextB.m_TextureSlotsIndex > maxTextureSlots - 1)
+	{
 		EndText();
 		flushText(m_Shader);
 		BeginText();
@@ -38,13 +39,15 @@ void Batch::Submit(Character* c)
 	//std::cout << "Batch " << c.position.x << "	" << c.position.y << std::endl;
 	for (unsigned int i = 0; i < maxTextureSlots; i++)
 	{
-		if (m_TextB.m_TextureSlots[i] == c->m_Font->m_FontAtlas->m_RendererID) {
+		if (m_TextB.m_TextureSlots[i] == c->m_Font->m_FontAtlas->m_RendererID)
+		{
 			m_TextB.m_TextureIndex = (float)i;
 			break;
 		}
 	}
 
-	if (m_TextB.m_TextureIndex == 0.0f) {
+	if (m_TextB.m_TextureIndex == 0.0f)
+	{
 		m_TextB.m_TextureIndex = (float)m_TextB.m_TextureSlotsIndex;
 		m_TextB.m_TextureSlots[m_TextB.m_TextureSlotsIndex] = c->m_Font->m_FontAtlas->m_RendererID;
 		m_TextB.m_TextureSlotsIndex++;
@@ -95,23 +98,27 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 		-0.5f,  0.5f, 0.0f, 1.0f
 	};
 
-	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE) {
+	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE) 
+	{
 		Batch::GetInstance().EndGameObjects();
 		Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
 		Batch::GetInstance().BeginGameObjects();
 	}
 	m_GoB.m_TextureIndex = 0.0f;
 
-	if (texture != nullptr) {
+	if (texture != nullptr) 
+	{
 		for (unsigned int i = 0; i < maxTextureSlots; i++)
 		{
-			if (m_GoB.m_TextureSlots[i] == texture->m_RendererID) {
+			if (m_GoB.m_TextureSlots[i] == texture->m_RendererID) 
+			{
 				m_GoB.m_TextureIndex = (float)i;
 				break;
 			}
 
 		}
-		if (m_GoB.m_TextureIndex == 0.0f) {
+		if (m_GoB.m_TextureIndex == 0.0f) 
+		{
 			m_GoB.m_TextureIndex = (float)m_GoB.m_TextureSlotsIndex;
 			m_GoB.m_TextureSlots[m_GoB.m_TextureSlotsIndex] = texture->m_RendererID;
 			m_GoB.m_TextureSlotsIndex++;
@@ -166,9 +173,11 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	m_GIndexCount += 6;
 }
 
-void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 size, glm::vec2 pos,float radius) {
+void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 size, glm::vec2 pos,float radius) 
+{
 
-	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1) {
+	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1)
+	{
 		EndText();
 		flushText(m_Shader);
 		BeginText();
@@ -176,16 +185,19 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 
 	m_TextB.m_TextureIndex = 0.0f;
 
-	if (texture != nullptr) {
+	if (texture != nullptr)
+	{
 		for (unsigned int i = 0; i < maxTextureSlots; i++)
 		{
-			if (m_TextB.m_TextureSlots[i] == texture->m_RendererID) {
+			if (m_TextB.m_TextureSlots[i] == texture->m_RendererID)
+			{
 				m_TextB.m_TextureIndex = (float)i;
 				break;
 			}
 
 		}
-		if (m_TextB.m_TextureIndex == 0.0f) {
+		if (m_TextB.m_TextureIndex == 0.0f) 
+		{
 			m_TextB.m_TextureIndex = (float)m_TextB.m_TextureSlotsIndex;
 			m_TextB.m_TextureSlots[m_TextB.m_TextureSlotsIndex] = texture->m_RendererID;
 			m_TextB.m_TextureSlotsIndex++;
@@ -231,7 +243,8 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 
 void Doom::Batch::Submit(Line & line)
 {
-	if (m_LIndexCount >= RENDERER_MAX_SPRITES) {
+	if (m_LIndexCount >= RENDERER_MAX_SPRITES)
+	{
 		EndLines();
 		flushLines(m_LineShader);
 		BeginLines();
@@ -254,7 +267,8 @@ void Doom::Batch::Submit(Line & line)
 void Doom::Batch::Submit(glm::vec4 color, float* mesh2D)
 {
 
-	if (m_LIndexCount >= RENDERER_INDICES_SIZE) {
+	if (m_LIndexCount >= RENDERER_INDICES_SIZE)
+	{
 		EndLines();
 		flushLines(m_LineShader);
 		BeginLines();
@@ -277,7 +291,8 @@ void Doom::Batch::Submit(glm::vec4 color, float* mesh2D)
 void Batch::Submit(SpriteRenderer* c)
 {
 
-	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE) {
+	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE)
+	{
 		Batch::GetInstance().EndGameObjects();
 		Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
 		Batch::GetInstance().BeginGameObjects();
@@ -285,13 +300,16 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_TextureIndex = 0.0f;
 
 	bool isFound = false;
-	if (c->m_Texture != nullptr) {
+	if (c->m_Texture != nullptr)
+	{
 		auto iter = std::find(m_GoB.m_TextureSlots.begin(), m_GoB.m_TextureSlots.end(), c->m_Texture->m_RendererID);
-		if (iter != m_GoB.m_TextureSlots.end()) {
+		if (iter != m_GoB.m_TextureSlots.end())
+		{
 			m_GoB.m_TextureIndex = (float)(iter - m_GoB.m_TextureSlots.begin());
 			isFound = true;
 		}
-		if (!isFound) {
+		if (!isFound)
+		{
 			m_GoB.m_TextureIndex = (float)m_GoB.m_TextureSlotsIndex;
 			m_GoB.m_TextureSlots[m_GoB.m_TextureSlotsIndex] = c->m_Texture->m_RendererID;
 			m_GoB.m_TextureSlotsIndex++;
@@ -349,9 +367,11 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GIndexCount += 6;
 }
 
-void Batch::Submit(RectangleCollider2D& c) {
+void Batch::Submit(RectangleCollider2D& c) 
+{
 	glm::mat4 mvp = c.m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>()->m_PosMat4 * c.m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>()->m_ViewMat4;
-	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1) {
+	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1)
+	{
 		EndGameObjects();
 		flushGameObjects(m_Shader);
 		BeginGameObjects();
@@ -458,12 +478,14 @@ void Batch::flushCollision(Shader * shader)
 	m_GIndexCount = 0;
 }
 
-void Batch::BeginText() {
+void Batch::BeginText() 
+{
 	m_TextB.m_BufferT = m_TextB.m_BufferPtrT;
 	m_TIndexCount = 0;
 }
 
-void Batch::EndText() {
+void Batch::EndText() 
+{
 	uint32_t dataSize = (uint8_t*)m_TextB.m_BufferT - (uint8_t*)m_TextB.m_BufferPtrT;
 	glBindBuffer(GL_ARRAY_BUFFER, m_TextB.m_Vbo);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, m_TextB.m_BufferPtrT);

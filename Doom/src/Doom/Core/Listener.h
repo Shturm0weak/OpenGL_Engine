@@ -20,7 +20,6 @@ namespace Doom {
 		virtual void OnWindowResize(void* props) {}
 		virtual void OnMainThreadProcess(void* task) {}
 		virtual void OnTranslate() {}
-
 	public:
 
 		std::vector<int> m_RegisteredEvents;

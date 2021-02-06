@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../Core/Core.h"
 #include "../ECS/Component.h"
 #include "../Render/TextureAtlas.h"
@@ -21,9 +22,7 @@ namespace Doom {
 		Irenderer() {}
 		virtual ~Irenderer() {}
 
-		static Component* Create() {
-			return new Irenderer();
-		}
+		static Component* Create() { return new Irenderer(); }
 
 		virtual void Render() {}
 	};

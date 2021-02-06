@@ -9,7 +9,8 @@ std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm
 		bool hasTag = ignoreMask.size() > 0 ? false : true;
 		for (uint32_t j = 0; j < ignoreMask.size(); j++)
 		{
-			if (CubeCollider3D::s_Colliders[i]->GetOwnerOfComponent()->m_Tag == ignoreMask[j]) {
+			if (CubeCollider3D::s_Colliders[i]->GetOwnerOfComponent()->m_Tag == ignoreMask[j]) 
+			{
 				hasTag = true;
 				break;
 			}
@@ -29,12 +30,14 @@ std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm
 
 	Doom::Ray3D::sortMap(d);
 
-	if(d.size() > 0){
+	if(d.size() > 0)
+	{
 		hit->m_Object = d.begin()->second;
 		hit->m_Point = dir * d.begin()->first;
 		hit->m_Distance = d.begin()->first;
 	}
-	else {
+	else 
+	{
 		hit->m_Object = nullptr;
 		hit->m_Point = glm::vec3(0.0f);
 		hit->m_Distance = 0;
@@ -50,7 +53,8 @@ bool Doom::Ray3D::IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit * hit, f
 	float ratio = glm::dot(rayToPlaneDelta,planeNorm);
 	glm::vec3 proj = planeNorm * ratio;
 	float vp = glm::dot(rayDelta,planeNorm);
-	if (vp >= -0.0001 && vp <= 0.0001) {
+	if (vp >= -0.0001 && vp <= 0.0001)
+	{
 		return false;
 	}
 	float wp = glm::dot(rayToPlaneDelta, planeNorm);
@@ -67,12 +71,8 @@ bool Doom::Ray3D::IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit * hit, f
 	
 	if (glm::dot(planeNorm, glm::cross(edge0, c0)) > 0 &&
 		glm::dot(planeNorm, glm::cross(edge1, c1)) > 0 &&
-		glm::dot(planeNorm, glm::cross(edge2, c2)) > 0) {
-		return true;
-	}
-	else {
-		return false;
-	}
+		glm::dot(planeNorm, glm::cross(edge2, c2)) > 0) return true;
+	else return false;
 }
 
 void Doom::Ray3D::Normilize(glm::vec3 & vector)
@@ -89,7 +89,8 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, fl
 
 	float txMin = (bMin.x - start.x) / dir.x;
 	float txMax = (bMax.x - start.x) / dir.x;
-	if (txMax < txMin) {
+	if (txMax < txMin) 
+	{
 		float temp = txMax;
 		txMax = txMin;
 		txMin = temp;
@@ -97,7 +98,8 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, fl
 
 	float tyMin = (bMin.y - start.y) / dir.y;
 	float tyMax = (bMax.y - start.y) / dir.y;
-	if (tyMax < tyMin) {
+	if (tyMax < tyMin)
+	{
 		float temp = tyMax;
 		tyMax = tyMin;
 		tyMin = temp;
@@ -105,7 +107,8 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, fl
 
 	float tzMin = (bMin.z - start.z) / dir.z;
 	float tzMax = (bMax.z - start.z) / dir.z;
-	if (tzMax < tzMin) {
+	if (tzMax < tzMin) 
+	{
 		float temp = tzMax;
 		tzMax = tzMin;
 		tzMin = temp;
@@ -143,13 +146,15 @@ bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, flo
 	float tMin = 0, tMax = 1000000, nomLen, denomLen, tmp, min, max;
 	uint32_t p;
 
-	for (uint32_t i = 0; i < 3; i++) {
+	for (uint32_t i = 0; i < 3; i++)
+	{
 		p = i * 4;
 		axis = glm::vec3(wMatPtr[p], wMatPtr[p + 1], wMatPtr[p + 2]);
 		glm::normalize(axis);
 		nomLen = glm::dot(axis, bbRayDelta);
 		denomLen = glm::dot(dir, axis);
-		if (glm::abs(denomLen) > 0.00001) {
+		if (glm::abs(denomLen) > 0.00001)
+		{
 
 			min = (nomLen + bounds0[i]) / denomLen;
 			max = (nomLen + bounds1[i]) / denomLen;
@@ -174,7 +179,8 @@ void Doom::Ray3D::sortMap(std::map<float, CubeCollider3D*>& M)
 {
 	std::vector<std::pair<float, CubeCollider3D*> > A;
 
-	for (auto& it : M) {
+	for (auto& it : M) 
+	{
 		A.push_back(it);
 	}
 	sort(A.begin(), A.end(), [](pair<float, CubeCollider3D*>& a,

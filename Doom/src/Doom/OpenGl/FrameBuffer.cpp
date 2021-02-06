@@ -20,7 +20,8 @@ FrameBuffer::FrameBuffer(int width, int height, int TextureParameterinternalForm
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextureParamLinear);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureParameterClamp);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureParameterClamp);
-		if (TextureParameterClamp == GL_CLAMP_TO_BORDER) {
+		if (TextureParameterClamp == GL_CLAMP_TO_BORDER)
+		{
 			float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 		}
@@ -31,18 +32,16 @@ FrameBuffer::FrameBuffer(int width, int height, int TextureParameterinternalForm
 	}
 
 	m_HasRbo = NeedRBO;
-	if (NeedRBO) {
+	if (NeedRBO) 
+	{
 		glGenRenderbuffers(1, &m_Rbo);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Rbo);
 	}
 
-	if(!ReadBuffer)
-		glReadBuffer(GL_NONE);
-
-	if(!DrawBuffer)
-		glDrawBuffer(GL_NONE);
+	if(!ReadBuffer) glReadBuffer(GL_NONE);
+	if(!DrawBuffer) glDrawBuffer(GL_NONE);
 	
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -64,7 +63,8 @@ void Doom::FrameBuffer::Resize(float width, float height)
 		glBindTexture(GL_TEXTURE_2D, m_Textures[i]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		if (m_HasRbo) {
+		if (m_HasRbo) 
+		{
 			glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Rbo);

@@ -1,10 +1,10 @@
 #pragma once
+
 #include "Application.h"
 
 namespace Doom {
 
-	class Hexagon : public Application
-	{
+	class Hexagon : public Application {
 	private:
 		float width = 16;
 		float height = 16;

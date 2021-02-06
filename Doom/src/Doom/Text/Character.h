@@ -1,5 +1,5 @@
-#ifndef CHARACTER_H_
-#define CHARACTER_H_
+#pragma once
+
 #include "../pch.h"
 #include "Core/ViewPort.h"
 
@@ -85,5 +85,3 @@ namespace Doom {
 	};
 
 }
-
-#endif

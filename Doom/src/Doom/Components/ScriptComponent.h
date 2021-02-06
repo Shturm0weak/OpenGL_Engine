@@ -4,8 +4,7 @@ namespace Doom {
 
 	class LuaState;
 
-	class DOOM_API ScriptComponent : public Component
-	{
+	class DOOM_API ScriptComponent : public Component {
 	private:
 
 		LuaState* m_LState = nullptr;

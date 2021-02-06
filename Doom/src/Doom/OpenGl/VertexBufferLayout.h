@@ -8,7 +8,8 @@ namespace Doom {
 		unsigned int m_Count;
 		unsigned int m_Normalized;
 
-		static unsigned int GetSizeOfType(unsigned int type) {
+		static unsigned int GetSizeOfType(unsigned int type)
+		{
 			switch (type)
 			{
 			case GL_FLOAT:			return 4;
@@ -31,29 +32,35 @@ namespace Doom {
 		inline void Clear() { m_Stride = 0; m_Elements.clear(); }
 
 		template<typename T>
-		void Push(unsigned int count) {
+		void Push(unsigned int count)
+		{
 			static_assert(false);
 		}
 
 		template<>
-		void Push<float>(unsigned int count) {
+		void Push<float>(unsigned int count)
+		{
 			m_Elements.push_back({ GL_FLOAT, count ,GL_FALSE });
 			m_Stride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
 		}
 
 		template<>
-		void Push<double>(unsigned int count) {
+		void Push<double>(unsigned int count) 
+		{
 			m_Elements.push_back({ GL_DOUBLE, count ,GL_FALSE });
 			m_Stride += count * VertexBufferElement::GetSizeOfType(GL_DOUBLE);
 		}
 
 		template<>
-		void Push<unsigned int>(unsigned int count) {
+		void Push<unsigned int>(unsigned int count)
+		{
 			m_Elements.push_back({ GL_UNSIGNED_INT,count,GL_FALSE });
 			m_Stride += count * VertexBufferElement::GetSizeOfType(GL_UNSIGNED_INT);
 		}
+
 		template<>
-		void Push<unsigned char>(unsigned int count) {
+		void Push<unsigned char>(unsigned int count)
+		{
 			m_Elements.push_back({ GL_UNSIGNED_BYTE,count,GL_TRUE });
 			m_Stride += count * VertexBufferElement::GetSizeOfType(GL_UNSIGNED_BYTE);
 		}

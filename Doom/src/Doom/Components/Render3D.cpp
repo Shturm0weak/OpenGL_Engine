@@ -6,23 +6,26 @@
 
 void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 {
-	if (m_IsTransparent)
-		return;
-	if (rt == RenderTechnic::Instancing) {
+	if (m_IsTransparent) return;
+	if (rt == RenderTechnic::Instancing)
+	{
 		for (auto i = Instancing::GetInstance()->m_InstancedObjects.begin(); i != Instancing::GetInstance()->m_InstancedObjects.end(); i++)
 		{
-			if (i->first == m_Mesh) {
+			if (i->first == m_Mesh) 
+			{
 				i->second.push_back(this);
 				auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
-				if (iter != Renderer::s_Objects3d.end())
+				if (iter != Renderer::s_Objects3d.end()) 
 					Renderer::s_Objects3d.erase(iter);
 			}
 		}
 	}
-	else if (rt == RenderTechnic::Forward) {
+	else if (rt == RenderTechnic::Forward)
+	{
 		EraseFromInstancing();
 		auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
-		if (iter == Renderer::s_Objects3d.end()) {
+		if (iter == Renderer::s_Objects3d.end())
+		{
 			m_Shader = Shader::Get("Default3D");
 			Renderer::s_Objects3d.push_back(this);
 		}
@@ -32,13 +35,14 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 
 void Doom::Renderer3D::LoadMesh(Mesh* mesh)
 {
-	if (mesh == nullptr)
-		return;
+	if (mesh == nullptr) return;
 	EraseFromInstancing();
 	ChangeRenderTechnic(m_RenderTechnic);
-	if (!m_IsSkyBox) {
+	if (!m_IsSkyBox) 
+	{
 		CubeCollider3D* cc = m_OwnerOfCom->GetComponentManager()->GetComponent<CubeCollider3D>();
-		if (cc == nullptr) {
+		if (cc == nullptr) 
+		{
 			cc = m_OwnerOfCom->GetComponentManager()->AddComponent<CubeCollider3D>();
 			cc->m_IsBoundingBox = true;
 		}
@@ -60,12 +64,15 @@ void Doom::Renderer3D::operator=(const Renderer3D& rhs)
 
 void Doom::Renderer3D::EraseFromInstancing()
 {
-	if (m_RenderTechnic == RenderTechnic::Instancing) {
+	if (m_RenderTechnic == RenderTechnic::Instancing)
+	{
 		for (auto i = Instancing::GetInstance()->m_InstancedObjects.begin(); i != Instancing::GetInstance()->m_InstancedObjects.end(); i++)
 		{
-			if (m_Mesh != nullptr) {
+			if (m_Mesh != nullptr) 
+			{
 				auto iter = std::find(i->second.begin(), i->second.end(), this);
-				if (iter != i->second.end()) {
+				if (iter != i->second.end()) 
+				{
 					i->second.erase(iter);
 					//m_Mesh = nullptr;
 				}
@@ -83,10 +90,8 @@ Doom::Renderer3D::Renderer3D()
 {
 	m_RenderType = RenderType::TYPE_3D;
 	//SetType(ComponentType::RENDER3D);
-	if(m_IsTransparent)
-		Renderer::s_Objects3dTransparent.push_back(this);
-	else
-		Renderer::s_Objects3d.push_back(this);
+	if(m_IsTransparent) Renderer::s_Objects3dTransparent.push_back(this);
+	else Renderer::s_Objects3d.push_back(this);
 	m_Shader = Shader::Get("Default3D");
 	m_DiffuseTexture = Texture::s_WhiteTexture;
 	m_NormalMapTexture = Texture::Get("InvalidTexture");
@@ -94,24 +99,22 @@ Doom::Renderer3D::Renderer3D()
 
 Doom::Renderer3D::~Renderer3D()
 {
-	if (GetOwnerOfComponent() == nullptr)
-		return;
+	if (GetOwnerOfComponent() == nullptr) return;
 	CubeCollider3D* cc = GetOwnerOfComponent()->GetComponentManager()->GetComponent<CubeCollider3D>();
-	if (cc != nullptr && cc->m_IsBoundingBox) {
+	if (cc != nullptr && cc->m_IsBoundingBox) 
 		GetOwnerOfComponent()->GetComponentManager()->RemoveComponent(cc); //Fix: could be dangerous if there is more than 1 CubeCollider
-	}
-	if (m_IsTransparent) {
+	if (m_IsTransparent) 
+	{
 		auto iter = std::find(Renderer::s_Objects3dTransparent.begin(), Renderer::s_Objects3dTransparent.end(), this);
-		if (iter != Renderer::s_Objects3dTransparent.end()) {
+		if (iter != Renderer::s_Objects3dTransparent.end())
 			Renderer::s_Objects3dTransparent.erase(iter);
-		}
 	}
-	else {
+	else 
+	{
 		ChangeRenderTechnic(RenderTechnic::Forward);
 		auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
-		if (iter != Renderer::s_Objects3d.end()) {
+		if (iter != Renderer::s_Objects3d.end())
 			Renderer::s_Objects3d.erase(iter);
-		}
 	}
 }
 
@@ -125,8 +128,10 @@ Doom::Component* Doom::Renderer3D::Create()
 
 void Doom::Renderer3D::BakeShadows()
 {
-	if (m_IsCastingShadows && m_Mesh != nullptr && m_Mesh->m_IsInitialized) {
-		if (!m_IsSkyBox) {
+	if (m_IsCastingShadows && m_Mesh != nullptr && m_Mesh->m_IsInitialized) 
+	{
+		if (!m_IsSkyBox) 
+		{
 			Shader* bakeShader = Shader::Get("BakeShadows");
 			bakeShader->Bind();
 			glBindTextureUnit(0, m_DiffuseTexture->m_RendererID);
@@ -151,7 +156,8 @@ void Doom::Renderer3D::BakeShadows()
 void Doom::Renderer3D::MakeTransparent()
 {
 	auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
-	if(iter != Renderer::s_Objects3d.end()) {
+	if(iter != Renderer::s_Objects3d.end()) 
+	{
 		EraseFromInstancing();
 		ChangeRenderTechnic(RenderTechnic::Forward);
 		Renderer::s_Objects3d.erase(iter);
@@ -163,7 +169,8 @@ void Doom::Renderer3D::MakeTransparent()
 void Doom::Renderer3D::MakeSolid()
 {
 	auto iter = std::find(Renderer::s_Objects3dTransparent.begin(), Renderer::s_Objects3dTransparent.end(), this);
-	if (iter != Renderer::s_Objects3dTransparent.end()) {
+	if (iter != Renderer::s_Objects3dTransparent.end()) 
+	{
 		Renderer::s_Objects3dTransparent.erase(iter);
 		Renderer::s_Objects3d.push_back(this);
 		ChangeRenderTechnic(RenderTechnic::Forward);
@@ -173,14 +180,17 @@ void Doom::Renderer3D::MakeSolid()
 
 void Doom::Renderer3D::Render()
 {
-	if (m_RenderTechnic == RenderTechnic::Forward) {
+	if (m_RenderTechnic == RenderTechnic::Forward) 
+	{
 		m_Tr = GetOwnerOfComponent()->m_Transform;
-		if (m_IsWireMesh) {
+		if (m_IsWireMesh) 
+		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			ForwardRender(m_Tr->m_PosMat4, m_Tr->m_ViewMat4, m_Tr->m_ScaleMat4, m_Color);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
-		else {
+		else 
+		{
 			ForwardRender(m_Tr->m_PosMat4, m_Tr->m_ViewMat4, m_Tr->m_ScaleMat4, m_Color);
 		}
 			
@@ -208,7 +218,8 @@ void Doom::Renderer3D::Copy(const Renderer3D& rhs)
 
 void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
 {
-	if (m_Mesh != nullptr && m_Mesh->m_IsInitialized) {
+	if (m_Mesh != nullptr && m_Mesh->m_IsInitialized)
+	{
 		if (m_IsSkyBox) {
 			RenderSkyBox();
 			return;
@@ -260,7 +271,8 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 		m_Shader->SetUniform1i("u_ShadowTexture", 2);
 		m_Shader->SetUniform1f("u_DrawShadows", Instancing::GetInstance()->m_DrawShadows); 
 		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
-		if (m_IsUsingNormalMap) {
+		if (m_IsUsingNormalMap)
+		{
 			glBindTextureUnit(1, m_NormalMapTexture->m_RendererID);
 			m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 		}

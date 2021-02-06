@@ -29,8 +29,6 @@ namespace Doom {
 		static int LuaCreate(lua_State* l);
 		static int LuaDestroyGameObject(lua_State* l);
 		static int LuaGetTransform(lua_State* l);
-
-		
 	public:
 
 		GameObject* m_Go = nullptr;

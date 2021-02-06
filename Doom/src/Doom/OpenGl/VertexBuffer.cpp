@@ -3,7 +3,8 @@
 
 using namespace Doom;
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size, bool Static) {
+VertexBuffer::VertexBuffer(const void* data, unsigned int size, bool Static)
+{
 	glGenBuffers(1, &m_RendererID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 	if(Static)
@@ -12,15 +13,18 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size, bool Static) {
 		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
 }
 
-VertexBuffer::~VertexBuffer() {
+VertexBuffer::~VertexBuffer()
+{
 	glDeleteBuffers(1, &m_RendererID);
 }
 
-void VertexBuffer::Bind() const {
+void VertexBuffer::Bind() const 
+{
 	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 }
 
-void VertexBuffer::UnBind() const {
+void VertexBuffer::UnBind() const
+{
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 

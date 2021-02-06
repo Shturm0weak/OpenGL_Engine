@@ -1,5 +1,4 @@
-#ifndef  DELTATIME_H
-#define DELTATIME_H
+#pragma once
 #include <mutex>
 
 namespace Doom {
@@ -24,5 +23,3 @@ namespace Doom {
 	};
 
 }
-
-#endif // ! DELTATIME_H

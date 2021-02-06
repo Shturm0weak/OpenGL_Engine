@@ -35,12 +35,14 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 				ignoreFlag = true;
 		}
 
-		if (ignoreFlag == true) {
+		if (ignoreFlag == true) 
+		{
 			ignoreFlag = false;
 			continue;
 		}
 
-		if (col->m_Enable != false) {
+		if (col->m_Enable != false) 
+		{
 			corners.clear();
 			corners.push_back(glm::vec2(col->m_TransformedVerPos[0], col->m_TransformedVerPos[1]));
 			corners.push_back(glm::vec2(col->m_TransformedVerPos[4], col->m_TransformedVerPos[5]));
@@ -71,7 +73,8 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 		{
 			distance = Distance(*itr->second,start);	
 			
-			if (distance <= min) {
+			if (distance <= min) 
+			{
 				min = distance;
 				hit.m_Point = glm::vec3(itr->second->x, itr->second->y,0);
 				hit.m_Object = itr->first;

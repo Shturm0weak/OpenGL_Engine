@@ -63,7 +63,8 @@ namespace Doom {
 			GLuint m_Vbo;
 			IndexBuffer* m_Ibo;
 
-			~VertAttribWrapper() {
+			~VertAttribWrapper()
+			{
 				delete m_Ibo;
 				glDeleteBuffers(1, &m_Vbo);
 			}

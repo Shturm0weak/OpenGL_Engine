@@ -1,7 +1,5 @@
 #pragma once
 
-#ifndef _EVENTSYSTEM_H_
-#define _EVENTSYSTEM_H_
 #include <list>
 #include <map>
 
@@ -71,15 +69,18 @@ namespace Doom {
 		Task m_Task;
 	public:
 		
-		MainThread() {
+		MainThread() 
+		{
 			EventSystem::GetInstance().RegisterClient(EventType::ONMAINTHREADPROCESS, (Listener*)this);
 		}
 
-		static MainThread& GetInstance() {
+		static MainThread& GetInstance()
+		{
 			static MainThread instance; return instance;
 		}
 
-		virtual void OnMainThreadProcess(void* task) override {
+		virtual void OnMainThreadProcess(void* task) override
+		{
 			m_Task = *static_cast<Task*>(task);
 			m_Task();
 			delete task;
@@ -87,5 +88,3 @@ namespace Doom {
 	};
 
 }
-
-#endif // _EVENTSYSTEM_H_

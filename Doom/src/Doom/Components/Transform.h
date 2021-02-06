@@ -1,7 +1,6 @@
-#ifndef TRANSFORM_H
-#define TRANSFORM_H
-#include "../ECS/Component.h"
+#pragma once
 
+#include "../ECS/Component.h"
 
 namespace Doom {
 
@@ -35,11 +34,9 @@ namespace Doom {
 		friend class SphereCollider;
 		friend class World;
 		friend class ViewPort;
-
 	public:
 
 		glm::mat4 GetTransform();
-
 		glm::vec3 GetRotation();
 		glm::vec3 GetPosition();
 		glm::vec3 GetScale();
@@ -68,4 +65,3 @@ namespace Doom {
 	};
 
 }
-#endif

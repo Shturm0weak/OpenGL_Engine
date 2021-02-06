@@ -35,7 +35,6 @@ Doom::PointLight::PointLight()
 Doom::PointLight::~PointLight()
 {
 	auto iter = std::find(s_PointLights.begin(), s_PointLights.end(), this);
-	if (iter != s_PointLights.end()) {
+	if (iter != s_PointLights.end()) 
 		s_PointLights.erase(iter);
-	}
 }

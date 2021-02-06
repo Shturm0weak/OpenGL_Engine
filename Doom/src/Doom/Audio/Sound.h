@@ -27,8 +27,8 @@ namespace Doom {
 		AudioState m_State;
 		int m_Channels;
 		int m_SampleRate;
-		short* soundBuffer;
-		int numberOfSamples;
+		short* m_SoundBuffer;
+		int m_NumberOfSamples;
 		float m_Volume;
 		bool m_IsLooped;
 
@@ -39,8 +39,8 @@ namespace Doom {
 		~Sound();
 
 		void SetVolume(float volume);
-		inline int GetState() { return m_State; }
-		inline ALuint GetId() { return m_Source; }
+		int GetState() { return (int)m_State; }
+		ALuint GetId() { return m_Source; }
 	};
 
 }

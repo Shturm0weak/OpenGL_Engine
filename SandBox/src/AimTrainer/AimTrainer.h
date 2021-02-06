@@ -1,10 +1,10 @@
 #pragma once
+
 #include "Application.h"
 
 namespace Doom {
 
-	class AimTrainer : public Application
-	{
+	class AimTrainer : public Application {
 	private:
 
 		Texture* m_CrossHair = nullptr;

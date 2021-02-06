@@ -48,7 +48,8 @@ int Doom::Window::Init(const char* Label, float width, float height, bool vsync)
 
 	glfwMakeContextCurrent(GetWindow());
 
-	if (glewInit() != GLEW_OK) {
+	if (glewInit() != GLEW_OK) 
+	{
 		std::cout << "error" << std::endl;
 		return -1;
 	}

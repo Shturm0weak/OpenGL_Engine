@@ -12,7 +12,8 @@
 
 using namespace Doom;
 
-void Doom::Renderer::Clear(){
+void Doom::Renderer::Clear()
+{
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearDepth(1.0f);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -27,12 +28,10 @@ void Doom::Renderer::SortTransparentObjects()
 		CubeCollider3D* cc1 = nullptr;
 		if (r1->m_Mesh != nullptr)
 			cc0 = go0->GetComponentManager()->GetComponent<CubeCollider3D>();
-		else
-			return false;
+		else return false;
 		if (r2->m_Mesh != nullptr)
 			cc1 = go1->GetComponentManager()->GetComponent<CubeCollider3D>();
-		else
-			return false;
+		else return false;
 		glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
 		glm::vec3 pos0 = go0->GetPosition();
 		glm::vec3 pos1 = go1->GetPosition();
@@ -40,16 +39,12 @@ void Doom::Renderer::SortTransparentObjects()
 		float d2 = glm::distance(camPos, pos0 + cc0->m_MaxP);
 		float r1d = 0;
 		float r2d = 0;
-		if (d1 < d2)
-			r1d = d1;
-		else
-			r1d = d2;
+		if (d1 < d2) r1d = d1;
+		else r1d = d2;
 		d1 = glm::distance(camPos, pos1 + cc1->m_MinP);
 		d2 = glm::distance(camPos, pos1 + cc1->m_MaxP);
-		if (d1 < d2)
-			r2d = d1;
-		else
-			r2d = d2;
+		if (d1 < d2) r2d = d1;
+		else r2d = d2;
 		return r1d > r2d;
 	});
 }
@@ -57,8 +52,7 @@ void Doom::Renderer::SortTransparentObjects()
 void Doom::Renderer::RenderBloomEffect()
 {
 	Window& window = Window::GetInstance();
-	if (!s_BloomEffect)
-		return;
+	if (!s_BloomEffect) return;
 
 	bool horizontal = true, first_iteration = true;
 	unsigned int amount = 10;
@@ -119,7 +113,8 @@ void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 void Renderer::Render() {
 	int size[2];
 	Renderer::s_Stats.Reset();
-	if (Instancing::GetInstance()->m_DrawShadows > 0.5f) {
+	if (Instancing::GetInstance()->m_DrawShadows > 0.5f)
+	{
 		Timer t;
 		FrameBuffer* shadowMap = Window::GetInstance().m_FrameBufferShadowMap;
 		glfwGetWindowSize(Window::GetInstance().GetWindow(), &size[0], &size[1]);
@@ -173,7 +168,8 @@ void Renderer::Render() {
 	Renderer::s_Stats.m_GuiRenderTime = Timer::s_OutTime;
 }
 
-void Renderer::RenderScene() {
+void Renderer::RenderScene() 
+{
 	{
 		Timer t;
 		Render2D();
@@ -191,7 +187,8 @@ void Doom::Renderer::Render2DObjects()
 
 
 		{
-			for (size_t i = 0; i < Renderer::s_Objects2d.size(); i++) {
+			for (size_t i = 0; i < Renderer::s_Objects2d.size(); i++)
+			{
 				SpriteRenderer* r = Renderer::s_Objects2d[i];
 				if (r->GetOwnerOfComponent()->m_Enable)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
@@ -251,7 +248,8 @@ void Doom::Renderer::BakeShadows()
 
 void Doom::Renderer::Render3D()
 {
-	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_3D) {
+	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_3D)
+	{
 		RenderCollision();
 		Render3DObjects();
 		RenderLines();
@@ -270,7 +268,8 @@ void Doom::Renderer::UpdateLightSpaceMatrices()
 
 void Doom::Renderer::Render2D()
 {
-	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_2D) {
+	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_2D)
+	{
 		glDisable(GL_DEPTH_TEST);
 		Render2DObjects();
 		RenderLines();
@@ -282,14 +281,16 @@ void Doom::Renderer::Render2D()
 void Doom::Renderer::RenderCollision3D()
 {
 	size_t size = CubeCollider3D::s_Colliders.size();
-	if (size > 0) {
+	if (size > 0)
+	{
 		for (size_t i = 0; i < size; i++)
 		{
 			if (!CubeCollider3D::s_Colliders[i]->m_IsBoundingBox && RectangleCollider2D::s_IsVisible)
 				CubeCollider3D::s_Colliders[i]->Render();
 		}
 	}
-	if (size > 0) {
+	if (size > 0)
+	{
 		for (size_t i = 0; i < size; i++)
 		{
 			if (CubeCollider3D::s_Colliders[i]->m_IsBoundingBox && Editor::GetInstance().isBoundingBoxesVisible)
@@ -297,7 +298,8 @@ void Doom::Renderer::RenderCollision3D()
 		}
 	}
 	size = SphereCollider::s_Spheres.size();
-	if (size > 0) {
+	if (size > 0)
+	{
 		for (size_t i = 0; i < size; i++)
 		{
 			if (RectangleCollider2D::s_IsVisible)
@@ -312,7 +314,8 @@ void Doom::Renderer::RenderLines()
 	uint32_t size = Line::s_Lines.size();
 	for (uint32_t i = 0; i < size; i++)
 	{
-		if (Line::s_Lines[i]->m_Enable) {
+		if (Line::s_Lines[i]->m_Enable)
+		{
 			Batch::GetInstance().Submit(*Line::s_Lines[i]);
 		}
 	}
@@ -320,7 +323,8 @@ void Doom::Renderer::RenderLines()
 	Batch::GetInstance().flushLines(Batch::GetInstance().m_LineShader);
 }
 
-void Doom::Renderer::RenderText() {
+void Doom::Renderer::RenderText() 
+{
 	Batch::GetInstance().flushText(Batch::GetInstance().m_TextShader);
 }
 
@@ -335,12 +339,16 @@ void Doom::Renderer::RenderTransparent()
 	}
 }
 
-void Doom::Renderer::RenderCollision(){
-	if (RectangleCollider2D::s_IsVisible == true) {
+void Doom::Renderer::RenderCollision()
+{
+	if (RectangleCollider2D::s_IsVisible == true)
+	{
 		Batch::GetInstance().BeginGameObjects();
-		for (unsigned int i = 0; i < RectangleCollider2D::s_Collision2d.size(); i++) {
+		for (unsigned int i = 0; i < RectangleCollider2D::s_Collision2d.size(); i++) 
+		{
 			RectangleCollider2D* col = RectangleCollider2D::s_Collision2d[i];
-			if (col != nullptr && col->m_Enable == true) {
+			if (col != nullptr && col->m_Enable == true)
+			{
 				Batch::GetInstance().Submit(*col);
 			}
 		}

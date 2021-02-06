@@ -1,7 +1,5 @@
 #pragma once
 
-#ifndef EDITOR_H
-#define EDITOR_H
 #include <ImGui/imgui.h>
 #include <ImGui/examples/imgui_impl_glfw.h>
 #include <ImGui/examples/imgui_impl_opengl3.h>
@@ -47,9 +45,11 @@ namespace Doom {
 		static std::vector<Texture*> s_Texture;
 		static std::vector<std::string> s_TexturesPath;
 		float uvsOffset[2];
+
 		Editor() {}
 		Editor(const Editor&) = delete;
 		Editor& operator=(const Editor& rhs) { return *this; }
+
 		void CreateTextureAtlas();
 		GameObject* copiedGo = nullptr;
 
@@ -88,6 +88,7 @@ namespace Doom {
 		static std::vector<Texture*> s_TextureVecTemp;
 		GameObject* go = nullptr;
 		bool isItemActive = false;
+
 		static Editor& GetInstance();
 		void ShortCuts();
 		void MenuBar();
@@ -102,5 +103,5 @@ namespace Doom {
 		void TextProps();
 		void UpdateNormals(); //@Deprecated
 	};
+
 }
-#endif

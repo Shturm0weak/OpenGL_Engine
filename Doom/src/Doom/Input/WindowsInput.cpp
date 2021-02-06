@@ -54,12 +54,15 @@ bool WindowsInput::IsKeyPressedimp(int keycode)
 
 bool WindowsInput::IsMousePressedDownimp(int keycode)
 {
-	if (!ViewPort::GetInstance()->m_IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
-		return GLFW_FALSE;
-	}
+	if (!ViewPort::GetInstance()->m_IsHovered
+		&& (ImGui::IsAnyWindowHovered()
+			|| ImGui::IsAnyItemHovered()
+			|| ImGui::IsAnyItemActive() 
+			|| ImGui::IsAnyWindowFocused())) return GLFW_FALSE;
 
 	const auto& window = static_cast<GLFWwindow*>(Window::GetInstance().GetWindow());
-	if (ViewPort::GetInstance()->m_IsHovered) {
+	if (ViewPort::GetInstance()->m_IsHovered)
+	{
 		auto state = glfwGetMouseButton(window, keycode);
 		return state == GLFW_PRESS;
 	}
@@ -78,8 +81,7 @@ bool WindowsInput::IsMousePressedDownimp(int keycode)
 
 bool Doom::WindowsInput::IsKeyPressedDownimp(int keycode)
 {
-	if (!ViewPort::GetInstance()->m_IsActive)
-		return GL_FALSE;
+	if (!ViewPort::GetInstance()->m_IsActive) return GL_FALSE;
 	ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
 	return ImGui::IsKeyDown(keycode);
 	/*const auto& window = static_cast<GLFWwindow*>(Window::GetWindow());
@@ -91,10 +93,13 @@ bool Doom::WindowsInput::IsKeyPressedDownimp(int keycode)
 
 bool WindowsInput::IsMousePressedimp(int keycode)
 {
-	if (!ViewPort::GetInstance()->m_IsHovered && (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyWindowFocused())) {
-		return GLFW_FALSE;
-	}
-	if (ViewPort::GetInstance()->m_IsHovered) {
+	if (!ViewPort::GetInstance()->m_IsHovered
+		&& (ImGui::IsAnyWindowHovered()
+			|| ImGui::IsAnyItemHovered() 
+			|| ImGui::IsAnyItemActive() 
+			|| ImGui::IsAnyWindowFocused())) return GLFW_FALSE;
+	if (ViewPort::GetInstance()->m_IsHovered) 
+	{
 		ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
 		return ImGui::IsMouseClicked(keycode);
 	}

@@ -5,7 +5,6 @@ using namespace Doom;
 class DOOM_API Line {
 public:
 
-	
 	glm::mat4 m_PosMat4 = glm::mat4(1.f);
 	glm::mat4 m_ViewMat4 = glm::mat4(1.f);
 	float m_Verteces[6] = {

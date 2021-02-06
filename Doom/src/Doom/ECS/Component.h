@@ -1,5 +1,4 @@
-#ifndef COMPONENT_H
-#define COMPONENT_H
+#pragma once
 
 #include "../Core/Core.h"
 #include "../Core/Listener.h"
@@ -20,23 +19,26 @@ namespace Doom {
 	public:
 
 		template <typename T>
-		T* GetComponent() {
+		T* GetComponent()
+		{
 			return m_OwnerOfCom->GetComponentManager()->GetComponent<T>();
 		}
 
 		template<typename T>
-		T* AddComponent() {
+		T* AddComponent()
+		{
 			return m_OwnerOfCom->GetComponentManager()->AddComponent<T>();
 		}
 
 		template<typename T>
-		void RemoveComponent() {
+		void RemoveComponent()
+		{
 			m_OwnerOfCom->GetComponentManager()->RemoveComponent<T>();
 		}
 
-		inline std::string GetComponentType() const { return m_Type; }
-		inline GameObject* GetOwnerOfComponent() const { return m_OwnerOfCom; }
-		inline int GetComponentID() const { return m_Id; }
+		std::string GetComponentType() const { return m_Type; }
+		GameObject* GetOwnerOfComponent() const { return m_OwnerOfCom; }
+		int GetComponentID() const { return m_Id; }
 		void RemoveComponent();
 
 		Component() {}
@@ -46,5 +48,3 @@ namespace Doom {
 	};
 
 }
-
-#endif // !COMPONENT_H
