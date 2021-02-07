@@ -113,21 +113,22 @@ void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 void Renderer::Render() {
 	int size[2];
 	Renderer::s_Stats.Reset();
-	if (Instancing::GetInstance()->m_DrawShadows > 0.5f)
-	{
-		Timer t;
-		FrameBuffer* shadowMap = Window::GetInstance().m_FrameBufferShadowMap;
-		glfwGetWindowSize(Window::GetInstance().GetWindow(), &size[0], &size[1]);
-		glViewport(0, 0, shadowMap->size.x, shadowMap->size.y);
-		shadowMap->Bind();
-		glClear(GL_DEPTH_BUFFER_BIT);
-		Renderer::BakeShadows();
-		Instancing::GetInstance()->BakeShadows();
-		shadowMap->UnBind();
+	if (Instancing::GetInstance()->m_DrawShadows > 0.5f) {
+		{
+			Timer t;
+			FrameBuffer* shadowMap = Window::GetInstance().m_FrameBufferShadowMap;
+			glfwGetWindowSize(Window::GetInstance().GetWindow(), &size[0], &size[1]);
+			glViewport(0, 0, shadowMap->size.x, shadowMap->size.y);
+			shadowMap->Bind();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			Renderer::BakeShadows();
+			Instancing::GetInstance()->BakeShadows();
+			shadowMap->UnBind();
+		}
+		Renderer::s_Stats.m_ShadowRenderTime = Timer::s_OutTime;
+		glViewport(0, 0, size[0], size[1]);
 	}
-	Renderer::s_Stats.m_ShadowRenderTime = Timer::s_OutTime;
 
-	glViewport(0, 0, size[0], size[1]);
 	glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
 	Renderer::Clear();
 	Renderer::RenderScene();
@@ -137,35 +138,39 @@ void Renderer::Render() {
 	Instancing::GetInstance()->PrepareVertexAtrrib();
 
 	{
-		Timer t;
-		Renderer::RenderBloomEffect();
+		{
+			Timer t;
+			Renderer::RenderBloomEffect();
+		}
+		Renderer::s_Stats.m_BloomRenderTime = Timer::s_OutTime;
 	}
-	Renderer::s_Stats.m_BloomRenderTime = Timer::s_OutTime;
 
 	Shader* shader = Shader::Get("QuadFullScreen");
 	{
-		Timer t;
-		Renderer::Clear();
-		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
-		shader->Bind();
-		glBindTexture(GL_TEXTURE_2D, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
-		Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_DEPTH_TEST);
-		Renderer::RenderCollision();
-		Renderer::RenderCollision3D();
+		{
+			Timer t;
+			Renderer::Clear();
+			glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
+			shader->Bind();
+			glBindTexture(GL_TEXTURE_2D, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
+			Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
+			glDisable(GL_DEPTH_TEST);
+			Renderer::RenderCollision3D();
+			Renderer::RenderCollision();
+		}
+		Renderer::s_Stats.m_CollisionRenderTime = Timer::s_OutTime;
 	}
-	Renderer::s_Stats.m_CollisionRenderTime = Timer::s_OutTime;
-
 	{
-		Timer t;
-		Renderer::RenderText();
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		shader->UnBind();
+		{
+			Timer t;
+			Renderer::RenderText();
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LESS);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			shader->UnBind();
+		}
+		Renderer::s_Stats.m_GuiRenderTime = Timer::s_OutTime;
 	}
-	Renderer::s_Stats.m_GuiRenderTime = Timer::s_OutTime;
 }
 
 void Renderer::RenderScene() 

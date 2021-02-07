@@ -28,7 +28,7 @@ namespace Doom {
 		uint32_t m_NThreads = ThreadPool::GetInstance().GetAmountOfThreads();
 	public:
 
-		float m_DrawShadows = 1.0f; //TODO: Need to move somewhere
+		float m_DrawShadows = 0.0f; //TODO: Need to move somewhere
 		std::map<Mesh*, std::vector<Renderer3D*>> m_InstancedObjects;
 
 		Instancing();
