@@ -24,14 +24,11 @@ Doom::SpriteRenderer::SpriteRenderer(const SpriteRenderer& rhs)
 Doom::SpriteRenderer::SpriteRenderer()
 {
 	m_Shader = Shader::Get("Default2D");
-	Renderer::s_Objects2d.push_back(this);
 }
 
 Doom::SpriteRenderer::~SpriteRenderer()
 {
-	auto iter = std::find(Renderer::s_Objects2d.begin(), Renderer::s_Objects2d.end(), this);
-	if (iter != Renderer::s_Objects2d.end()) 
-		Renderer::s_Objects2d.erase(iter);
+	
 }
 
 void Doom::SpriteRenderer::operator=(const SpriteRenderer& rhs)
@@ -73,9 +70,21 @@ void Doom::SpriteRenderer::Render()
 	Batch::GetInstance().Submit(this);
 }
 
+void Doom::SpriteRenderer::Delete()
+{
+	s_FreeMemory.push_back(m_MemoryPoolPtr);
+	auto iter = std::find(Renderer::s_Objects2d.begin(), Renderer::s_Objects2d.end(), this);
+	if (iter != Renderer::s_Objects2d.end())
+		Renderer::s_Objects2d.erase(iter);
+}
+
 Component* Doom::SpriteRenderer::Create()
 {
-	return new SpriteRenderer();
+	char* ptr = Utils::PreAllocateMemory<SpriteRenderer>(s_MemoryPool, s_FreeMemory);
+	SpriteRenderer* component = (SpriteRenderer*)((void*)ptr);//= new(iter->first + iter->second * sizeof(SpriteRenderer)) SpriteRenderer();
+	component->m_MemoryPoolPtr = ptr;
+	Renderer::s_Objects2d.push_back(component);
+	return component;
 }
 
 void SpriteRenderer::ReverseUVs()

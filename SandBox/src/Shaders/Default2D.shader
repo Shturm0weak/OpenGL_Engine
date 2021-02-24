@@ -9,7 +9,7 @@ layout(location = 5) in vec4 rotationMat0;
 layout(location = 6) in vec4 rotationMat1;
 layout(location = 7) in vec4 rotationMat2;
 layout(location = 8) in vec4 rotationMat3;
-layout(location = 9) in vec2 posv;
+layout(location = 9) in vec3 posv;
 
 out vec4 positionsfrag;
 flat out int tex_index;
@@ -25,7 +25,7 @@ mat4 rot = mat4(
 mat4 pos = mat4(1.0, 0.0, 0.0, 0.0,
 				0.0, 1.0, 0.0, 0.0,
 				0.0, 0.0, 1.0, 0.0,
-				posv.x, posv.y, 0.0, 1.0);
+				posv.x, posv.y, posv.z, 1.0);
 
 void main() {
 	gl_Position = u_ViewProjection * pos * rot * positions;

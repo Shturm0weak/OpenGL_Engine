@@ -50,13 +50,18 @@ namespace Doom {
 		void MakeTransparent();
 		void MakeSolid();
 		virtual void Render() override;
+		virtual void Delete() override;
 
 	private:
 
+		static std::map<char*, uint64_t> s_MemoryPool;
+		static std::vector<char*> s_FreeMemory;
+		char* m_MemoryPoolPtr = nullptr;
 		//TODO ??? Upload in shader, calculate the angle between the normal and light dir if angle > 90 then shadow should not be drawn!!! ???
 		//TODO Make bake shadows strength depending on alpha channel of color for transparent object!!!
 		bool m_IsTransparent = false;
 		bool m_IsSkyBox = false;
+		bool m_IsInitializedInInstancing = false;
 		RenderTechnic m_RenderTechnic = RenderTechnic::Forward;
 
 		void Copy(const Renderer3D& rhs);
@@ -64,6 +69,7 @@ namespace Doom {
 		void RenderSkyBox();
 		void AdditionalUniformsLoad();
 
+		friend class Doom::Instancing;
 		friend class Doom::SceneSerializer;
 		friend class Doom::EntryPoint;
 		friend class Doom::SkyBox;

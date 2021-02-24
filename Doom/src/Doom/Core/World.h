@@ -17,13 +17,13 @@ namespace Doom {
 		int s_ColId = 0;
 
 		static World& GetInstance();
-		void ProccessLuaStates();
+		void UpdateLuaStates();
 		void StartLuaStates();
 		void DeleteObject(int id);
 		void DeleteAll();
 		void ShutDown();
 		void PopBack();
-		void SelectObject3D();
+		GameObject* SelectObject3D();
 		unsigned int GetAmountOfObjects();
 		bool ObjectCollided(std::vector<glm::vec2>& p, int i);
 		GameObject* SelectObject();

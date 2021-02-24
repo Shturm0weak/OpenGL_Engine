@@ -17,6 +17,8 @@ namespace Doom {
 		ScriptComponent(const ScriptComponent& rhs);
 		ScriptComponent();
 		~ScriptComponent();
+
+		friend class Editor;
 	};
 
 }

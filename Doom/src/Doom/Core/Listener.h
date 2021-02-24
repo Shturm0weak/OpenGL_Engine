@@ -1,6 +1,5 @@
 #pragma once
-#ifndef LISTENER_H_
-#define LISTENER_H_
+
 #include <iostream>
 #include "Event.h"
 #include <string>
@@ -30,5 +29,3 @@ namespace Doom {
 	};
 
 }
-
-#endif // LISTENER_H_

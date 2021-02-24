@@ -32,7 +32,7 @@ namespace Doom {
 			glm::vec4 m_RotationMat1;
 			glm::vec4 m_RotationMat2;
 			glm::vec4 m_RotationMat3;
-			glm::vec2 m_Pos;
+			glm::vec3 m_Pos;
 		};
 
 		struct VertexLine {
@@ -77,9 +77,9 @@ namespace Doom {
 		Shader* m_Shader = nullptr;
 		const unsigned int maxTextureSlots = 32;
 		bool m_IsBegan = false;
-		void initText();
-		void initGameObjects();
-		void initLines();
+		void InitText();
+		void InitGameObjects();
+		void InitLines();
 
 		Batch();
 		Batch(const Batch&) = delete;
@@ -104,10 +104,10 @@ namespace Doom {
 		void Submit(Line& line);
 		void Submit(glm::vec4 color, float* mesh);
 		void Submit(RectangleCollider2D& collision);
-		void flushGameObjects(Shader* shader);
-		void flushCollision(Shader* shader);
-		void flushText(Shader* shader);
-		void flushLines(Shader* shader);
+		void FlushGameObjects(Shader* shader);
+		void FlushCollision(Shader* shader);
+		void FlushText(Shader* shader);
+		void FlushLines(Shader* shader);
 		//bool isValidBuffer() { return (m_GoB.m_Buffer != nullptr && m_IsBegan && m_GoB.m_Buffer != (void*)0x00000000); }
 
 		void BeginText();

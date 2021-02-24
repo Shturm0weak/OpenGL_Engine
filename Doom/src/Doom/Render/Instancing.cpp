@@ -14,10 +14,10 @@ Doom::Instancing::Instancing()
 void Doom::Instancing::Create(Mesh* mesh)
 {
 	glBuffers buf;
-	buf.m_Layout = mesh->m_Layout;
-	buf.m_Vbo = mesh->m_Vb;
-	buf.m_Vao = mesh->m_Va;
-	buf.m_Ibo = mesh->m_Ib;
+	buf.m_Layout = &(mesh->m_Layout);
+	buf.m_Vbo = (mesh->m_Vb);
+	buf.m_Vao = &(mesh->m_Va);
+	buf.m_Ibo = (mesh->m_Ib);
 	buf.m_VboDynamic = new VertexBuffer(nullptr, 1,false);
 	buf.m_LayoutDynamic = new VertexBufferLayout();
 	m_Buffers.insert(std::make_pair(mesh, buf));
@@ -238,19 +238,22 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				std::lock_guard lg(m_Mtx);
 				this->m_Ready[k] = false;
 			}
-			for (uint32_t i = k * dif; i < k * dif + dif; i++)
+			uint32_t thisSegmentOfObjectsV = k * dif + dif;
+			for (uint32_t i = k * dif; i < thisSegmentOfObjectsV; i++)
 			{
 				Renderer3D* r = iter->second[i];
-				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				GameObject* owner = r->GetOwnerOfComponent();
+				if (owner->m_IsStatic && r->m_IsInitializedInInstancing) continue;
+				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				memcpy(posPtr, &owner->GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
 				//r->color = color;
 				memcpy(&posPtr[6], &r->m_Color[0], 16);
 				posPtr[10] = r->m_Material.m_Ambient;
 				posPtr[11] = r->m_Material.m_Specular;
-				float* view = glm::value_ptr(owner->GetComponent<Transform>()->m_ViewMat4);
+				float* view = glm::value_ptr(owner->m_Transform->m_ViewMat4);
 				memcpy(&posPtr[12], view, 64);
+				r->m_IsInitializedInInstancing = true;
 			}
 			{
 				std::lock_guard lg(m_Mtx);
@@ -267,8 +270,9 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			for (uint32_t i = (m_NThreads - 1) * dif; i < objsSize; i++)
 			{
 				Renderer3D* r = iter->second[i];
-				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				GameObject* owner = r->GetOwnerOfComponent();
+				if (owner->m_IsStatic && r->m_IsInitializedInInstancing) continue;
+				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				memcpy(posPtr, &owner->GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
 				//r->color = COLORS::Blue;
@@ -277,6 +281,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				posPtr[11] = r->m_Material.m_Specular;
 				float* view = glm::value_ptr(owner->GetComponent<Transform>()->m_ViewMat4);
 				memcpy(&posPtr[12], view, 64);
+				r->m_IsInitializedInInstancing = true;
 			}
 			{
 				std::lock_guard lg(m_Mtx);

@@ -65,13 +65,14 @@
     <None Include="src\Shaders\LineSimple.shader" />
     <None Include="src\Shaders\SkyBox.shader" />
     <None Include="src\Shaders\Tron.shader" />
-    <None Include="src\Scripts\GameTest.lua" />
     <None Include="src\Shaders\Blur.shader" />
     <None Include="src\Shaders\Bloom.shader" />
     <None Include="src\Shaders\QuadFullScreen.shader" />
     <None Include="src\Scenes\RayCastTest.yaml" />
     <None Include="src\Scenes\scene.yaml" />
     <None Include="src\Shaders\TestShader.shader" />
+    <None Include="src\Scripts\Move.lua" />
+    <None Include="src\Scripts\Color.lua" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\Fonts\arial.png" />

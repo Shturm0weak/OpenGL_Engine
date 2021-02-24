@@ -14,8 +14,9 @@
 #include "Hexagon/Hexagon.h"
 #include "Examples/Test.h"
 
-int main(){
-	AimTrainer app;
+int main()
+{
+	RayCastTest app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

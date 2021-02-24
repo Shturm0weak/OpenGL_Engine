@@ -26,7 +26,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	this->m_App->Init();
 	ThreadPool::Init();
 	SoundManager::GetInstance().Init();
-
+	MainThread::GetInstance();
 	Texture::s_WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
 	Texture::ColoredTexture("InvalidTexture", 0xFF00AC);
 
@@ -90,20 +90,20 @@ void EntryPoint::Run()
 		Window::GetInstance().ClampCursorPos();
 		Window::GetInstance().GetCamera().WindowResize();
 
-//#ifndef _IS_GAME_BUILD
+#ifndef _IS_GAME_BUILD
 		if (Input::IsKeyPressed(Keycode::KEY_E))
 			isEditorEnable = !isEditorEnable;
-		if (m_App->m_Type == RenderType::TYPE_3D)
+		if (m_App->m_Type == RenderType::TYPE_3D) 
 			World::GetInstance().SelectObject3D();
 		if (isEditorEnable)
 			Editor::GetInstance().EditorUpdate();
 		Window::GetInstance().GetCamera().CameraMovement();
-//#endif
+#endif
 		MeshManager::GetInstance().DispatchLoadedMeshes();
 		Texture::DispatchLoadedTextures();
 		SoundManager::GetInstance().UpdateSourceState();
 
-		World::GetInstance().ProccessLuaStates();
+		World::GetInstance().UpdateLuaStates();
 		EventSystem::GetInstance().ProcessEvents();
 
 		if (m_App->m_Type == RenderType::TYPE_3D)
@@ -151,6 +151,7 @@ EntryPoint::~EntryPoint()
 	Instancing::GetInstance()->ShutDown();
 	Texture::ShutDown();
 	SoundManager::GetInstance().ShutDown();
+	ComponentManager::ShutDown();
 	delete &Window::GetInstance().GetCamera();
 	
 	ImGui_ImplGlfw_Shutdown();

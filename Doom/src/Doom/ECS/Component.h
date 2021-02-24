@@ -10,7 +10,8 @@ namespace Doom {
 	class DOOM_API Component : public Listener {
 	private:
 
-		int m_Id;
+		int64_t m_OwnerId = -1;
+		int m_Id = 0;
 		std::string m_Type;
 	protected:
 
@@ -40,6 +41,8 @@ namespace Doom {
 		GameObject* GetOwnerOfComponent() const { return m_OwnerOfCom; }
 		int GetComponentID() const { return m_Id; }
 		void RemoveComponent();
+		
+		virtual void Delete() { delete this; }
 
 		Component() {}
 		virtual ~Component();

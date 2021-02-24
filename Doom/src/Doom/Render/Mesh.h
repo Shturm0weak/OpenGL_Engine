@@ -17,9 +17,9 @@ namespace Doom {
 
 		bool m_IsInitialized = false;
 		VertexBuffer* m_Vb = nullptr;
-		VertexArray* m_Va = nullptr;
+		VertexArray m_Va = VertexArray();
 		IndexBuffer* m_Ib = nullptr;
-		VertexBufferLayout* m_Layout = nullptr;
+		VertexBufferLayout m_Layout = VertexBufferLayout();
 		std::string m_Name;
 		std::string m_FilePath;
 		glm::vec3 m_TheHighestPoint = glm::vec3(1.0f);

@@ -8,6 +8,7 @@ namespace Doom {
 		unsigned int m_RendererID;
 	public:
 
+		VertexBuffer() {}
 		VertexBuffer(const void* data, unsigned int size, bool Static = true);
 		~VertexBuffer();
 

@@ -28,12 +28,24 @@ DOOM_API std::vector <SpriteRenderer*> Renderer::s_Objects2d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
 
+DOOM_API std::vector <char*> Renderer3D::s_FreeMemory;
+DOOM_API std::map <char*, uint64_t> Renderer3D::s_MemoryPool;
+
+DOOM_API std::vector <char*> CubeCollider3D::s_FreeMemory;
+DOOM_API std::map <char*, uint64_t> CubeCollider3D::s_MemoryPool;
+
+DOOM_API std::vector <char*> RectangleCollider2D::s_FreeMemory;
+DOOM_API std::map <char*, uint64_t> RectangleCollider2D::s_MemoryPool;
+
+DOOM_API std::vector <char*> SpriteRenderer::s_FreeMemory;
+DOOM_API std::map <char*, uint64_t> SpriteRenderer::s_MemoryPool;
+
 DOOM_API std::vector <RectangleCollider2D*> RectangleCollider2D::s_Collision2d;
 DOOM_API Shader* RectangleCollider2D::s_Shader;
 DOOM_API bool Renderer::s_PolygonMode = false;
 DOOM_API Renderer::Stats Renderer::s_Stats;
 DOOM_API float Renderer::s_Exposure = 1.5f;
-DOOM_API bool Renderer::s_BloomEffect = true;
+DOOM_API bool Renderer::s_BloomEffect = false;
 DOOM_API float Renderer::s_Brightness = 1.0;
 
 DOOM_API std::vector<std::string> Editor::s_TexturesPath;

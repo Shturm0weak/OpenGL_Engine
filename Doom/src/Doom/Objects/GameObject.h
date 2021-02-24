@@ -36,6 +36,7 @@ namespace Doom {
 		std::string m_Tag = "General";
 		int m_Id = 0;
 		int m_Layer = 0;
+		bool m_IsStatic = false;
 		bool m_Enable = true;
 		bool m_IsSerializable = true;
 		bool m_IsParticle = false;

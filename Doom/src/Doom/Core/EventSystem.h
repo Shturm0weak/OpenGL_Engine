@@ -66,7 +66,7 @@ namespace Doom {
 	class DOOM_API MainThread : Listener {
 	private:
 
-		Task m_Task;
+		Task* m_Task = nullptr;
 	public:
 		
 		MainThread() 
@@ -81,8 +81,8 @@ namespace Doom {
 
 		virtual void OnMainThreadProcess(void* task) override
 		{
-			m_Task = *static_cast<Task*>(task);
-			m_Task();
+			m_Task = static_cast<Task*>(task);
+			(*m_Task)();
 			delete task;
 		}
 	};

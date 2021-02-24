@@ -52,7 +52,7 @@ void Doom::SphereCollider::Render()
 	this->m_Shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), glm::vec3(m_Radius, m_Radius, m_Radius)));
 	this->m_Shader->SetUniformMat4f("u_View", GetOwnerOfComponent()->m_Transform->m_ViewMat4);
 	this->m_Shader->SetUniform4fv("u_Color", m_Color);
-	m_Mesh->m_Va->Bind();
+	m_Mesh->m_Va.Bind();
 	m_Mesh->m_Ib->Bind();
 	m_Mesh->m_Vb->Bind();
 	Renderer::s_Stats.m_DrawCalls++;

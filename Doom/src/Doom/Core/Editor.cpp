@@ -9,6 +9,7 @@
 #include "Components/ScriptComponent.h"
 #include "Core/Utils.h"
 #include "Objects/SkyBox.h"
+#include "Lua/LuaState.h"
 
 namespace fs = std::filesystem;
 
@@ -341,8 +342,9 @@ void Doom::Editor::MenuRenderer3D()
 					if (r->m_Mesh != nullptr) {
 						ImGui::Text("Name: %s", r->m_Mesh->m_Name);
 						ImGui::Text("Id: %i", r->m_Mesh->m_IdOfMeshInFile);
-						glm::vec2 minP = r->m_OwnerOfCom->GetComponent<CubeCollider3D>()->m_MinP;
-						glm::vec2 maxP = r->m_OwnerOfCom->GetComponent<CubeCollider3D>()->m_MaxP;
+						CubeCollider3D* cc = r->m_OwnerOfCom->GetComponent<CubeCollider3D>();
+						glm::vec2 minP = cc->m_MinP;
+						glm::vec2 maxP = cc->m_MaxP;
 						ImGui::Text("MinP: %f %f", minP.x, minP.y);
 						ImGui::Text("MaxP: %f %f", maxP.x, maxP.y);
 					}
@@ -934,18 +936,43 @@ void Doom::Editor::MenuScriptComponent()
 	std::vector<ScriptComponent*> scripts = go->GetComponentManager()->GetScripts();
 	for (auto script : scripts)
 	{
-		if (script != nullptr) {
+		if (script != nullptr) 
+		{
 			ImGui::PushID(script);
-			if (MenuRemoveScript(script)) {
+			if (MenuRemoveScript(script)) 
+			{
 				ImGui::SameLine();
-				if (ImGui::CollapsingHeader("Script")) {
-					if (ImGui::Button("Assign script")) {
-						script->AssignScript("src/Scripts/GameTest.lua");
+				if (ImGui::CollapsingHeader("Script"))
+				{
+					if (script->m_LState == nullptr)
+					{
+						if (ImGui::Button("Assign script"))
+						{
+							std::optional<std::string> filePath = FileDialogs::OpenFile("scripts (*.lua)\0");
+							if (filePath)
+							{
+								script->AssignScript(filePath->c_str());
+							}
+						}
+					}
+					else 
+					{
+						if (ImGui::Button("x"))
+						{
+							delete script->m_LState;
+							script->m_LState = nullptr;
+						}
+						else
+						{
+							ImGui::SameLine();
+							ImGui::Text("%s", Utils::GetNameFromFilePath(script->m_LState->m_FilePath.c_str()));
+						}
 					}
 				}
 				ImGui::PopID();
 			}
-			else {
+			else 
+			{
 				ImGui::PopID();
 				return;
 			}
@@ -955,11 +982,13 @@ void Doom::Editor::MenuScriptComponent()
 
 void Doom::Editor::MenuAllComponents()
 {
-	if (ImGui::CollapsingHeader("Components")) {
+	if (ImGui::CollapsingHeader("Components"))
+	{
 		uint32_t size = go->GetComponentManager()->m_Components.size();
 		for (uint32_t i = 0; i < size; i++)
 		{
-			if (go->GetComponentManager()->m_Components[i]->GetComponentType().find("Doom::") == std::string::npos) {
+			if (go->GetComponentManager()->m_Components[i]->GetComponentType().find("Doom::") == std::string::npos)
+			{
 				MenuRemoveComponent(go->GetComponentManager()->m_Components[i]);
 				ImGui::SameLine();
 				ImGui::Text("%s", go->GetComponentManager()->m_Components[i]->GetComponentType());
@@ -970,10 +999,13 @@ void Doom::Editor::MenuAllComponents()
 
 void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 {
-	auto f = std::bind([](std::string path) {
-		for (const auto & entry : fs::directory_iterator(path)) {
+	auto f = std::bind([](std::string path) 
+		{
+		for (const auto & entry : fs::directory_iterator(path))
+		{
 			std::string pathToTexture = entry.path().string();
-			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) 
+			{
 				s_TexturesPath.push_back(pathToTexture);
 				size_t index = 0;
 				index = s_TexturesPath.back().find("\\", index);
@@ -993,10 +1025,13 @@ void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 
 void Doom::Editor::CheckTexturesFolder(const std::string path)
 {
-	auto f = std::bind([](std::string path) {
-		for (const auto& entry : fs::directory_iterator(path)) {
+	auto f = std::bind([](std::string path)
+		{
+		for (const auto& entry : fs::directory_iterator(path))
+		{
 			std::string pathToTexture = entry.path().string();
-			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length())
+			{
 				s_TexturesPath.push_back(pathToTexture);
 				size_t index = 0;
 				index = s_TexturesPath.back().find("\\", index);
@@ -1021,7 +1056,8 @@ void Doom::Editor::Debug()
 	ImGui::SliderAngle("X", &camera.m_Pitch);
 	ImGui::SliderAngle("Y", &camera.m_Yaw);
 	ImGui::SliderAngle("Z", &camera.m_Roll);
-	if (camera.m_Type == camera.PERSPECTIVE) {
+	if (camera.m_Type == camera.PERSPECTIVE)
+	{
 		ImGui::SliderAngle("fov", &camera.m_Fov, 60, 180);
 		camera.SetFov(camera.m_Fov);
 	}

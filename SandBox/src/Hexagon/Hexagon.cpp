@@ -1,4 +1,5 @@
 #include "Hexagon.h"
+#include "Rays/Ray3D.h"
 
 void Doom::Hexagon::PerlinNoise2D(int nWidth, int nHeight, float* fSeed, int nOctaves, float fBias, float* fOutput)
 {
@@ -51,8 +52,60 @@ glm::vec4 Doom::Hexagon::Colors(float value)
 }
 
 
+void Doom::Hexagon::CameraMovement()
+{
+	float camSpeed = cameraSpeed;
+	Camera& camera = Window::GetInstance().GetCamera();
+	if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT))
+		camSpeed *= 2;
+	if (Input::IsKeyDown(Keycode::KEY_W))
+		camera.SetPosition(camera.GetPosition() + (glm::vec3(  0,  0, -camSpeed) * DeltaTime::GetDeltaTime()));
+	if (Input::IsKeyDown(Keycode::KEY_S))
+		camera.SetPosition(camera.GetPosition() + (glm::vec3(  0,  0,  camSpeed) * DeltaTime::GetDeltaTime()));
+	if (Input::IsKeyDown(Keycode::KEY_D))
+		camera.SetPosition(camera.GetPosition() + (glm::vec3(  camSpeed,  0,  0) * DeltaTime::GetDeltaTime()));
+	if (Input::IsKeyDown(Keycode::KEY_A))
+		camera.SetPosition(camera.GetPosition() + (glm::vec3( -camSpeed,  0,  0) * DeltaTime::GetDeltaTime()));
+	if (Input::IsKeyDown(Keycode::SPACE))
+		camera.SetPosition(camera.GetPosition() + (glm::vec3(  0,  camSpeed,  0) * DeltaTime::GetDeltaTime()));
+	if (Input::IsKeyDown(Keycode::KEY_C))
+		camera.SetPosition(camera.GetPosition() + (glm::vec3(  0, -camSpeed,  0) * DeltaTime::GetDeltaTime()));
+	if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1)) {
+		{
+			Timer t;
+			GameObject* go = World::GetInstance().SelectObject3D();
+			if (go != nullptr)
+			{
+				if (go != selectedObj)
+				{
+					if (selectedObj != nullptr) {
+						Renderer3D* r = selectedObj->GetComponent<Renderer3D>();
+						r->m_Color = prevColor;
+						selectedObj->m_IsStatic = false;
+						std::function<void()>* f = new std::function<void()>([=] { selectedObj->m_IsStatic = true; });
+						EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);
+					}
+					selectedObj = go;
+					Renderer3D* r = selectedObj->GetComponent<Renderer3D>();
+					prevColor = r->m_Color;
+					r->m_Color = COLORS::Orange;
+					selectedObj->m_IsStatic = false;
+					std::function<void()>* f = new std::function<void()>([=] { selectedObj->m_IsStatic = true; });
+					EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);
+				}
+			}
+		}
+		std::cout << Timer::s_OutTime << std::endl;
+	}
+}
+
 void Doom::Hexagon::OnStart()
 {
+	GameObject* sun = new GameObject("Sun");
+	sun->AddComponent<DirectionalLight>();
+	sun->m_Transform->RotateOnce(glm::vec3(45, 0, 0));
+	Window::GetInstance().GetCamera().SetPosition(glm::vec3(5, 5, 5));
+	Window::GetInstance().GetCamera().SetRotation(glm::vec3(-glm::one_over_root_two<float>(), 0, 0));
 	float* seed = new float[width * height];
 	float* noise = new float[width * height];
 
@@ -78,7 +131,8 @@ void Doom::Hexagon::OnStart()
 	{
 		for (uint32_t j = 0; j < height; j++)
 		{
-			GameObject* go = new GameObject("hex");
+			GameObject* go = new GameObject("Hex");
+			go->m_IsStatic = true;
 			if (i % 2 == 1)
 				go->m_Transform->Translate(j * hexX + hexX * 0.5f, 0, i * 1.5f);
 			else
@@ -87,13 +141,15 @@ void Doom::Hexagon::OnStart()
 			r->LoadMesh(MeshManager::GetInstance().GetMesh("hex"));
 			r->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 			r->m_Color = Colors(noise[i * (int)width + j]);
-			go->m_Transform->RotateOnce(glm::vec3(-90,0,0));
+			go->m_Transform->RotateOnce(glm::vec3(-90, 0, 0));
+			go->m_Transform->Scale(glm::vec3(0.99, 0.99, 0.99));
 		}
 	}
 }
 
 void Doom::Hexagon::OnUpdate()
 {
+	CameraMovement();
 }
 
 void Doom::Hexagon::OnClose()

@@ -8,9 +8,9 @@ using namespace Doom;
 Batch::Batch()
 {
 	std::cout << BOLDGREEN << "Initialized Batch rendering" << RESET << std::endl;
-	initText();
-	initGameObjects();
-	initLines();
+	InitText();
+	InitGameObjects();
+	InitLines();
 }
 
 Batch::~Batch()
@@ -30,7 +30,7 @@ void Batch::Submit(Character* c)
 	if (m_TextB.m_TextureSlotsIndex > maxTextureSlots - 1)
 	{
 		EndText();
-		flushText(m_Shader);
+		FlushText(m_Shader);
 		BeginText();
 	}
 
@@ -101,7 +101,7 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE) 
 	{
 		Batch::GetInstance().EndGameObjects();
-		Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
+		Batch::GetInstance().FlushGameObjects(Batch::GetInstance().m_BasicShader);
 		Batch::GetInstance().BeginGameObjects();
 	}
 	m_GoB.m_TextureIndex = 0.0f;
@@ -125,7 +125,7 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 		}
 	}
 
-	glm::vec2 posv = Utils::GetPosition(pos);
+	glm::vec3 posv = Utils::GetPosition(pos);
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[0] * scale.x, mesh2D[1] * scale.y);
 	m_GoB.m_BufferG->m_UV = glm::vec2(mesh2D[2], mesh2D[3]);
 	m_GoB.m_BufferG->m_Color = color;
@@ -179,7 +179,7 @@ void Batch::Submit(float* mesh2D,glm::vec4 color,Texture* texture, glm::vec2 siz
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1)
 	{
 		EndText();
-		flushText(m_Shader);
+		FlushText(m_Shader);
 		BeginText();
 	}
 
@@ -246,7 +246,7 @@ void Doom::Batch::Submit(Line & line)
 	if (m_LIndexCount >= RENDERER_MAX_SPRITES)
 	{
 		EndLines();
-		flushLines(m_LineShader);
+		FlushLines(m_LineShader);
 		BeginLines();
 	}
 
@@ -270,7 +270,7 @@ void Doom::Batch::Submit(glm::vec4 color, float* mesh2D)
 	if (m_LIndexCount >= RENDERER_INDICES_SIZE)
 	{
 		EndLines();
-		flushLines(m_LineShader);
+		FlushLines(m_LineShader);
 		BeginLines();
 		m_LIndexCount = 0;
 	}
@@ -294,7 +294,7 @@ void Batch::Submit(SpriteRenderer* c)
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE)
 	{
 		Batch::GetInstance().EndGameObjects();
-		Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
+		Batch::GetInstance().FlushGameObjects(Batch::GetInstance().m_BasicShader);
 		Batch::GetInstance().BeginGameObjects();
 	}
 	m_GoB.m_TextureIndex = 0.0f;
@@ -319,7 +319,7 @@ void Batch::Submit(SpriteRenderer* c)
 	Transform* trOfR = c->m_OwnerOfCom->m_Transform;
 
 	glm::vec2 scale = c->m_OwnerOfCom->GetScale();
-	glm::vec2 pos = c->m_OwnerOfCom->GetPosition();
+	glm::vec3 pos = c->m_OwnerOfCom->GetPosition();
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[0] * scale[0], c->m_Mesh2D[1] * scale[1]);
 	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[2], c->m_Mesh2D[3]);
 	m_GoB.m_BufferG->m_Color = c->m_Color;
@@ -373,7 +373,7 @@ void Batch::Submit(RectangleCollider2D& c)
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1)
 	{
 		EndGameObjects();
-		flushGameObjects(m_Shader);
+		FlushGameObjects(m_Shader);
 		BeginGameObjects();
 		std::cout << "max texture" << std::endl;
 	}
@@ -426,7 +426,7 @@ void Batch::Submit(RectangleCollider2D& c)
 	m_Shader = c.s_Shader;
 }
 
-void Batch::flushGameObjects(Shader * shader)
+void Batch::FlushGameObjects(Shader * shader)
 {
 	glBindVertexArray(m_GoB.m_Vao);
 	m_GoB.m_Ibo->Bind();
@@ -459,7 +459,7 @@ void Batch::flushGameObjects(Shader * shader)
 	glDisable(GL_TEXTURE_2D_ARRAY);
 }
 
-void Batch::flushCollision(Shader * shader)
+void Batch::FlushCollision(Shader * shader)
 {
 	glBindVertexArray(m_GoB.m_Vao);
 	m_GoB.m_Ibo->Bind();
@@ -517,7 +517,7 @@ void Doom::Batch::EndLines()
 	glBufferSubData(GL_ARRAY_BUFFER, 0, dataSize, m_LinesB.m_BufferPtrL);
 }
 
-void Batch::flushText(Shader* shader)
+void Batch::FlushText(Shader* shader)
 {
 	glBindVertexArray(m_TextB.m_Vao);
 	m_TextB.m_Ibo->Bind();
@@ -558,7 +558,7 @@ void Batch::flushText(Shader* shader)
 	}
 }
 
-void Doom::Batch::flushLines(Shader * shader)
+void Doom::Batch::FlushLines(Shader * shader)
 {
 	glBindVertexArray(m_LinesB.m_Vao);
 	m_LinesB.m_Ibo->Bind();
@@ -574,7 +574,7 @@ void Doom::Batch::flushLines(Shader * shader)
 	glBindVertexArray(0);
 }
 
-void Batch::initText()
+void Batch::InitText()
 {
 	glGenVertexArrays(1, &m_TextB.m_Vao);
 	glBindVertexArray(m_TextB.m_Vao);
@@ -630,7 +630,7 @@ void Batch::initText()
 
 }
 
-void Batch::initGameObjects()
+void Batch::InitGameObjects()
 {
 	glGenVertexArrays(1, &m_GoB.m_Vao);
 	glBindVertexArray(m_GoB.m_Vao);
@@ -664,7 +664,7 @@ void Batch::initGameObjects()
 	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_RotationMat3));
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 9);
-	glVertexAttribPointer(9, 2, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_Pos));
+	glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_Pos));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -694,7 +694,7 @@ void Batch::initGameObjects()
 	}
 }
 
-void Doom::Batch::initLines()
+void Doom::Batch::InitLines()
 {
 	glGenVertexArrays(1, &m_LinesB.m_Vao);
 	glBindVertexArray(m_LinesB.m_Vao);

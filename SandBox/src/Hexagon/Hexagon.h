@@ -6,8 +6,12 @@ namespace Doom {
 
 	class Hexagon : public Application {
 	private:
-		float width = 16;
-		float height = 16;
+
+		float width = 64;
+		float height = 64;
+		float cameraSpeed = 5;
+		GameObject* selectedObj = nullptr;
+		glm::vec4 prevColor;
 	public:
 
 		Hexagon(std::string name = "Hexagon", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
@@ -16,6 +20,7 @@ namespace Doom {
 
 		glm::vec4 Colors(float value);
 
+		void CameraMovement();
 		void OnStart();
 		void OnUpdate();
 		void OnClose();

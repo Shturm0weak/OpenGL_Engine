@@ -99,7 +99,7 @@ void Doom::Renderer::RenderBloomEffect()
 void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 {
 	shader->Bind();
-	mesh->m_Va->Bind();
+	mesh->m_Va.Bind();
 	mesh->m_Ib->Bind();
 	mesh->m_Vb->Bind();
 	Renderer::s_Stats.m_Vertices += mesh->m_Ib->GetCount();
@@ -211,7 +211,7 @@ void Doom::Renderer::Render2DObjects()
 		}
 		batch.EndGameObjects();
 	}
-	Batch::GetInstance().flushGameObjects(Batch::GetInstance().m_BasicShader);
+	Batch::GetInstance().FlushGameObjects(Batch::GetInstance().m_BasicShader);
 }
 
 void Doom::Renderer::Render3DObjects()
@@ -255,7 +255,6 @@ void Doom::Renderer::Render3D()
 {
 	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_3D)
 	{
-		RenderCollision();
 		Render3DObjects();
 		RenderLines();
 		Render2DObjects();
@@ -325,12 +324,12 @@ void Doom::Renderer::RenderLines()
 		}
 	}
 	Batch::GetInstance().EndLines();
-	Batch::GetInstance().flushLines(Batch::GetInstance().m_LineShader);
+	Batch::GetInstance().FlushLines(Batch::GetInstance().m_LineShader);
 }
 
 void Doom::Renderer::RenderText() 
 {
-	Batch::GetInstance().flushText(Batch::GetInstance().m_TextShader);
+	Batch::GetInstance().FlushText(Batch::GetInstance().m_TextShader);
 }
 
 void Doom::Renderer::RenderTransparent()
@@ -358,6 +357,6 @@ void Doom::Renderer::RenderCollision()
 			}
 		}
 		Batch::GetInstance().EndGameObjects();
-		Batch::GetInstance().flushCollision(Batch::GetInstance().m_CollisionShader);
+		Batch::GetInstance().FlushCollision(Batch::GetInstance().m_CollisionShader);
 	}
 }

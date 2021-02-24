@@ -4,10 +4,11 @@
 std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length, bool AABB, std::vector<std::string> ignoreMask)
 {
 	std::map<float, CubeCollider3D*> d;
-	for (uint32_t i = 0; i < CubeCollider3D::s_Colliders.size(); i++)
+	size_t collidersSize = CubeCollider3D::s_Colliders.size();
+	for (size_t i = 0; i < collidersSize; i++)
 	{
 		bool hasTag = ignoreMask.size() > 0 ? false : true;
-		for (uint32_t j = 0; j < ignoreMask.size(); j++)
+		for (size_t j = 0; j < ignoreMask.size(); j++)
 		{
 			if (CubeCollider3D::s_Colliders[i]->GetOwnerOfComponent()->m_Tag == ignoreMask[j]) 
 			{
@@ -27,8 +28,6 @@ std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm
 		if (isIntersected)
 			d.insert(std::make_pair(hit->m_Distance, hit->m_Object));
 	}
-
-	Doom::Ray3D::sortMap(d);
 
 	if(d.size() > 0)
 	{
@@ -82,10 +81,10 @@ void Doom::Ray3D::Normilize(glm::vec3 & vector)
 
 bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D * c)
 {
-	glm::vec3 pos = c->m_Offset + c->GetOwnerOfComponent()->GetPosition();
+	glm::vec3 pos = c->m_Offset * c->GetOwnerOfComponent()->GetScale() + c->GetOwnerOfComponent()->GetPosition();
 	glm::vec3 scale = glm::abs(c->m_MinP) + glm::abs(c->m_MaxP);
 	glm::vec3 bMin = pos + (glm::vec3(-1, -1, -1) * scale);
-	glm::vec3 bMax = pos + (glm::vec3(1, 1, 1) * scale);
+	glm::vec3 bMax = pos + (glm::vec3( 1,  1,  1) * scale);
 
 	float txMin = (bMin.x - start.x) / dir.x;
 	float txMax = (bMax.x - start.x) / dir.x;
@@ -129,11 +128,11 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, fl
 
 
 
-bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D * c)
+bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit* hit, float length, CubeCollider3D* c)
 {
 	Transform* tr = c->GetOwnerOfComponent()->GetComponent<Transform>();
 	glm::vec3 bounds0 = c->m_MinP;
-	glm::vec3 bounds1= c->m_MaxP;
+	glm::vec3 bounds1 = c->m_MaxP;
 	glm::vec3 vPos = tr->GetPosition() + c->m_Offset * tr->GetScale();
 	glm::mat4 pos = glm::translate(glm::mat4(1.0f), vPos);
 	glm::mat4 wMat = pos * tr->m_ViewMat4;
@@ -144,9 +143,9 @@ bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, flo
 	glm::vec3 bbRayDelta = vPos - start;
 
 	float tMin = 0, tMax = 1000000, nomLen, denomLen, tmp, min, max;
-	uint32_t p;
+	size_t p;
 
-	for (uint32_t i = 0; i < 3; i++)
+	for (size_t i = 0; i < 3; i++)
 	{
 		p = i * 4;
 		axis = glm::vec3(wMatPtr[p], wMatPtr[p + 1], wMatPtr[p + 2]);
@@ -173,16 +172,4 @@ bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, flo
 	hit->m_Object = c;
 	hit->m_Point = tMin * dir + start;
 	return true;
-}
-
-void Doom::Ray3D::sortMap(std::map<float, CubeCollider3D*>& M)
-{
-	std::vector<std::pair<float, CubeCollider3D*> > A;
-
-	for (auto& it : M) 
-	{
-		A.push_back(it);
-	}
-	sort(A.begin(), A.end(), [](pair<float, CubeCollider3D*>& a,
-		pair<float, CubeCollider3D*>& b) {return a.first < b.first; });
 }

@@ -13,7 +13,7 @@ World& Doom::World::GetInstance()
 	return instance;
 }
 
-void Doom::World::ProccessLuaStates()
+void Doom::World::UpdateLuaStates()
 {
 	for(auto l : LuaState::s_LuaStates)
 	{
@@ -121,7 +121,7 @@ void Doom::World::PopBack()
 #include "../Core/Utils.h"
 #include "ImGuizmo/ImGuizmo.h"
 
-void Doom::World::SelectObject3D()
+GameObject* Doom::World::SelectObject3D()
 {
 	if (!ImGuizmo::IsOver() && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2))
 	{
@@ -151,7 +151,7 @@ void Doom::World::SelectObject3D()
 					b = glm::vec3(model * view * scale * glm::vec4(b, 1.0f));
 					c = glm::vec3(model * view * scale * glm::vec4(c, 1.0f));
 					n = glm::vec3(view * glm::vec4(n, 1.0f));
-					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 10000, a, b, c, n)) 
+					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 10000, a, b, c, n))
 					{
 						//GameObject* go0 = new GameObject("p1", a.x, a.y, a.z);
 						//go0->GetComponentManager()->AddComponent<SpriteRenderer>();
@@ -162,13 +162,16 @@ void Doom::World::SelectObject3D()
 						/*new Line(a, b);
 						new Line(a, c);
 						new Line(c, b);*/
+#ifndef _IS_GAME_BUILD
 						Editor::GetInstance().go = go;
-						return;
+#endif
+						return go;
 					}
 				}
 			}
 		}
 	}
+	return nullptr;
 }
 
 unsigned int Doom::World::GetAmountOfObjects()

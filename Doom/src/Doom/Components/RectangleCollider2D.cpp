@@ -5,26 +5,35 @@
 
 using namespace Doom;
 
+void Doom::RectangleCollider2D::Delete()
+{
+	s_FreeMemory.push_back(m_MemoryPoolPtr);
+	auto iter = std::find(s_Collision2d.begin(), s_Collision2d.end(), this);
+	if (iter != s_Collision2d.end())
+		s_Collision2d.erase(iter);
+}
+
 Component* Doom::RectangleCollider2D::Create()
 {
-	return new RectangleCollider2D();
+	char* ptr = Utils::PreAllocateMemory<RectangleCollider2D>(s_MemoryPool, s_FreeMemory);
+	RectangleCollider2D* component = (RectangleCollider2D*)((void*)ptr); //= new(iter->first + iter->second * sizeof(RectangleCollider2D)) RectangleCollider2D();
+	component->m_MemoryPoolPtr = ptr;
+	RectangleCollider2D::s_Collision2d.push_back(component);
+	RectangleCollider2D::s_CollidersToInit.push_back(component);
+	return component;
 }
 
 RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y)
 {
 	this->m_OwnerOfCom = owner;
 	World::GetInstance().s_ColId++;
-	s_Collision2d.push_back(this);
 	SetOffset(m_Offset.x, m_Offset.y);
-	s_CollidersToInit.push_back(this);
 	s_Shader = Shader::Get("Collision2D.shader", false);
 }
 
 Doom::RectangleCollider2D::~RectangleCollider2D()
 {
-	auto iter = std::find(s_Collision2d.begin(), s_Collision2d.end(), this);
-	if (iter != s_Collision2d.end()) 
-		s_Collision2d.erase(iter);
+	
 }
 
 void RectangleCollider2D::CalculateRealVerPos() 

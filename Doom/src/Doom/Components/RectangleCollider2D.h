@@ -15,6 +15,9 @@ namespace Doom {
 	class DOOM_API RectangleCollider2D : public Component {
 	private:
 
+		static std::map<char*, uint64_t> s_MemoryPool;
+		static std::vector<char*> s_FreeMemory;
+
 		static float m_Vertices[8];
 
 		static std::vector<RectangleCollider2D*> s_CollidersToInit;
@@ -22,6 +25,8 @@ namespace Doom {
 
 		RectangleCollider2D* m_Col = nullptr;
 		Transform* m_Transform = nullptr;
+
+		char* m_MemoryPoolPtr = nullptr;
 
 		glm::vec2 m_Displacement;
 		glm::vec2 m_Offset = { 0,0 };
@@ -42,6 +47,7 @@ namespace Doom {
 		friend class Batch;
 		friend class Ray2D;
 		friend class SceneSerializer;
+		friend class ComponentManager;
 	public:
 
 		float* m_TransformedVerPos = new float[16];
@@ -59,6 +65,7 @@ namespace Doom {
 		~RectangleCollider2D();
 
 		static Component* Create();
+		virtual void Delete() override;
 
 		void SetOffset(float x, float y);
 		void IsCollidedSAT();

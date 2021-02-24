@@ -13,6 +13,8 @@ void Doom::ScriptComponent::AssignScript(const char* filePath)
 	m_LState->m_Go = GetOwnerOfComponent();
 	LuaState::RegisterFunction(m_LState);
 	m_LState->CL(luaL_dofile(m_LState->m_L, filePath));
+	std::function<void()>* f = new std::function<void()>([=] { m_LState->OnStart(); });
+	EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);    //Temporary solution until I implement start button in the Editor 
 }
 
 Doom::Component* Doom::ScriptComponent::Create()

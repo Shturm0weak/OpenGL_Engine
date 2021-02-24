@@ -9,6 +9,7 @@ namespace Doom {
 		unsigned int m_count;
 	public:
 
+		IndexBuffer() {}
 		IndexBuffer(const uint32_t* data, uint32_t count);
 		~IndexBuffer();
 

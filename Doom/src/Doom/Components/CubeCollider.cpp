@@ -3,9 +3,36 @@
 
 using namespace Doom;
 
+void Doom::CubeCollider3D::Delete()
+{
+	delete m_Va;
+	delete m_Vb;
+	delete m_Layout;
+	delete m_Ib;
+	s_FreeMemory.push_back(m_MemoryPoolPtr);
+	auto iter = std::find(s_Colliders.begin(), s_Colliders.end(), this);
+	if (iter != s_Colliders.end())
+		s_Colliders.erase(iter);
+}
+
 Component* Doom::CubeCollider3D::Create()
 {
-	return new CubeCollider3D();
+	char* ptr = Utils::PreAllocateMemory<CubeCollider3D>(s_MemoryPool, s_FreeMemory);
+	CubeCollider3D* component = (CubeCollider3D*)((void*)ptr);// = new(iter->first + iter->second * sizeof(CubeCollider3D)) CubeCollider3D();
+	component->m_MemoryPoolPtr = ptr;
+	component->m_Mesh = MeshManager::GetInstance().GetMesh("CubeCollider");
+	component->m_Layout = new VertexBufferLayout();
+	component->m_Vb = new VertexBuffer(component->m_Mesh->m_VertAttrib, 36 * 3 * sizeof(float));
+	component->m_Va = new VertexArray();
+	component->m_Ib = new IndexBuffer(component->m_Mesh->m_Indices, 36);
+	component->m_Layout->Push<float>(3);
+	component->m_Va->AddBuffer(*component->m_Vb, *component->m_Layout);
+	component->m_Va->UnBind();
+	component->m_Shader->UnBind();
+	component->m_Vb->UnBind();
+	component->m_Ib->UnBind();
+	s_Colliders.push_back(component);
+	return component;
 }
 
 void Doom::CubeCollider3D::InitMesh()
@@ -61,28 +88,11 @@ void Doom::CubeCollider3D::InitMesh()
 
 Doom::CubeCollider3D::~CubeCollider3D()
 {
-	delete m_Vb;
-	delete m_Ib;
-	delete m_Va;
-	auto iter = std::find(s_Colliders.begin(), s_Colliders.end(), this);
-	if (iter != s_Colliders.end()) 
-		s_Colliders.erase(iter);
+	
 }
 
 CubeCollider3D::CubeCollider3D() 
 {
-	m_Mesh = MeshManager::GetInstance().GetMesh("CubeCollider");
-	m_Layout = new VertexBufferLayout();
-	m_Vb = new VertexBuffer(m_Mesh->m_VertAttrib, 36 * 3 * sizeof(float));
-	m_Va = new VertexArray();
-	m_Ib = new IndexBuffer(m_Mesh->m_Indices, 36);
-	m_Layout->Push<float>(3);
-	m_Va->AddBuffer(*this->m_Vb, *this->m_Layout);
-	m_Va->UnBind();
-	m_Shader->UnBind();
-	m_Vb->UnBind();
-	m_Ib->UnBind();
-	s_Colliders.push_back(this);
 	//SetType(ComponentType::CUBECOLLIDER3D);
 }
 

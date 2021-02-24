@@ -5,7 +5,7 @@
 
 #define NAMECOLOR "\033[1m\033[36m"
 
-#define MAX_PREALLOCATED_INSTANCES 100000
+#define MAX_PREALLOCATED_INSTANCES 1000
 
 #ifdef DOOM_ENGINE
 #define DOOM_API __declspec(dllexport)

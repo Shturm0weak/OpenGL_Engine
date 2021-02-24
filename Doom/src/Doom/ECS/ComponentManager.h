@@ -47,8 +47,35 @@ namespace Doom {
 			CopyComponent<Animator>(rhs);
 		}
 
+		static void ShutDown() {
+			for (auto iter = Renderer3D::s_MemoryPool.begin(); iter != Renderer3D::s_MemoryPool.end(); iter++)
+			{
+				delete[] (Renderer3D*)iter->first;
+			}
+			Renderer3D::s_FreeMemory.clear();
+
+			for (auto iter = SpriteRenderer::s_MemoryPool.begin(); iter != SpriteRenderer::s_MemoryPool.end(); iter++)
+			{
+				delete[] (SpriteRenderer*)iter->first;
+			}
+			SpriteRenderer::s_FreeMemory.clear();
+
+			for (auto iter = RectangleCollider2D::s_MemoryPool.begin(); iter != RectangleCollider2D::s_MemoryPool.end(); iter++)
+			{
+				delete[] (RectangleCollider2D*)iter->first;
+			}
+			RectangleCollider2D::s_FreeMemory.clear();
+
+			for (auto iter = CubeCollider3D::s_MemoryPool.begin(); iter != CubeCollider3D::s_MemoryPool.end(); iter++)
+			{
+				delete[] (CubeCollider3D*)iter->first;
+			}
+			CubeCollider3D::s_FreeMemory.clear();
+		}
+
 		friend class Component;
 		friend class Editor;
+		friend class EntryPoint;
 	public:
 
 		ComponentManager(ComponentManager& rhs) 
@@ -123,7 +150,7 @@ namespace Doom {
 					m_Components[i]->m_Id = i;
 				}
 			}
-			delete com;
+			com->Delete();
 			return;
 		}
 
@@ -142,7 +169,7 @@ namespace Doom {
 					m_Components[i]->m_Id = i;
 				}
 			}
-			delete com;
+			com->Delete();
 			return;
 		}
 

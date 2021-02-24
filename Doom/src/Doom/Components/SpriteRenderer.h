@@ -13,6 +13,7 @@ namespace Doom {
 	class DOOM_API SpriteRenderer : public Irenderer {
 	private:
 
+
 		float m_Mesh2D[16] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,
@@ -20,9 +21,12 @@ namespace Doom {
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
 
+		static std::map<char*, uint64_t> s_MemoryPool;
+		static std::vector<char*> s_FreeMemory;
 		static unsigned int s_Indices2D[6];
 
 		Transform* m_Tr = nullptr;
+		char* m_MemoryPoolPtr = nullptr;
 
 		void Copy(const SpriteRenderer& rhs);
 
@@ -46,6 +50,7 @@ namespace Doom {
 		void GetTransformedVertices(float* buffer); // returns 8 floats
 
 		virtual void Render() override;
+		virtual void Delete() override;
 
 		static Component* Create();
 

@@ -156,31 +156,36 @@ namespace Utils {
 	}
 
 	template<class T>
-	std::map<char*, uint32_t>::iterator PreAllocateMemory(std::map<char*, uint32_t>& memoryPool, std::vector<char*> freeMemory)
+	char* PreAllocateMemory(std::map<char*, uint64_t>& memoryPool, std::vector<char*>& freeMemory)
 	{
-		std::map<char*, uint32_t>::iterator iter;
+		std::map<char*, uint64_t>::iterator iter;
+		
+		if (memoryPool.size() == 0 || memoryPool.rbegin()->second == MAX_PREALLOCATED_INSTANCES)
+		{
+			char* newPreAllocMemory = (char*)((void*)(new T[MAX_PREALLOCATED_INSTANCES]));
+			memoryPool.insert(std::make_pair(newPreAllocMemory, 0));
+			char* memoryPtr = memoryPool.rbegin()->first;
+			iter = memoryPool.find(memoryPtr);
+			for (size_t i = 0; i < MAX_PREALLOCATED_INSTANCES * sizeof(T); i += sizeof(T))
+			{
+				freeMemory.push_back(newPreAllocMemory + i);
+			}
+		}
 		if (freeMemory.size() > 0)
 		{
 			for (auto iterMP = memoryPool.begin(); iterMP != memoryPool.end(); iterMP++)
 			{
-				if((uint64_t)(iterMP->first) < (uint64_t)freeMemory.back() && (uint64_t)freeMemory.back() < (uint64_t)(iterMP->first) + MAX_PREALLOCATED_INSTANCES)
-					iter = iterMP;
+				uint64_t ptr = (uint64_t)freeMemory.back();
+				if ((uint64_t)(iterMP->first) <= ptr && ptr <= (uint64_t)(iterMP->first) + MAX_PREALLOCATED_INSTANCES * sizeof(T))
+				{
+					iterMP->second++;
+					char* ptr = freeMemory.back();
+					freeMemory.pop_back();
+					return ptr;
+				}
 			}
 		}
-		else if (memoryPool.size() == 0)
-		{
-			char* newPreAllocMemory = new char[MAX_PREALLOCATED_INSTANCES * sizeof(T)];
-			memoryPool.insert(std::make_pair(newPreAllocMemory, 0));
-		}
-		char* memoryPtr = memoryPool.rbegin()->first;
-		iter = memoryPool.find(memoryPtr);
-		if (iter->second == MAX_PREALLOCATED_INSTANCES) 
-		{
-			char* newPreAllocMemory = new char[MAX_PREALLOCATED_INSTANCES * sizeof(T)];
-			iter = memoryPool.insert(std::make_pair(newPreAllocMemory, 0)).first;
-			memoryPtr = newPreAllocMemory;
-		}
-		return iter;
+		return nullptr;
 	}
 
 	template<typename T>
