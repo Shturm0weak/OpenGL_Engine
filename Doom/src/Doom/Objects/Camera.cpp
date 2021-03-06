@@ -209,7 +209,7 @@ void Camera::CameraMovement()
 			if (Input::IsKeyDown(Keycode::KEY_G))
 			{
 				if (Editor::GetInstance().go != nullptr)
-					Editor::GetInstance().go->GetComponentManager()->GetComponent<Transform>()->Translate(
+					Editor::GetInstance().go->m_ComponentManager.GetComponent<Transform>()->Translate(
 						ViewPort::GetInstance()->GetMousePositionToWorldSpace().x,
 						ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
 			}

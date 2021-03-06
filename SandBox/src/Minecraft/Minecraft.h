@@ -68,7 +68,7 @@ public:
 		dirtImg = Texture::Create("src/Minecraft/Textures/dirtTexture.png");
 		float* seed = new float[width * height];
 		float* noise = new float[width * height];
-		terrain = new GameObject("terrain");
+		terrain = GameObject::Create("terrain");
 		
 		for (size_t i = 0; i < width * height; i++)
 		{
@@ -86,8 +86,7 @@ public:
 		};
 		MeshManager::GetInstance().LoadMesh("cube", "src/Minecraft/Models/cube.fbx");
 		//MeshManager::LoadMesh("gladiator", "src/Mesh/Try.stl");
-		SkyBox* skybox = new SkyBox(faces, nullptr);
-		MeshManager::GetInstance().GetMeshWhenLoaded("cube", skybox->GetComponent<Renderer3D>());
+		GameObject* skybox = SkyBox::CreateSkyBox(faces);
 		for (size_t i = 0; i < width; i++)
 		{
 			for (size_t j = 0; j < height; j++)
@@ -98,16 +97,16 @@ public:
 		}
 		for (uint32_t i = 0; i < 7; i++)
 		{
-			lights.push_back(new GameObject(std::string("light " + std::to_string(i)), i * 10, 0, i * 10));
-			lights.back()->GetComponentManager()->AddComponent<PointLight>();
-			lights.back()->GetComponentManager()->GetComponent<PointLight>()->m_Color = glm::vec3(i * 0.1, 0, i * 0.1);
+			lights.push_back(GameObject::Create(std::string("light " + std::to_string(i)), i * 10, 0, i * 10));
+			lights.back()->m_ComponentManager.AddComponent<PointLight>();
+			lights.back()->m_ComponentManager.GetComponent<PointLight>()->m_Color = glm::vec3(i * 0.1, 0, i * 0.1);
 		}
-		lights.back()->GetComponentManager()->RemoveComponent<PointLight>();
-		lights.back()->GetComponentManager()->AddComponent<DirectionalLight>();
+		lights.back()->m_ComponentManager.RemoveComponent<PointLight>();
+		lights.back()->m_ComponentManager.AddComponent<DirectionalLight>();
 		lights.back()->GetComponent<Transform>()->RotateOnce(120,0,0);
 		//gladiator = new GameObject("gladiator", 0, 5, 0);
-		//gladiator->GetComponentManager()->RemoveComponent<Irenderer>();
-		//gladiator->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
+		//gladiator->m_ComponentManager.RemoveComponent<Irenderer>();
+		//gladiator->m_ComponentManager.AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetMesh("cube"));
 		//gladiator->GetComponent<Transform>()->Translate(0, 10, 0);
 		//glm::vec2 a(0, 0);
 		//glm::vec2 b(0, 100);
@@ -327,15 +326,15 @@ public:
 	}
 	
 	void CreateCube(int i ,int j) {
-		cube.push_back(new GameObject("dirt" + std::to_string(i) + ":" + std::to_string(j)));
+		cube.push_back(GameObject::Create("dirt" + std::to_string(i) + ":" + std::to_string(j)));
 		terrain->AddChild((void*)cube.back());
-		cube.back()->GetComponentManager()->AddComponent<Renderer3D>();
+		cube.back()->m_ComponentManager.AddComponent<Renderer3D>();
 		cube.back()->GetComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
 		cube.back()->GetComponent<Renderer3D>()->m_Material.m_Ambient = 0.4f;
 		cube.back()->GetComponent<Renderer3D>()->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 		cube.back()->GetComponent<Renderer3D>()->m_DiffuseTexture = dirtImg;
 		cube.back()->GetComponent<Transform>()->RotateOnce(0, 0, -90);
 		cube.back()->GetComponent<Transform>()->Scale(0.5, 0.5, 0.5);
-		cube.back()->GetComponentManager()->AddComponent<CubeCollider3D>();
+		cube.back()->m_ComponentManager.AddComponent<CubeCollider3D>();
 	}
 };

@@ -20,7 +20,7 @@ bool Editor::MenuRemoveComponent()
 {
 	ImGui::PushID(closedButtonsId);
 	if (ImGui::Button("x")) {
-		go->GetComponentManager()->RemoveComponent<T>();
+		go->m_ComponentManager.RemoveComponent<T>();
 		ImGui::PopID();
 		return false;
 	}
@@ -69,21 +69,21 @@ void Editor::EditorUpdate()
 	{
 		if (ImGui::MenuItem("Create GameObject"))
 		{
-			go = World::GetInstance().CreateGameObject();
+			go = GameObject::Create();
 		}
 		if (ImGui::MenuItem("Create 2D GameObject"))
 		{
-			go = World::GetInstance().CreateGameObject();
-			go->GetComponentManager()->AddComponent<SpriteRenderer>();
+			go = GameObject::Create();
+			go->m_ComponentManager.AddComponent<SpriteRenderer>();
 		}
 		if (ImGui::MenuItem("Create 3D GameObject"))
 		{
-			go = World::GetInstance().CreateGameObject();
-			MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(go->GetComponentManager()->AddComponent<Renderer3D>()));
+			go = GameObject::Create();
+			MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(go->m_ComponentManager.AddComponent<Renderer3D>()));
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
-			GameObject* clgo = World::GetInstance().CreateGameObject();
+			GameObject* clgo = GameObject::Create();
 			clgo->operator=(*go);
 			go = clgo;
 		}
@@ -105,8 +105,7 @@ void Editor::EditorUpdate()
 							files[i] = files[i].substr(index, files.size() - index);
 					}
 					if (files.size() >= 6) {
-						SkyBox* skybox = new SkyBox(files, nullptr);
-						MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(skybox->GetComponentManager()->GetComponent<Renderer3D>()));
+						GameObject* skybox = SkyBox::CreateSkyBox(files);
 					}
 				}
 			}
@@ -144,42 +143,42 @@ void Editor::EditorUpdate()
 		{
 			if (ImGui::MenuItem("Renderer3D"))
 			{
-				go->GetComponentManager()->AddComponent<Renderer3D>();
+				go->m_ComponentManager.AddComponent<Renderer3D>();
 			}
 			if (ImGui::MenuItem("SpriteRenderer"))
 			{
-				go->GetComponentManager()->AddComponent<SpriteRenderer>();
+				go->m_ComponentManager.AddComponent<SpriteRenderer>();
 			}
 			if (ImGui::MenuItem("RectangleCollider2D"))
 			{
-				go->GetComponentManager()->AddComponent<Doom::RectangleCollider2D>();
+				go->m_ComponentManager.AddComponent<Doom::RectangleCollider2D>();
 			}
 			if (ImGui::MenuItem("DirectionalLight"))
 			{
-				go->GetComponentManager()->AddComponent<DirectionalLight>();
+				go->m_ComponentManager.AddComponent<DirectionalLight>();
 			}
 			if (ImGui::MenuItem("PointLight"))
 			{
-				go->GetComponentManager()->AddComponent<PointLight>();
+				go->m_ComponentManager.AddComponent<PointLight>();
 			}
 			if (ImGui::MenuItem("CubeCollider3D"))
 			{
-				go->GetComponentManager()->AddComponent<CubeCollider3D>();
+				go->m_ComponentManager.AddComponent<CubeCollider3D>();
 			}
 			if (ImGui::MenuItem("SphereCollider3D"))
 			{
-				go->GetComponentManager()->AddComponent<SphereCollider>();
+				go->m_ComponentManager.AddComponent<SphereCollider>();
 			}
 			if (ImGui::MenuItem("ScriptComponent")) {
-				go->GetComponentManager()->AddComponent<ScriptComponent>();
+				go->m_ComponentManager.AddComponent<ScriptComponent>();
 			}
 			if (ImGui::MenuItem("Add child")) {
 
-				GameObject* obj = World::GetInstance().CreateGameObject();
+				GameObject* obj = GameObject::Create();
 				obj->SetOwner((void*)go);
 				go->AddChild((void*)obj);
 				go = World::GetInstance().s_GameObjects.back();
-				go->GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
+				go->m_ComponentManager.AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
 			}
 			ImGui::EndPopup();
 		}
@@ -188,8 +187,8 @@ void Editor::EditorUpdate()
 			ImGui::End();
 			return;
 		}
-		Doom::Transform* tr = go->m_ComponentManager->GetComponent<Doom::Transform>();
-		Doom::RectangleCollider2D* col = go->m_ComponentManager->GetComponent<Doom::RectangleCollider2D>();
+		Doom::Transform* tr = go->m_ComponentManager.GetComponent<Doom::Transform>();
+		Doom::RectangleCollider2D* col = go->m_ComponentManager.GetComponent<Doom::RectangleCollider2D>();
 		ImGui::Text("ID %d", go->m_Id);
 		ImGui::Checkbox("Enable", &go->m_Enable);
 		if (go->GetOwner() != nullptr)
@@ -206,7 +205,7 @@ void Editor::EditorUpdate()
 			go->m_Tag = name;
 		}
 		ImGui::SliderInt("Layer", &go->GetLayer(), 0, World::GetInstance().GetAmountOfObjects() - 1);
-		if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->m_RenderType == TYPE_2D) {
+		if (go->m_ComponentManager.GetComponent<SpriteRenderer>() != nullptr && go->m_ComponentManager.GetComponent<SpriteRenderer>()->m_RenderType == TYPE_2D) {
 			if (ImGui::Button("Change layer")) {
 				if (go->GetLayer() > World::GetInstance().GetAmountOfObjects() - 1) {
 					std::cout << "Error: layer out of range" << std::endl;
@@ -275,10 +274,10 @@ void Editor::CreateTextureAtlas() {
 
 void Doom::Editor::MenuRenderer3D()
 {
-	if (go->GetComponentManager()->GetComponent<Renderer3D>() != nullptr && go->GetComponentManager()->GetComponent<Renderer3D>()->m_RenderType == TYPE_3D) {
+	if (go->m_ComponentManager.GetComponent<Renderer3D>() != nullptr && go->m_ComponentManager.GetComponent<Renderer3D>()->m_RenderType == TYPE_3D) {
 		if (MenuRemoveComponent<Renderer3D>()) {
 			if (ImGui::CollapsingHeader("Renderer 3D")) {
-				Renderer3D* r = go->GetComponentManager()->GetComponent<Renderer3D>();
+				Renderer3D* r = go->m_ComponentManager.GetComponent<Renderer3D>();
 				ImGui::Indent(ImGui::GetWindowSize().x * 0.05);
 				ImGui::Checkbox("Cast shadows", &r->m_IsCastingShadows);
 				ImGui::Checkbox("Wire mesh", &r->m_IsWireMesh);
@@ -341,7 +340,12 @@ void Doom::Editor::MenuRenderer3D()
 				if (ImGui::CollapsingHeader("Mesh")) {
 					if (r->m_Mesh != nullptr) {
 						ImGui::Text("Name: %s", r->m_Mesh->m_Name);
+						ImGui::Text("Ptr: %s", std::to_string((size_t)r->m_Mesh));
+						ImGui::Text("PtrVertAtrib: %s", std::to_string((size_t)r->m_Mesh->m_VertAttrib));
+						ImGui::Text("PtrIb: %s", std::to_string((size_t)r->m_Mesh->m_Ib));
+						ImGui::Text("PtrVb: %s", std::to_string((size_t)r->m_Mesh->m_Vb));
 						ImGui::Text("Id: %i", r->m_Mesh->m_IdOfMeshInFile);
+						ImGui::Text("VertAtrib: %i", r->m_Mesh->m_VertAttribSize);
 						CubeCollider3D* cc = r->m_OwnerOfCom->GetComponent<CubeCollider3D>();
 						glm::vec2 minP = cc->m_MinP;
 						glm::vec2 maxP = cc->m_MaxP;
@@ -360,7 +364,7 @@ void Doom::Editor::MenuRenderer3D()
 
 void Doom::Editor::MenuCubeCollider3D()
 {
-	CubeCollider3D* cc = go->GetComponentManager()->GetComponent<CubeCollider3D>();
+	CubeCollider3D* cc = go->m_ComponentManager.GetComponent<CubeCollider3D>();
 	if (cc != nullptr && cc->m_IsBoundingBox == false) {
 		if (MenuRemoveComponent<CubeCollider3D>()) {
 			if (ImGui::CollapsingHeader("CubeCollider3D")) {
@@ -372,7 +376,7 @@ void Doom::Editor::MenuCubeCollider3D()
 
 void Doom::Editor::MenuRenderer2D()
 {
-	if (go->GetComponentManager()->GetComponent<SpriteRenderer>() != nullptr && go->GetComponentManager()->GetComponent<SpriteRenderer>()->m_RenderType == TYPE_2D) {
+	if (go->m_ComponentManager.GetComponent<SpriteRenderer>() != nullptr && go->m_ComponentManager.GetComponent<SpriteRenderer>()->m_RenderType == TYPE_2D) {
 		SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
 		if (MenuRemoveComponent<SpriteRenderer>()) {
 			if (ImGui::CollapsingHeader("Render2D")) {
@@ -445,7 +449,7 @@ void Doom::Editor::MenuRenderer2D()
 								if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
 								{
 									if (go != nullptr) {
-										SpriteRenderer* sr = go->GetComponentManager()->GetComponent<SpriteRenderer>();
+										SpriteRenderer* sr = go->m_ComponentManager.GetComponent<SpriteRenderer>();
 										sr->m_TextureAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas);
 										sr->m_Texture = textureOfAtlas;
 										sr->SetUVs(uvs);
@@ -486,7 +490,7 @@ void Doom::Editor::MenuRectangleCollider2D(Doom::RectangleCollider2D* col)
 				ImGui::InputFloat2("Offset", &(col->m_Offset.x, col->m_Offset.x));
 				col->SetOffset(col->m_Offset.x, col->m_Offset.y);
 				if (ImGui::Button("Remove collider")) {
-					go->m_ComponentManager->RemoveComponent<Doom::RectangleCollider2D>();
+					go->m_ComponentManager.RemoveComponent<Doom::RectangleCollider2D>();
 					selectedcomponent = 0;
 				}
 			}
@@ -496,10 +500,10 @@ void Doom::Editor::MenuRectangleCollider2D(Doom::RectangleCollider2D* col)
 
 void Doom::Editor::MenuAnimator2D()
 {
-	if (go->GetComponentManager()->GetComponent<Animator>() != nullptr) {
+	if (go->m_ComponentManager.GetComponent<Animator>() != nullptr) {
 		if (MenuRemoveComponent<Animator>()) {
 			if (ImGui::CollapsingHeader("Animator")) {
-				Animator* anim = go->GetComponentManager()->GetComponent<Animator>();
+				Animator* anim = go->m_ComponentManager.GetComponent<Animator>();
 				ImGui::Text("Animator");
 				ImGui::Text("counter %d", anim->m_Counter);
 				ImGui::ListBox("Animations", &selectedanimation, anim->GetAnimations(), anim->GetAmountOfAnimations());
@@ -560,7 +564,7 @@ void Doom::Editor::MenuTransform(Transform* tr)
 
 void Doom::Editor::MenuLightPoint()
 {
-	PointLight* pl = go->GetComponentManager()->GetComponent<PointLight>();
+	PointLight* pl = go->m_ComponentManager.GetComponent<PointLight>();
 	if (pl == nullptr)
 		return;
 	if (MenuRemoveComponent<PointLight>()) {
@@ -575,7 +579,7 @@ void Doom::Editor::MenuLightPoint()
 
 void Doom::Editor::MenuDirectionalLight()
 {
-	DirectionalLight* pl = go->GetComponentManager()->GetComponent<DirectionalLight>();
+	DirectionalLight* pl = go->m_ComponentManager.GetComponent<DirectionalLight>();
 	if (pl == nullptr)
 		return;
 	if (MenuRemoveComponent<DirectionalLight>()) {
@@ -588,9 +592,9 @@ void Doom::Editor::MenuDirectionalLight()
 
 void Doom::Editor::MenuSphereCollisionComponent()
 {
-	if (go->GetComponentManager()->GetComponent<SphereCollider>() != nullptr) {
+	if (go->m_ComponentManager.GetComponent<SphereCollider>() != nullptr) {
 		if (MenuRemoveComponent<SphereCollider>()) {
-			SphereCollider* cs = go->GetComponentManager()->GetComponent<SphereCollider>();
+			SphereCollider* cs = go->m_ComponentManager.GetComponent<SphereCollider>();
 			if (ImGui::CollapsingHeader("Sphere collider")) {
 				ImGui::Checkbox("Is in bounding box", &cs->m_IsInBoundingBox);
 				ImGui::SliderFloat("Radius", &cs->m_Radius, 0, 50);
@@ -604,7 +608,7 @@ bool Doom::Editor::MenuRemoveComponent(Component* com)
 {
 	ImGui::PushID(closedButtonsId);
 	if (ImGui::Button("x")) {
-		go->GetComponentManager()->RemoveComponent(com);
+		go->m_ComponentManager.RemoveComponent(com);
 		ImGui::PopID();
 		return false;
 	}
@@ -618,7 +622,7 @@ bool Doom::Editor::MenuRemoveScript(ScriptComponent* sc)
 {
 	ImGui::PushID(closedButtonsId);
 	if (ImGui::Button("x")) {
-		go->GetComponentManager()->RemoveComponent(sc);
+		go->m_ComponentManager.RemoveComponent(sc);
 		ImGui::PopID();
 		return false;
 	}
@@ -635,13 +639,13 @@ void Doom::Editor::MenuBar()
 {
 	if (ImGui::BeginMenu("File")) {
 		if (ImGui::MenuItem("New")) {
-			World::GetInstance().ShutDown();
+			World::GetInstance().DeleteAll();
 			go = nullptr;
 		}
 		if (ImGui::MenuItem("Open")) {
 			std::optional<std::string> filePath = FileDialogs::OpenFile("Doom Scene (*.yaml)\0*.yaml\0");
 			if (filePath) {
-				World::GetInstance().ShutDown();
+				World::GetInstance().DeleteAll();
 				SceneSerializer::DeSerialize(*filePath);
 				go = nullptr;
 			}
@@ -924,7 +928,7 @@ void Doom::Editor::ShortCuts()
 		}
 		else if (Input::IsKeyDown(Keycode::KEY_LEFT_CONTROL) && Input::IsKeyPressed(Keycode::KEY_V)) {
 			if (copiedGo != nullptr) {
-				World::GetInstance().CreateGameObject()->operator=(*copiedGo);
+				GameObject::Create()->operator=(*copiedGo);
 				go = World::GetInstance().s_GameObjects.back();
 			}
 		}
@@ -933,7 +937,7 @@ void Doom::Editor::ShortCuts()
 
 void Doom::Editor::MenuScriptComponent()
 {
-	std::vector<ScriptComponent*> scripts = go->GetComponentManager()->GetScripts();
+	std::vector<ScriptComponent*> scripts = go->m_ComponentManager.GetScripts();
 	for (auto script : scripts)
 	{
 		if (script != nullptr) 
@@ -984,14 +988,14 @@ void Doom::Editor::MenuAllComponents()
 {
 	if (ImGui::CollapsingHeader("Components"))
 	{
-		uint32_t size = go->GetComponentManager()->m_Components.size();
+		uint32_t size = go->m_ComponentManager.m_Components.size();
 		for (uint32_t i = 0; i < size; i++)
 		{
-			if (go->GetComponentManager()->m_Components[i]->GetComponentType().find("Doom::") == std::string::npos)
+			if (go->m_ComponentManager.m_Components[i]->GetComponentType().find("Doom::") == std::string::npos)
 			{
-				MenuRemoveComponent(go->GetComponentManager()->m_Components[i]);
+				MenuRemoveComponent(go->m_ComponentManager.m_Components[i]);
 				ImGui::SameLine();
-				ImGui::Text("%s", go->GetComponentManager()->m_Components[i]->GetComponentType());
+				ImGui::Text("%s", go->m_ComponentManager.m_Components[i]->GetComponentType());
 			}
 		}
 	}

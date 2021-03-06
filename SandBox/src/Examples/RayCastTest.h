@@ -19,11 +19,11 @@ public:
 		Renderer::s_Exposure = 2.0;
 		Renderer::s_Brightness = 0.0;
 		Renderer::s_BloomEffect = true;
-		coin = new GameObject("Bird",5,5);
+		coin = GameObject::Create("Bird",5,5);
 		coin->m_IsSerializable = false;
-		RectangleCollider2D* col = coin->GetComponentManager()->AddComponent<RectangleCollider2D>();
-		coin->GetComponentManager()->AddComponent<SpriteRenderer>()->m_Texture = (Texture::Create("src/Images/Bird.png"));
-		coin->GetComponentManager()->GetComponent<Transform>()->Scale(3, 3);
+		RectangleCollider2D* col = coin->m_ComponentManager.AddComponent<RectangleCollider2D>();
+		coin->m_ComponentManager.AddComponent<SpriteRenderer>()->m_Texture = (Texture::Create("src/Images/Bird.png"));
+		coin->m_ComponentManager.GetComponent<Transform>()->Scale(3, 3);
 		col->GetOwnerOfComponent()->m_Tag = ("Bird");
 		
 		float angle = 0;

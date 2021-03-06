@@ -11,11 +11,6 @@ namespace Doom {
 	class DOOM_API Character {
 	private:
 
-		Shader* m_Shader = nullptr;
-		glm::vec2 m_Position;
-		glm::vec2 m_Scale;
-		glm::vec4 m_Color = COLORS::White;
-
 		float m_Mesh2D[16] = {
 		-0.5f, -0.5f, 0.0f, 0.0f,
 		 0.5f, -0.5f, 1.0f, 0.0f,
@@ -23,24 +18,29 @@ namespace Doom {
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
 
+		glm::vec4 m_Color = COLORS::White;
+		glm::vec2 m_Position;
+		glm::vec2 m_Scale;
+		
+		Shader* m_Shader = nullptr;
+
+		float m_XOffset;
+		float m_YOffset;
+		float m_XAdvance;
 		int m_Id;
 		int m_X;
 		int m_Y;
 		int m_Width;
 		int m_Height;
-		float m_XOffset;
-		float m_YOffset;
-		float m_XAdvance;
 		
 		friend class Gui;
 		friend class Doom::Batch;
 		friend class Doom::Font;
 	public:
 
+		Font* m_Font = nullptr;
 		int m_IsRelatedToCam = 0;
 		char m_Ch;
-
-		Font* m_Font = nullptr;
 
 		~Character();
 		Character();

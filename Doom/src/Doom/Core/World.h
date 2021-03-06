@@ -27,7 +27,6 @@ namespace Doom {
 		unsigned int GetAmountOfObjects();
 		bool ObjectCollided(std::vector<glm::vec2>& p, int i);
 		GameObject* SelectObject();
-		GameObject* CreateGameObject();
 
 		friend class RectangleCollider2D;
 	};

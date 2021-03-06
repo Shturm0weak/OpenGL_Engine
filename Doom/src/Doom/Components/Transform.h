@@ -8,13 +8,18 @@ namespace Doom {
 	class RectangleCollider2D;
 
 	class DOOM_API Transform : public Component {
-	public:
+	private:
 
 		glm::mat4 m_ScaleMat4 = glm::mat4(1.f);
 		glm::mat4 m_PosMat4 = glm::mat4(1.f);
 		glm::mat4 m_ViewMat4 = glm::mat4(1.f);
 		glm::vec3 m_Rotation = glm::vec3(0.0);
 		glm::vec3 m_PrevPosition;
+
+		static std::map<char*, uint64_t> s_MemoryPool;
+		static std::vector<char*> s_FreeMemory;
+
+		char* m_MemoryPoolPtr = nullptr;
 
 		void Copy(const Transform& rhs);
 
@@ -48,6 +53,7 @@ namespace Doom {
 		void operator=(const Transform& rhs);
 
 		static Component* Create();
+		virtual void Delete() override;
 
 		void Move(glm::vec3 dir);
 		void Rotate(glm::vec3 angles, bool isRad = false);

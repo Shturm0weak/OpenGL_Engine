@@ -16,96 +16,90 @@ using namespace Doom;
 namespace fbx {
 	void FBXDocument::LoadScene(std::string filepath)
 	{
-		try
+		m_Nodes.clear();
+		read(filepath);
+
+		Mesh* mesh = nullptr;
+		GameObject* scene = Doom::GameObject::Create("Scene");
+		std::vector<Mesh*> meshes;
+		std::vector<GameObject*> objs;
+		size_t size = m_Nodes.size();
+		for (size_t i = 0; i < size; i++)
 		{
-			read(filepath);
+			if (m_Nodes[i].getName() == "Objects") {
+				size_t sizec = m_Nodes[i].getChildren().size();
 
-			Mesh* mesh = nullptr;
-			GameObject* scene = new Doom::GameObject("Scene");
-			std::vector<Mesh*> meshes;
-			std::vector<GameObject*> objs;
-			size_t size = m_Nodes.size();
-			for (size_t i = 0; i < size; i++)
-			{
-				if (m_Nodes[i].getName() == "Objects") {
-					size_t sizec = m_Nodes[i].getChildren().size();
-
-					for (size_t j = 0; j < sizec; j++)
-					{
-						fbx::FBXNode node = m_Nodes[i].getChildren()[j];
-						//node.print();
-						if (node.getName() == "Geometry") {
-							Data data;
-							std::string name = GetNameOfModel(node.properties[1].to_string());
-							if (std::find_if(meshes.begin(), meshes.end(), [=](Mesh* _mesh) {return _mesh->m_Name == name; }) == meshes.end()) {
-								mesh = new Mesh(name, filepath);
-								mesh->m_IdOfMeshInFile = meshes.size();
-								meshes.push_back(mesh);
-								LoadData(data, node, mesh);
-								GenerateMesh(data, mesh);
-								mesh->Init();
-							}
+				for (size_t j = 0; j < sizec; j++)
+				{
+					fbx::FBXNode node = m_Nodes[i].getChildren()[j];
+					//node.print();
+					if (node.getName() == "Geometry") {
+						Data data;
+						std::string name = GetNameOfModel(node.properties[1].to_string());
+						if (std::find_if(meshes.begin(), meshes.end(), [=](Mesh* _mesh) {return _mesh->m_Name == name; }) == meshes.end()) {
+							mesh = new Mesh(name, filepath);
+							mesh->m_IdOfMeshInFile = meshes.size();
+							meshes.push_back(mesh);
+							LoadData(data, node, mesh);
+							GenerateMesh(data, mesh);
+							mesh->Init();
 						}
-						if (node.getName() == "Model") {
-							std::string nameOfModel = GetNameOfModel(node.properties[1].to_string());
-							GameObject* go = new Doom::GameObject(nameOfModel);
-							go->GetComponentManager()->AddComponent<Renderer3D>();
-							std::string nameOfMesh = nameOfModel;
-							//auto iter = std::find_if(meshes.begin(), meshes.end(), [=](Mesh* mesh) {
-							//	return mesh->name == nameOfMesh; });
-							//if(iter != meshes.end())
-							//	go->GetComponent<Renderer3D>()->LoadMesh(*iter);
-							//else {
-							//	for (uint32_t i = 0; i < meshes.size(); i++)
-							//	{
-							//		std::string str = GetNameOfMesh(meshes[i]->name, 0);
-							//		if (str == nameOfModel) {
-							//			go->GetComponent<Renderer3D>()->LoadMesh(meshes[i]);
-							//		}
-							//	}
-							//}
-							go->GetComponent<Renderer3D>()->LoadMesh(meshes[objs.size()]);
-							scene->AddChild((void*)go);
-							objs.push_back(go);
-							fbx::FBXNode transform = node.getChildren()[1];
+					}
+					if (node.getName() == "Model") {
+						std::string nameOfModel = GetNameOfModel(node.properties[1].to_string());
+						GameObject* go = Doom::GameObject::Create(nameOfModel);
+						go->m_ComponentManager.AddComponent<Renderer3D>();
+						std::string nameOfMesh = nameOfModel;
+						//auto iter = std::find_if(meshes.begin(), meshes.end(), [=](Mesh* mesh) {
+						//	return mesh->name == nameOfMesh; });
+						//if(iter != meshes.end())
+						//	go->GetComponent<Renderer3D>()->LoadMesh(*iter);
+						//else {
+						//	for (uint32_t i = 0; i < meshes.size(); i++)
+						//	{
+						//		std::string str = GetNameOfMesh(meshes[i]->name, 0);
+						//		if (str == nameOfModel) {
+						//			go->GetComponent<Renderer3D>()->LoadMesh(meshes[i]);
+						//		}
+						//	}
+						//}
+						go->GetComponent<Renderer3D>()->LoadMesh(meshes[objs.size()]);
+						scene->AddChild((void*)go);
+						objs.push_back(go);
+						fbx::FBXNode transform = node.getChildren()[1];
 
-							fbx::FBXNode translation = transform.getChildren()[0];
-							glm::vec3 pos(0, 0, 0);
-							if (translation.properties[0].to_string() == "\"Lcl Translation\"") {
-								pos.x = translation.properties[4].value.f64 * 0.01;
-								pos.y = translation.properties[5].value.f64 * 0.01;
-								pos.z = translation.properties[6].value.f64 * 0.01;
-							}
-
-							fbx::FBXNode rotation = transform.getChildren()[1];
-							glm::vec3 rot(0, 0, 0);
-							if (rotation.properties[0].to_string() == "\"Lcl Rotation\"") {
-								rot.x = rotation.properties[4].value.f64;
-								rot.y = rotation.properties[5].value.f64;
-								rot.z = rotation.properties[6].value.f64;
-							}
-
-							fbx::FBXNode scale = transform.getChildren()[2];
-							glm::vec3 scl(1, 1, 1);
-							if (scale.properties[0].to_string() == "\"Lcl Scaling\"") {
-								scl.x = scale.properties[4].value.f64 * 0.01;
-								scl.y = scale.properties[5].value.f64 * 0.01;
-								scl.z = scale.properties[6].value.f64 * 0.01;
-							}
-
-							Transform* tr = go->GetComponent<Transform>();
-							tr->Translate(pos.x, pos.y, pos.z);
-							tr->RotateOnce(rot.x, rot.y, rot.z);
-							tr->Scale(scl.x, scl.y, scl.z);
-
+						fbx::FBXNode translation = transform.getChildren()[0];
+						glm::vec3 pos(0, 0, 0);
+						if (translation.properties[0].to_string() == "\"Lcl Translation\"") {
+							pos.x = translation.properties[4].value.f64 * 0.01;
+							pos.y = translation.properties[5].value.f64 * 0.01;
+							pos.z = translation.properties[6].value.f64 * 0.01;
 						}
+
+						fbx::FBXNode rotation = transform.getChildren()[1];
+						glm::vec3 rot(0, 0, 0);
+						if (rotation.properties[0].to_string() == "\"Lcl Rotation\"") {
+							rot.x = rotation.properties[4].value.f64;
+							rot.y = rotation.properties[5].value.f64;
+							rot.z = rotation.properties[6].value.f64;
+						}
+
+						fbx::FBXNode scale = transform.getChildren()[2];
+						glm::vec3 scl(1, 1, 1);
+						if (scale.properties[0].to_string() == "\"Lcl Scaling\"") {
+							scl.x = scale.properties[4].value.f64 * 0.01;
+							scl.y = scale.properties[5].value.f64 * 0.01;
+							scl.z = scale.properties[6].value.f64 * 0.01;
+						}
+
+						Transform* tr = go->GetComponent<Transform>();
+						tr->Translate(pos.x, pos.y, pos.z);
+						tr->RotateOnce(rot.x, rot.y, rot.z);
+						tr->Scale(scl.x, scl.y, scl.z);
+
 					}
 				}
 			}
-		}
-		catch (std::string e) {
-			std::cout << e << std::endl;
-			return;
 		}
 	}
 
@@ -116,6 +110,7 @@ namespace fbx {
 			if (MeshManager::GetInstance().GetMesh(name) != nullptr)
 				return MeshManager::GetInstance().GetMesh(name);
 
+			m_Nodes.clear();
 			read(filepath);
 
 			size_t size = m_Nodes.size();
@@ -130,6 +125,7 @@ namespace fbx {
 					if (node.getName() == "Geometry") {
 						Data data;
 						mesh = new Mesh(name, filepath);
+						mesh->m_IdOfMeshInFile = meshId;
 						LoadData(data, node, mesh);
 						GenerateMesh(data, mesh);
 						return mesh;

@@ -293,6 +293,7 @@ void Doom::Gui::Bar(float x, float y, float value, float maxValue, glm::vec4 col
 bool Doom::Gui::CheckBox(std::string label, bool * value, float x, float y, float size, glm::vec4 textColor, glm::vec4 imageColor)
 {
 	Texture* texture = nullptr;
+	bool pressed = false;
 	if (*value) 
 	{
 		imageColor = COLORS::Green;
@@ -307,9 +308,12 @@ bool Doom::Gui::CheckBox(std::string label, bool * value, float x, float y, floa
 	float tempradius = m_EdgeRadius;
 	m_EdgeRadius = 0.0f;
 
-	if (Button("", x, y, 24, size, size,imageColor, imageColor, COLORS::White, texture))
+	if (Button("", x, y, 24, size, size, imageColor, imageColor, COLORS::White, texture))
+	{
 		*value = !*value;
-
+		pressed = true;
+	}
+		
 	m_EdgeRadius = tempradius;
 
 	m_RelatedPanelProperties.m_YOffset -= (size + m_RelatedPanelProperties.m_Padding.y);
@@ -318,10 +322,10 @@ bool Doom::Gui::CheckBox(std::string label, bool * value, float x, float y, floa
 	Text(label, true, x + size, y - size * 0.5f, size, textColor);
 	m_YAlign = AlignVertically::TOP;
 	m_RelatedPanelProperties.m_YOffset += (size - m_LastTextProperties.m_Size.y);
-	return *value;
+	return pressed;
 }
 
-float Doom::Gui::SliderFloat(std::string label, float * value, float min, float max, float x, float y, float width, float height,glm::vec4 sliderColor, glm::vec4 panelColor)
+bool Doom::Gui::SliderFloat(std::string label, float * value, float min, float max, float x, float y, float width, float height,glm::vec4 sliderColor, glm::vec4 panelColor)
 {
 	auto iter = m_Interactable.find(label);
 	if (iter == m_Interactable.end()) {
@@ -385,7 +389,7 @@ float Doom::Gui::SliderFloat(std::string label, float * value, float min, float 
 
 	for (size_t i = 0; i < 8; i++)
 		m_CurrentPanelCoods[i] = tempCoords[i];
-	return *value;
+	return m_IsInteracting;
 }
 
 void Doom::Gui::Image(float x, float y, float width, float height, Texture * texture, glm::vec4 color)
@@ -557,7 +561,7 @@ void Doom::Gui::ApplyRelatedToPanelProperties(float * x, float * y)
 	*x += m_RelatedPanelProperties.m_Pos.x + m_RelatedPanelProperties.m_Margin.x;
 	*y += m_RelatedPanelProperties.m_Pos.y - m_RelatedPanelProperties.m_Margin.y;
 	if (m_RelatedPanelProperties.m_AutoAllignment)
-		*y -= m_RelatedPanelProperties.m_YOffset; //NEED to test, not sure that it will works with all UI elements
+		*y -= m_RelatedPanelProperties.m_YOffset; //NEED to test, not sure that it will work with all UI elements
 }
 
 void Doom::Gui::FindCharInFont(std::vector<Character*>& localCharV, char c)

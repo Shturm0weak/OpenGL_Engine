@@ -16,6 +16,8 @@
 #include "Input/WindowsInput.h"
 #include "Rays/Ray3D.h"
 #include "EntryPoint.h"
+#include "Objects/GridLayOut.h"
+#include "Objects/SkyBox.h"
 
 using namespace Doom;
 
@@ -27,6 +29,14 @@ DOOM_API std::vector<SphereCollider*> SphereCollider::s_Spheres;
 DOOM_API std::vector <SpriteRenderer*> Renderer::s_Objects2d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
+
+DOOM_API std::vector<std::string> SkyBox::s_Faces;
+
+DOOM_API std::vector <char*> Transform::s_FreeMemory;
+DOOM_API std::map <char*, uint64_t> Transform::s_MemoryPool;
+
+DOOM_API std::vector <char*> GameObject::s_FreeMemory;
+DOOM_API std::map <char*, uint64_t> GameObject::s_MemoryPool;
 
 DOOM_API std::vector <char*> Renderer3D::s_FreeMemory;
 DOOM_API std::map <char*, uint64_t> Renderer3D::s_MemoryPool;
@@ -103,5 +113,7 @@ DOOM_API std::vector<DirectionalLight*> DirectionalLight::s_DirLights;
 DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 DOOM_API float RectangleCollider2D::m_Vertices[8] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f,  0.5f, -0.5f,  0.5f };
 DOOM_API std::vector<std::string> Ray3D::m_IgnoreMask;
+
+DOOM_API std::vector<Line*> GridLayOut::s_GridLines;
 
 DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/aimtrainer.yaml";

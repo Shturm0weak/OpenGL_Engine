@@ -42,7 +42,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	
 	Window& window = Window::GetInstance();
 	int* size = Window::GetInstance().GetSize();
-	window.m_FrameBufferShadowMap = new FrameBuffer(1024, 1024, GL_DEPTH_COMPONENT, GL_FLOAT, GL_LINEAR, GL_CLAMP_TO_BORDER, GL_DEPTH_ATTACHMENT, false, false, false);
+	window.m_FrameBufferShadowMap = new FrameBuffer(2056, 2056, GL_DEPTH_COMPONENT, GL_FLOAT, GL_LINEAR, GL_CLAMP_TO_BORDER, GL_DEPTH_ATTACHMENT, false, false, false);
 	window.m_FrameBufferColor = new FrameBuffer(size[0], size[1], GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, true, true, true, 2);
 	window.m_FrameBufferColor->Bind();
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -52,7 +52,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	window.m_FrameBufferBlur.push_back(new FrameBuffer(size[0], size[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
 	if (this->m_App->m_Type == TYPE_3D) 
 	{
-		//GridLayOut* grid = new GridLayOut();
+		GridLayOut::DrawGrid(51, 50);
 		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
 	}
 	std::cout << glGetString(GL_VERSION) << std::endl;

@@ -25,7 +25,7 @@ Transform::Transform()
 //
 //	glm::vec3 position = Utils::GetPosition(m_PosMat4);
 //	if (m_PrevPosition.x + m_PrevPosition.y + m_PrevPosition.z != position.x + position.y + position.z) {
-//		sr = m_Owner->GetComponentManager()->GetComponent<SpriteRenderer>();
+//		sr = m_Owner->m_ComponentManager.GetComponent<SpriteRenderer>();
 //		if (sr == NULL || sr == nullptr)
 //			return;
 //		m_PrevPosition = position;
@@ -47,11 +47,15 @@ void Doom::Transform::operator=(const Transform& rhs)
 
 Component* Doom::Transform::Create()
 {
-	//auto iter = Utils::PreAllocateMemory<Transform>(s_TransformMemoryPool);
-	//Transform* component = new(iter->first + iter->second * sizeof(Transform)) Transform();
-	//iter->second++;
-	//return component;
-	return new Transform();
+	char* ptr = Utils::PreAllocateMemory<Transform>(s_MemoryPool, s_FreeMemory);
+	Transform* component = (Transform*)((void*)ptr);
+	component->m_MemoryPoolPtr = ptr;
+	return component;
+}
+
+void Doom::Transform::Delete()
+{
+	s_FreeMemory.push_back(m_MemoryPoolPtr);
 }
 
 glm::vec3 Doom::Transform::GetRotation()
@@ -92,7 +96,7 @@ void Transform::Move(float speedX,float speedY,float speedZ)
 		{
 			GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
 			if (go->m_Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->Move(speedX, speedY, speedZ);
+				go->m_ComponentManager.GetComponent<Transform>()->Move(speedX, speedY, speedZ);
 		}
 	}
 	EventSystem::GetInstance().SendEvent(EventType::ONMOVE,(Listener*)m_OwnerOfCom);
@@ -121,7 +125,7 @@ void Transform::RotateOnce(float x, float y, float z,bool isRad)
 			{
 				GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 				if (go->Enable == true)
-					go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
+					go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
 			}
 		}*/
 }
@@ -146,7 +150,7 @@ void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(axis.x, axis.y, axis.z);
+				go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(axis.x, axis.y, axis.z);
 		}
 	}*/
 }
@@ -173,7 +177,7 @@ void Transform::Rotate(float x, float y, float z, bool isRad)
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
+				go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
 		}
 	}*/
 }
@@ -192,7 +196,7 @@ void Transform::Scale(float scaleX, float scaleY,float scaleZ)
 	{
 		GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
 		if (go->m_Enable == true)
-			go->GetComponentManager()->GetComponent<Transform>()->Scale(scaleX, scaleY, scaleZ);
+			go->m_ComponentManager.GetComponent<Transform>()->Scale(scaleX, scaleY, scaleZ);
 	}
 }
 
@@ -206,7 +210,7 @@ void Transform::Translate(float x, float y,float z)
 			GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
 			if (go->m_Enable == true) {
 				glm::vec3 _pos = go->GetPosition() - m_OwnerOfCom->GetPosition();
-				go->GetComponentManager()->GetComponent<Transform>()->Translate(_pos.x + x, _pos.y + y, _pos.z + z);
+				go->m_ComponentManager.GetComponent<Transform>()->Translate(_pos.x + x, _pos.y + y, _pos.z + z);
 			}
 		}
 	}
@@ -239,7 +243,7 @@ void Transform::Move(glm::vec3 vdir)
 		{
 			GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
 			if (go->m_Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->Move(vdir);
+				go->m_ComponentManager.GetComponent<Transform>()->Move(vdir);
 		}
 	}
 	EventSystem::GetInstance().SendEvent(EventType::ONMOVE, (Listener*)m_OwnerOfCom);
@@ -297,7 +301,7 @@ void Transform::Rotate(glm::vec3 vangles, bool isRad)
 		{
 			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
 			if (go->Enable == true)
-				go->GetComponentManager()->GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
+				go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
 		}
 	}*/
 }
@@ -315,7 +319,7 @@ void Transform::Scale(glm::vec3 vscale)
 	{
 		GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
 		if (go->m_Enable == true)
-			go->GetComponentManager()->GetComponent<Transform>()->Scale(vscale);
+			go->m_ComponentManager.GetComponent<Transform>()->Scale(vscale);
 	}
 }
 
@@ -330,7 +334,7 @@ void Transform::Translate(glm::vec3 vpos)
 			GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
 			if (go->m_Enable == true) {
 				glm::vec3 _pos = go->GetPosition() - m_OwnerOfCom->GetPosition();
-				go->GetComponentManager()->GetComponent<Transform>()->Translate(_pos + vpos);
+				go->m_ComponentManager.GetComponent<Transform>()->Translate(_pos + vpos);
 			}
 		}
 	}

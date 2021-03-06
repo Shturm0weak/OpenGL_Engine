@@ -73,7 +73,7 @@ void ShipPlayer::Init(std::string name, float x, float y)
 	GetOwnerOfComponent()->m_Transform->Translate(x, y);
 	GetOwnerOfComponent()->m_Name = name;
 	SoundManager::GetInstance().CreateSoundAsset("fire", fireSound);
-	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
+	bulletsPlaceHolder = GameObject::Create("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->m_Enable = false;
 	GetOwnerOfComponent()->AddChild((void*)bulletsPlaceHolder);
 	EventSystem::GetInstance().RegisterClient(EventType::ONUPDATE, (Component*)this);
@@ -89,7 +89,7 @@ void ShipPlayer::Init(std::string name, float x, float y)
 	col->m_IsTrigger = true;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
-		bullets.push_back(new GameObject("Bullet" + std::to_string(i), GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y));
+		bullets.push_back(GameObject::Create("Bullet" + std::to_string(i), GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y));
 		Bullet* bullet = bullets[i]->AddComponent<Bullet>();
 		bullet->Init("Bullet", glm::vec3(0, -1, 0));
 		bullet->isActive = false;

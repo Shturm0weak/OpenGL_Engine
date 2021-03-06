@@ -54,7 +54,7 @@ namespace Doom {
 
 		void Play();
 		void Restart();
-		void SetPosition(float x, float y) { GetComponentManager()->GetComponent<Transform>()->Translate(x, y); }
+		void SetPosition(float x, float y) { m_ComponentManager.GetComponent<Transform>()->Translate(x, y); }
 		void ChangeOpacity(float opacity); //from 0 to 1
 	private:
 

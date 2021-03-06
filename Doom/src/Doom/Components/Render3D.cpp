@@ -35,23 +35,22 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 
 void Doom::Renderer3D::LoadMesh(Mesh* mesh)
 {
-	if (mesh == nullptr) return;
 	EraseFromInstancing();
+	m_Mesh = mesh;
 	ChangeRenderTechnic(m_RenderTechnic);
-	if (!m_IsSkyBox) 
+	if (m_Mesh != nullptr && !m_IsSkyBox)
 	{
-		CubeCollider3D* cc = m_OwnerOfCom->GetComponentManager()->GetComponent<CubeCollider3D>();
+		CubeCollider3D* cc = m_OwnerOfCom->m_ComponentManager.GetComponent<CubeCollider3D>();
 		if (cc == nullptr) 
 		{
-			cc = m_OwnerOfCom->GetComponentManager()->AddComponent<CubeCollider3D>();
+			cc = m_OwnerOfCom->m_ComponentManager.AddComponent<CubeCollider3D>();
 			cc->m_IsBoundingBox = true;
 		}
-		cc->m_MinP = mesh->m_TheLowestPoint;
-		cc->m_MaxP = mesh->m_TheHighestPoint;
+		cc->m_MinP = m_Mesh->m_TheLowestPoint;
+		cc->m_MaxP = m_Mesh->m_TheHighestPoint;
 		cc->m_Offset = (cc->m_MaxP - (glm::abs(cc->m_MinP) + glm::abs(cc->m_MaxP)) * 0.5f);
 	}
-	m_Mesh = mesh;
-	m_Tr = m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>();
+	m_Tr = m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
 	//std::cout << "offset " << cc->offset.x << " " << cc->offset.y << " " << cc->offset.z << "\n";
 	//std::cout << "the highest " << mesh->theHighestPoint.x << " " << mesh->theHighestPoint.y << " " << mesh->theHighestPoint.z << "\n";
 	//std::cout << "the lowest " << mesh->theLowestPoint.x << " " << mesh->theLowestPoint.y << " " << mesh->theLowestPoint.z << "\n";
@@ -104,9 +103,9 @@ void Doom::Renderer3D::Delete()
 {
 	s_FreeMemory.push_back(m_MemoryPoolPtr);
 	if (GetOwnerOfComponent() == nullptr) return;
-	CubeCollider3D* cc = GetOwnerOfComponent()->GetComponentManager()->GetComponent<CubeCollider3D>();
+	CubeCollider3D* cc = GetOwnerOfComponent()->m_ComponentManager.GetComponent<CubeCollider3D>();
 	if (cc != nullptr && cc->m_IsBoundingBox)
-		GetOwnerOfComponent()->GetComponentManager()->RemoveComponent(cc); //Fix: could be dangerous if there is more than 1 CubeCollider
+		GetOwnerOfComponent()->m_ComponentManager.RemoveComponent(cc); //Fix: could be dangerous if there is more than 1 CubeCollider
 	if (m_IsTransparent)
 	{
 		auto iter = std::find(Renderer::s_Objects3dTransparent.begin(), Renderer::s_Objects3dTransparent.end(), this);
@@ -120,6 +119,7 @@ void Doom::Renderer3D::Delete()
 		if (iter != Renderer::s_Objects3d.end())
 			Renderer::s_Objects3d.erase(iter);
 	}
+	this->Copy(Renderer3D());
 }
 
 Doom::Component* Doom::Renderer3D::Create()
@@ -150,7 +150,7 @@ void Doom::Renderer3D::BakeShadows()
 			bakeShader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
 			bakeShader->SetUniformMat4f("u_View", m_Tr->m_ViewMat4);
 			bakeShader->Bind();
-			m_Mesh->m_Va.Bind();
+			m_Mesh->m_Va->Bind();
 			m_Mesh->m_Ib->Bind();
 			m_Mesh->m_Vb->Bind();
 			Renderer::s_Stats.m_Vertices += m_Mesh->m_IndicesSize;
@@ -288,7 +288,7 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 		}
 		m_Shader->SetUniform1i("u_isNormalMapping", m_IsUsingNormalMap);
 		m_Shader->Bind();
-		m_Mesh->m_Va.Bind();
+		m_Mesh->m_Va->Bind();
 		m_Mesh->m_Ib->Bind();
 		m_Mesh->m_Vb->Bind();
 
@@ -320,7 +320,7 @@ void Doom::Renderer3D::RenderSkyBox()
 	m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 	m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 	m_Shader->Bind();
-	m_Mesh->m_Va.Bind();
+	m_Mesh->m_Va->Bind();
 	m_Mesh->m_Ib->Bind();
 	m_Mesh->m_Vb->Bind();
 	Renderer::s_Stats.m_Vertices += m_Mesh->m_Ib->GetCount();

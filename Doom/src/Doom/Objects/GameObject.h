@@ -13,11 +13,17 @@ namespace Doom {
 	{
 	private:
 
+		static std::map<char*, uint64_t> s_MemoryPool;
+		static std::vector<char*> s_FreeMemory;
 		std::vector<void*> m_Childs;
-		ComponentManager* m_ComponentManager = nullptr;
 		void* m_Owner = nullptr;
+		char* m_MemoryPoolPtr = nullptr;
 
-		void Copy(const GameObject& rhs);
+		void Copy(GameObject& rhs);
+
+		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0, float z = 0);
+
+		void Delete();
 
 		friend class Doom::Transform;
 		friend class Doom::RectangleCollider2D;
@@ -27,8 +33,16 @@ namespace Doom {
 		friend class Doom::Batch;
 		friend class Doom::Renderer;
 		friend class Doom::Ray2D;
+		friend class Doom::World;
+		friend class Doom::SkyBox;
+		friend class ParticleSystem;
+		friend class GridLayOut;
+
+		template<typename T> friend DOOM_API char* Utils::PreAllocateMemory(std::map<char*, uint64_t>& memoryPool, std::vector<char*>& freeMemory);
+
 	public:
 
+		ComponentManager m_ComponentManager = ComponentManager(this);
 		Transform* m_Transform = nullptr;
 		Listener* m_Listener = nullptr;
 
@@ -44,7 +58,6 @@ namespace Doom {
 		std::vector<void*> GetChilds() const { return m_Childs; }
 		glm::vec3 GetScale();
 		glm::vec3 GetPosition();
-		ComponentManager* GetComponentManager() const { return m_ComponentManager; };
 		inline int& GetLayer() { return m_Layer; }
 		void* GetOwner() const { return m_Owner; }
 		void AddChild(void* child) { m_Childs.push_back(child); static_cast<GameObject*>(child)->m_Owner = this; }
@@ -54,27 +67,26 @@ namespace Doom {
 		template <typename T>
 		T* GetComponent() 
 		{
-			return m_ComponentManager->GetComponent<T>();
+			return m_ComponentManager.GetComponent<T>();
 		}
 
 		template<typename T>
 		T* AddComponent() 
 		{
-			return m_ComponentManager->AddComponent<T>();
+			return m_ComponentManager.AddComponent<T>();
 		}
 
 		template<typename T>
 		void RemoveComponent()
 		{
-			m_ComponentManager->RemoveComponent<T>();
+			m_ComponentManager.RemoveComponent<T>();
 		}
 
 		virtual ~GameObject();
-		explicit GameObject(const std::string name = "Unnamed", float x = 0, float y = 0,float z = 0);
-		GameObject(const GameObject& rhs);
 
-		void operator=(const GameObject& rhs);
+		GameObject(GameObject& rhs);
+		void operator=(GameObject& rhs);
+		static GameObject* Create(const std::string name = "Unnamed", float x = 0, float y = 0, float z = 0);
 	};
 
 }
-

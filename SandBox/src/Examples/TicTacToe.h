@@ -7,7 +7,7 @@ struct Plate {
 	int owner = -1;
 
 	Plate(){
-		plate = new GameObject("Plate");
+		plate = GameObject::Create("Plate");
 	}
 };
 
@@ -62,8 +62,8 @@ public:
 	glm::vec2 mousePos;
 
 	virtual void OnStart()override {
-		GameObject* backGround = new GameObject("BackGround", 0, 0);
-		backGround->GetComponentManager()->AddComponent<SpriteRenderer>()->m_Color = glm::vec4(0.2, 0.2, 0.2, 1.0);
+		GameObject* backGround = GameObject::Create("BackGround", 0, 0);
+		backGround->m_ComponentManager.AddComponent<SpriteRenderer>()->m_Color = glm::vec4(0.2, 0.2, 0.2, 1.0);
 		backGround->m_Transform->Scale(1000, 1000);
 		SoundManager::GetInstance().CreateSoundAsset("back", backSound);
 		ai = new AI();
@@ -84,9 +84,9 @@ public:
 				offsetY += 3.f;
 				index = 0;
 			}
-			plates[i].plate->GetComponentManager()->AddComponent<RectangleCollider2D>();
-			plates[i].plate->GetComponentManager()->AddComponent<SpriteRenderer>();
-			Transform* tr = plates[i].plate->GetComponentManager()->GetComponent<Transform>();
+			plates[i].plate->m_ComponentManager.AddComponent<RectangleCollider2D>();
+			plates[i].plate->m_ComponentManager.AddComponent<SpriteRenderer>();
+			Transform* tr = plates[i].plate->m_ComponentManager.GetComponent<Transform>();
 			tr->Scale(2.9,2.9);
 			tr->Translate(offsetX,offsetY);
 			index++;
@@ -105,13 +105,13 @@ public:
 					amountOfNonEmpty++;
 					plate->isEmpty = false;
 					if (turn == 0) {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
+						plate->plate->m_ComponentManager.GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
 						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
+						plate->plate->m_ComponentManager.GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
 						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 0;
@@ -128,13 +128,13 @@ public:
 					amountOfNonEmpty++;
 					plate->isEmpty = false;
 					if (turn == 0) {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
+						plate->plate->m_ComponentManager.GetComponent<SpriteRenderer>()->m_Texture = (crossLinesTexture);
 						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 1;
 					}
 					else {
-						plate->plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
+						plate->plate->m_ComponentManager.GetComponent<SpriteRenderer>()->m_Texture = (circleTexture);
 						SoundManager::GetInstance().Play(backSound);
 						plate->owner = turn;
 						turn = 0;
@@ -162,7 +162,7 @@ public:
 	Plate* isCollided(Plate* plates,int* selected) {
 		for (unsigned int i = 0; i < 9; i++)
 		{
-			RectangleCollider2D* col = plates[i].plate->GetComponentManager()->GetComponent<RectangleCollider2D>();
+			RectangleCollider2D* col = plates[i].plate->m_ComponentManager.GetComponent<RectangleCollider2D>();
 			if (col->m_TransformedVerPos[0] + col->GetOwnerOfComponent()->GetPosition().x < mousePos.x && col->m_TransformedVerPos[4] + col->GetOwnerOfComponent()->GetPosition().x > mousePos.x &&
 				col->m_TransformedVerPos[1] + col->GetOwnerOfComponent()->GetPosition().y < mousePos.y && col->m_TransformedVerPos[9] + col->GetOwnerOfComponent()->GetPosition().y > mousePos.y){
 				*selected = i;
@@ -225,7 +225,7 @@ public:
 		{
 			plates[i].isEmpty = true;
 			plates[i].owner = -1;
-			plates[i].plate->GetComponentManager()->GetComponent<SpriteRenderer>()->m_Texture = (nullptr);
+			plates[i].plate->m_ComponentManager.GetComponent<SpriteRenderer>()->m_Texture = (nullptr);
 		}
 		end = false;
 		amountOfNonEmpty = 0;

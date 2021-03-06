@@ -90,6 +90,10 @@ namespace Doom {
 
 		~ComponentManager()
 		{
+			Clear();
+		}
+
+		void Clear() {
 			delete[] m_NamesOfMembers;
 
 			std::vector<ScriptComponent*> scripts = GetScripts();
@@ -171,6 +175,18 @@ namespace Doom {
 			}
 			com->Delete();
 			return;
+		}
+
+		Component* GetComponent(const std::string& type)
+		{
+			for (auto com : m_Components)
+			{
+				if (com->m_Type == type)
+				{
+					return (com);
+				}
+			}
+			return nullptr;
 		}
 
 		template<class T>

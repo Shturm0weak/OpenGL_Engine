@@ -16,7 +16,7 @@
 
 int main()
 {
-	RayCastTest app;
+	AimTrainer app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

@@ -56,8 +56,8 @@ void Doom::AimTrainer::CameraMovement()
 
 void Doom::AimTrainer::SpawnObject()
 {
-	GameObject* go = new GameObject("obj");
-	Renderer3D* r = go->GetComponentManager()->AddComponent<Renderer3D>();
+	GameObject* go = GameObject::Create("obj");
+	Renderer3D* r = go->m_ComponentManager.AddComponent<Renderer3D>();
 	r->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
 	go->m_Tag = "Target";
 	go->m_IsSerializable = false;
@@ -109,8 +109,8 @@ void AimTrainer::OnStart()
 	SceneSerializer::DeSerialize(SceneSerializer::s_CurrentSceneFilePath);
 	Window::GetInstance().GetCamera().SetPosition(glm::vec3(0, 12, 12));
 	Window::GetInstance().GetCamera().SetRotation(glm::vec3(0, 0, 0));
-	GameObject* startGo = new GameObject("Start", 0, 10, -10);
-	Renderer3D* r = startGo->GetComponentManager()->AddComponent<Renderer3D>();
+	GameObject* startGo = GameObject::Create("Start", 0, 10, -10);
+	Renderer3D* r = startGo->m_ComponentManager.AddComponent<Renderer3D>();
 	startGo->m_IsSerializable = false;
 	r->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
 	r->m_Color = COLORS::Green;

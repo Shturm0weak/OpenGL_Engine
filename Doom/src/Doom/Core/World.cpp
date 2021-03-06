@@ -31,9 +31,9 @@ void Doom::World::StartLuaStates()
 
 void Doom::World::DeleteAll()
 {
-	for (unsigned int i = 0; i < World::s_GameObjects.size(); i++)
+	for (unsigned int i = 0; i < World::s_GameObjects.size();)
 	{
-		delete(World::s_GameObjects[i]);
+		(World::s_GameObjects[i]->Delete());
 	}
 	World::s_GameObjects.clear();
 	World::s_ColId = 0;
@@ -69,7 +69,9 @@ void Doom::World::DeleteObject(int id)
 	{
 		go->GetComponent<Renderer3D>()->EraseFromInstancing();
 	}
-	delete go;
+	if (Editor::GetInstance().go == go)
+		Editor::GetInstance().go = nullptr;
+	go->Delete();
 }
 
 GameObject* Doom::World::SelectObject()
@@ -78,7 +80,7 @@ GameObject* Doom::World::SelectObject()
 	for (unsigned int i = 0; i < GetAmountOfObjects(); i++)
 	{
 		GameObject* go = static_cast<GameObject*>(World::s_GameObjects[i]);
-		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->GetComponentManager()->GetComponent<Irenderer>());
+		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->m_ComponentManager.GetComponent<Irenderer>());
 		p.clear();
 		float worldVertexPositions[8];
 		sr->GetTransformedVertices(worldVertexPositions);
@@ -102,14 +104,17 @@ GameObject* Doom::World::SelectObject()
 
 void Doom::World::ShutDown()
 {
-	size_t sizeO = World::s_GameObjects.size();
-	for (size_t i = 0; i < sizeO; i++)
+	for (size_t i = 0; i < World::s_GameObjects.size();)
 	{
-		delete World::s_GameObjects[i];
+		World::s_GameObjects[i]->Delete();
 	}
 	World::s_GameObjects.clear();
 	World::s_ColId = 0;
 	World::s_ObjId = 0;
+	for (auto iter = GameObject::s_MemoryPool.begin(); iter != GameObject::s_MemoryPool.end(); iter++)
+	{
+		delete[](GameObject*)iter->first;
+	}
 }
 
 void Doom::World::PopBack()
@@ -139,7 +144,7 @@ GameObject* Doom::World::SelectObject3D()
 				glm::mat4 view = tr->m_ViewMat4;
 				glm::mat4 scale = tr->m_ScaleMat4;
 				Ray3D::Hit hit1;
-				Mesh* mesh = go->GetComponentManager()->GetComponent<Renderer3D>()->m_Mesh;
+				Mesh* mesh = go->m_ComponentManager.GetComponent<Renderer3D>()->m_Mesh;
 				//new Line(pos, forward * 1000.f);
 				for (uint32_t i = 0; i < mesh->m_VertAttribSize; i += (14 * 3))
 				{
@@ -154,11 +159,11 @@ GameObject* Doom::World::SelectObject3D()
 					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 10000, a, b, c, n))
 					{
 						//GameObject* go0 = new GameObject("p1", a.x, a.y, a.z);
-						//go0->GetComponentManager()->AddComponent<SpriteRenderer>();
+						//go0->m_ComponentManager.AddComponent<SpriteRenderer>();
 						//GameObject* go1 = new GameObject("p2", b.x, b.y, b.z);
-						//go1->GetComponentManager()->AddComponent<SpriteRenderer>();
+						//go1->m_ComponentManager.AddComponent<SpriteRenderer>();
 						//GameObject* go2 = new GameObject("p3", c.x, c.y, c.z);
-						//go2->GetComponentManager()->AddComponent<SpriteRenderer>();
+						//go2->m_ComponentManager.AddComponent<SpriteRenderer>();
 						/*new Line(a, b);
 						new Line(a, c);
 						new Line(c, b);*/
@@ -177,12 +182,6 @@ GameObject* Doom::World::SelectObject3D()
 unsigned int Doom::World::GetAmountOfObjects()
 {
 	return World::s_GameObjects.size();
-}
-
-GameObject* Doom::World::CreateGameObject()
-{
-	GameObject* go = new GameObject("Unnamed", 0, 0);
-	return go;
 }
 
 bool Doom::World::ObjectCollided(std::vector<glm::vec2>& p, int i)

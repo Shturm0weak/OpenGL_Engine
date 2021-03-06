@@ -201,13 +201,12 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		if (isSkyBox) 
 		{
 			std::vector<std::string>faces = renderer3DComponent["Faces"].as<std::vector<std::string>>();
-			SkyBox* sb = new SkyBox(faces, nullptr);
-			MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(sb->GetComponentManager()->GetComponent<Renderer3D>()));
+			GameObject* skybox = SkyBox::CreateSkyBox(faces);
 			return;
 		}
 	}
 
-	GameObject* obj = new GameObject(name);
+	GameObject* obj = GameObject::Create(name);
 	obj->m_Id = id;
 
 	auto transformComponent = go["Transform"];
@@ -224,7 +223,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 
 	if (renderer3DComponent)
 	{
-		Renderer3D* r = obj->GetComponentManager()->AddComponent<Renderer3D>();
+		Renderer3D* r = obj->m_ComponentManager.AddComponent<Renderer3D>();
 		auto mat = renderer3DComponent["Material"];
 		r->m_Material.m_Ambient = mat["Ambient"].as<float>();
 		r->m_Material.m_Specular = mat["Specular"].as<float>();
@@ -291,7 +290,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	auto dirLightComponent = go["Directional light"];
 	if (dirLightComponent) 
 	{
-		DirectionalLight* dl = obj->GetComponentManager()->AddComponent<DirectionalLight>();
+		DirectionalLight* dl = obj->m_ComponentManager.AddComponent<DirectionalLight>();
 		dl->m_Intensity = dirLightComponent["Intensity"].as<float>();
 		dl->m_Color = dirLightComponent["Color"].as<glm::vec3>();
 	}
@@ -299,7 +298,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	auto pointLightComponent = go["Point light"];
 	if (pointLightComponent) 
 	{
-		PointLight* pl = obj->GetComponentManager()->AddComponent<PointLight>();
+		PointLight* pl = obj->m_ComponentManager.AddComponent<PointLight>();
 		auto atenuation = pointLightComponent["Attenuation"];
 		pl->m_Constant = atenuation["Constant"].as<float>();
 		pl->m_Linear = atenuation["Linear"].as<float>();
@@ -310,14 +309,14 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	auto sphereColliderComponent = go["Sphere collider"];
 	if (sphereColliderComponent)
 	{
-		SphereCollider* sc = obj->GetComponentManager()->AddComponent<SphereCollider>();
+		SphereCollider* sc = obj->m_ComponentManager.AddComponent<SphereCollider>();
 		sc->m_IsInBoundingBox = sphereColliderComponent["Inside of bounding box"].as<bool>();
 	}
 
 	auto spriteRendererComponent = go["Sprite renderer"];
 	if (spriteRendererComponent) 
 	{
-		SpriteRenderer* sr = obj->GetComponentManager()->AddComponent<SpriteRenderer>();
+		SpriteRenderer* sr = obj->m_ComponentManager.AddComponent<SpriteRenderer>();
 		sr->m_Color = spriteRendererComponent["Color"].as<glm::vec4>();
 		sr->m_Texture = (Texture::Create(spriteRendererComponent["Texture"].as<std::string>()));
 		std::vector<float> vert = spriteRendererComponent["Vertices"].as<std::vector<float>>();
@@ -330,7 +329,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	auto RectangularCollider2DComponent = go["Rectangle collider 2D"];
 	if (RectangularCollider2DComponent)
 	{
-		RectangleCollider2D* rc = obj->GetComponentManager()->AddComponent<RectangleCollider2D>();
+		RectangleCollider2D* rc = obj->m_ComponentManager.AddComponent<RectangleCollider2D>();
 		rc->m_Enable = RectangularCollider2DComponent["Is Enable"].as<bool>();
 		rc->m_IsTrigger = RectangularCollider2DComponent["Is trigger"].as<bool>();
 		glm::vec3 offset = RectangularCollider2DComponent["OffSet"].as<glm::vec3>();
@@ -380,7 +379,7 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 	out << YAML::BeginMap;
 	out << YAML::Key << "GameObject" << YAML::Value << std::to_string(go->m_Id);
 	out << YAML::Key << "Name" << YAML::Value << go->m_Name;
-	ComponentManager* cm = go->GetComponentManager();
+	ComponentManager* cm = &go->m_ComponentManager;
 
 	SerializeTransformComponent(out, cm);
 	SerializeRenderer3DComponent(out, cm);
@@ -453,11 +452,10 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 
 			if (r->m_IsSkyBox)
 			{
-				SkyBox* sb = static_cast<SkyBox*>(r->GetOwnerOfComponent());
 				out << YAML::Key << "Faces";
 				out << YAML::BeginMap;
 				out << YAML::Flow;
-				out << YAML::BeginSeq << sb->m_Faces[0] << sb->m_Faces[1] << sb->m_Faces[2] << sb->m_Faces[3] << sb->m_Faces[4] << sb->m_Faces[5] << YAML::EndSeq;
+				out << YAML::BeginSeq << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << YAML::EndSeq;
 				out << YAML::EndMap;
 			}
 

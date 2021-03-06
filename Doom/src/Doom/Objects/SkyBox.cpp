@@ -1,18 +1,20 @@
 #include "../pch.h"
 #include "SkyBox.h"
+#include "ECS/ComponentManager.h"
 
 using namespace Doom;
 
-SkyBox::SkyBox(std::vector<std::string> faces,Mesh* mesh)
+GameObject* Doom::SkyBox::CreateSkyBox(std::vector<std::string> faces)
 {
-	this->m_Faces = faces;
-	m_Name = "SkyBox";
-	Renderer3D* r = GetComponentManager()->AddComponent<Renderer3D>();
-	r->m_IsSkyBox = true;
-	r->m_Mesh = mesh;
-	m_RendererID = Texture::LoadCubeMap(faces);
+	s_Faces = faces;
+	GameObject* go = GameObject::Create("SkyBox");
+	Renderer3D* r3d = go->m_ComponentManager.AddComponent<Renderer3D>();
+	r3d->m_IsSkyBox = true;
+	size_t m_RendererID = Texture::LoadCubeMap(faces);
 	Texture* texture = new Texture();
 	texture->m_RendererID = m_RendererID;
-	GetComponent<Renderer3D>()->m_DiffuseTexture = texture;
-	GetComponent<Renderer3D>()->m_Shader = Shader::Get("SkyBox");
+	r3d->m_DiffuseTexture = texture;
+	r3d->m_Shader = Shader::Get("SkyBox");
+	MeshManager::GetInstance().GetMeshWhenLoaded("cube", go->GetComponent<Renderer3D>());
+	return go;
 }

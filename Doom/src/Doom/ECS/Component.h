@@ -22,19 +22,19 @@ namespace Doom {
 		template <typename T>
 		T* GetComponent()
 		{
-			return m_OwnerOfCom->GetComponentManager()->GetComponent<T>();
+			return m_OwnerOfCom->m_ComponentManager.GetComponent<T>();
 		}
 
 		template<typename T>
 		T* AddComponent()
 		{
-			return m_OwnerOfCom->GetComponentManager()->AddComponent<T>();
+			return m_OwnerOfCom->m_ComponentManager.AddComponent<T>();
 		}
 
 		template<typename T>
 		void RemoveComponent()
 		{
-			m_OwnerOfCom->GetComponentManager()->RemoveComponent<T>();
+			m_OwnerOfCom->m_ComponentManager.RemoveComponent<T>();
 		}
 
 		std::string GetComponentType() const { return m_Type; }

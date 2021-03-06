@@ -1,26 +1,8 @@
 #pragma once
 
-class Obj : public GameObject {
-public:
-	float u_EdgeThickness = 2;
-	float u_EdgeSharpness = 30;
-	float u_EdgeSubstruct = 0.3;
-	float u_GlowStrength = 10;
-	Obj() : GameObject() {
-		GetComponentManager()->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
-		GetComponent<Renderer3D>()->m_Shader = Shader::Get("Tron");
-		Renderer3D* r = GetComponentManager()->GetComponent<Renderer3D>();
-		r->m_FloatUniforms.insert(std::make_pair("u_EdgeThickness", u_EdgeThickness));
-		r->m_FloatUniforms.insert(std::make_pair("u_EdgeSharpness", u_EdgeSharpness));
-		r->m_FloatUniforms.insert(std::make_pair("u_EdgeSubstruct", u_EdgeSubstruct));
-		r->m_FloatUniforms.insert(std::make_pair("u_GlowStrength", u_GlowStrength));
-	}
-};
-
 #include <numeric>
 class BlankProject : public Application {
 public:
-	Obj* go = nullptr;
 	Shader* shader = nullptr;
 	double time = 0;
 	GameObject* earth;

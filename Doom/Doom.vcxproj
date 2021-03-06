@@ -153,6 +153,7 @@
     <ClInclude Include="src\Doom\Input\Input.h" />
     <ClInclude Include="src\Doom\Input\WindowsInput.h" />
     <ClInclude Include="src\Doom\Lua\LuaState.h" />
+    <ClInclude Include="src\Doom\Lua\LuaVec3.h" />
     <ClInclude Include="src\Doom\Objects\Camera.h" />
     <ClInclude Include="src\Doom\Objects\GameObject.h" />
     <ClInclude Include="src\Doom\Objects\GridLayOut.h" />
@@ -274,6 +275,7 @@
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\Doom\Input\WindowsInput.cpp" />
     <ClCompile Include="src\Doom\Lua\LuaState.cpp" />
+    <ClCompile Include="src\Doom\Lua\LuaVec3.cpp" />
     <ClCompile Include="src\Doom\Objects\Camera.cpp" />
     <ClCompile Include="src\Doom\Objects\GameObject.cpp" />
     <ClCompile Include="src\Doom\Objects\Line.cpp" />

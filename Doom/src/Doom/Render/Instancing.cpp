@@ -14,9 +14,9 @@ Doom::Instancing::Instancing()
 void Doom::Instancing::Create(Mesh* mesh)
 {
 	glBuffers buf;
-	buf.m_Layout = &(mesh->m_Layout);
+	buf.m_Layout = (mesh->m_Layout);
 	buf.m_Vbo = (mesh->m_Vb);
-	buf.m_Vao = &(mesh->m_Va);
+	buf.m_Vao = (mesh->m_Va);
 	buf.m_Ibo = (mesh->m_Ib);
 	buf.m_VboDynamic = new VertexBuffer(nullptr, 1,false);
 	buf.m_LayoutDynamic = new VertexBufferLayout();

@@ -243,7 +243,7 @@ void RectangleCollider2D::IsCollidedDIAGS()
 						}
 						if (m_IsTrigger == false) 
 						{
-							m_Transform = m_OwnerOfCom->m_ComponentManager->GetComponent<Transform>();
+							m_Transform = m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
 							m_Transform->Translate(m_OwnerOfCom->GetPosition().x - m_Displacement.x, m_OwnerOfCom->GetPosition().y - m_Displacement.y);
 							m_Transform = nullptr;
 						}
@@ -321,8 +321,8 @@ bool RectangleCollider2D::ShapeOverlap_SAT_STATIC(RectangleCollider2D &r1, Recta
 
 	// If we got here, the objects have collided, we will displace r1
 	// by overlap along the vector between the two object centers
-	Transform* trans1 = r1.m_OwnerOfCom->m_ComponentManager->GetComponent<Transform>();
-	Transform* trans2 = r2.m_OwnerOfCom->m_ComponentManager->GetComponent<Transform>();
+	Transform* trans1 = r1.m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
+	Transform* trans2 = r2.m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
 
 	glm::vec2 r1Pos = trans1->GetPosition();
 	glm::vec2 r2Pos = trans2->GetPosition();

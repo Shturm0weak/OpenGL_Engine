@@ -369,7 +369,7 @@ void Batch::Submit(SpriteRenderer* c)
 
 void Batch::Submit(RectangleCollider2D& c) 
 {
-	glm::mat4 mvp = c.m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>()->m_PosMat4 * c.m_OwnerOfCom->GetComponentManager()->GetComponent<Transform>()->m_ViewMat4;
+	glm::mat4 mvp = c.m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>()->m_PosMat4 * c.m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>()->m_ViewMat4;
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1)
 	{
 		EndGameObjects();

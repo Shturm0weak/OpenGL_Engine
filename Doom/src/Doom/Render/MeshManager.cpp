@@ -53,11 +53,14 @@ void Doom::MeshManager::LoadScene(std::string filepath)
 	doc.LoadScene(filepath);
 }
 
-void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId)
+void Doom::MeshManager::AsyncLoadMesh(std::string nametemp, std::string filepath, uint32_t meshId)
 {
-	if (meshId > 0)
-		name = name.append(std::to_string(meshId));
 	Doom::ThreadPool::GetInstance().Enqueue([=] {
+		std::lock_guard<std::mutex> lock(s_Mtx);
+		std::string name = nametemp;
+		if (meshId > 0)
+			name = name.append(std::to_string(meshId));
+		
 		auto iter = s_Meshes.find(name);
 		if (iter != s_Meshes.end()) return;
 		std::string subStr = filepath.substr(filepath.size() - 3, 3);
@@ -72,11 +75,10 @@ void Doom::MeshManager::AsyncLoadMesh(std::string name, std::string filepath, ui
 		else return;
 		if (mesh == nullptr) return;
 		{
-			std::lock_guard<std::mutex> lock(s_Mtx);
+			
 			s_Meshes.insert(std::make_pair(name, mesh));
 			s_NeedToInitMeshes.push_back(mesh);
 		}
-		mesh->m_IdOfMeshInFile = meshId;
 		std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
 		});
 }
@@ -157,17 +159,13 @@ void MeshManager::ShutDown()
 
 void MeshManager::DispatchLoadedMeshes()
 {
-	uint32_t size = s_NeedToInitMeshes.size();
-	if (size > 0) 
+	for (uint32_t i = 0; i < s_NeedToInitMeshes.size();)
 	{
-		for (uint32_t i = 0; i < size; i++)
-		{
-			s_NeedToInitMeshes[i]->Init();
-			std::vector<Renderer3D*> New;
-			Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(s_NeedToInitMeshes[i], New));
-			Instancing::GetInstance()->Create(s_NeedToInitMeshes[i]);
-		}
-		s_NeedToInitMeshes.clear();
+		s_NeedToInitMeshes.back()->Init();
+		std::vector<Renderer3D*> New;
+		Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(s_NeedToInitMeshes[i], New));
+		Instancing::GetInstance()->Create(s_NeedToInitMeshes[i]);
+		s_NeedToInitMeshes.pop_back();
 	}
 	if (s_MeshQueue.size() > 0)
 	{

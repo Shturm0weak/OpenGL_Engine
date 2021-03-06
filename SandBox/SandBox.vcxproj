@@ -104,9 +104,11 @@
     <ClInclude Include="src\Examples\RayCastTest.h" />
     <ClInclude Include="src\Examples\StressTest.h" />
     <ClInclude Include="src\Examples\Test.h" />
+    <ClInclude Include="src\Examples\TestCollision2D.h" />
     <ClInclude Include="src\Examples\TicTacToe.h" />
-    <ClInclude Include="src\FEM\FEM.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="src\FEM\FEM.h" />
+    <ClInclude Include="src\FEM\Integrals.h" />
     <ClInclude Include="src\FEM\MathFunctions.h" />
     <ClInclude Include="src\FEM\Matrix.h" />
     <ClInclude Include="src\FEM\Vector.h" />
@@ -123,9 +125,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
-    <ClCompile Include="src\FEM\FEM.cpp" />
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="src\FEM\FEM.cpp" />
+    <ClCompile Include="src\FEM\Integrals.cpp" />
     <ClCompile Include="src\FEM\MathFunctions.cpp" />
     <ClCompile Include="src\FEM\Matrix.cpp" />
     <ClCompile Include="src\FEM\Vector.cpp" />
@@ -144,8 +147,10 @@
   <ItemGroup>
     <None Include="src\Scenes\RayCastTest.yaml" />
     <None Include="src\Scenes\scene.yaml" />
+    <None Include="src\Scripts\Camera.lua" />
     <None Include="src\Scripts\Color.lua" />
     <None Include="src\Scripts\Move.lua" />
+    <None Include="src\Scripts\Vec3.lua" />
     <None Include="src\Shaders\BakeShadows.shader" />
     <None Include="src\Shaders\BakeShadowsInstancing.shader" />
     <None Include="src\Shaders\Bloom.shader" />

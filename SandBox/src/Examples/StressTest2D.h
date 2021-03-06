@@ -9,8 +9,8 @@ namespace Doom {
 			{
 				for (size_t j = 0; j < 316; j++)
 				{
-					GameObject* go = new GameObject(std::to_string(i) + " " + std::to_string(j), i, j);
-					go->GetComponentManager()->AddComponent<SpriteRenderer>();
+					GameObject* go = GameObject::Create(std::to_string(i) + " " + std::to_string(j), i, j);
+					go->m_ComponentManager.AddComponent<SpriteRenderer>();
 					go->m_Transform->Scale(glm::vec3(0.9));
 				}
 			}

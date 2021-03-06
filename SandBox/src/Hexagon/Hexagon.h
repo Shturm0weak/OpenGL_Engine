@@ -7,8 +7,8 @@ namespace Doom {
 	class Hexagon : public Application {
 	private:
 
-		float width = 64;
-		float height = 64;
+		float width = 16;
+		float height = 16;
 		float cameraSpeed = 5;
 		GameObject* selectedObj = nullptr;
 		glm::vec4 prevColor;
@@ -18,7 +18,7 @@ namespace Doom {
 
 		void PerlinNoise2D(int nWidth, int nHeight, float* fSeed, int nOctaves, float fBias, float* fOutput);
 
-		glm::vec4 Colors(float value);
+		glm::vec4 Colors(float value, GameObject* sprite);
 
 		void CameraMovement();
 		void OnStart();

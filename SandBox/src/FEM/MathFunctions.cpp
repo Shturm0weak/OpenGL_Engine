@@ -148,6 +148,6 @@ void math::Print(const Vector & vec)
 {
 	for (uint32_t i = 0; i < vec.m_size; i++)
 	{
-		printf_s("%.16lf\n", vec.m_array[i]);
+		printf_s("%.6lf\n", vec.m_array[i]);
 	}
 }

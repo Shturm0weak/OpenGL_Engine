@@ -8,31 +8,53 @@ using namespace Doom;
 GameObject::GameObject(const std::string name,float x, float y,float z) 
 {
 	this->m_Name = name;
-	m_Layer = World::GetInstance().s_GameObjects.size();
-	m_Id = World::GetInstance().s_ObjId;
+	m_Transform = m_ComponentManager.AddComponent<Transform>();
+}
+
+void Doom::GameObject::Delete()
+{
+	m_ComponentManager.Clear();
+	s_FreeMemory.push_back(m_MemoryPoolPtr);
+	std::vector<GameObject*>& goV = World::GetInstance().s_GameObjects;
+	auto iter = std::find(goV.begin(), goV.end(), this);
+	if (iter != goV.end())
+		goV.erase(iter);
+#ifdef _DEBUG
+	std::cout << "GameObject: <" << NAMECOLOR << m_Name << RESET << "> has been destroyed\n";
+#endif
+}
+
+Doom::GameObject::GameObject(GameObject& rhs)
+{
+	Copy(rhs);
+}
+
+void Doom::GameObject::operator=(GameObject& rhs)
+{
+	Copy(rhs);
+}
+
+GameObject* Doom::GameObject::Create(const std::string name, float x, float y, float z)
+{
+	char* ptr = Utils::PreAllocateMemory<GameObject>(s_MemoryPool, s_FreeMemory);
+	GameObject* go = (GameObject*)((void*)ptr);// = new(iter->first + iter->second * sizeof(CubeCollider3D)) CubeCollider3D();
+	go->m_Transform = go->m_ComponentManager.AddComponent<Transform>();
+	go->m_MemoryPoolPtr = ptr;
+	go->m_Name = name;
+	go->m_Layer = World::GetInstance().s_GameObjects.size();
+	go->m_Id = World::GetInstance().s_ObjId;
 	World::GetInstance().s_ObjId++;
-	m_ComponentManager = new ComponentManager(this);
-	m_Transform = m_ComponentManager->AddComponent<Transform>();
-	m_Transform->Translate(x, y, z);
-	World::GetInstance().s_GameObjects.push_back(this);
-}
-
-Doom::GameObject::GameObject(const GameObject& rhs)
-{
-	Copy(rhs);
-}
-
-void Doom::GameObject::operator=(const GameObject& rhs)
-{
-	Copy(rhs);
+	go->m_Transform->Translate(x, y, z);
+	World::GetInstance().s_GameObjects.push_back(go);
+	return go;
 }
 
 Doom::GameObject::~GameObject()
 {
-#ifdef _DEBUG
-	std::cout << "GameObject: <" << NAMECOLOR << m_Name << RESET << "> has been destroyed\n";
-#endif
-	delete m_ComponentManager;
+//#ifdef _DEBUG
+//	std::cout << "GameObject: <" << NAMECOLOR << m_Name << RESET << "> has been destroyed\n";
+//#endif
+	//delete m_ComponentManager;
 }
 
 //void GameObject::operator=(GameObject& go) {
@@ -72,16 +94,16 @@ void Doom::GameObject::RemoveChild(void * child)
 	}
 }
 
-void Doom::GameObject::Copy(const GameObject& rhs)
+void Doom::GameObject::Copy(GameObject& rhs)
 {
 	m_Name = rhs.m_Name;
 	m_Enable = rhs.m_Enable;
 	m_IsParticle = rhs.m_IsParticle;
 	m_IsSerializable = rhs.m_IsSerializable;
-	m_ComponentManager->operator=(*rhs.m_ComponentManager);
+	m_ComponentManager.operator=(rhs.m_ComponentManager);
 	for (uint32_t i = 0; i < rhs.m_Childs.size(); i++)
 	{
-		GameObject* go = World::GetInstance().CreateGameObject();
+		GameObject* go = GameObject::Create();
 		go->operator=(*(GameObject*)rhs.m_Childs[i]);
 		AddChild(go);
 	}

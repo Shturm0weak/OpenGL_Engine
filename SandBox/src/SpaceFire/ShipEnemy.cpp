@@ -18,7 +18,7 @@ void ShipEnemy::Init(std::string name, float x, float y)
 {
 	GetOwnerOfComponent()->m_Name = name;
 	SoundManager::GetInstance().CreateSoundAsset("explosion",explosionSound);
-	bulletsPlaceHolder = new GameObject("bulletsPlaceHolder", 0, 0);
+	bulletsPlaceHolder = GameObject::Create("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->m_Enable = false;
 	GetOwnerOfComponent()->AddChild((void*)bulletsPlaceHolder);
 	GetOwnerOfComponent()->m_Listener = this;
@@ -35,7 +35,7 @@ void ShipEnemy::Init(std::string name, float x, float y)
 	col->m_IsTrigger = false;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
-		bullets.push_back(new GameObject("Bullet" + std::to_string(i), GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y));
+		bullets.push_back(GameObject::Create("Bullet" + std::to_string(i), GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y));
 		Bullet* bullet = bullets[i]->AddComponent<Bullet>();
 		bullet->Init("EnemyBullet", glm::vec3(0, -1, 0));
 		bullet->isActive = false;
@@ -97,12 +97,12 @@ void ShipEnemy::Death()
 	std::uniform_int_distribution<int> distribution1(5, 40);
 	int ammo = distribution1(e2);
 	if (chance <= 1) {
-		GameObject* a = new GameObject("AmmoPickUp", GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y);
+		GameObject* a = GameObject::Create("AmmoPickUp", GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y);
 		Ammo* aCom = a->AddComponent<Ammo>();
 		aCom->Init(ammo);
 		RectangleCollider2D* col = a->AddComponent<RectangleCollider2D>();
-		(a->GetComponentManager()->GetComponent<SpriteRenderer>())->m_Texture = (Texture::Create("src/SpaceFire/Images/Ammo.png"));
-		a->GetComponentManager()->GetComponent<Transform>()->Scale(2, 2);
+		(a->m_ComponentManager.GetComponent<SpriteRenderer>())->m_Texture = (Texture::Create("src/SpaceFire/Images/Ammo.png"));
+		a->m_ComponentManager.GetComponent<Transform>()->Scale(2, 2);
 		col->GetOwnerOfComponent()->m_Tag = ("Ammo");
 		col->m_IsTrigger = true;
 	}

@@ -2,15 +2,11 @@
 
 namespace Doom {
 
-	class DOOM_API SkyBox : public GameObject {
-	private:
-
-		uint32_t m_RendererID;
+	class DOOM_API SkyBox {
 	public:
 
-		std::vector<std::string> m_Faces;
-
-		SkyBox(std::vector<std::string> faces,Mesh* mesh);
+		static std::vector<std::string> s_Faces;
+		static GameObject* CreateSkyBox(std::vector<std::string> faces);
 	};
 
 }

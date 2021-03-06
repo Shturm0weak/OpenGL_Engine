@@ -16,7 +16,7 @@ void Doom::Renderer::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearDepth(1.0f);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 }
 
 void Doom::Renderer::SortTransparentObjects()
@@ -27,10 +27,10 @@ void Doom::Renderer::SortTransparentObjects()
 		CubeCollider3D* cc0 = nullptr;
 		CubeCollider3D* cc1 = nullptr;
 		if (r1->m_Mesh != nullptr)
-			cc0 = go0->GetComponentManager()->GetComponent<CubeCollider3D>();
+			cc0 = go0->m_ComponentManager.GetComponent<CubeCollider3D>();
 		else return false;
 		if (r2->m_Mesh != nullptr)
-			cc1 = go1->GetComponentManager()->GetComponent<CubeCollider3D>();
+			cc1 = go1->m_ComponentManager.GetComponent<CubeCollider3D>();
 		else return false;
 		glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
 		glm::vec3 pos0 = go0->GetPosition();
@@ -99,7 +99,7 @@ void Doom::Renderer::RenderBloomEffect()
 void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 {
 	shader->Bind();
-	mesh->m_Va.Bind();
+	mesh->m_Va->Bind();
 	mesh->m_Ib->Bind();
 	mesh->m_Vb->Bind();
 	Renderer::s_Stats.m_Vertices += mesh->m_Ib->GetCount();

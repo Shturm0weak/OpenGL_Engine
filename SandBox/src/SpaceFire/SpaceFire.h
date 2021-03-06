@@ -47,25 +47,25 @@ public:
 		ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
 		ammoTexture = Texture::Create("src/SpaceFire/Images/Ammo.png");
 		backgroundTexture = Texture::Create("src/SpaceFire/Images/SpaceBack.png");
-		background1 = new GameObject("BackGround1");
-		background1->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		(background1->GetComponentManager()->AddComponent<SpriteRenderer>())->m_Texture = (backgroundTexture);
-		background2 = new GameObject("BackGround2");
-		background2->GetComponentManager()->GetComponent<Transform>()->Scale(100, 100);
-		(background2->GetComponentManager()->AddComponent<SpriteRenderer>())->m_Texture = (backgroundTexture);
-		pl = (new GameObject())->AddComponent<ShipPlayer>();
+		background1 = GameObject::Create("BackGround1");
+		background1->m_ComponentManager.GetComponent<Transform>()->Scale(100, 100);
+		(background1->m_ComponentManager.AddComponent<SpriteRenderer>())->m_Texture = (backgroundTexture);
+		background2 = GameObject::Create("BackGround2");
+		background2->m_ComponentManager.GetComponent<Transform>()->Scale(100, 100);
+		(background2->m_ComponentManager.AddComponent<SpriteRenderer>())->m_Texture = (backgroundTexture);
+		pl = (GameObject::Create())->AddComponent<ShipPlayer>();
 		pl->Init();
 		float x = -20;
 		for (unsigned int i = 0; i < 5; i++)
 		{
-			enemies.push_back((new GameObject("ShipEnemy", x, 20))->AddComponent<ShipEnemy>());
+			enemies.push_back((GameObject::Create("ShipEnemy", x, 20))->AddComponent<ShipEnemy>());
 			enemies.back()->Init();
 			enemies.back()->pl = pl;
 			x += 10;
 		}
 		pl->hp = 0;
-		background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 0);
-		background2->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
+		background1->m_ComponentManager.GetComponent<Transform>()->Translate(0, 0);
+		background2->m_ComponentManager.GetComponent<Transform>()->Translate(0, 100);
 			
 	}
 
@@ -130,12 +130,12 @@ public:
 	void OnUpdate() {
 		EventSystem::GetInstance().StopProcessEvents(pause);
 		if (background1->GetPosition().y <= -100)
-			background1->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
+			background1->m_ComponentManager.GetComponent<Transform>()->Translate(0, 100);
 		if (background2->GetPosition().y <= -100)
-			background2->GetComponentManager()->GetComponent<Transform>()->Translate(0, 100);
+			background2->m_ComponentManager.GetComponent<Transform>()->Translate(0, 100);
 		if (!pause){
-			background1->GetComponentManager()->GetComponent<Transform>()->Move(0, -100 * DeltaTime::s_Deltatime, 0);
-			background2->GetComponentManager()->GetComponent<Transform>()->Move(0, -100 * DeltaTime::s_Deltatime, 0);
+			background1->m_ComponentManager.GetComponent<Transform>()->Move(0, -100 * DeltaTime::s_Deltatime, 0);
+			background2->m_ComponentManager.GetComponent<Transform>()->Move(0, -100 * DeltaTime::s_Deltatime, 0);
 		}
 
 		if (spawnTimer > 15) {

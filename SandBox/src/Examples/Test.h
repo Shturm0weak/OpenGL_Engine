@@ -27,11 +27,10 @@ public:
 
 	GameObject* player = nullptr;
 
-	Test(std::string name = "Test", float x = 800, float y = 600, bool Vsync = false) : Application(name, TYPE_3D, x, y, Vsync) {
-	}
+	Test(std::string name = "Test", float x = 800, float y = 600, bool Vsync = false) : Application(name, TYPE_3D, x, y, Vsync) {}
 
 	void OnStart() {
-		player = new GameObject("Player");
+		player = GameObject::Create("Player");
 		player->AddComponent<TestComponent>();
 		player->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
 	}

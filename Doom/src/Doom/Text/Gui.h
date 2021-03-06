@@ -102,7 +102,7 @@ namespace Doom {
 		bool CheckBox(std::string label,bool* value, float x = 0.0f, float y = 0.0f,
 			float size = 0.0f, glm::vec4 textColor = COLORS::White, glm::vec4 imageColor = COLORS::White);
 
-		float SliderFloat(std::string label, float* value, float min = 0.0f, float max = 1.0f,
+		bool SliderFloat(std::string label, float* value, float min = 0.0f, float max = 1.0f,
 			float x = 0.0f, float y = 0.0f, float width = 100.0f, float height = 50.0f,
 			glm::vec4 sliderColor = glm::vec4(0.3, 0.3, 0.3, 1), glm::vec4 panelColor = glm::vec4(0.5,0.5,0.5,1));
 
