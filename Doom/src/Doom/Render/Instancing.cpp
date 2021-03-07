@@ -162,11 +162,14 @@ void Doom::Instancing::BakeShadows()
 			{
 				if (m_Ready[i] == false)
 				{
+					m_FinishPrepareVertAtribb = false;
 					return false;
 				}
 			}
+			m_FinishPrepareVertAtribb = true;
 			return true;
 		});
+
 
 		gliter->second.m_VboDynamic->Bind();
 		gliter->second.m_VboDynamic->Invalidate();
@@ -242,6 +245,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			for (uint32_t i = k * dif; i < thisSegmentOfObjectsV; i++)
 			{
 				Renderer3D* r = iter->second[i];
+				if (r->m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
 				GameObject* owner = r->GetOwnerOfComponent();
 				if (owner->m_IsStatic && r->m_IsInitializedInInstancing) continue;
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
@@ -270,6 +274,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			for (uint32_t i = (m_NThreads - 1) * dif; i < objsSize; i++)
 			{
 				Renderer3D* r = iter->second[i];
+				if (r->m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
 				GameObject* owner = r->GetOwnerOfComponent();
 				if (owner->m_IsStatic && r->m_IsInitializedInInstancing) continue;
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];

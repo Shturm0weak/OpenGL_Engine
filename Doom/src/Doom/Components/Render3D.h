@@ -30,6 +30,7 @@ namespace Doom {
 		Texture* m_NormalMapTexture = nullptr;
 		Transform* m_Tr = nullptr;
 		Mesh* m_Mesh = nullptr;
+		RenderTechnic m_RenderTechnic = RenderTechnic::Forward;
 		bool m_IsCastingShadows = true;
 		bool m_IsWireMesh = false;
 		bool m_IsUsingNormalMap = false;
@@ -62,7 +63,6 @@ namespace Doom {
 		bool m_IsTransparent = false;
 		bool m_IsSkyBox = false;
 		bool m_IsInitializedInInstancing = false;
-		RenderTechnic m_RenderTechnic = RenderTechnic::Forward;
 
 		void Copy(const Renderer3D& rhs);
 		void ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color);

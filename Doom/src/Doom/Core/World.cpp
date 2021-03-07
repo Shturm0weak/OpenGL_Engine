@@ -4,6 +4,7 @@
 #include "ViewPort.h"
 #include "Core/Editor.h"
 #include "Objects/Line.h"
+#include "Render/Instancing.h"
 
 using namespace Doom;
 
@@ -31,6 +32,7 @@ void Doom::World::StartLuaStates()
 
 void Doom::World::DeleteAll()
 {
+	std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
 	for (unsigned int i = 0; i < World::s_GameObjects.size();)
 	{
 		(World::s_GameObjects[i]->Delete());
@@ -42,6 +44,7 @@ void Doom::World::DeleteAll()
 
 void Doom::World::DeleteObject(int id)
 {
+	std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
 	GameObject* go = World::s_GameObjects[id];
 	World::s_GameObjects.erase(World::s_GameObjects.begin() + id);
 	World::s_ObjId--;

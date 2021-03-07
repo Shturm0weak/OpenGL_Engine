@@ -83,9 +83,12 @@ void Editor::EditorUpdate()
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
-			GameObject* clgo = GameObject::Create();
-			clgo->operator=(*go);
-			go = clgo;
+			if (go != nullptr)
+			{
+				GameObject* clgo = GameObject::Create();
+				clgo->operator=(*go);
+				go = clgo;
+			}
 		}
 		if (ImGui::MenuItem("Create SkyBox"))
 		{

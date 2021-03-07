@@ -13,10 +13,14 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 		{
 			if (i->first == m_Mesh) 
 			{
-				i->second.push_back(this);
-				auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
-				if (iter != Renderer::s_Objects3d.end()) 
-					Renderer::s_Objects3d.erase(iter);
+				auto iterFind = std::find(i->second.begin(), i->second.end(), this);
+				if (iterFind == i->second.end())
+				{
+					i->second.push_back(this);
+					auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
+					if (iter != Renderer::s_Objects3d.end())
+						Renderer::s_Objects3d.erase(iter);
+				}
 			}
 		}
 	}

@@ -29,5 +29,6 @@ namespace Doom {
 		GameObject* SelectObject();
 
 		friend class RectangleCollider2D;
+		friend class Instancing;
 	};
 }

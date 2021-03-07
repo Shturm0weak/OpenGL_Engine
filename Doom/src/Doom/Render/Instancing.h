@@ -28,6 +28,7 @@ namespace Doom {
 		uint32_t m_NThreads = ThreadPool::GetInstance().GetAmountOfThreads();
 	public:
 
+		bool m_FinishPrepareVertAtribb = true;
 		float m_DrawShadows = 0.0f; //TODO: Need to move somewhere
 		std::map<Mesh*, std::vector<Renderer3D*>> m_InstancedObjects;
 
@@ -40,6 +41,8 @@ namespace Doom {
 		void PrepareVertexAtrrib();
 		void ShutDown();
 		friend class Renderer;
+		friend class World;
+		friend class Editor;
 	};
 
 }
