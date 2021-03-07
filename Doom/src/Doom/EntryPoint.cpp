@@ -15,7 +15,7 @@
 
 using namespace Doom;
 
-#define _IS_GAME_BUILD
+//#define _IS_GAME_BUILD
 
 EntryPoint::EntryPoint(Doom::Application* app)
 {

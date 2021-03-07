@@ -13,6 +13,8 @@ GameObject::GameObject(const std::string name,float x, float y,float z)
 
 void Doom::GameObject::Delete()
 {
+	m_Owner = nullptr;
+	m_Childs.clear();
 	m_ComponentManager.Clear();
 	s_FreeMemory.push_back(m_MemoryPoolPtr);
 	std::vector<GameObject*>& goV = World::GetInstance().s_GameObjects;

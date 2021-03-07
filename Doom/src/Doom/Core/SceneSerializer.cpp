@@ -178,14 +178,14 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 		}
 	}
 
-	//for (auto iter = childs.begin(); iter != childs.end(); iter++)
-	//{
-	//	for (uint32_t i = 0; i < iter->second.size(); i++)
-	//	{
-	//		GameObject* ch = World::s_GameObjects[iter->second[i]];
-	//		iter->first->AddChild((void*)ch);
-	//	}
-	//}
+	for (auto iter = childs.begin(); iter != childs.end(); iter++)
+	{
+		for (uint32_t i = 0; i < iter->second.size(); i++)
+		{
+			GameObject* ch = World::GetInstance().s_GameObjects[iter->second[i]];
+			iter->first->AddChild((void*)ch);
+		}
+	}
 	std::cout << BOLDGREEN << "Scene: <" << NAMECOLOR << s_CurrentSceneFilePath << BOLDGREEN << "> has been loaded\n" << RESET;
 }
 
@@ -455,7 +455,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 				out << YAML::Key << "Faces";
 				out << YAML::BeginMap;
 				out << YAML::Flow;
-				out << YAML::BeginSeq << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << SkyBox::s_Faces[0] << YAML::EndSeq;
+				out << YAML::BeginSeq << SkyBox::s_Faces[0] << SkyBox::s_Faces[1] << SkyBox::s_Faces[2] << SkyBox::s_Faces[3] << SkyBox::s_Faces[4] << SkyBox::s_Faces[5] << YAML::EndSeq;
 				out << YAML::EndMap;
 			}
 
