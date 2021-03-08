@@ -7,18 +7,18 @@ namespace Doom {
 	public:
 
 		struct Hit {
-			glm::vec3 m_Point;
+			glm::dvec3 m_Point;
 			CubeCollider3D* m_Object = nullptr;
-			float m_Distance = 0;
+			double m_Distance = 0;
 		};
 
 		static std::vector<std::string> m_IgnoreMask;
 
-		static std::map<float, CubeCollider3D*> RayCast(glm::vec3 start, glm::vec3 dir, Hit* hit, float length, bool AABB = true, std::vector<std::string> ignoreMask = Ray3D::m_IgnoreMask);
-		static bool IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit* hit, float length, glm::vec3& a, glm::vec3& b, glm::vec3& c, glm::vec3& planeNorm);
-		static void Normilize(glm::vec3& vector);
-		static bool IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D* c);
-		static bool IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D* c);
+		static std::map<double, CubeCollider3D*> RayCast(glm::dvec3 start, glm::dvec3 dir, Hit* hit, double length, bool AABB = true, std::vector<std::string> ignoreMask = Ray3D::m_IgnoreMask);
+		static bool IntersectTriangle(glm::dvec3 start, glm::dvec3 dir, Hit* hit, double length, glm::dvec3& a, glm::dvec3& b, glm::dvec3& c, glm::dvec3& planeNorm);
+		static void Normilize(glm::dvec3& vector);
+		static bool IntersectBoxAABB(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, CubeCollider3D* c);
+		static bool IntersectBoxOBB(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, CubeCollider3D* c);
 	};
 
 }

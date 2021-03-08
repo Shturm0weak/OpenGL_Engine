@@ -18,9 +18,9 @@ void Doom::AimTrainer::RayCast()
 	if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
 	{
 		Ray3D::Hit hit;
-		glm::vec3 dir = Window::GetInstance().GetCamera().GetForwardV();
+		glm::dvec3 dir = Window::GetInstance().GetCamera().GetForwardV();
 		Ray3D::Normilize(dir);
-		std::map<float, CubeCollider3D*> intersects = Ray3D::RayCast(Window::GetInstance().GetCamera().GetPosition(), dir, &hit, 10000, false, m_IgnoreMask);
+		std::map<double, CubeCollider3D*> intersects = Ray3D::RayCast(Window::GetInstance().GetCamera().GetPosition(), dir, &hit, 10000, false, m_IgnoreMask);
 		//new Line(Window::GetCamera().GetPosition(), Window::GetCamera().GetPosition() + dir * 100.f);
 		if (hit.m_Object != nullptr)
 		{

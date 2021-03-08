@@ -66,6 +66,7 @@ namespace Doom {
 		void MenuDirectionalLight();
 		void MenuSphereCollisionComponent();
 		void MenuScriptComponent();
+		void MenuParticleEmitterComponent();
 		void MenuAllComponents();
 
 		template<class T>

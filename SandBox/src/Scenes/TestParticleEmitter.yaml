@@ -1,0 +1,35 @@
+Scene: 1
+Camera:
+  Transform:
+    Position: [3.91281295, 5.205266, 7.90753365]
+    Rotation: [-0.161006451, 1.53232121, 0]
+  Zoom: 1
+  FOV: 1
+GameObjects:
+  - GameObject: 0
+    Name: Emitter
+    Transform:
+      Position: [-2.00478888, 3.55401087, 8.78671932]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [1, 1, 1]
+      Attenuation:
+        Constant: 1
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
+    Particle emitter:
+      Particles amount: 500
+      Max time to live: 1.88100004
+      Speed: 0.819000006
+      Color: [0, 1, 0.877998114, 1]
+      Scale: [0.5, 0.354000002]
+      Time to spawn: [0, 1.65100002]
+      DirX: [0, 0]
+      DirY: [-1, -1]
+      DirZ: [0, 1]
+      RadiusToSpawnX: [0, 0]
+      RadiusToSpawnY: [0, 0]
+      RadiusToSpawnZ: [0, 0]
+Texture atlases:
+  []

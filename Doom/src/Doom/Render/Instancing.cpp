@@ -211,6 +211,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 
 		if (gliter->second.m_PrevObjectSize != objsSize && gliter->second.m_VertAttrib == nullptr)
 		{
+			std::lock_guard lg(m_Mtx);
 			delete[] gliter->second.m_VertAttrib;
 			gliter->second.m_VertAttrib = nullptr;
 			gliter->second.m_VertAttrib = new float[objsSize * m_SizeOfAttribs];

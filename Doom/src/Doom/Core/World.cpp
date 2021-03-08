@@ -32,7 +32,7 @@ void Doom::World::StartLuaStates()
 
 void Doom::World::DeleteAll()
 {
-	std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
+	//std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
 	for (unsigned int i = 0; i < World::s_GameObjects.size();)
 	{
 		(World::s_GameObjects[i]->Delete());
@@ -44,7 +44,7 @@ void Doom::World::DeleteAll()
 
 void Doom::World::DeleteObject(int id)
 {
-	std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
+	//std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
 	GameObject* go = World::s_GameObjects[id];
 	World::s_GameObjects.erase(World::s_GameObjects.begin() + id);
 	World::s_ObjId--;
@@ -134,9 +134,9 @@ GameObject* Doom::World::SelectObject3D()
 	if (!ImGuizmo::IsOver() && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !Input::IsMouseDown(Keycode::MOUSE_BUTTON_2))
 	{
 		Ray3D::Hit hit;
-		glm::vec3 pos = Window::GetInstance().GetCamera().GetPosition();
-		glm::vec3 forward = Window::GetInstance().GetCamera().GetMouseDirVec();
-		std::map<float, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 10000, false);
+		glm::dvec3 pos = Window::GetInstance().GetCamera().GetPosition();
+		glm::dvec3 forward = Window::GetInstance().GetCamera().GetMouseDirVec();
+		std::map<double, CubeCollider3D*> d = Ray3D::RayCast(pos, forward, &hit, 10000, false);
 		for (auto i = d.begin(); i != d.end(); i++)
 		{
 			if (i->second != nullptr)
@@ -151,14 +151,14 @@ GameObject* Doom::World::SelectObject3D()
 				//new Line(pos, forward * 1000.f);
 				for (uint32_t i = 0; i < mesh->m_VertAttribSize; i += (14 * 3))
 				{
-					glm::vec3 a = glm::vec3(mesh->m_VertAttrib[i + 0], mesh->m_VertAttrib[i + 1], mesh->m_VertAttrib[i + 2]);
-					glm::vec3 b = glm::vec3(mesh->m_VertAttrib[i + 14 + 0], mesh->m_VertAttrib[i + 14 + 1], mesh->m_VertAttrib[i + 14 + 2]);
-					glm::vec3 c = glm::vec3(mesh->m_VertAttrib[i + 28 + 0], mesh->m_VertAttrib[i + 28 + 1], mesh->m_VertAttrib[i + 28 + 2]);
-					glm::vec3 n = glm::vec3(mesh->m_VertAttrib[i + 3], mesh->m_VertAttrib[i + 4], mesh->m_VertAttrib[i + 5]);
-					a = glm::vec3(model * view * scale * glm::vec4(a, 1.0f));
-					b = glm::vec3(model * view * scale * glm::vec4(b, 1.0f));
-					c = glm::vec3(model * view * scale * glm::vec4(c, 1.0f));
-					n = glm::vec3(view * glm::vec4(n, 1.0f));
+					glm::dvec3 a = glm::dvec3(mesh->m_VertAttrib[i + 0], mesh->m_VertAttrib[i + 1], mesh->m_VertAttrib[i + 2]);
+					glm::dvec3 b = glm::dvec3(mesh->m_VertAttrib[i + 14 + 0], mesh->m_VertAttrib[i + 14 + 1], mesh->m_VertAttrib[i + 14 + 2]);
+					glm::dvec3 c = glm::dvec3(mesh->m_VertAttrib[i + 28 + 0], mesh->m_VertAttrib[i + 28 + 1], mesh->m_VertAttrib[i + 28 + 2]);
+					glm::dvec3 n = glm::dvec3(mesh->m_VertAttrib[i + 3], mesh->m_VertAttrib[i + 4], mesh->m_VertAttrib[i + 5]);
+					a = glm::dvec3(model * view * scale * glm::vec4(a, 1.0f));
+					b = glm::dvec3(model * view * scale * glm::vec4(b, 1.0f));
+					c = glm::dvec3(model * view * scale * glm::vec4(c, 1.0f));
+					n = glm::dvec3(view * glm::vec4(n, 1.0f));
 					if (Ray3D::IntersectTriangle(pos, forward, &hit1, 10000, a, b, c, n))
 					{
 						//GameObject* go0 = new GameObject("p1", a.x, a.y, a.z);

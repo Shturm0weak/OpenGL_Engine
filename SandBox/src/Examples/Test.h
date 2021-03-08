@@ -1,3 +1,7 @@
+#pragma once
+
+#include "ParticleSystem/ParticleEmitter.h"
+
 class TestComponent : public Component {
 private:
 
@@ -25,14 +29,14 @@ public:
 class Test : public Application {
 public:
 
-	GameObject* player = nullptr;
+	//GameObject* player = nullptr;
 
 	Test(std::string name = "Test", float x = 800, float y = 600, bool Vsync = false) : Application(name, TYPE_3D, x, y, Vsync) {}
 
 	void OnStart() {
-		player = GameObject::Create("Player");
-		player->AddComponent<TestComponent>();
-		player->AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
+		//player = GameObject::Create("Emitter");
+		//player->AddComponent<ParticleEmitter>()->Init(50);
+
 	}
 
 	void OnUpdate() {

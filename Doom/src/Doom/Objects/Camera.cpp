@@ -129,21 +129,21 @@ glm::vec3 Doom::Camera::GetRotation()
 	return glm::vec3(m_Pitch, m_Yaw, m_Roll);
 }
 
-glm::vec3 Doom::Camera::GetMouseDirVec()
+glm::dvec3 Doom::Camera::GetMouseDirVec()
 {
-	glm::vec2 pos;
+	glm::dvec2 pos;
 	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetInstance().GetCamera().GetAspectRatio() * g_Height);
 	pos.y = ViewPort::GetInstance()->GetStaticMousePosition().y / (g_Height);
-	glm::vec4 clipCoords = glm::vec4(pos.x, pos.y, -1.0f, 1.0f);
-	glm::vec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMat4);
+	glm::dvec4 clipCoords = glm::dvec4(pos.x, pos.y, -1.0f, 1.0f);
+	glm::dvec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMat4);
 	eyeCoords.z = -1.0f; eyeCoords.w = 0.0f;
-	glm::vec3 mouseRay = (glm::vec3)(glm::inverse(m_ViewMat4) * eyeCoords);
-	return glm::vec3(glm::normalize(mouseRay));
+	glm::dvec3 mouseRay = (glm::dvec3)(glm::inverse(m_ViewMat4) * eyeCoords);
+	return glm::dvec3(glm::normalize(mouseRay));
 }
 
-glm::vec3 Doom::Camera::GetForwardV()
+glm::dvec3 Doom::Camera::GetForwardV()
 {
-	return glm::vec3(-backV.x, backV.y, -backV.z);
+	return glm::dvec3(-backV.x, backV.y, -backV.z);
 }
 
 void Doom::Camera::SetRotation(glm::vec3 rot)

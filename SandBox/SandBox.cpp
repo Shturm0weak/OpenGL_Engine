@@ -16,7 +16,7 @@
 
 int main()
 {
-	AimTrainer app;
+	Test app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

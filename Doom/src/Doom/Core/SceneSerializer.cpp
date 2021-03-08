@@ -4,8 +4,32 @@
 #include "../Objects/SkyBox.h"
 #include "../Core/Utils.h"
 #include "Core/Editor.h"
+#include "ParticleSystem/ParticleEmitter.h"
 
 namespace YAML {
+
+	template<>
+	struct convert<glm::vec2>
+	{
+		static Node encode(const glm::vec2& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.SetStyle(EmitterStyle::Flow);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec2& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			return true;
+		}
+	};
 
 	template<>
 	struct convert<glm::vec3>
@@ -58,6 +82,13 @@ namespace YAML {
 			return true;
 		}
 	};
+}
+
+YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec2& v)
+{
+	out << YAML::Flow;
+	out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
+	return out;
 }
 
 YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec3& v)
@@ -326,15 +357,33 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		}
 	}
 
-	auto RectangularCollider2DComponent = go["Rectangle collider 2D"];
-	if (RectangularCollider2DComponent)
+	auto rectangularCollider2DComponent = go["Rectangle collider 2D"];
+	if (rectangularCollider2DComponent)
 	{
 		RectangleCollider2D* rc = obj->m_ComponentManager.AddComponent<RectangleCollider2D>();
-		rc->m_Enable = RectangularCollider2DComponent["Is Enable"].as<bool>();
-		rc->m_IsTrigger = RectangularCollider2DComponent["Is trigger"].as<bool>();
-		glm::vec3 offset = RectangularCollider2DComponent["OffSet"].as<glm::vec3>();
+		rc->m_Enable = rectangularCollider2DComponent["Is Enable"].as<bool>();
+		rc->m_IsTrigger = rectangularCollider2DComponent["Is trigger"].as<bool>();
+		glm::vec3 offset = rectangularCollider2DComponent["OffSet"].as<glm::vec3>();
 		rc->SetOffset(offset.x, offset.y);
-		glm::vec3 scale = RectangularCollider2DComponent["Scale"].as<glm::vec3>();
+		glm::vec3 scale = rectangularCollider2DComponent["Scale"].as<glm::vec3>();
+	}
+
+	auto particleEmitterComponent = go["Particle emitter"];
+	if (particleEmitterComponent)
+	{
+		ParticleEmitter* pe = obj->m_ComponentManager.AddComponent<ParticleEmitter>();
+		pe->Init(particleEmitterComponent["Particles amount"].as<size_t>());
+		pe->m_Dir[0] = particleEmitterComponent["DirX"].as<glm::vec2>();
+		pe->m_Dir[1] = particleEmitterComponent["DirY"].as<glm::vec2>();
+		pe->m_Dir[2] = particleEmitterComponent["DirZ"].as<glm::vec2>(); 
+		pe->m_RadiusToSpawn[0] = particleEmitterComponent["RadiusToSpawnX"].as<glm::vec2>();
+		pe->m_RadiusToSpawn[1] = particleEmitterComponent["RadiusToSpawnY"].as<glm::vec2>();
+		pe->m_RadiusToSpawn[2] = particleEmitterComponent["RadiusToSpawnZ"].as<glm::vec2>();
+		pe->m_MaxTimeToLive = particleEmitterComponent["Max time to live"].as<float>();
+		pe->m_Speed = particleEmitterComponent["Speed"].as<float>();
+		pe->m_TimeToSpawn = particleEmitterComponent["Time to spawn"].as<glm::vec2>();
+		pe->m_Scale = particleEmitterComponent["Scale"].as<glm::vec2>();
+		pe->m_Color = particleEmitterComponent["Color"].as<glm::vec4>();
 	}
 
 	auto childsId = go["Childs id"];
@@ -391,13 +440,14 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 	SerializeGameObjectChilds(out, go);
 	SerializeRegisteredEvents(out, go);
 	SerializeRectangularCollider(out, cm);
+	SerializeParticleEmitterComponent(out, cm);
 
 	out << YAML::EndMap;
 }
 
 void Doom::SceneSerializer::SerializeGameObjectChilds(YAML::Emitter& out, GameObject* go)
 {
-	if (go->GetChilds().size() > 0) 
+	if (go->GetChilds().size() > 0 && go->m_IsSerializalbeChilds) 
 	{
 		out << YAML::Key << "Childs id";
 		std::vector<int> ids;
@@ -578,6 +628,29 @@ void Doom::SceneSerializer::SerializeRectangularCollider(YAML::Emitter& out, Com
 		out << YAML::Key << "Is trigger" << YAML::Value << rc->m_IsTrigger;
 		out << YAML::Key << "OffSet" << YAML::Value << glm::vec3(rc->m_Offset , 0);
 		out << YAML::Key << "Scale" << YAML::Value << Utils::GetScale(glm::mat4(1.0f));
+		out << YAML::EndMap;
+	}
+}
+
+void Doom::SceneSerializer::SerializeParticleEmitterComponent(YAML::Emitter& out, ComponentManager* cm)
+{
+	ParticleEmitter* pe = cm->GetComponent<ParticleEmitter>();
+	if (pe != nullptr)
+	{
+		out << YAML::Key << "Particle emitter";
+		out << YAML::BeginMap;
+		out << YAML::Key << "Particles amount" << YAML::Value << pe->m_ParticlesPool.size();
+		out << YAML::Key << "Max time to live" << YAML::Value << pe->m_MaxTimeToLive;
+		out << YAML::Key << "Speed" << YAML::Value << pe->m_Speed;
+		out << YAML::Key << "Color" << YAML::Value << pe->m_Color;
+		out << YAML::Key << "Scale" << YAML::Value << pe->m_Scale;
+		out << YAML::Key << "Time to spawn" << YAML::Value << pe->m_TimeToSpawn;
+		out << YAML::Key << "DirX" << YAML::Value << pe->m_Dir[0];
+		out << YAML::Key << "DirY" << YAML::Value << pe->m_Dir[1];
+		out << YAML::Key << "DirZ" << YAML::Value << pe->m_Dir[2];
+		out << YAML::Key << "RadiusToSpawnX" << YAML::Value << pe->m_RadiusToSpawn[0];
+		out << YAML::Key << "RadiusToSpawnY" << YAML::Value << pe->m_RadiusToSpawn[1];
+		out << YAML::Key << "RadiusToSpawnZ" << YAML::Value << pe->m_RadiusToSpawn[2];
 		out << YAML::EndMap;
 	}
 }

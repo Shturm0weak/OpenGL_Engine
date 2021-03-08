@@ -1,9 +1,9 @@
 #include "../pch.h"
 #include "Ray3D.h"
 #include "../Objects/Line.h"
-std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm::vec3 dir, Hit * hit,float length, bool AABB, std::vector<std::string> ignoreMask)
+std::map<double, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, bool AABB, std::vector<std::string> ignoreMask)
 {
-	std::map<float, CubeCollider3D*> d;
+	std::map<double, CubeCollider3D*> d;
 	size_t collidersSize = CubeCollider3D::s_Colliders.size();
 	for (size_t i = 0; i < collidersSize; i++)
 	{
@@ -38,35 +38,35 @@ std::map<float, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::vec3 start, glm
 	else 
 	{
 		hit->m_Object = nullptr;
-		hit->m_Point = glm::vec3(0.0f);
+		hit->m_Point = glm::dvec3(0.0f);
 		hit->m_Distance = 0;
 	}
 	return d;
 }
 
-bool Doom::Ray3D::IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, glm::vec3& a, glm::vec3& b, glm::vec3& c, glm::vec3& planeNorm)
+bool Doom::Ray3D::IntersectTriangle(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, glm::dvec3& a, glm::dvec3& b, glm::dvec3& c, glm::dvec3& planeNorm)
 {
-	glm::vec3 end = dir * length; 
-	glm::vec3 rayDelta = end - start;
-	glm::vec3 rayToPlaneDelta = a - start;
-	float ratio = glm::dot(rayToPlaneDelta,planeNorm);
-	glm::vec3 proj = planeNorm * ratio;
-	float vp = glm::dot(rayDelta,planeNorm);
+	glm::dvec3 end = dir * length; 
+	glm::dvec3 rayDelta = end - start;
+	glm::dvec3 rayToPlaneDelta = a - start;
+	double ratio = glm::dot(rayToPlaneDelta,planeNorm);
+	glm::dvec3 proj = planeNorm * ratio;
+	double vp = glm::dot(rayDelta,planeNorm);
 	if (vp >= -0.0001 && vp <= 0.0001)
 	{
 		return false;
 	}
-	float wp = glm::dot(rayToPlaneDelta, planeNorm);
-	float t = wp / vp;
-	glm::vec3 iPos = rayDelta * t + start;
+	double wp = glm::dot(rayToPlaneDelta, planeNorm);
+	double t = wp / vp;
+	glm::dvec3 iPos = rayDelta * t + start;
 	hit->m_Point = iPos;
 
-	glm::vec3 edge0 = b - a;
-	glm::vec3 edge1 = c - b;
-	glm::vec3 edge2 = a - c;
-	glm::vec3 c0 = iPos - a;
-	glm::vec3 c1 = iPos - b;
-	glm::vec3 c2 = iPos - c;
+	glm::dvec3 edge0 = b - a;
+	glm::dvec3 edge1 = c - b;
+	glm::dvec3 edge2 = a - c;
+	glm::dvec3 c0 = iPos - a;
+	glm::dvec3 c1 = iPos - b;
+	glm::dvec3 c2 = iPos - c;
 	
 	if (glm::dot(planeNorm, glm::cross(edge0, c0)) > 0 &&
 		glm::dot(planeNorm, glm::cross(edge1, c1)) > 0 &&
@@ -74,47 +74,47 @@ bool Doom::Ray3D::IntersectTriangle(glm::vec3 start, glm::vec3 dir, Hit * hit, f
 	else return false;
 }
 
-void Doom::Ray3D::Normilize(glm::vec3 & vector)
+void Doom::Ray3D::Normilize(glm::dvec3 & vector)
 {
-		vector = glm::vec3(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)));
+		vector = glm::dvec3(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)));
 }
 
-bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, float length, CubeCollider3D * c)
+bool Doom::Ray3D::IntersectBoxAABB(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, CubeCollider3D * c)
 {
-	glm::vec3 pos = c->m_Offset * c->GetOwnerOfComponent()->GetScale() + c->GetOwnerOfComponent()->GetPosition();
-	glm::vec3 scale = glm::abs(c->m_MinP) + glm::abs(c->m_MaxP);
-	glm::vec3 bMin = pos + (glm::vec3(-1, -1, -1) * scale);
-	glm::vec3 bMax = pos + (glm::vec3( 1,  1,  1) * scale);
+	glm::dvec3 pos = c->m_Offset * c->GetOwnerOfComponent()->GetScale() + c->GetOwnerOfComponent()->GetPosition();
+	glm::dvec3 scale = glm::abs(c->m_MinP) + glm::abs(c->m_MaxP);
+	glm::dvec3 bMin = pos + (glm::dvec3(-1, -1, -1) * scale);
+	glm::dvec3 bMax = pos + (glm::dvec3( 1,  1,  1) * scale);
 
-	float txMin = (bMin.x - start.x) / dir.x;
-	float txMax = (bMax.x - start.x) / dir.x;
+	double txMin = (bMin.x - start.x) / dir.x;
+	double txMax = (bMax.x - start.x) / dir.x;
 	if (txMax < txMin) 
 	{
-		float temp = txMax;
+		double temp = txMax;
 		txMax = txMin;
 		txMin = temp;
 	}
 
-	float tyMin = (bMin.y - start.y) / dir.y;
-	float tyMax = (bMax.y - start.y) / dir.y;
+	double tyMin = (bMin.y - start.y) / dir.y;
+	double tyMax = (bMax.y - start.y) / dir.y;
 	if (tyMax < tyMin)
 	{
-		float temp = tyMax;
+		double temp = tyMax;
 		tyMax = tyMin;
 		tyMin = temp;
 	}
 
-	float tzMin = (bMin.z - start.z) / dir.z;
-	float tzMax = (bMax.z - start.z) / dir.z;
+	double tzMin = (bMin.z - start.z) / dir.z;
+	double tzMax = (bMax.z - start.z) / dir.z;
 	if (tzMax < tzMin) 
 	{
-		float temp = tzMax;
+		double temp = tzMax;
 		tzMax = tzMin;
 		tzMin = temp;
 	}
 
-	float tMin = (txMin > tyMin) ? txMin : tyMin;
-	float tMax = (txMax < tyMax) ? txMax : tyMax;
+	double tMin = (txMin > tyMin) ? txMin : tyMin;
+	double tMax = (txMax < tyMax) ? txMax : tyMax;
 
 	if (txMin > tyMax || tyMin > txMax) return false;
 	if (tMin > tzMax || tzMin > tMax) return false;
@@ -128,27 +128,27 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::vec3 start, glm::vec3 dir, Hit * hit, fl
 
 
 
-bool Doom::Ray3D::IntersectBoxOBB(glm::vec3 start, glm::vec3 dir, Hit* hit, float length, CubeCollider3D* c)
+bool Doom::Ray3D::IntersectBoxOBB(glm::dvec3 start, glm::dvec3 dir, Hit* hit, double length, CubeCollider3D* c)
 {
 	Transform* tr = c->GetOwnerOfComponent()->GetComponent<Transform>();
-	glm::vec3 bounds0 = c->m_MinP;
-	glm::vec3 bounds1 = c->m_MaxP;
-	glm::vec3 vPos = tr->GetPosition() + c->m_Offset * tr->GetScale();
-	glm::mat4 pos = glm::translate(glm::mat4(1.0f), vPos);
-	glm::mat4 wMat = pos * tr->m_ViewMat4;
-	bounds0 = glm::vec3(tr->m_ScaleMat4 * glm::vec4(bounds0, 1.0f));
-	bounds1 = glm::vec3(tr->m_ScaleMat4 * glm::vec4(bounds1, 1.0f));
-	float* wMatPtr = glm::value_ptr(wMat);
-	glm::vec3 axis;
-	glm::vec3 bbRayDelta = vPos - start;
+	glm::dvec3 bounds0 = c->m_MinP;
+	glm::dvec3 bounds1 = c->m_MaxP;
+	glm::dvec3 vPos = tr->GetPosition() + c->m_Offset * tr->GetScale();
+	glm::dmat4 pos = glm::translate(glm::dmat4(1.0f), vPos);
+	glm::dmat4 wMat = pos * (glm::dmat4)tr->m_ViewMat4;
+	bounds0 = glm::dvec3(tr->m_ScaleMat4 * glm::dvec4(bounds0, 1.0f));
+	bounds1 = glm::dvec3(tr->m_ScaleMat4 * glm::dvec4(bounds1, 1.0f));
+	double* wMatPtr = glm::value_ptr(wMat);
+	glm::dvec3 axis;
+	glm::dvec3 bbRayDelta = vPos - start;
 
-	float tMin = 0, tMax = 1000000, nomLen, denomLen, tmp, min, max;
+	double tMin = 0, tMax = 1000000, nomLen, denomLen, tmp, min, max;
 	size_t p;
 
 	for (size_t i = 0; i < 3; i++)
 	{
 		p = i * 4;
-		axis = glm::vec3(wMatPtr[p], wMatPtr[p + 1], wMatPtr[p + 2]);
+		axis = glm::dvec3(wMatPtr[p], wMatPtr[p + 1], wMatPtr[p + 2]);
 		glm::normalize(axis);
 		nomLen = glm::dot(axis, bbRayDelta);
 		denomLen = glm::dot(dir, axis);

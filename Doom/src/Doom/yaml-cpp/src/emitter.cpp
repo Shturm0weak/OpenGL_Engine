@@ -6,6 +6,7 @@
 #include "yaml-cpp/emitterdef.h"
 #include "yaml-cpp/emittermanip.h"
 #include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
+#include "yaml-cpp/emitter.h"
 
 namespace YAML {
 class Binary;

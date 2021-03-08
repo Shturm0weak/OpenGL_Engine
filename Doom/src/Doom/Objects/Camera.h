@@ -15,7 +15,7 @@ namespace Doom {
 			PERSPECTIVE = 1,
 		};
 
-		glm::vec3 backV = { 0,0,-1 };
+		glm::dvec3 backV = { 0,0,-1 };
 		float m_ZnearSM = -50.0f;
 		float m_ZfarSM = 50.0f;
 		float m_RationProjectionSM = 50.0f;
@@ -25,8 +25,8 @@ namespace Doom {
 		~Camera();
 
 		glm::vec3 GetRotation();
-		glm::vec3 GetMouseDirVec();
-		glm::vec3 GetForwardV();
+		glm::dvec3 GetMouseDirVec();
+		glm::dvec3 GetForwardV();
 
 		glm::vec3 GetPosition() const { return m_Position; }
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMat4; }

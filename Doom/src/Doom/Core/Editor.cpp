@@ -10,6 +10,7 @@
 #include "Core/Utils.h"
 #include "Objects/SkyBox.h"
 #include "Lua/LuaState.h"
+#include "ParticleSystem/ParticleEmitter.h"
 
 namespace fs = std::filesystem;
 
@@ -227,6 +228,7 @@ void Editor::EditorUpdate()
 		MenuDirectionalLight();
 		MenuRenderer3D();
 		MeshPicker();
+		MenuParticleEmitterComponent();
 		TexturePicker();
 		ShaderMenu();
 		MenuScriptComponent();
@@ -982,6 +984,31 @@ void Doom::Editor::MenuScriptComponent()
 			{
 				ImGui::PopID();
 				return;
+			}
+		}
+	}
+}
+
+void Doom::Editor::MenuParticleEmitterComponent()
+{
+	ParticleEmitter* pe = go->GetComponent<ParticleEmitter>();
+	if (pe != nullptr)
+	{
+		if (MenuRemoveComponent<ParticleEmitter>())
+		{
+			if (ImGui::CollapsingHeader("Particle emitter"))
+			{
+				ImGui::ColorEdit4("Color", &(pe->m_Color[0]));
+				ImGui::SliderFloat("Speed", &(pe->m_Speed), 0.0f, 10.0f);
+				ImGui::SliderFloat("Max time to live", &(pe->m_MaxTimeToLive), 0.0f, 10.0f);
+				ImGui::SliderFloat2("Scale", &(pe->m_Scale[0]), 0.0f, 5.0f);
+				ImGui::SliderFloat2("Time to spawn", &(pe->m_TimeToSpawn[0]), 0.0f, 10.0f);
+				ImGui::SliderFloat2("Dir x", &(pe->m_Dir[0].x), -1.0f, 1.0f);
+				ImGui::SliderFloat2("Dir y", &(pe->m_Dir[1].x), -1.0f, 1.0f);
+				ImGui::SliderFloat2("Dir z", &(pe->m_Dir[2].x), -1.0f, 1.0f);
+				ImGui::SliderFloat2("Radius x", &(pe->m_RadiusToSpawn[0].x), -5.0f, 5.0f);
+				ImGui::SliderFloat2("Radius y", &(pe->m_RadiusToSpawn[1].x), -5.0f, 5.0f);
+				ImGui::SliderFloat2("Radius z", &(pe->m_RadiusToSpawn[2].x), -5.0f, 5.0f);
 			}
 		}
 	}

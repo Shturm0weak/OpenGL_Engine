@@ -280,7 +280,7 @@ public:
 						return;
 					glm::vec3 pos = hit.m_Object->GetOwnerOfComponent()->GetPosition();
 					glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
-					glm::vec3 place = camPos + forward * hit.m_Distance;
+					glm::vec3 place = camPos + forward * (float)hit.m_Distance;
 					glm::vec3 newPlace(0);
 					if (place.x > pos.x + 0.4999)
 						newPlace.x = pos.x + 1;

@@ -43,6 +43,7 @@ namespace Doom {
 		friend class Renderer;
 		friend class World;
 		friend class Editor;
+		friend class ParticleEmitter;
 	};
 
 }

@@ -12,10 +12,11 @@
 #include "Core/SceneSerializer.h"
 #include "Lua/LuaState.h"
 #include "ImGuizmo/ImGuizmo.h"
+#include "ParticleSystem/ParticleEmitter.h"
 
 using namespace Doom;
 
-//#define _IS_GAME_BUILD
+#define _IS_GAME_BUILD
 
 EntryPoint::EntryPoint(Doom::Application* app)
 {
@@ -90,7 +91,7 @@ void EntryPoint::Run()
 		Window::GetInstance().ClampCursorPos();
 		Window::GetInstance().GetCamera().WindowResize();
 
-#ifndef _IS_GAME_BUILD
+//#ifndef _IS_GAME_BUILD
 		if (Input::IsKeyPressed(Keycode::KEY_E))
 			isEditorEnable = !isEditorEnable;
 		if (m_App->m_Type == RenderType::TYPE_3D) 
@@ -98,7 +99,7 @@ void EntryPoint::Run()
 		if (isEditorEnable)
 			Editor::GetInstance().EditorUpdate();
 		Window::GetInstance().GetCamera().CameraMovement();
-#endif
+//#endif
 		MeshManager::GetInstance().DispatchLoadedMeshes();
 		Texture::DispatchLoadedTextures();
 		SoundManager::GetInstance().UpdateSourceState();

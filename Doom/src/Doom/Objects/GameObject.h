@@ -53,6 +53,7 @@ namespace Doom {
 		bool m_IsStatic = false;
 		bool m_Enable = true;
 		bool m_IsSerializable = true;
+		bool m_IsSerializalbeChilds = true;
 		bool m_IsParticle = false;
 
 		std::vector<void*> GetChilds() const { return m_Childs; }
