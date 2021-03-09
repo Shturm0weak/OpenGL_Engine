@@ -24,25 +24,21 @@ void ParticleEmitter::Init(size_t amountOfParticles) {
 		r3d->LoadMesh(MeshManager::GetInstance().GetMesh("sphere"));
 		r3d->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 		m_ParticlesPool[i].m_Particle->RemoveComponent<CubeCollider3D>();
-		InitParticle(m_ParticlesPool[i]);
+		InitParticle(m_ParticlesPool[i], e2);
 	}
+	m_IsInitialized = true;
 }
 
 void Doom::ParticleEmitter::Delete()
 {
+	for (size_t i = 0; i < m_ParticlesPool.size(); i++)
 	{
-		std::lock_guard<std::mutex> lg(m_Mtx);
-		for (size_t i = 0; i < m_ParticlesPool.size(); i++)
-		{
-			World::GetInstance().DeleteObject(m_ParticlesPool[i].m_Particle->m_Id);
-		}
+		World::GetInstance().DeleteObject(m_ParticlesPool[i].m_Particle->m_Id);
 	}
 	delete this;
 }
 
-void ParticleEmitter::InitParticle(Particle3D& particle) {
-	std::random_device rd;
-	std::mt19937 e2(rd());
+void ParticleEmitter::InitParticle(Particle3D& particle, std::mt19937& e2) {
 	particle.m_TimeLiving = 0.0;
 	particle.m_IsSpawned = false;
 	if (particle.m_Particle->GetComponent<Renderer3D>() == nullptr) return;
@@ -65,10 +61,11 @@ void ParticleEmitter::InitParticle(Particle3D& particle) {
 
 void ParticleEmitter::Play()
 {
-	size_t pSize = m_ParticlesPool.size();
-
-	for (size_t i = 0; i < pSize; i++)
+	if (m_IsInitialized == false) return;
+	for (size_t i = 0; i < m_ParticlesPool.size(); i++)
 	{
+		std::random_device rd;
+		std::mt19937 e2(rd());
 		if (m_ParticlesPool[i].m_TimeToSpawn > 0)
 		{
 			m_ParticlesPool[i].m_TimeToSpawn -= DeltaTime::s_Deltatime;
@@ -84,7 +81,7 @@ void ParticleEmitter::Play()
 		m_ParticlesPool[i].m_TimeLiving += DeltaTime::s_Deltatime;
 		m_ParticlesPool[i].m_Particle->m_Transform->Scale(glm::vec3(m_ParticlesPool[i].m_Particle->GetScale().x * (1 - (0.99 * DeltaTime::s_Deltatime * m_Speed))));
 		if (m_ParticlesPool[i].m_TimeLiving > m_MaxTimeToLive)
-			InitParticle(m_ParticlesPool[i]);
+			InitParticle(m_ParticlesPool[i], e2);
 	}
 }
 
@@ -97,9 +94,24 @@ void ParticleEmitter::OnUpdate()
 {
 	ThreadPool::GetInstance().Enqueue([=]()
 	{
-		std::lock_guard<std::mutex> lg(m_Mtx);
+		std::lock_guard<std::mutex> lg(World::GetInstance().m_Mtx);
 		Play();
 	});
+}
+
+void Doom::ParticleEmitter::Copy(const ParticleEmitter& rhs)
+{
+	m_Color = rhs.m_Color;
+	m_Dir = rhs.m_Dir;
+	m_RadiusToSpawn = rhs.m_RadiusToSpawn;
+	m_Scale = rhs.m_Scale;
+	m_TimeToSpawn = rhs.m_TimeToSpawn;
+	m_MaxTimeToLive = rhs.m_MaxTimeToLive;
+}
+
+void Doom::ParticleEmitter::operator=(const ParticleEmitter& rhs)
+{
+	Copy(rhs);
 }
 
 Component* ParticleEmitter::Create()

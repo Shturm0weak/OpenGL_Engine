@@ -156,7 +156,7 @@ void Doom::Instancing::BakeShadows()
 		gliter->second.m_Ibo->Bind();
 		gliter->second.m_Vbo->Bind();
 
-		std::unique_lock<std::mutex> lk(m_Mtx);
+		std::unique_lock<std::mutex> lk(World::GetInstance().m_Mtx);
 		m_CondVar.wait(lk, [=] {
 			for (uint32_t i = 0; i < m_NThreads; i++)
 			{
@@ -209,9 +209,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 		if (objsSize == 0)
 			continue;
 
-		if (gliter->second.m_PrevObjectSize != objsSize && gliter->second.m_VertAttrib == nullptr)
+		if (gliter->second.m_PrevObjectSize != objsSize) //Probably I found a bug here && gliter->second.m_VertAttrib == nullptr)
 		{
-			std::lock_guard lg(m_Mtx);
 			delete[] gliter->second.m_VertAttrib;
 			gliter->second.m_VertAttrib = nullptr;
 			gliter->second.m_VertAttrib = new float[objsSize * m_SizeOfAttribs];
@@ -219,7 +218,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 
 		gliter->second.m_PrevObjectSize = objsSize;
 
-		uint32_t dif = objsSize / m_NThreads;
+		float dif = (float)objsSize / (float)m_NThreads;
 		for (size_t k = 0; k < m_NThreads - 1; k++)
 		{
 			/*glm::vec4 color;
@@ -239,12 +238,13 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				color = COLORS::Orange;*/
 		ThreadPool::GetInstance().Enqueue([=] {
 			{
-				std::lock_guard lg(m_Mtx);
+				std::lock_guard lg(World::GetInstance().m_Mtx);
 				this->m_Ready[k] = false;
 			}
 			uint32_t thisSegmentOfObjectsV = k * dif + dif;
 			for (uint32_t i = k * dif; i < thisSegmentOfObjectsV; i++)
 			{
+				if (iter->second.size() <= i) continue;
 				Renderer3D* r = iter->second[i];
 				if (r->m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
 				GameObject* owner = r->GetOwnerOfComponent();
@@ -252,7 +252,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				memcpy(posPtr, &owner->GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
-				//r->color = color;
+				//r->m_Color = color;
 				memcpy(&posPtr[6], &r->m_Color[0], 16);
 				posPtr[10] = r->m_Material.m_Ambient;
 				posPtr[11] = r->m_Material.m_Specular;
@@ -261,7 +261,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				r->m_IsInitializedInInstancing = true;
 			}
 			{
-				std::lock_guard lg(m_Mtx);
+				std::lock_guard lg(World::GetInstance().m_Mtx);
 				this->m_Ready[k] = true;
 				m_CondVar.notify_all();
 			}
@@ -269,11 +269,12 @@ void Doom::Instancing::PrepareVertexAtrrib()
 		}
 		ThreadPool::GetInstance().Enqueue([=] {
 			{
-				std::lock_guard lg(m_Mtx);
+				std::lock_guard lg(World::GetInstance().m_Mtx);
 				this->m_Ready[m_NThreads - 1] = false;
 			}
 			for (uint32_t i = (m_NThreads - 1) * dif; i < objsSize; i++)
 			{
+				if (iter->second.size() <= i) continue;
 				Renderer3D* r = iter->second[i];
 				if (r->m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
 				GameObject* owner = r->GetOwnerOfComponent();
@@ -281,7 +282,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				memcpy(posPtr, &owner->GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
-				//r->color = COLORS::Blue;
+				//r->m_Color = COLORS::Blue;
 				memcpy(&posPtr[6], &r->m_Color[0], 16);
 				posPtr[10] = r->m_Material.m_Ambient;
 				posPtr[11] = r->m_Material.m_Specular;
@@ -290,7 +291,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				r->m_IsInitializedInInstancing = true;
 			}
 			{
-				std::lock_guard lg(m_Mtx);
+				std::lock_guard lg(World::GetInstance().m_Mtx);
 				this->m_Ready[m_NThreads - 1] = true;
 				m_CondVar.notify_all();
 			}

@@ -15,11 +15,6 @@ namespace Doom {
 		Shader* m_Shader = Shader::Get("CubeCollider");
 
 		char* m_MemoryPoolPtr = nullptr;
-
-		VertexBufferLayout* m_Layout = nullptr;
-		VertexBuffer* m_Vb           = nullptr;
-		VertexArray* m_Va            = nullptr;
-		IndexBuffer* m_Ib            = nullptr;
 	public:
 
 		glm::vec3 m_MinP = { -1,-1,-1 };

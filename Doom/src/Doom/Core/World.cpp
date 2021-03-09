@@ -32,7 +32,7 @@ void Doom::World::StartLuaStates()
 
 void Doom::World::DeleteAll()
 {
-	//std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
+	std::lock_guard<std::mutex> lg(m_Mtx);
 	for (unsigned int i = 0; i < World::s_GameObjects.size();)
 	{
 		(World::s_GameObjects[i]->Delete());
@@ -44,7 +44,6 @@ void Doom::World::DeleteAll()
 
 void Doom::World::DeleteObject(int id)
 {
-	//std::lock_guard<std::mutex> lg(Instancing::GetInstance()->m_Mtx);
 	GameObject* go = World::s_GameObjects[id];
 	World::s_GameObjects.erase(World::s_GameObjects.begin() + id);
 	World::s_ObjId--;
@@ -58,12 +57,7 @@ void Doom::World::DeleteObject(int id)
 		}
 	}
 	unsigned int childsAmount = go->GetChilds().size();
-	for (unsigned int i = 0; i < childsAmount; i++)
-	{
-		GameObject* child = static_cast<GameObject*>(go->GetChilds()[i]);
-		child->SetOwner(nullptr);
-	}
-	if (go->GetOwner() != nullptr) 
+	if (go->GetOwner() != nullptr)
 	{
 		GameObject* owner = static_cast<GameObject*>(go->GetOwner());
 		owner->RemoveChild(go);

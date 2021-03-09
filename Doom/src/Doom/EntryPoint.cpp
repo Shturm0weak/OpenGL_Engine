@@ -130,12 +130,21 @@ void EntryPoint::Run()
 			window.m_FrameBufferBlur[0]->Resize(size[0], size[1]);
 			window.m_FrameBufferBlur[1]->Resize(size[0], size[1]);
 		}
-		ImGui::EndFrame();
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		
+		try
+		{
+			ImGui::EndFrame();
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			glfwSwapBuffers(Window::GetInstance().GetWindow());
+			glfwPollEvents();
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 
-		glfwSwapBuffers(Window::GetInstance().GetWindow());
-		glfwPollEvents();
+		
 	}
 #ifdef _IS_GAME_BUILD
 	m_App->OnClose();

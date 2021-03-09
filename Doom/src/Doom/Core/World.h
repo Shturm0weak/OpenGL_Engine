@@ -15,6 +15,7 @@ namespace Doom {
 		void* s_Application = nullptr;
 		int s_ObjId = 0;
 		int s_ColId = 0;
+		std::mutex m_Mtx;
 
 		static World& GetInstance();
 		void UpdateLuaStates();

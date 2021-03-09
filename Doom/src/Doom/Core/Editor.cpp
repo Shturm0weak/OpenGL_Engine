@@ -1010,6 +1010,10 @@ void Doom::Editor::MenuParticleEmitterComponent()
 				ImGui::SliderFloat2("Radius y", &(pe->m_RadiusToSpawn[1].x), -5.0f, 5.0f);
 				ImGui::SliderFloat2("Radius z", &(pe->m_RadiusToSpawn[2].x), -5.0f, 5.0f);
 			}
+			if (ImGui::Button("Init"))
+			{
+				pe->Init(25);
+			}
 		}
 	}
 }

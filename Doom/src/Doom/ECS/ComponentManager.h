@@ -16,6 +16,7 @@
 #include "../Components/DirectionalLight.h"
 #include "../Components/SphereCollider.h"
 #include "../Components/ScriptComponent.h"
+#include "../ParticleSystem/ParticleEmitter.h"
 #include "Core/Utils.h"
 
 namespace Doom {
@@ -45,6 +46,7 @@ namespace Doom {
 			CopyComponent<SpriteRenderer>(rhs);
 			CopyComponent<SphereCollider>(rhs);
 			CopyComponent<Animator>(rhs);
+			CopyComponent<ParticleEmitter>(rhs);
 		}
 
 		static void ShutDown() {

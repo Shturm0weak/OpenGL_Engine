@@ -13,7 +13,10 @@ GameObject::GameObject(const std::string name,float x, float y,float z)
 
 void Doom::GameObject::Delete()
 {
-	m_Owner = nullptr;
+	if (m_Owner != nullptr)
+	{
+		((GameObject*)m_Owner)->RemoveChild(this);
+	}
 	m_Childs.clear();
 	m_ComponentManager.Clear();
 	s_FreeMemory.push_back(m_MemoryPoolPtr);
@@ -90,6 +93,7 @@ void Doom::GameObject::RemoveChild(void * child)
 	{
 		if (m_Childs[i] == child)
 		{
+			((GameObject*)m_Childs[i])->m_Owner = nullptr;
 			m_Childs.erase(m_Childs.begin() + i);
 			return;
 		}
@@ -103,6 +107,8 @@ void Doom::GameObject::Copy(GameObject& rhs)
 	m_IsParticle = rhs.m_IsParticle;
 	m_IsSerializable = rhs.m_IsSerializable;
 	m_ComponentManager.operator=(rhs.m_ComponentManager);
+	m_IsSerializalbeChilds = rhs.m_IsSerializalbeChilds;
+	if (m_IsSerializalbeChilds == false) return;
 	for (uint32_t i = 0; i < rhs.m_Childs.size(); i++)
 	{
 		GameObject* go = GameObject::Create();

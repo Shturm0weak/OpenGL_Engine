@@ -19,11 +19,11 @@ GameObjects:
         Linear: 0.0900000036
         Quadratic: 0.0320000015
     Particle emitter:
-      Particles amount: 500
+      Particles amount: 25
       Max time to live: 1.88100004
       Speed: 0.819000006
       Color: [0, 1, 0.877998114, 1]
-      Scale: [0.5, 0.354000002]
+      Scale: [0.5, 0.6]
       Time to spawn: [0, 1.65100002]
       DirX: [0, 0]
       DirY: [-1, -1]
