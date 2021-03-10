@@ -154,14 +154,14 @@ void Doom::Renderer3D::BakeShadows()
 			bakeShader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
 			bakeShader->SetUniformMat4f("u_View", m_Tr->m_ViewMat4);
 			bakeShader->Bind();
-			m_Mesh->m_Va->Bind();
-			m_Mesh->m_Ib->Bind();
-			m_Mesh->m_Vb->Bind();
+			m_Mesh->m_Va.Bind();
+			m_Mesh->m_Ib.Bind();
+			m_Mesh->m_Vb.Bind();
 			Renderer::s_Stats.m_Vertices += m_Mesh->m_IndicesSize;
 			Renderer::s_Stats.m_DrawCalls++;
-			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
 			bakeShader->UnBind();
-			m_Mesh->m_Ib->UnBind();
+			m_Mesh->m_Ib.UnBind();
 			glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
 		}
 	}
@@ -196,7 +196,7 @@ void Doom::Renderer3D::Render()
 {
 	if (m_RenderTechnic == RenderTechnic::Forward) 
 	{
-		m_Tr = GetOwnerOfComponent()->m_Transform;
+		m_Tr = &(GetOwnerOfComponent()->m_Transform);
 		if (m_IsWireMesh) 
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -252,7 +252,7 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 		{
 			char buffer[64];
 			DirectionalLight* dl = DirectionalLight::s_DirLights[i];
-			dl->m_Dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->m_ViewMat4 * glm::vec4(0, 0, -1, 1);
+			dl->m_Dir = dl->GetOwnerOfComponent()->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1);
 			sprintf(buffer, "dirLights[%i].dir", i);
 			m_Shader->SetUniform3fv(buffer, dl->m_Dir);
 			sprintf(buffer, "dirLights[%i].color", i);
@@ -291,19 +291,17 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 			m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
 		m_Shader->SetUniform1i("u_isNormalMapping", m_IsUsingNormalMap);
-		m_Shader->Bind();
-		m_Mesh->m_Va->Bind();
-		m_Mesh->m_Ib->Bind();
-		m_Mesh->m_Vb->Bind();
+		m_Mesh->m_Va.Bind();
+		m_Mesh->m_Ib.Bind();
 
-		Renderer::s_Stats.m_Vertices += m_Mesh->m_Ib->GetCount();
+		Renderer::s_Stats.m_Vertices += m_Mesh->m_Ib.m_count;
 		Renderer::s_Stats.m_DrawCalls++;
 		if (!m_IsCullingFace)
 			glDisable(GL_CULL_FACE);
-		glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
 		glEnable(GL_CULL_FACE);
 		m_Shader->UnBind();
-		m_Mesh->m_Ib->UnBind();
+		m_Mesh->m_Ib.UnBind();
 		glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
 	}
 }
@@ -324,15 +322,15 @@ void Doom::Renderer3D::RenderSkyBox()
 	m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 	m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 	m_Shader->Bind();
-	m_Mesh->m_Va->Bind();
-	m_Mesh->m_Ib->Bind();
-	m_Mesh->m_Vb->Bind();
-	Renderer::s_Stats.m_Vertices += m_Mesh->m_Ib->GetCount();
+	m_Mesh->m_Va.Bind();
+	m_Mesh->m_Ib.Bind();
+	m_Mesh->m_Vb.Bind();
+	Renderer::s_Stats.m_Vertices += m_Mesh->m_Ib.m_count;
 	Renderer::s_Stats.m_DrawCalls++;
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	m_Shader->UnBind();
-	m_Mesh->m_Ib->UnBind();
+	m_Mesh->m_Ib.UnBind();
 	m_DiffuseTexture->UnBind();
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);

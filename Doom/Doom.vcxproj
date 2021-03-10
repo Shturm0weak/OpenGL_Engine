@@ -266,6 +266,7 @@
     <ClCompile Include="src\Doom\Core\World.cpp" />
     <ClCompile Include="src\Doom\Doom.cpp" />
     <ClCompile Include="src\Doom\ECS\Component.cpp" />
+    <ClCompile Include="src\Doom\ECS\ComponentManager.cpp" />
     <ClCompile Include="src\Doom\EntryPoint.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdocument.cpp" />
     <ClCompile Include="src\Doom\FbxLoader\fbxdump.cpp" />

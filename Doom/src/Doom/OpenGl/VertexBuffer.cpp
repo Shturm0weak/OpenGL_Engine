@@ -3,10 +3,10 @@
 
 using namespace Doom;
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size, bool Static)
+void VertexBuffer::Init(const void* data, unsigned int size, bool Static)
 {
 	glGenBuffers(1, &m_RendererID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+	Bind();
 	if(Static)
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	else

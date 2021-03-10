@@ -345,10 +345,6 @@ void Doom::Editor::MenuRenderer3D()
 				if (ImGui::CollapsingHeader("Mesh")) {
 					if (r->m_Mesh != nullptr) {
 						ImGui::Text("Name: %s", r->m_Mesh->m_Name);
-						ImGui::Text("Ptr: %s", std::to_string((size_t)r->m_Mesh));
-						ImGui::Text("PtrVertAtrib: %s", std::to_string((size_t)r->m_Mesh->m_VertAttrib));
-						ImGui::Text("PtrIb: %s", std::to_string((size_t)r->m_Mesh->m_Ib));
-						ImGui::Text("PtrVb: %s", std::to_string((size_t)r->m_Mesh->m_Vb));
 						ImGui::Text("Id: %i", r->m_Mesh->m_IdOfMeshInFile);
 						ImGui::Text("VertAtrib: %i", r->m_Mesh->m_VertAttribSize);
 						CubeCollider3D* cc = r->m_OwnerOfCom->GetComponent<CubeCollider3D>();

@@ -9,12 +9,8 @@ namespace Doom {
 	private:
 
 		struct glBuffers {
-			VertexBuffer* m_Vbo = nullptr;
-			VertexArray* m_Vao = nullptr;
-			VertexBuffer* m_VboDynamic = nullptr;
-			VertexBufferLayout* m_LayoutDynamic = nullptr;
-			VertexBufferLayout* m_Layout = nullptr;
-			IndexBuffer* m_Ibo;
+			VertexBuffer m_VboDynamic;
+			VertexBufferLayout m_LayoutDynamic;
 			uint32_t m_PrevObjectSize = 0;
 			float* m_VertAttrib = nullptr;
 		};

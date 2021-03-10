@@ -62,7 +62,7 @@ void Doom::AimTrainer::SpawnObject()
 	go->m_Tag = "Target";
 	go->m_IsSerializable = false;
 	glm::vec3 pos = RandomPos(m_LimX, m_LimY, m_LimZ);
-	go->m_Transform->Translate(pos);
+	go->m_Transform.Translate(pos);
 	r->m_Shader = Shader::Get("Tron");
 	r->m_FloatUniforms.insert(std::make_pair("u_EdgeThickness", 2));
 	r->m_FloatUniforms.insert(std::make_pair("u_EdgeSharpness", 30));
@@ -76,9 +76,9 @@ void Doom::AimTrainer::UpdateObjects()
 	for (auto iter = m_Objs.begin(); iter != m_Objs.end();) 
 	{
 		iter->second += DeltaTime::GetDeltaTime();
-		iter->first->m_Transform->Scale(glm::vec3(sin(iter->second)));
+		iter->first->m_Transform.Scale(glm::vec3(sin(iter->second)));
 
-		if (iter->first->m_Transform->GetScale().x < 0.2) 
+		if (iter->first->m_Transform.GetScale().x < 0.2) 
 		{
 			World::GetInstance().DeleteObject(iter->first->m_Id);
 			m_Objs.erase(iter++);

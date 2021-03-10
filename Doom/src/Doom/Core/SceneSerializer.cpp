@@ -243,7 +243,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	auto transformComponent = go["Transform"];
 	if (transformComponent)
 	{
-		Transform* tr = obj->GetComponent<Transform>();
+		Transform* tr = &(obj->m_Transform);
 		glm::vec3 position = transformComponent["Position"].as<glm::vec3>();
 		glm::vec3 scale = transformComponent["Scale"].as<glm::vec3>();
 		glm::vec3 rotation = transformComponent["Rotation"].as<glm::vec3>();
@@ -490,7 +490,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 			out << YAML::Key << "Color" << YAML::Value << r->m_Color;
 			out << YAML::EndMap;
 
-			out << YAML::Key << "Shader" << YAML::Value << r->m_Shader->GetFilePath();
+			out << YAML::Key << "Shader" << YAML::Value << r->m_Shader->m_FilePath;
 			out << YAML::Key << "Render technic" << YAML::Value << (int)r->m_RenderTechnic;
 			out << YAML::Key << "Transparent" << YAML::Value << r->m_IsTransparent;
 			out << YAML::Key << "SkyBox" << YAML::Value << r->m_IsSkyBox;

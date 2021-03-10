@@ -16,10 +16,10 @@ namespace Doom {
 		glm::vec3 m_Rotation = glm::vec3(0.0);
 		glm::vec3 m_PrevPosition;
 
-		static std::map<char*, uint64_t> s_MemoryPool;
-		static std::vector<char*> s_FreeMemory;
+		//static std::map<char*, uint64_t> s_MemoryPool;
+		//static std::vector<char*> s_FreeMemory;
 
-		char* m_MemoryPoolPtr = nullptr;
+		//char* m_MemoryPoolPtr = nullptr;
 
 		void Copy(const Transform& rhs);
 
@@ -47,7 +47,8 @@ namespace Doom {
 		glm::vec3 GetScale();
 
 		Transform(const Transform& rhs);
-		Transform();
+		Transform(){}
+		Transform(GameObject* owner);
 		~Transform() {}
 
 		void operator=(const Transform& rhs);

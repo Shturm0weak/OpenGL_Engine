@@ -41,13 +41,7 @@ namespace Doom {
 		template<typename T> friend DOOM_API char* Utils::PreAllocateMemory(std::map<char*, uint64_t>& memoryPool, std::vector<char*>& freeMemory);
 
 	public:
-
-		ComponentManager m_ComponentManager = ComponentManager(this);
-		Transform* m_Transform = nullptr;
-		Listener* m_Listener = nullptr;
-
-		std::string m_Name = "Unnamed";
-		std::string m_Tag = "General";
+		
 		int m_Id = 0;
 		int m_Layer = 0;
 		bool m_IsStatic = false;
@@ -55,6 +49,13 @@ namespace Doom {
 		bool m_IsSerializable = true;
 		bool m_IsSerializalbeChilds = true;
 		bool m_IsParticle = false;
+
+		ComponentManager m_ComponentManager = ComponentManager(this);
+		Transform m_Transform = Transform(this);
+		Listener* m_Listener = nullptr;
+
+		std::string m_Name = "Unnamed";
+		std::string m_Tag = "General";
 
 		std::vector<void*> GetChilds() const { return m_Childs; }
 		glm::vec3 GetScale();

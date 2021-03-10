@@ -16,9 +16,10 @@ Doom::Transform::Transform(const Transform& rhs)
 	Copy(rhs);
 }
 
-Transform::Transform() 
+Transform::Transform(GameObject* owner)
 {
-	//SetType(ComponentType::TRANSFORM);
+	m_OwnerOfCom = owner;
+	SetType(Utils::GetComponentTypeName<Transform>());
 }
 
 //oid Transform::RealVertexPositions()
@@ -47,15 +48,16 @@ void Doom::Transform::operator=(const Transform& rhs)
 
 Component* Doom::Transform::Create()
 {
-	char* ptr = Utils::PreAllocateMemory<Transform>(s_MemoryPool, s_FreeMemory);
-	Transform* component = (Transform*)((void*)ptr);
-	component->m_MemoryPoolPtr = ptr;
-	return component;
+	//char* ptr = Utils::PreAllocateMemory<Transform>(s_MemoryPool, s_FreeMemory);
+	//Transform* component = (Transform*)((void*)ptr);
+	//component->m_MemoryPoolPtr = ptr;
+	//return component;
+	return nullptr;
 }
 
 void Doom::Transform::Delete()
 {
-	s_FreeMemory.push_back(m_MemoryPoolPtr);
+	//s_FreeMemory.push_back(m_MemoryPoolPtr);
 }
 
 glm::vec3 Doom::Transform::GetRotation()
@@ -65,17 +67,17 @@ glm::vec3 Doom::Transform::GetRotation()
 
 glm::vec3 Doom::Transform::GetPosition()
 {
-	return Utils::GetPosition(m_PosMat4);
+	return std::move(Utils::GetPosition(m_PosMat4));
 }
 
 glm::vec3 Doom::Transform::GetScale()
 {
-	return Utils::GetScale(m_ScaleMat4);
+	return std::move(Utils::GetScale(m_ScaleMat4));
 }
 
 glm::mat4 Doom::Transform::GetTransform()
 {
-	return m_PosMat4  * m_ViewMat4 * m_ScaleMat4;
+	return std::move(m_PosMat4  * m_ViewMat4 * m_ScaleMat4);
 }
 
 void Transform::Move(float speedX,float speedY,float speedZ) 

@@ -22,14 +22,15 @@ namespace Doom {
 	};
 
 	class DOOM_API VertexBufferLayout {
-	private:
+	public:
+
 		std::vector<VertexBufferElement> m_Elements;
 		unsigned int m_Stride;
-	public:
+
 		VertexBufferLayout()
 			:m_Stride(0) {}
 
-		inline void Clear() { m_Stride = 0; m_Elements.clear(); }
+		void Clear() { m_Stride = 0; m_Elements.clear(); }
 
 		template<typename T>
 		void Push(unsigned int count)
@@ -64,9 +65,6 @@ namespace Doom {
 			m_Elements.push_back({ GL_UNSIGNED_BYTE,count,GL_TRUE });
 			m_Stride += count * VertexBufferElement::GetSizeOfType(GL_UNSIGNED_BYTE);
 		}
-
-		inline const std::vector<VertexBufferElement> GetElements() const& { return m_Elements; }
-		inline unsigned int GetStride() const { return m_Stride; }
 	};
 
 }

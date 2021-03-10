@@ -32,7 +32,7 @@ void Doom::FEM::OnStart()
     Renderer3D* r3d = m_Go->AddComponent<Renderer3D>();
     r3d->m_IsCullingFace = false;
     GameObject* sun = GameObject::Create("Sun");
-    sun->m_Transform->RotateOnce(75, 0, 0);
+    sun->m_Transform.RotateOnce(75, 0, 0);
     sun->AddComponent<DirectionalLight>();
     {
         //weights.push_back({ 0, 128.0 / 225.0 });
@@ -203,7 +203,7 @@ void Doom::FEM::OnGuiRender()
     }
     if(g.SliderFloat("Light angle", &m_DirLightAngle, -180.0f, 180.0f, 0, 0, 175, 30))
     {
-        World::GetInstance().s_GameObjects[1]->m_Transform->RotateOnce(m_DirLightAngle, 0, 0);
+        World::GetInstance().s_GameObjects[1]->m_Transform.RotateOnce(m_DirLightAngle, 0, 0);
     }
     if (g.Button("Exit", 0, 0, 30, 300, 75, COLORS::Gray * 0.8f))
     {

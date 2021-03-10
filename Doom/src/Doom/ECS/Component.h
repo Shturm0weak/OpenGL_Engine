@@ -10,7 +10,6 @@ namespace Doom {
 	class DOOM_API Component : public Listener {
 	private:
 
-		int64_t m_OwnerId = -1;
 		int m_Id = 0;
 		std::string m_Type;
 	protected:

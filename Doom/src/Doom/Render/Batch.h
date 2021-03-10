@@ -61,11 +61,10 @@ namespace Doom {
 			GOVertex* m_BufferPtrG = nullptr;
 			GLuint m_Vao;
 			GLuint m_Vbo;
-			IndexBuffer* m_Ibo;
+			IndexBuffer m_Ibo;
 
 			~VertAttribWrapper()
 			{
-				delete m_Ibo;
 				glDeleteBuffers(1, &m_Vbo);
 			}
 		};

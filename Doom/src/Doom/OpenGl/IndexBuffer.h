@@ -3,20 +3,18 @@
 namespace Doom {
 
 	class DOOM_API IndexBuffer {
-	private:
-
-		unsigned int m_RendererID;
-		unsigned int m_count;
 	public:
 
+		unsigned int m_RendererID = UINT_MAX;
+		unsigned int m_count = 0;
+
 		IndexBuffer() {}
-		IndexBuffer(const uint32_t* data, uint32_t count);
 		~IndexBuffer();
+
+		void Init(const uint32_t* data, uint32_t count);
 
 		void Bind() const;
 		void UnBind() const;
-
-		inline unsigned int GetCount() const { return m_count; }
 	};
 
 }

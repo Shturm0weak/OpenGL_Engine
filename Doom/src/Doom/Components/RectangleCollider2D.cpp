@@ -40,8 +40,8 @@ void RectangleCollider2D::CalculateRealVerPos()
 {
 	if (this == nullptr) return;
 	float* pSource;
-	Transform* tr = GetOwnerOfComponent()->m_Transform;
-	pSource = (float*)glm::value_ptr(tr->m_ViewMat4 * tr->m_ScaleMat4);
+	Transform& tr = GetOwnerOfComponent()->m_Transform;
+	pSource = (float*)glm::value_ptr(tr.m_ViewMat4 * tr.m_ScaleMat4);
 	for (unsigned int i = 0; i < 4; i++)
 	{
 		for (unsigned int j = 0; j < 4; j++)
@@ -215,7 +215,7 @@ void RectangleCollider2D::IsCollidedDIAGS()
 					if (m_Col == nullptr) return;
 					for (unsigned int p = 0; p < this->p.size(); p++)
 					{
-						glm::vec3 ownerPos = GetOwnerOfComponent()->m_Transform->GetPosition();
+						glm::vec3 ownerPos = GetOwnerOfComponent()->m_Transform.GetPosition();
 						glm::vec2 line_r1s = { ownerPos.x, ownerPos.y };
 						glm::vec2 line_r1e = this->p[p];
 						m_Displacement.x = 0;
@@ -260,7 +260,7 @@ void Doom::RectangleCollider2D::CollidersToInit()
 {
 	for (uint32_t i = 0; i < RectangleCollider2D::s_CollidersToInit.size(); i++)
 	{
-		Transform* tr = RectangleCollider2D::s_CollidersToInit[i]->GetOwnerOfComponent()->m_Transform;
+		Transform& tr = RectangleCollider2D::s_CollidersToInit[i]->GetOwnerOfComponent()->m_Transform;
 		RectangleCollider2D* rc = RectangleCollider2D::s_CollidersToInit[i];
 		rc->CalculateRealVerPos();
 	}

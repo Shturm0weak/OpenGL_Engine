@@ -708,5 +708,6 @@
     <ClCompile Include="src\Doom\Core\Window.cpp" />
     <ClCompile Include="src\Doom\Lua\LuaVec3.cpp" />
     <ClCompile Include="src\Doom\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="src\Doom\ECS\ComponentManager.cpp" />
   </ItemGroup>
 </Project>

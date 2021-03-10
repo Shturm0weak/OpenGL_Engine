@@ -98,15 +98,16 @@ void Doom::Renderer::RenderBloomEffect()
 
 void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 {
+	if (mesh == nullptr) return;
 	shader->Bind();
-	mesh->m_Va->Bind();
-	mesh->m_Ib->Bind();
-	mesh->m_Vb->Bind();
-	Renderer::s_Stats.m_Vertices += mesh->m_Ib->GetCount();
+	mesh->m_Va.Bind();
+	mesh->m_Ib.Bind();
+	mesh->m_Vb.Bind();
+	Renderer::s_Stats.m_Vertices += mesh->m_Ib.m_count;
 	Renderer::s_Stats.m_DrawCalls++;
-	glDrawElements(GL_TRIANGLES, mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
 	shader->UnBind();
-	mesh->m_Ib->UnBind();
+	mesh->m_Ib.UnBind();
 	glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
 }
 
@@ -144,7 +145,7 @@ void Renderer::Render() {
 		}
 		Renderer::s_Stats.m_BloomRenderTime = Timer::s_OutTime;
 	}
-
+	
 	Shader* shader = Shader::Get("QuadFullScreen");
 	{
 		{

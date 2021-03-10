@@ -70,7 +70,7 @@ void ShipPlayer::ScreenBorders()
 
 void ShipPlayer::Init(std::string name, float x, float y)
 {
-	GetOwnerOfComponent()->m_Transform->Translate(x, y);
+	GetOwnerOfComponent()->m_Transform.Translate(x, y);
 	GetOwnerOfComponent()->m_Name = name;
 	SoundManager::GetInstance().CreateSoundAsset("fire", fireSound);
 	bulletsPlaceHolder = GameObject::Create("bulletsPlaceHolder", 0, 0);
@@ -185,7 +185,7 @@ void ShipPlayer::Fire(float xOffset,float yOffset) {
 			Bullet* bullet = bullets[usedBulletCounter]->GetComponent<Bullet>();
 			bullet->SetMoveDirection(dir);
 			glm::vec3 pos = GetOwnerOfComponent()->GetPosition();
-			bullets[usedBulletCounter]->m_Transform->Translate(pos.x + xOffset, pos.y + yOffset);
+			bullets[usedBulletCounter]->m_Transform.Translate(pos.x + xOffset, pos.y + yOffset);
 			bullets[usedBulletCounter]->m_Enable = true;
 			bullet->col->m_Enable = true;
 			bullet->isActive = true;

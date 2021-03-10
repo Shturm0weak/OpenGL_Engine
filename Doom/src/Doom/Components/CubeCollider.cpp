@@ -66,19 +66,22 @@ void Doom::CubeCollider3D::InitMesh()
 	{
 		indices[i] = i;
 	}
-	Mesh* mesh = new Mesh("CubeCollider", "src/Mesh/Primitives/cube.fbx");
-	mesh->m_VertAttrib = vertices;
-	mesh->m_Indices = indices;
-	mesh->m_Layout = new VertexBufferLayout();
-	mesh->m_Vb = new VertexBuffer(mesh->m_VertAttrib, 36 * 3 * sizeof(float));
-	mesh->m_Va = new VertexArray();
-	mesh->m_Ib = new IndexBuffer(mesh->m_Indices, 36);
-	mesh->m_Layout->Push<float>(3);
-	mesh->m_Va->AddBuffer(*mesh->m_Vb, *mesh->m_Layout);
-	mesh->m_Va->UnBind();
-	mesh->m_Vb->UnBind();
-	mesh->m_Ib->UnBind();
-	MeshManager::GetInstance().AddMesh(mesh);
+	if (MeshManager::GetInstance().GetMesh("CubeCollider") == nullptr || MeshManager::GetInstance().GetMesh("CubeCollider")->m_IsInitialized == false)
+	{
+		Mesh* mesh = new Mesh("CubeCollider", "src/Mesh/Primitives/cube.fbx");
+		mesh->m_VertAttrib = vertices;
+		mesh->m_Indices = indices;
+		mesh->m_Va.Init();
+		mesh->m_Vb.Init(mesh->m_VertAttrib, 36 * 3 * sizeof(float));
+		mesh->m_Ib.Init(mesh->m_Indices, 36);
+		mesh->m_Layout.Push<float>(3);
+		mesh->m_Va.AddBuffer(mesh->m_Vb, mesh->m_Layout);
+		mesh->m_Ib.UnBind();
+		mesh->m_Vb.UnBind();
+		mesh->m_Va.UnBind();
+		mesh->m_IsInitialized = true;
+		MeshManager::GetInstance().AddMesh(mesh);
+	}
 }
 
 Doom::CubeCollider3D::~CubeCollider3D()
@@ -93,22 +96,21 @@ CubeCollider3D::CubeCollider3D()
 
 void Doom::CubeCollider3D::Render()
 {
-	Transform* tr = m_OwnerOfCom->GetComponent<Transform>();
-	this->m_Shader->Bind();
-	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
-	this->m_Shader->SetUniformMat4f("u_Model", glm::translate(tr->m_PosMat4,m_Offset * tr->GetScale())); //??? Probably I need to offset * glm::vec3 not just glm::vec3.y ???
-	this->m_Shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), (glm::abs(m_MinP) + glm::abs(m_MaxP)) * 0.5f) * tr->m_ScaleMat4);
-	this->m_Shader->SetUniformMat4f("u_View", tr->m_ViewMat4);
-	this->m_Shader->SetUniform4fv("u_Color", m_Color);
-	m_Mesh->m_Va->Bind();
-	m_Mesh->m_Ib->Bind();
-	m_Mesh->m_Vb->Bind();
+	Transform& tr = m_OwnerOfCom->m_Transform;
+	m_Shader->Bind();
+	m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
+	m_Shader->SetUniformMat4f("u_Model", glm::translate(tr.m_PosMat4,m_Offset * tr.GetScale())); //??? Probably I need to offset * glm::vec3 not just glm::vec3.y ???
+	m_Shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), (glm::abs(m_MinP) + glm::abs(m_MaxP)) * 0.5f) * tr.m_ScaleMat4);
+	m_Shader->SetUniformMat4f("u_View", tr.m_ViewMat4);
+	m_Shader->SetUniform4fv("u_Color", m_Color);
+	m_Mesh->m_Va.Bind();
+	m_Mesh->m_Ib.Bind();
 	Renderer::s_Stats.m_DrawCalls++;
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib->GetCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_CULL_FACE);
 	m_Shader->UnBind();
-	m_Mesh->m_Ib->UnBind();
+	m_Mesh->m_Ib.UnBind();
 }

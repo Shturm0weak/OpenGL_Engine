@@ -3,19 +3,18 @@
 namespace Doom {
 
 	class DOOM_API VertexBuffer {
-	private:
-
-		unsigned int m_RendererID;
 	public:
 
+		unsigned int m_RendererID = UINT_MAX;
+
 		VertexBuffer() {}
-		VertexBuffer(const void* data, unsigned int size, bool Static = true);
 		~VertexBuffer();
+
+		void Init(const void* data, unsigned int size, bool Static = true);
 
 		void Bind()const;
 		void UnBind()const;
 		void Invalidate();
-		unsigned int& GetVertexBuffer() { return m_RendererID; }
 	};
 
 }

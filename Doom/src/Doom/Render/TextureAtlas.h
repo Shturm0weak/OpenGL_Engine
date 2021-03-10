@@ -18,7 +18,7 @@ namespace Doom {
 
 		std::string m_Name;
 		float m_SpriteWidth; float m_SpriteHeight;
-		static std::map<std::string,TextureAtlas*> s_TextureAtlases;
+		static std::unordered_map<std::string,TextureAtlas*> s_TextureAtlases;
 
 		static TextureAtlas* CreateTextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture* texture);
 		static TextureAtlas* GetTextureAtlas(std::string name);

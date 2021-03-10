@@ -32,8 +32,8 @@ DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
 
 DOOM_API std::vector<std::string> SkyBox::s_Faces;
 
-DOOM_API std::vector <char*> Transform::s_FreeMemory;
-DOOM_API std::map <char*, uint64_t> Transform::s_MemoryPool;
+//DOOM_API std::vector <char*> Transform::s_FreeMemory;
+//DOOM_API std::map <char*, uint64_t> Transform::s_MemoryPool;
 
 DOOM_API std::vector <char*> GameObject::s_FreeMemory;
 DOOM_API std::map <char*, uint64_t> GameObject::s_MemoryPool;
@@ -63,10 +63,10 @@ DOOM_API std::vector<Texture*> Editor::s_Texture;
 DOOM_API std::vector<Texture*> Editor::s_TextureVecTemp;
 DOOM_API std::vector<Texture*> Texture::s_LoadedTextures;
 DOOM_API bool Texture::s_IsTextureAdded = false;
-DOOM_API std::map<void*, std::function<Texture*()>> Texture::s_WaitingForTextures;
+DOOM_API std::unordered_map<void*, std::function<Texture*()>> Texture::s_WaitingForTextures;
 DOOM_API std::mutex Texture::s_LockTextureLoadingMtx;
 DOOM_API Texture* Texture::s_WhiteTexture;
-DOOM_API std::map<std::string, Texture*> Texture::s_Textures;
+DOOM_API std::unordered_map<std::string, Texture*> Texture::s_Textures;
 
 DOOM_API double Timer::s_OutTime = 0;
 
@@ -97,10 +97,10 @@ DOOM_API vec4 COLORS::DarkGray(0.4, 0.4, 0.4, 1);
 DOOM_API std::vector<Line*> Line::s_Lines;
 DOOM_API float Line::s_Width = 1.0f;
 
-DOOM_API std::map<std::string, TextureAtlas*> TextureAtlas::s_TextureAtlases;
+DOOM_API std::unordered_map<std::string, TextureAtlas*> TextureAtlas::s_TextureAtlases;
 DOOM_API const char** TextureAtlas::s_NamesOfTextureAtlases;
 
-DOOM_API std::map<std::string,Shader*> Shader::s_Shaders;
+DOOM_API std::unordered_map<std::string, Shader*> Shader::s_Shaders;
 
 DOOM_API std::vector<Particle*> Particle::s_Particles;
 

@@ -7,19 +7,19 @@ void Mesh::Init()
 {
 	if (m_IsInitialized)
 		return;
-	m_Vb = new VertexBuffer(m_VertAttrib, m_VertAttribSize * sizeof(float));
-	m_Ib = new IndexBuffer(m_Indices, m_IndicesSize);
-	m_Va = new VertexArray();
-	m_Layout = new VertexBufferLayout();
-	m_Layout->Push<float>(3);
-	m_Layout->Push<float>(3);
-	m_Layout->Push<float>(2);
-	m_Layout->Push<float>(3);
-	m_Layout->Push<float>(3);
-	m_Va->AddBuffer(*this->m_Vb, *this->m_Layout);
-	m_Va->UnBind();
-	m_Vb->UnBind();
-	m_Ib->UnBind();
+	m_Va.Init();
+	m_Vb.Init(m_VertAttrib, m_VertAttribSize * sizeof(float));
+	m_Layout.Push<float>(3);
+	m_Layout.Push<float>(3);
+	m_Layout.Push<float>(2);
+	m_Layout.Push<float>(3);
+	m_Layout.Push<float>(3);
+	m_Va.AddBuffer(m_Vb, m_Layout);
+	m_Ib.Init(m_Indices, m_IndicesSize);
+	m_Ib.UnBind();
+	m_Vb.UnBind();
+	m_Va.UnBind();
+
 	m_IsInitialized = true;
 }
 

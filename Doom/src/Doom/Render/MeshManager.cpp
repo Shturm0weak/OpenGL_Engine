@@ -38,9 +38,9 @@ void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t mesh
 	std::vector<Renderer3D*> New;
 #define	_LOAD_MESH_
 	Mesh* mesh = GetMesh(name);
+#undef _LOAD_MESH_
 	if (mesh == nullptr) return;
 	mesh->m_IdOfMeshInFile = meshId;
-#undef _LOAD_MESH_
 	mesh->Init();
 	Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(mesh, New));
 	Instancing::GetInstance()->Create(mesh);

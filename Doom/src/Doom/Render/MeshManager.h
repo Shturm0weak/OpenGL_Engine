@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../Core/Core.h"
 #include "Mesh.h"
+#include <unordered_map>
 #include <map>
 #include <mutex>
 
@@ -15,7 +16,7 @@ namespace Doom {
 		MeshManager() {}
 
 		std::mutex s_Mtx;
-		std::map<std::string, Mesh*> s_Meshes;
+		std::unordered_map<std::string, Mesh*> s_Meshes;
 		std::vector <Mesh*> s_NeedToInitMeshes;
 		std::multimap<std::string, void*> s_MeshQueue;
 		const char** s_NamesOfMeshes;

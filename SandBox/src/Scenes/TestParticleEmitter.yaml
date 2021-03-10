@@ -1,29 +1,29 @@
 Scene: 1
 Camera:
   Transform:
-    Position: [3.91281295, 5.205266, 7.90753365]
-    Rotation: [-0.161006451, 1.53232121, 0]
-  Zoom: 1
+    Position: [-17.8947849, 11.6359653, 15.8827019]
+    Rotation: [-0.294524014, -0.738642573, 0]
+  Zoom: 0.10000000149011612
   FOV: 1
 GameObjects:
   - GameObject: 0
     Name: Emitter
     Transform:
-      Position: [-2.00478888, 3.55401087, 8.78671932]
+      Position: [10, 5, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Point light:
-      Color: [1, 1, 1]
+      Color: [0.408820033, 0.40881595, 0.40881595]
       Attenuation:
         Constant: 1
-        Linear: 0.0900000036
-        Quadratic: 0.0320000015
+        Linear: 0.100000001
+        Quadratic: 0.100000001
     Particle emitter:
       Particles amount: 25
       Max time to live: 1.88100004
       Speed: 0.819000006
       Color: [0, 1, 0.877998114, 1]
-      Scale: [0.5, 0.6]
+      Scale: [0.5, 0.600000024]
       Time to spawn: [0, 1.65100002]
       DirX: [0, 0]
       DirY: [-1, -1]
@@ -31,5 +31,55 @@ GameObjects:
       RadiusToSpawnX: [0, 0]
       RadiusToSpawnY: [0, 0]
       RadiusToSpawnZ: [0, 0]
+  - GameObject: 26
+    Name: Emitter
+    Transform:
+      Position: [0, 5, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [0.780691266, 0.223320618, 0]
+      Attenuation:
+        Constant: 1
+        Linear: 0.100000001
+        Quadratic: 0.100000001
+    Particle emitter:
+      Particles amount: 25
+      Max time to live: 0.730000019
+      Speed: 1.88100004
+      Color: [1, 0.625648439, 0, 1]
+      Scale: [0.214000002, 0.400999993]
+      Time to spawn: [0, 1.84000003]
+      DirX: [-1, 1]
+      DirY: [-1, 1]
+      DirZ: [-1, 1]
+      RadiusToSpawnX: [-2, 2]
+      RadiusToSpawnY: [-2, 2]
+      RadiusToSpawnZ: [-2, 2]
+  - GameObject: 52
+    Name: Emitter
+    Transform:
+      Position: [-10, 5, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [0.480333745, 0.480328947, 0.480328947]
+      Attenuation:
+        Constant: 1
+        Linear: 0.100000001
+        Quadratic: 0.100000001
+    Particle emitter:
+      Particles amount: 25
+      Max time to live: 0.287999988
+      Speed: 3.56200004
+      Color: [0.687174141, 0.292353392, 0, 1]
+      Scale: [0.214000002, 0.0710000023]
+      Time to spawn: [0, 1.46200001]
+      DirX: [0, 0]
+      DirY: [0.0759999976, 1]
+      DirZ: [0, 0]
+      RadiusToSpawnX: [0, 0]
+      RadiusToSpawnY: [-0.100000001, 0.100000001]
+      RadiusToSpawnZ: [-0.100000001, 0.100000001]
 Texture atlases:
   []

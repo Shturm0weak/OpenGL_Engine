@@ -116,7 +116,7 @@ void ShipEnemy::Fire() {
 		Bullet* bullet = bullets[usedBulletCounter]->GetComponent<Bullet>();
 		bullet->SetMoveDirection(glm::vec3(0,-1,0));
 		glm::vec3 pos = GetOwnerOfComponent()->GetPosition();
-		bullets[usedBulletCounter]->m_Transform->Translate(pos.x, pos.y);
+		bullets[usedBulletCounter]->m_Transform.Translate(pos.x, pos.y);
 		bullets[usedBulletCounter]->m_Enable = true;
 		bullet->col->m_Enable = true;
 		bullet->isActive = true;

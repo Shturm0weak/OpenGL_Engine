@@ -3,10 +3,11 @@
 
 using namespace Doom;
 
-Doom::IndexBuffer::IndexBuffer(const uint32_t * data, uint32_t count) :m_count(count)
+void Doom::IndexBuffer::Init(const uint32_t * data, uint32_t count)
 {
+	m_count = count;
 	glGenBuffers(1, &m_RendererID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+	Bind();
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32), data, GL_DYNAMIC_DRAW);
 }
 

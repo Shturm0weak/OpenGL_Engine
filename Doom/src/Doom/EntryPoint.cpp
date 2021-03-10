@@ -20,7 +20,7 @@ using namespace Doom;
 
 EntryPoint::EntryPoint(Doom::Application* app)
 {
-	app == nullptr ? new Application : m_App = app;
+	m_App = app == nullptr ? new Application : app;
 	World::GetInstance().s_Application = m_App;
 
 	Window::GetInstance().Init(m_App->m_Name.c_str(), m_App->m_Width, m_App->m_Height, m_App->m_Vsync);
@@ -30,14 +30,6 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	MainThread::GetInstance();
 	Texture::s_WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
 	Texture::ColoredTexture("InvalidTexture", 0xFF00AC);
-
-	CubeCollider3D::InitMesh();
-
-#ifndef LOADFROMFILE
-	Utils::LoadShadersFromFolder("src/Shaders");
-	Utils::LoadTexturesFromFolder("src/Images");
-	Utils::LoadMeshesFromFolder("src/Mesh/Primitives");
-#endif
 
 	Gui::GetInstance().LoadStandartFonts();
 	
@@ -56,6 +48,27 @@ EntryPoint::EntryPoint(Doom::Application* app)
 		GridLayOut::DrawGrid(51, 50);
 		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
 	}
+
+#ifndef LOADFROMFILE
+	Utils::LoadShadersFromFolder("src/Shaders");
+	Utils::LoadTexturesFromFolder("src/Images");
+	Utils::LoadMeshesFromFolder("src/Mesh/Primitives");
+#endif
+
+	CubeCollider3D::InitMesh();
+
+	//Pre-reserve vectors
+	{
+		CubeCollider3D::s_Colliders.reserve(MAX_PREALLOCATED_INSTANCES);
+		RectangleCollider2D::s_Collision2d.reserve(MAX_PREALLOCATED_INSTANCES);
+		World::GetInstance().s_GameObjects.reserve(MAX_PREALLOCATED_INSTANCES);
+		Renderer::s_Objects2d.reserve(MAX_PREALLOCATED_INSTANCES);
+		Renderer::s_Objects3d.reserve(MAX_PREALLOCATED_INSTANCES);
+		Renderer::s_Objects3dTransparent.reserve(MAX_PREALLOCATED_INSTANCES);
+		SphereCollider::s_Spheres.reserve(MAX_PREALLOCATED_INSTANCES);
+		PointLight::s_PointLights.reserve(MAX_PREALLOCATED_INSTANCES);
+	}
+
 	std::cout << glGetString(GL_VERSION) << std::endl;
 }
 

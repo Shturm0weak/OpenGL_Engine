@@ -130,10 +130,11 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::dvec3 start, glm::dvec3 dir, Hit * hit, 
 
 bool Doom::Ray3D::IntersectBoxOBB(glm::dvec3 start, glm::dvec3 dir, Hit* hit, double length, CubeCollider3D* c)
 {
-	Transform* tr = c->GetOwnerOfComponent()->GetComponent<Transform>();
 	glm::dvec3 bounds0 = c->m_MinP;
 	glm::dvec3 bounds1 = c->m_MaxP;
-	glm::dvec3 vPos = tr->GetPosition() + c->m_Offset * tr->GetScale();
+	glm::vec3 offset = c->m_Offset;
+	Transform* tr = &(c->GetOwnerOfComponent()->m_Transform);
+	glm::dvec3 vPos = tr->GetPosition() + offset * tr->GetScale();
 	glm::dmat4 pos = glm::translate(glm::dmat4(1.0f), vPos);
 	glm::dmat4 wMat = pos * (glm::dmat4)tr->m_ViewMat4;
 	bounds0 = glm::dvec3(tr->m_ScaleMat4 * glm::dvec4(bounds0, 1.0f));

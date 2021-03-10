@@ -22,8 +22,8 @@ Doom::Camera::~Camera()
 
 void Camera::RecalculateViewMatrix() 
 {
-	ThreadPool::GetInstance().Enqueue([=] {
-	std::lock_guard<std::mutex> lock(m_Mtx);
+	//ThreadPool::GetInstance().Enqueue([=] {
+	//std::lock_guard<std::mutex> lock(m_Mtx);
 	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), m_Roll, glm::vec3(0, 0, 1))
 					* glm::rotate(glm::mat4(1.0f), m_Yaw, glm::vec3(0, 1, 0))
 					* glm::rotate(glm::mat4(1.0f), m_Pitch, glm::vec3(1, 0, 0));
@@ -38,7 +38,7 @@ void Camera::RecalculateViewMatrix()
 
 	m_ViewMat4 = glm::inverse(transform);
 	m_ViewProjectionMat4 = m_ProjectionMat4 * m_ViewMat4;
-	});
+	//});
 }
 
 void Doom::Camera::MovePosition(const glm::vec3 position)

@@ -13,20 +13,13 @@ Doom::Instancing::Instancing()
 
 void Doom::Instancing::Create(Mesh* mesh)
 {
-	glBuffers buf;
-	buf.m_Layout = (mesh->m_Layout);
-	buf.m_Vbo = (mesh->m_Vb);
-	buf.m_Vao = (mesh->m_Va);
-	buf.m_Ibo = (mesh->m_Ib);
-	buf.m_VboDynamic = new VertexBuffer(nullptr, 1,false);
-	buf.m_LayoutDynamic = new VertexBufferLayout();
-	m_Buffers.insert(std::make_pair(mesh, buf));
+	m_Buffers.insert(std::make_pair(mesh, glBuffers()));
+	m_Buffers.rbegin()->second.m_VboDynamic.Init(nullptr, 1, false);
 }
 
 void Doom::Instancing::Render()
 {
-	if(m_Shader == nullptr)
-		m_Shader = Shader::Get("Instancing3D");
+	m_Shader = Shader::Get("Instancing3D");
 
 	for (auto iter = m_InstancedObjects.begin(); iter != m_InstancedObjects.end(); iter++)
 	{
@@ -92,10 +85,6 @@ void Doom::Instancing::Render()
 		Renderer::s_Stats.m_Vertices += gliter->first->m_IndicesSize * objsSize;
 		Renderer::s_Stats.m_DrawCalls++;
 
-		gliter->second.m_Vao->Bind();
-		gliter->second.m_Ibo->Bind();
-		gliter->second.m_Vbo->Bind();
-
 		//std::unique_lock<std::mutex> lk(m);
 		//cv.wait(lk, [=] {
 		//	for (uint32_t i = 0; i < nThreads; i++)
@@ -107,29 +96,32 @@ void Doom::Instancing::Render()
 		//	return true;
 		//});
 
-		gliter->second.m_VboDynamic->Bind();
-		gliter->second.m_VboDynamic->Invalidate();
+		gliter->first->m_Va.Bind();
+		gliter->first->m_Ib.Bind();
+		gliter->first->m_Vb.Bind();
+		gliter->second.m_VboDynamic.Bind();
+		gliter->second.m_VboDynamic.Invalidate();
 		glBufferData(GL_ARRAY_BUFFER, 4 * m_SizeOfAttribs * objsSize, gliter->second.m_VertAttrib, GL_DYNAMIC_DRAW);
-		gliter->second.m_LayoutDynamic->Clear();
-		gliter->second.m_Vao->Bind();
-		gliter->second.m_LayoutDynamic->Push<float>(3);
-		gliter->second.m_LayoutDynamic->Push<float>(3);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(2);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_Vao->AddBuffer(*gliter->second.m_VboDynamic, *gliter->second.m_LayoutDynamic, 5, 1);
+		gliter->second.m_LayoutDynamic.Clear();
+		gliter->first->m_Va.Bind();
+		gliter->second.m_LayoutDynamic.Push<float>(3);
+		gliter->second.m_LayoutDynamic.Push<float>(3);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(2);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->first->m_Va.AddBuffer(gliter->second.m_VboDynamic, gliter->second.m_LayoutDynamic, 5, 1);
 
 		if (!iter->second[0]->m_IsCullingFace)
 			glDisable(GL_CULL_FACE);
-		glDrawElementsInstanced(GL_TRIANGLES, gliter->second.m_Ibo->GetCount(), GL_UNSIGNED_INT, 0, iter->second.size());
+		glDrawElementsInstanced(GL_TRIANGLES, gliter->first->m_Ib.m_count, GL_UNSIGNED_INT, 0, iter->second.size());
 		glEnable(GL_CULL_FACE);
 		m_Shader->UnBind();
-		gliter->second.m_Ibo->UnBind();
-		gliter->second.m_Vao->UnBind();
-		gliter->second.m_Vbo->UnBind();
+		gliter->first->m_Ib.UnBind();
+		gliter->first->m_Va.UnBind();
+		gliter->first->m_Vb.UnBind();
 		glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
 	}
 }
@@ -141,20 +133,18 @@ void Doom::Instancing::BakeShadows()
 	for (auto iter = m_InstancedObjects.begin(); iter != m_InstancedObjects.end(); iter++)
 	{
 		auto gliter = m_Buffers.find(iter->first);
-		if (gliter == m_Buffers.end())
-			continue;
+		if (gliter == m_Buffers.end()) continue;
 
 		uint32_t objsSize = iter->second.size();
-		if (objsSize == 0)
-			continue;
+		if (objsSize == 0) continue;
 
 		m_Shader->Bind();
 
 		m_Shader->SetUniformMat4f("lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 
-		gliter->second.m_Vao->Bind();
-		gliter->second.m_Ibo->Bind();
-		gliter->second.m_Vbo->Bind();
+		gliter->first->m_Va.Bind();
+		gliter->first->m_Ib.Bind();
+		gliter->first->m_Vb.Bind();
 
 		std::unique_lock<std::mutex> lk(World::GetInstance().m_Mtx);
 		m_CondVar.wait(lk, [=] {
@@ -171,30 +161,29 @@ void Doom::Instancing::BakeShadows()
 		});
 
 
-		gliter->second.m_VboDynamic->Bind();
-		gliter->second.m_VboDynamic->Invalidate();
+		gliter->second.m_VboDynamic.Bind();
+		gliter->second.m_VboDynamic.Invalidate();
 		glBufferData(GL_ARRAY_BUFFER, 4 * m_SizeOfAttribs * objsSize, gliter->second.m_VertAttrib, GL_DYNAMIC_DRAW);
-		gliter->second.m_LayoutDynamic->Clear();
-		gliter->second.m_Vao->Bind();
-		gliter->second.m_LayoutDynamic->Push<float>(3);
-		gliter->second.m_LayoutDynamic->Push<float>(3);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(2);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_LayoutDynamic->Push<float>(4);
-		gliter->second.m_Vao->AddBuffer(*gliter->second.m_VboDynamic, *gliter->second.m_LayoutDynamic, 5, 1);
+		gliter->second.m_LayoutDynamic.Clear();
+		gliter->first->m_Va.Bind();
+		gliter->second.m_LayoutDynamic.Push<float>(3);
+		gliter->second.m_LayoutDynamic.Push<float>(3);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(2);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
+		gliter->first->m_Va.AddBuffer(gliter->second.m_VboDynamic, gliter->second.m_LayoutDynamic, 5, 1);
 
-		glDrawElementsInstanced(GL_TRIANGLES, gliter->second.m_Ibo->GetCount(), GL_UNSIGNED_INT, 0, iter->second.size());
+		glDrawElementsInstanced(GL_TRIANGLES, gliter->first->m_Ib.m_count, GL_UNSIGNED_INT, 0, iter->second.size());
 
 		m_Shader->UnBind();
-		gliter->second.m_Ibo->UnBind();
-		gliter->second.m_Vao->UnBind();
-		gliter->second.m_Vbo->UnBind();
+		gliter->first->m_Ib.UnBind();
+		gliter->first->m_Va.UnBind();
+		gliter->first->m_Vb.UnBind();
 		glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
 	}
-	m_Shader = nullptr;
 }
 
 void Doom::Instancing::PrepareVertexAtrrib()
@@ -202,14 +191,12 @@ void Doom::Instancing::PrepareVertexAtrrib()
 	for (auto iter = m_InstancedObjects.begin(); iter != m_InstancedObjects.end(); iter++)
 	{
 		auto gliter = m_Buffers.find(iter->first);
-		if (gliter == m_Buffers.end())
-			continue;
+		if (gliter == m_Buffers.end()) continue;
 
 		uint32_t objsSize = iter->second.size();
-		if (objsSize == 0)
-			continue;
+		if (objsSize == 0) continue;
 
-		if (gliter->second.m_PrevObjectSize != objsSize) //Probably I found a bug here && gliter->second.m_VertAttrib == nullptr)
+		if (gliter->second.m_PrevObjectSize != objsSize || gliter->second.m_VertAttrib == nullptr) //Probably I found a bug here && gliter->second.m_VertAttrib == nullptr)
 		{
 			delete[] gliter->second.m_VertAttrib;
 			gliter->second.m_VertAttrib = nullptr;
@@ -244,21 +231,21 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			uint32_t thisSegmentOfObjectsV = k * dif + dif;
 			for (uint32_t i = k * dif; i < thisSegmentOfObjectsV; i++)
 			{
-				if (iter->second.size() <= i) continue;
-				Renderer3D* r = iter->second[i];
-				if (r->m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
-				GameObject* owner = r->GetOwnerOfComponent();
-				if (owner->m_IsStatic && r->m_IsInitializedInInstancing) continue;
+				//if (iter->second.size() <= i) continue;
+				Renderer3D& r3d = *(iter->second[i]);
+				//if (r3d.m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
+				GameObject& owner = *(r3d.GetOwnerOfComponent());
+				if (owner.m_IsStatic && r3d.m_IsInitializedInInstancing) continue;
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
-				memcpy(posPtr, &owner->GetPosition()[0], 12);
-				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
-				//r->m_Color = color;
-				memcpy(&posPtr[6], &r->m_Color[0], 16);
-				posPtr[10] = r->m_Material.m_Ambient;
-				posPtr[11] = r->m_Material.m_Specular;
-				float* view = glm::value_ptr(owner->m_Transform->m_ViewMat4);
+				memcpy(posPtr, &owner.GetPosition()[0], 12);
+				memcpy(&posPtr[3], &owner.GetScale()[0], 12);
+				float* view = glm::value_ptr(owner.m_Transform.m_ViewMat4);
 				memcpy(&posPtr[12], view, 64);
-				r->m_IsInitializedInInstancing = true;
+				//r->m_Color = color;
+				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
+				posPtr[10] = r3d.m_Material.m_Ambient;
+				posPtr[11] = r3d.m_Material.m_Specular;
+				r3d.m_IsInitializedInInstancing = true;
 			}
 			{
 				std::lock_guard lg(World::GetInstance().m_Mtx);
@@ -274,21 +261,21 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			}
 			for (uint32_t i = (m_NThreads - 1) * dif; i < objsSize; i++)
 			{
-				if (iter->second.size() <= i) continue;
-				Renderer3D* r = iter->second[i];
-				if (r->m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
-				GameObject* owner = r->GetOwnerOfComponent();
-				if (owner->m_IsStatic && r->m_IsInitializedInInstancing) continue;
+				//if (iter->second.size() <= i) continue;
+				Renderer3D& r3d = *(iter->second[i]);
+				//if (r3d.m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
+				GameObject& owner = *(r3d.GetOwnerOfComponent());
+				if (owner.m_IsStatic && r3d.m_IsInitializedInInstancing) continue;
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
-				memcpy(posPtr, &owner->GetPosition()[0], 12);
-				memcpy(&posPtr[3], &owner->GetScale()[0], 12);
-				//r->m_Color = COLORS::Blue;
-				memcpy(&posPtr[6], &r->m_Color[0], 16);
-				posPtr[10] = r->m_Material.m_Ambient;
-				posPtr[11] = r->m_Material.m_Specular;
-				float* view = glm::value_ptr(owner->GetComponent<Transform>()->m_ViewMat4);
+				memcpy(posPtr, &owner.GetPosition()[0], 12);
+				memcpy(&posPtr[3], &owner.GetScale()[0], 12);
+				float* view = glm::value_ptr(owner.m_Transform.m_ViewMat4);
 				memcpy(&posPtr[12], view, 64);
-				r->m_IsInitializedInInstancing = true;
+				//r->m_Color = COLORS::Blue;
+				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
+				posPtr[10] = r3d.m_Material.m_Ambient;
+				posPtr[11] = r3d.m_Material.m_Specular;
+				r3d.m_IsInitializedInInstancing = true;
 			}
 			{
 				std::lock_guard lg(World::GetInstance().m_Mtx);
@@ -301,9 +288,9 @@ void Doom::Instancing::PrepareVertexAtrrib()
 
 void Doom::Instancing::ShutDown()
 {
-	for (auto buffer : m_Buffers)
-	{
-		delete buffer.second.m_LayoutDynamic;
-		delete buffer.second.m_VboDynamic;
-	}
+	//for (auto buffer : m_Buffers)
+	//{
+	//	delete buffer.second.m_LayoutDynamic;
+	//	delete buffer.second.m_VboDynamic;
+	//}
 }

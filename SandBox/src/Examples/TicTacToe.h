@@ -64,7 +64,7 @@ public:
 	virtual void OnStart()override {
 		GameObject* backGround = GameObject::Create("BackGround", 0, 0);
 		backGround->m_ComponentManager.AddComponent<SpriteRenderer>()->m_Color = glm::vec4(0.2, 0.2, 0.2, 1.0);
-		backGround->m_Transform->Scale(1000, 1000);
+		backGround->m_Transform.Scale(1000, 1000);
 		SoundManager::GetInstance().CreateSoundAsset("back", backSound);
 		ai = new AI();
 		Window::GetInstance().GetCamera().Zoom(4.5);

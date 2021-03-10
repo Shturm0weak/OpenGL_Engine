@@ -316,7 +316,7 @@ void Batch::Submit(SpriteRenderer* c)
 		}
 	}
 
-	Transform* trOfR = c->m_OwnerOfCom->m_Transform;
+	Transform& trOfR = c->m_OwnerOfCom->m_Transform;
 
 	glm::vec2 scale = c->m_OwnerOfCom->GetScale();
 	glm::vec3 pos = c->m_OwnerOfCom->GetPosition();
@@ -324,10 +324,10 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[2], c->m_Mesh2D[3]);
 	m_GoB.m_BufferG->m_Color = c->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
 	m_GoB.m_BufferG->m_Pos = pos;
 	m_GoB.m_BufferG++;
 
@@ -335,10 +335,10 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[6], c->m_Mesh2D[7]);
 	m_GoB.m_BufferG->m_Color = c->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
 	m_GoB.m_BufferG->m_Pos = pos;
 	m_GoB.m_BufferG++;
 
@@ -346,10 +346,10 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[10], c->m_Mesh2D[11]);
 	m_GoB.m_BufferG->m_Color = c->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
 	m_GoB.m_BufferG->m_Pos = pos;
 	m_GoB.m_BufferG++;
 
@@ -357,10 +357,10 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[14], c->m_Mesh2D[15]);
 	m_GoB.m_BufferG->m_Color = c->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR->m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR->m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR->m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR->m_ViewMat4[3];
+	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
+	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
+	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
+	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
 	m_GoB.m_BufferG->m_Pos = pos;
 	m_GoB.m_BufferG++;
 
@@ -429,7 +429,7 @@ void Batch::Submit(RectangleCollider2D& c)
 void Batch::FlushGameObjects(Shader * shader)
 {
 	glBindVertexArray(m_GoB.m_Vao);
-	m_GoB.m_Ibo->Bind();
+	m_GoB.m_Ibo.Bind();
 	shader->Bind();
 	int samplers[32];
 	for (unsigned int i = 2; i < m_GoB.m_TextureSlotsIndex; i++)
@@ -448,7 +448,7 @@ void Batch::FlushGameObjects(Shader * shader)
 	Renderer::s_Stats.m_DrawCalls++;
 	Renderer::s_Stats.m_Vertices += m_GIndexCount;
 	shader->UnBind();
-	m_GoB.m_Ibo->UnBind();
+	m_GoB.m_Ibo.UnBind();
 	m_GoB.m_TextureSlotsIndex = 2;
 	m_GIndexCount = 0;
 	for (unsigned int i = m_GoB.m_TextureSlotsIndex; i < 32; i++)
@@ -462,7 +462,7 @@ void Batch::FlushGameObjects(Shader * shader)
 void Batch::FlushCollision(Shader * shader)
 {
 	glBindVertexArray(m_GoB.m_Vao);
-	m_GoB.m_Ibo->Bind();
+	m_GoB.m_Ibo.Bind();
 	shader->Bind();
 	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 	shader->SetUniform4fv("U_Color", COLORS::Green);
@@ -474,7 +474,7 @@ void Batch::FlushCollision(Shader * shader)
 	Renderer::s_Stats.m_DrawCalls++;
 	Renderer::s_Stats.m_Vertices += m_GIndexCount;
 	shader->UnBind();
-	m_GoB.m_Ibo->UnBind();
+	m_GoB.m_Ibo.UnBind();
 	m_GIndexCount = 0;
 }
 
@@ -520,7 +520,7 @@ void Doom::Batch::EndLines()
 void Batch::FlushText(Shader* shader)
 {
 	glBindVertexArray(m_TextB.m_Vao);
-	m_TextB.m_Ibo->Bind();
+	m_TextB.m_Ibo.Bind();
 	shader->Bind();
 	int samplers[32];
 	for (unsigned int i = 0; i < m_TextB.m_TextureSlotsIndex; i++)
@@ -547,7 +547,7 @@ void Batch::FlushText(Shader* shader)
 	Renderer::s_Stats.m_DrawCalls++;
 	Renderer::s_Stats.m_Vertices += m_TIndexCount;
 	shader->UnBind();
-	m_TextB.m_Ibo->UnBind();
+	m_TextB.m_Ibo.UnBind();
 	glBindVertexArray(0);
 	m_TextB.m_TextureSlotsIndex = 1;
 	m_TextB.m_TextureSlots[0] = Texture::s_WhiteTexture->m_RendererID;
@@ -561,7 +561,7 @@ void Batch::FlushText(Shader* shader)
 void Doom::Batch::FlushLines(Shader * shader)
 {
 	glBindVertexArray(m_LinesB.m_Vao);
-	m_LinesB.m_Ibo->Bind();
+	m_LinesB.m_Ibo.Bind();
 	shader->Bind();
 	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 	glLineWidth(Line::s_Width);
@@ -570,7 +570,7 @@ void Doom::Batch::FlushLines(Shader * shader)
 	Renderer::s_Stats.m_DrawCalls++;
 	Renderer::s_Stats.m_Vertices += m_LIndexCount;
 	shader->UnBind();
-	m_LinesB.m_Ibo->UnBind();
+	m_LinesB.m_Ibo.UnBind();
 	glBindVertexArray(0);
 }
 
@@ -619,7 +619,7 @@ void Batch::InitText()
 	}
 
 	m_TextB.m_BufferPtrT = new TextVertex[RENDERER_MAX_SPRITES];
-	m_TextB.m_Ibo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
+	m_TextB.m_Ibo.Init(indices, RENDERER_INDICES_SIZE);
 	glBindVertexArray(0);
 
 	m_TextB.m_TextureSlots[0] = Texture::s_WhiteTexture->m_RendererID;
@@ -684,7 +684,7 @@ void Batch::InitGameObjects()
 	}
 
 	m_GoB.m_BufferPtrG = new GOVertex[RENDERER_MAX_SPRITES * 4];
-	m_GoB.m_Ibo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
+	m_GoB.m_Ibo.Init(indices, RENDERER_INDICES_SIZE);
 	glBindVertexArray(0);
 
 	m_GoB.m_TextureSlots[0] = Texture::s_WhiteTexture->m_RendererID;
@@ -722,7 +722,7 @@ void Doom::Batch::InitLines()
 		offset += 2;
 	}
 
-	m_LinesB.m_Ibo = new IndexBuffer(indices, RENDERER_INDICES_SIZE);
+	m_LinesB.m_Ibo.Init(indices, RENDERER_INDICES_SIZE);
 	m_LinesB.m_BufferPtrL = new VertexLine[RENDERER_MAX_SPRITES];
 	glBindVertexArray(0);
 }

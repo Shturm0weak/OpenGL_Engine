@@ -15,7 +15,7 @@ private:
 	}
 
 	void OnUpdate() {
-		m_OwnerOfCom->m_Transform->Move(1,1,1);
+		m_OwnerOfCom->m_Transform.Move(1,1,1);
 	}
 
 public:

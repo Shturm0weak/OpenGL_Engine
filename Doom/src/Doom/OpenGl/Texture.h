@@ -9,7 +9,7 @@ namespace Doom {
 	class DOOM_API Texture {
 	private:
 
-		static std::map<std::string, Texture*> s_Textures;
+		static std::unordered_map<std::string, Texture*> s_Textures;
 		static bool s_IsTextureAdded;
 		unsigned char* m_LocalBuffer = nullptr;
 
@@ -23,14 +23,14 @@ namespace Doom {
 		friend class EntryPoint;
 	public:
 
-		static std::map<void*, std::function<Texture*()>> s_WaitingForTextures;
+		static std::unordered_map<void*, std::function<Texture*()>> s_WaitingForTextures;
 		static std::mutex s_LockTextureLoadingMtx;
 		static std::vector<Texture*> s_LoadedTextures;
 		static Texture* s_WhiteTexture;
 
 		std::string m_FilePath;
 		std::string m_Name;
-		unsigned int m_RendererID = -1;
+		unsigned int m_RendererID = UINT_MAX;
 		int m_width = 0, m_height = 0, m_BPP = 0;
 
 		void Bind(unsigned int slot = 0) const;

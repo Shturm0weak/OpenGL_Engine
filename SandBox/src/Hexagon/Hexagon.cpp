@@ -107,7 +107,7 @@ void Doom::Hexagon::OnStart()
 {
 	GameObject* sun = GameObject::Create("Sun");
 	sun->AddComponent<DirectionalLight>();
-	sun->m_Transform->RotateOnce(glm::vec3(45, 0, 0));
+	sun->m_Transform.RotateOnce(glm::vec3(45, 0, 0));
 	Window::GetInstance().GetCamera().SetPosition(glm::vec3(5, 5, 5));
 	Window::GetInstance().GetCamera().SetRotation(glm::vec3(-glm::one_over_root_two<float>(), 0, 0));
 	float* seed = new float[width * height];
@@ -134,22 +134,22 @@ void Doom::Hexagon::OnStart()
 			go->m_IsStatic = true;
 			if (i % 2 == 1)
 			{
-				go->m_Transform->Translate(j * hexX + hexX * 0.5f, 0, i * 1.5f);
-				sprite->m_Transform->Translate(j * hexX + hexX * 0.5f, 0.15, i * 1.5f);
+				go->m_Transform.Translate(j * hexX + hexX * 0.5f, 0, i * 1.5f);
+				sprite->m_Transform.Translate(j * hexX + hexX * 0.5f, 0.15, i * 1.5f);
 			}
 			else
 			{
-				go->m_Transform->Translate(j * hexX, 0, i * 1.5f);
-				sprite->m_Transform->Translate(j * hexX, 0.15, i * 1.5f);
+				go->m_Transform.Translate(j * hexX, 0, i * 1.5f);
+				sprite->m_Transform.Translate(j * hexX, 0.15, i * 1.5f);
 			}
 			Renderer3D* r = go->AddComponent<Renderer3D>();
 			r->LoadMesh(MeshManager::GetInstance().GetMesh("hex"));
 			r->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 			r->m_Color = Colors(noise[i * (int)width + j], sprite);
-			go->m_Transform->RotateOnce(glm::vec3(-90, 0, 0));
-			go->m_Transform->Scale(glm::vec3(0.99, 0.99, 0.99));
-			sprite->m_Transform->Scale(glm::vec3(0.7, 0.7, 1));
-			sprite->m_Transform->RotateOnce(-90, 0, 0);
+			go->m_Transform.RotateOnce(glm::vec3(-90, 0, 0));
+			go->m_Transform.Scale(glm::vec3(0.99, 0.99, 0.99));
+			sprite->m_Transform.Scale(glm::vec3(0.7, 0.7, 1));
+			sprite->m_Transform.RotateOnce(-90, 0, 0);
 		}
 	}
 }

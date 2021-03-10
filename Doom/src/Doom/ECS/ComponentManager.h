@@ -208,6 +208,9 @@ namespace Doom {
 			return nullptr;
 		}
 
+		template<>
+		Transform* GetComponent<Transform>();
+
 		template<class T>
 		T* AddComponent() 
 		{

@@ -32,18 +32,18 @@ public:
 	void Movement() {
 		GameObject* owner = GetOwnerOfComponent();
 		if (Input::IsKeyDown(Keycode::KEY_W)) {
-			owner->m_Transform->Move(0, m_Speed, 0);
+			owner->m_Transform.Move(0, m_Speed, 0);
 		}
 		else if (Input::IsKeyDown(Keycode::KEY_S)) {
-			owner->m_Transform->Move(0, -m_Speed, 0);
+			owner->m_Transform.Move(0, -m_Speed, 0);
 		}
 		if (Input::IsKeyDown(Keycode::KEY_D)) {
 			anim->PlayAnim(anim->animations.at("src/Animations\\RunRight"));
-			owner->m_Transform->Move(m_Speed, 0, 0);
+			owner->m_Transform.Move(m_Speed, 0, 0);
 		}
 		else if (Input::IsKeyDown(Keycode::KEY_A)) {
 			anim->PlayAnim(anim->animations.at("src/Animations\\RunLeft"));
-			owner->m_Transform->Move(-m_Speed, 0, 0);
+			owner->m_Transform.Move(-m_Speed, 0, 0);
 		}
 		else {
 			anim->PlayAnim(anim->animations.at("src/Animations\\IdleLeft"));
@@ -56,7 +56,7 @@ public:
 
 		m_CurrentJumpSpeed -= G * DeltaTime::s_Deltatime;
 		m_CurrentJumpSpeed = glm::clamp(m_CurrentJumpSpeed, 0.0f, m_MaxJumpSpeed);
-		owner->m_Transform->Move(glm::vec3(0, -G + m_CurrentJumpSpeed, 0));
+		owner->m_Transform.Move(glm::vec3(0, -G + m_CurrentJumpSpeed, 0));
 	}
 
 	void OnUpdate() {
@@ -93,7 +93,7 @@ public:
 
 	void OnUpdate() {
 		//glm::vec2 mousePos = ViewPort::GetInstance()->GetMousePositionToWorldSpace();
-		//p->m_Transform->Translate(glm::vec3(mousePos, 0));
+		//p->m_Transform.Translate(glm::vec3(mousePos, 0));
 	}
 
 };

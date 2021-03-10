@@ -76,13 +76,13 @@ namespace Utils {
 	static glm::vec3 GetPosition(glm::mat4& pos) 
 	{
 		float* matPtr = glm::value_ptr(pos);
-		return glm::vec3(matPtr[12], matPtr[13], matPtr[14]);
+		return std::move(glm::vec3(matPtr[12], matPtr[13], matPtr[14]));
 	}
 
 	static glm::vec3 GetScale(glm::mat4& scale) 
 	{
 		float* matPtr = glm::value_ptr(scale);
-		return glm::vec3(matPtr[0], matPtr[5], matPtr[10]);
+		return std::move(glm::vec3(matPtr[0], matPtr[5], matPtr[10]));
 	}
 
 	static bool DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, glm::vec3& rotation, glm::vec3& scale)
@@ -193,8 +193,8 @@ namespace Utils {
 	static std::string GetComponentTypeName()
 	{
 		std::string name = typeid(T).name();
-		name = name.substr(6);
-		return name;
+		name = (name.substr(6));
+		return (name);
 	}
 
 }

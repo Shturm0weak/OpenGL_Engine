@@ -12,8 +12,6 @@ namespace Doom {
 	class DOOM_API Renderer3D : public Irenderer {
 	public:
 
-		std::map<std::string, float> m_FloatUniforms;
-
 		enum class RenderTechnic {
 			Forward,
 			Instancing
@@ -31,11 +29,19 @@ namespace Doom {
 		Transform* m_Tr = nullptr;
 		Mesh* m_Mesh = nullptr;
 		RenderTechnic m_RenderTechnic = RenderTechnic::Forward;
+
+	private:
+
+		bool m_IsInitializedInInstancing = false;
+	public:
+
 		bool m_IsCastingShadows = true;
 		bool m_IsWireMesh = false;
 		bool m_IsUsingNormalMap = false;
 		bool m_IsCullingFace = true;
 		bool m_IsRenderable = true;
+
+		std::map<std::string, float> m_FloatUniforms;
 		
 		Renderer3D(const Renderer3D& rhs);
 		Renderer3D();
@@ -62,7 +68,6 @@ namespace Doom {
 		//TODO Make bake shadows strength depending on alpha channel of color for transparent object!!!
 		bool m_IsTransparent = false;
 		bool m_IsSkyBox = false;
-		bool m_IsInitializedInInstancing = false;
 
 		void Copy(const Renderer3D& rhs);
 		void ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color);

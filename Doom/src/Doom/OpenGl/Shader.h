@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 
 namespace Doom {
 
@@ -12,24 +12,25 @@ namespace Doom {
 	class DOOM_API Shader {
 	private:
 
-		std::unordered_map<std::string, int> m_UniformLocationCache;
-		static std::map<std::string,Shader*> s_Shaders;
-		std::string m_Name;
-		std::string m_FilePath;
+		static std::unordered_map<std::string, Shader*> s_Shaders;
 		static const char** s_NamesOfShaders;
+
+		std::unordered_map<std::string, int> m_UniformLocationCache;
 		unsigned int m_RendererID;
 
 		int GetUniformLocation(const std::string& name);
 		
+		Shader() {}
 		Shader(const std::string& name,const std::string& filepath);
 		~Shader();
 	public:
 
+		std::string m_Name;
+		std::string m_FilePath;
+
 		static const char** GetListOfShaders();
 		static Shader* Create(const std::string& name, const std::string& path);
 		static Shader* Get(const std::string& name, bool showErrors = true);
-		std::string& GetName() { return m_Name; }
-		std::string& GetFilePath() { return m_FilePath; }
 		void Bind() const;
 		void UnBind() const;
 		void Reload();

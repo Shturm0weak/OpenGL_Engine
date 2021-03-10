@@ -50,7 +50,7 @@ void Doom::ViewPort::Update()
 	//Need to fix Rotation doesn't change orientation of gizmos
 	if (Editor::GetInstance().go != nullptr) 
 	{
-		Transform* tr = Editor::GetInstance().go->GetComponent<Transform>();
+		Transform* tr = &(Editor::GetInstance().go->m_Transform);
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
 		float windowWidth = (float)ImGui::GetWindowWidth();

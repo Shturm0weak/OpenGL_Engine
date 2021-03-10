@@ -8,7 +8,7 @@ using namespace Doom;
 GameObject::GameObject(const std::string name,float x, float y,float z) 
 {
 	this->m_Name = name;
-	m_Transform = m_ComponentManager.AddComponent<Transform>();
+	//m_Transform = m_ComponentManager.AddComponent<Transform>();
 }
 
 void Doom::GameObject::Delete()
@@ -43,13 +43,13 @@ GameObject* Doom::GameObject::Create(const std::string name, float x, float y, f
 {
 	char* ptr = Utils::PreAllocateMemory<GameObject>(s_MemoryPool, s_FreeMemory);
 	GameObject* go = (GameObject*)((void*)ptr);// = new(iter->first + iter->second * sizeof(CubeCollider3D)) CubeCollider3D();
-	go->m_Transform = go->m_ComponentManager.AddComponent<Transform>();
+	//go->m_Transform = go->m_ComponentManager.AddComponent<Transform>();
 	go->m_MemoryPoolPtr = ptr;
 	go->m_Name = name;
 	go->m_Layer = World::GetInstance().s_GameObjects.size();
 	go->m_Id = World::GetInstance().s_ObjId;
 	World::GetInstance().s_ObjId++;
-	go->m_Transform->Translate(x, y, z);
+	go->m_Transform.Translate(x, y, z);
 	World::GetInstance().s_GameObjects.push_back(go);
 	return go;
 }
@@ -84,7 +84,7 @@ Doom::GameObject::~GameObject()
 #include "../Core/Utils.h"
 
 glm::vec3 GameObject::GetPosition() {
-	return Utils::GetPosition(m_Transform->m_PosMat4);
+	return Utils::GetPosition(m_Transform.m_PosMat4);
 }
 
 void Doom::GameObject::RemoveChild(void * child)
@@ -118,5 +118,5 @@ void Doom::GameObject::Copy(GameObject& rhs)
 }
 
 glm::vec3 GameObject::GetScale() {
-	return Utils::GetScale(m_Transform->m_ScaleMat4);
+	return Utils::GetScale(m_Transform.m_ScaleMat4);
 }

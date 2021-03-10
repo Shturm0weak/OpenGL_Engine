@@ -21,7 +21,7 @@ void ParticleEmitter::Init(size_t amountOfParticles) {
 		m_ParticlesPool[i].m_Particle->m_IsSerializable = false;
 		m_ParticlesPool[i].m_Particle->SetOwner(this->GetOwnerOfComponent());
 		Renderer3D* r3d = m_ParticlesPool[i].m_Particle->AddComponent<Renderer3D>();
-		r3d->LoadMesh(MeshManager::GetInstance().GetMesh("sphere"));
+		r3d->LoadMesh(MeshManager::GetInstance().GetMesh("LowPolySphere"));
 		r3d->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 		m_ParticlesPool[i].m_Particle->RemoveComponent<CubeCollider3D>();
 		InitParticle(m_ParticlesPool[i], e2);
@@ -47,12 +47,12 @@ void ParticleEmitter::InitParticle(Particle3D& particle, std::mt19937& e2) {
 	std::uniform_real_distribution<float> radiusX(m_RadiusToSpawn[0].x, m_RadiusToSpawn[0].y);
 	std::uniform_real_distribution<float> radiusY(m_RadiusToSpawn[1].x, m_RadiusToSpawn[1].y);
 	std::uniform_real_distribution<float> radiusZ(m_RadiusToSpawn[2].x, m_RadiusToSpawn[2].y);
-	particle.m_Particle->m_Transform->Translate(this->GetOwnerOfComponent()->GetPosition() + glm::vec3(radiusX(e2), radiusY(e2), radiusZ(e2)));
+	particle.m_Particle->m_Transform.Translate(this->GetOwnerOfComponent()->GetPosition() + glm::vec3(radiusX(e2), radiusY(e2), radiusZ(e2)));
 	std::uniform_real_distribution<double> timeToSpawn(m_TimeToSpawn.x, m_TimeToSpawn.y);
 	particle.m_TimeToSpawn = timeToSpawn(e2);
 	std::uniform_real_distribution<float> scale(m_Scale.x, m_Scale.y);
 	particle.m_Scale = glm::vec3(scale(e2));
-	particle.m_Particle->m_Transform->Scale(glm::vec3(0.0f));
+	particle.m_Particle->m_Transform.Scale(glm::vec3(0.0f));
 	std::uniform_real_distribution<float> dirX(m_Dir[0].x, m_Dir[0].y);
 	std::uniform_real_distribution<float> dirY(m_Dir[1].x, m_Dir[1].y);
 	std::uniform_real_distribution<float> dirZ(m_Dir[2].x, m_Dir[2].y);
@@ -73,13 +73,13 @@ void ParticleEmitter::Play()
 		}
 		else if (m_ParticlesPool[i].m_IsSpawned == false)
 		{
-			m_ParticlesPool[i].m_Particle->m_Transform->Scale(m_ParticlesPool[i].m_Scale);
+			m_ParticlesPool[i].m_Particle->m_Transform.Scale(m_ParticlesPool[i].m_Scale);
 			m_ParticlesPool[i].m_IsSpawned = true;
 		}
 		
-		m_ParticlesPool[i].m_Particle->m_Transform->Move(m_ParticlesPool[i].m_ParticleDir * m_Speed);
+		m_ParticlesPool[i].m_Particle->m_Transform.Move(m_ParticlesPool[i].m_ParticleDir * m_Speed);
 		m_ParticlesPool[i].m_TimeLiving += DeltaTime::s_Deltatime;
-		m_ParticlesPool[i].m_Particle->m_Transform->Scale(glm::vec3(m_ParticlesPool[i].m_Particle->GetScale().x * (1 - (0.99 * DeltaTime::s_Deltatime * m_Speed))));
+		m_ParticlesPool[i].m_Particle->m_Transform.Scale(glm::vec3(m_ParticlesPool[i].m_Particle->GetScale().x * (1 - (0.99 * DeltaTime::s_Deltatime * m_Speed))));
 		if (m_ParticlesPool[i].m_TimeLiving > m_MaxTimeToLive)
 			InitParticle(m_ParticlesPool[i], e2);
 	}
