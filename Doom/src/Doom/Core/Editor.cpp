@@ -10,7 +10,7 @@
 #include "Core/Utils.h"
 #include "Objects/SkyBox.h"
 #include "Lua/LuaState.h"
-#include "ParticleSystem/ParticleEmitter.h"
+#include "Components/ParticleEmitter.h"
 
 namespace fs = std::filesystem;
 

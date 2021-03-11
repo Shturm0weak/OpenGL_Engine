@@ -168,7 +168,7 @@
     <ClInclude Include="src\Doom\OpenGl\VertexBuffer.h" />
     <ClInclude Include="src\Doom\OpenGl\VertexBufferLayout.h" />
     <ClInclude Include="src\Doom\OpenGl\stb_image.h" />
-    <ClInclude Include="src\Doom\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="src\Doom\Components\ParticleEmitter.h" />
     <ClInclude Include="src\Doom\Rays\Ray2D.h" />
     <ClInclude Include="src\Doom\Rays\Ray3D.h" />
     <ClInclude Include="src\Doom\Render\Batch.h" />
@@ -290,7 +290,7 @@
     <ClCompile Include="src\Doom\OpenGl\VertexArray.cpp" />
     <ClCompile Include="src\Doom\OpenGl\VertexBuffer.cpp" />
     <ClCompile Include="src\Doom\OpenGl\stb_image.cpp" />
-    <ClCompile Include="src\Doom\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="src\Doom\Components\ParticleEmitter.cpp" />
     <ClCompile Include="src\Doom\Rays\Ray2D.cpp" />
     <ClCompile Include="src\Doom\Rays\Ray3D.cpp" />
     <ClCompile Include="src\Doom\Render\Batch.cpp" />

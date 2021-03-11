@@ -4,7 +4,7 @@
 #include "../Objects/SkyBox.h"
 #include "../Core/Utils.h"
 #include "Core/Editor.h"
-#include "ParticleSystem/ParticleEmitter.h"
+#include "Components/ParticleEmitter.h"
 
 namespace YAML {
 

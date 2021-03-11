@@ -12,7 +12,7 @@
 #include "Core/SceneSerializer.h"
 #include "Lua/LuaState.h"
 #include "ImGuizmo/ImGuizmo.h"
-#include "ParticleSystem/ParticleEmitter.h"
+#include "Components/ParticleEmitter.h"
 
 using namespace Doom;
 

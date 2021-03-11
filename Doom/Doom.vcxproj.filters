@@ -450,7 +450,7 @@
     <ClInclude Include="src\Doom\Objects\ParticleSystem.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="src\Doom\Lua\LuaVec3.h" />
-    <ClInclude Include="src\Doom\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="src\Doom\Components\ParticleEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -707,7 +707,7 @@
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\Doom\Core\Window.cpp" />
     <ClCompile Include="src\Doom\Lua\LuaVec3.cpp" />
-    <ClCompile Include="src\Doom\ParticleSystem\ParticleEmitter.cpp" />
     <ClCompile Include="src\Doom\ECS\ComponentManager.cpp" />
+    <ClCompile Include="src\Doom\Components\ParticleEmitter.cpp" />
   </ItemGroup>
 </Project>

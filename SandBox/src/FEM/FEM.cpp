@@ -391,7 +391,8 @@ void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
                 {
                     math::Matrix matBTest = CalculateMatrixB(area, weights[k].r, weights[k].z, A, B, Y);
                     math::Matrix matKTest = (math::Transpose(matBTest) * (matD * matBTest));
-                    s += (matKTest.operator()(u, j) * weights[k].r * weights[k].w * 2 * area);
+                    double r = weights[k].r * triangle->m_Nodes[0].x + weights[k].w * triangle->m_Nodes[1].x + abs(1 - weights[k].r - weights[k].w) * triangle->m_Nodes[2].x;
+                    s += (matKTest.operator()(u, j) * abs(r) * weights[k].w * 2 * area);
                    
                 }
                 triangle->m_MatK.operator()(u, j) += s * glm::pi<double>() * 2.0;

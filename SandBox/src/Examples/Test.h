@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ParticleSystem/ParticleEmitter.h"
+#include "Components/ParticleEmitter.h"
 
 class TestComponent : public Component {
 private:

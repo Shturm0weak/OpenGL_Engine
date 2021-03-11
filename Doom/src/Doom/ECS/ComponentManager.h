@@ -16,7 +16,7 @@
 #include "../Components/DirectionalLight.h"
 #include "../Components/SphereCollider.h"
 #include "../Components/ScriptComponent.h"
-#include "../ParticleSystem/ParticleEmitter.h"
+#include "../Components/ParticleEmitter.h"
 #include "Core/Utils.h"
 
 namespace Doom {
