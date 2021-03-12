@@ -35,6 +35,7 @@ namespace fbx {
 					//node.print();
 					if (node.getName() == "Geometry") {
 						Data data;
+						std::cout << node.properties[1].to_string() << std::endl;
 						std::string name = GetNameOfModel(node.properties[1].to_string());
 						if (std::find_if(meshes.begin(), meshes.end(), [=](Mesh* _mesh) {return _mesh->m_Name == name; }) == meshes.end()) {
 							mesh = new Mesh(name, filepath);
@@ -46,6 +47,7 @@ namespace fbx {
 						}
 					}
 					if (node.getName() == "Model") {
+						node.print();
 						std::string nameOfModel = GetNameOfModel(node.properties[1].to_string());
 						GameObject* go = Doom::GameObject::Create(nameOfModel);
 						go->m_ComponentManager.AddComponent<Renderer3D>();
@@ -63,6 +65,7 @@ namespace fbx {
 						//		}
 						//	}
 						//}
+						if (objs.size() > (meshes.size() - 1)) continue;
 						go->GetComponent<Renderer3D>()->LoadMesh(meshes[objs.size()]);
 						scene->AddChild((void*)go);
 						objs.push_back(go);
@@ -119,7 +122,7 @@ namespace fbx {
 			{
 				if (m_Nodes[i].getName() == "Objects") {
 
-					//nodes[i].print();
+					//m_Nodes[i].print();
 					size_t sizec = m_Nodes[i].getChildren().size();
 					fbx::FBXNode node = m_Nodes[i].getChildren()[meshId];
 					if (node.getName() == "Geometry") {
