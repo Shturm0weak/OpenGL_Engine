@@ -9,7 +9,7 @@ layout(location = 4) in vec3 btangent;
 layout(location = 5) in vec3 v;
 layout(location = 6) in vec3 s;
 layout(location = 7) in vec4 m_color;
-layout(location = 8) in vec2 mat;
+layout(location = 8) in vec3 mat;
 layout(location = 9) in mat4 u_View;
 mat4 u_Model = mat4(1.0, 0.0, 0.0, 0.0,
 					0.0, 1.0, 0.0, 0.0,
@@ -19,6 +19,7 @@ mat4 u_Scale = mat4(s.x, 0.0, 0.0, 0.0,
 					0.0, s.y, 0.0, 0.0,
 					0.0, 0.0, s.z, 0.0,
 					0.0, 0.0, 0.0, 1.0);
+flat out int tex_index;
 out vec4 FragPosLightSpace;
 out mat3 TBN;
 out vec2 v_textcoords;
@@ -33,6 +34,7 @@ uniform vec3 u_CameraPos;
 uniform mat4 u_LightSpaceMatrix;
 
 void main() {
+	tex_index = int(mat.z);
 	vec4 tempFragPos = u_Model * u_View * u_Scale * vec4(positions, 1.0);
 	FragPos = vec3(tempFragPos);
 	FragPosLightSpace = u_LightSpaceMatrix * tempFragPos;
@@ -66,6 +68,7 @@ in float ambient;
 in float specular;
 in mat3 TBN;
 in vec4 FragPosLightSpace;
+flat in int tex_index;
 
 struct PointLight {
 	vec3 position;
@@ -88,18 +91,19 @@ uniform PointLight pointLights[MAX_LIGHT];
 uniform int dLightSize;
 uniform DirectionalLight dirLights[MAX_LIGHT];
 
-uniform sampler2D u_DiffuseTexture;
-uniform sampler2D u_NormalMapTexture;
+//uniform sampler2D u_DiffuseTexture;
+//uniform sampler2D u_NormalMapTexture;
 uniform bool u_isNormalMapping;
-uniform sampler2D u_ShadowMap;
+//uniform sampler2D u_ShadowMap;
 uniform float u_DrawShadows;
+uniform sampler2D u_Texture[32];
 
 uniform float Brightness;
 
 float shadow = 0.0;
 
-vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
-	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
+vec3 DirLightsCompute(vec3 diffuseTexColor, DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+	//vec3 diffuseTexColor = texture(u_Texture[tex_index], v_textcoords).rgb;
 	float ambientStrength = ambient;
 	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
 
@@ -116,8 +120,8 @@ vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 Ca
 	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
 }
 
-vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
-	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
+vec3 PointLightsCompute(vec3 diffuseTexColor, PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+	//vec3 diffuseTexColor = texture(u_Texture[tex_index], v_textcoords).rgb;
 	float ambientStrength = ambient;
 	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
 
@@ -153,13 +157,13 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal)
 	// check whether current frag pos is in shadow
 	//float bias = 0.005;
 	float bias = clamp(0.002 * tan(acos(dot(normal, dirLights[0].dir))), 0.0, 0.01);
-	vec2 texelSize = 0.7 / textureSize(u_ShadowMap, 0);
+	vec2 texelSize = 0.7 / textureSize(u_Texture[2], 0);
 	int pcfRange = 4;
 	for (int x = -pcfRange; x <= pcfRange; ++x)
 	{
 		for (int y = -pcfRange; y <= pcfRange; ++y)
 		{
-			float pcfDepth = texture(u_ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+			float pcfDepth = texture(u_Texture[2], projCoords.xy + vec2(x, y) * texelSize).r;
 			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
 		}
 	}
@@ -173,14 +177,14 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal)
 }
 
 void main() {
-	vec4 texColor = texture(u_DiffuseTexture, v_textcoords);
+	vec4 texColor = texture(u_Texture[tex_index], v_textcoords);
 	if (texColor.a < 0.1)
 		discard;
 
 	vec3 normal = (Normal);
 	vec3 result = vec3(0,0,0);
 	if (u_isNormalMapping) {
-		normal = texture(u_NormalMapTexture, v_textcoords).rgb;
+		normal = texture(u_Texture[1], v_textcoords).rgb;
 		normal *= normal * 2.0 - 1.0;
 		normal = normalize(TBN *  normal);
 	}
@@ -189,11 +193,11 @@ void main() {
 	}
 	for (int i = 0; i < dLightSize; i++)
 	{
-		result += DirLightsCompute(dirLights[i], normal, FragPos, CameraPos);
+		result += DirLightsCompute(texColor.xyz, dirLights[i], normal, FragPos, CameraPos);
 	}
 
 	for (int i = 0; i < pLightSize; i++){
-		result += PointLightsCompute(pointLights[i], normal, FragPos, CameraPos);
+		result += PointLightsCompute(texColor.xyz, pointLights[i], normal, FragPos, CameraPos);
 	}
 	float gamma = 2.2;
 	FragColor = vec4(pow(result * out_color.rgb, vec3(1.0 / gamma)), 1.0);

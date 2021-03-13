@@ -40,6 +40,8 @@
     <ClInclude Include="src\Examples\TestCollision2D.h" />
     <ClInclude Include="src\FEM\FEM.h" />
     <ClInclude Include="src\FEM\Integrals.h" />
+    <ClInclude Include="src\NetWork\Client.h" />
+    <ClInclude Include="src\NetWork\olcPGEX_Network.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
@@ -53,6 +55,7 @@
     <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
     <ClCompile Include="src\FEM\FEM.cpp" />
     <ClCompile Include="src\FEM\Integrals.cpp" />
+    <ClCompile Include="src\NetWork\Client.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BakeShadows.shader" />

@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN64;GLEW_STATIC;_WINDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)SandBox;$(SolutionDir)vendor;$(SolutionDir)SandBox\src;$(SolutionDir)Doom\src\Doom;$(SolutionDir)Includes\LUA;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)SandBox;$(SolutionDir)vendor;$(SolutionDir)SandBox\src;$(SolutionDir)Doom\src\Doom;$(SolutionDir)Includes\LUA;$(SolutionDir)Includes\Asio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WIN64;GLEW_STATIC;_WINDLL;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)SandBox;$(SolutionDir)vendor;$(SolutionDir)SandBox\src;$(SolutionDir)Doom\src\Doom;$(SolutionDir)Includes\LUA;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)SandBox;$(SolutionDir)vendor;$(SolutionDir)SandBox\src;$(SolutionDir)Doom\src\Doom;$(SolutionDir)Includes\LUA;$(SolutionDir)Includes\Asio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -117,6 +117,8 @@
     <ClInclude Include="src\game\StressTest.h" />
     <ClInclude Include="src\game\TicTacToe.h" />
     <ClInclude Include="src\Hexagon\Hexagon.h" />
+    <ClInclude Include="src\NetWork\Client.h" />
+    <ClInclude Include="src\NetWork\olcPGEX_Network.h" />
     <ClInclude Include="src\SpaceFire\Ammo.h" />
     <ClInclude Include="src\SpaceFire\Bullet.h" />
     <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
@@ -133,6 +135,7 @@
     <ClCompile Include="src\FEM\Matrix.cpp" />
     <ClCompile Include="src\FEM\Vector.cpp" />
     <ClCompile Include="src\Hexagon\Hexagon.cpp" />
+    <ClCompile Include="src\NetWork\Client.cpp" />
     <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
     <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
   </ItemGroup>

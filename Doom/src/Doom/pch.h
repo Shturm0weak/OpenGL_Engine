@@ -50,7 +50,6 @@ extern "C"
 #include "OpenGl/VertexArray.h"
 #include "OpenGl/Texture.h"
 #include "Objects/GameObject.h"
-#include <Windows.h>
 #include "Core/Timer.h"
 #include "FileDialogs/FileDialogs.h"
 #include "Core/World.h"

@@ -32,7 +32,8 @@ void Doom::Instancing::Render()
 			continue;
 		
 		m_Shader->Bind();
-		glBindTextureUnit(0, iter->second[0]->m_DiffuseTexture->m_RendererID);
+		glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);//iter->second[0]->m_DiffuseTexture->m_RendererID);
+		gliter->second.m_TextureSlots[0] = Texture::s_WhiteTexture->m_RendererID;
 		m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
 		m_Shader->SetUniform3fv("u_CameraPos", Window::GetInstance().GetCamera().GetPosition());
 
@@ -68,18 +69,20 @@ void Doom::Instancing::Render()
 			m_Shader->SetUniform1f(buffer, pl->m_Quadratic);
 		}
 
-		m_Shader->SetUniform1i("u_DiffuseTexture", 0);
+		//m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 		if (iter->second[0]->m_IsUsingNormalMap) 
 		{
 			glBindTextureUnit(1, iter->second[0]->m_NormalMapTexture->m_RendererID);
-			m_Shader->SetUniform1i("u_NormalMapTexture", 1);
+			gliter->second.m_TextureSlots[1] = iter->second[0]->m_NormalMapTexture->m_RendererID;
+			//m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
 		m_Shader->SetUniform1i("u_isNormalMapping", iter->second[0]->m_IsUsingNormalMap);
 
 		m_Shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		m_Shader->SetUniform1f("u_DrawShadows", m_DrawShadows);
 		glBindTextureUnit(2, Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
-		m_Shader->SetUniform1i("u_ShadowMap", 2);
+		gliter->second.m_TextureSlots[2] = Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0];
+		//m_Shader->SetUniform1i("u_ShadowMap", 2);
 		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 
 		Renderer::s_Stats.m_Vertices += gliter->first->m_IndicesSize * objsSize;
@@ -107,12 +110,26 @@ void Doom::Instancing::Render()
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
-		gliter->second.m_LayoutDynamic.Push<float>(2);
+		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->first->m_Va.AddBuffer(gliter->second.m_VboDynamic, gliter->second.m_LayoutDynamic, 5, 1);
+
+
+		int samplers[32];
+		for (unsigned int i = 3; i < gliter->second.m_TextureSlotsIndex; i++)
+		{
+			glBindTextureUnit(i, gliter->second.m_TextureSlots[i]);
+		}
+		for (unsigned int i = 0; i < maxTextureSlots; i++)
+		{
+			samplers[i] = i;
+		}
+
+
+		m_Shader->SetUniform1iv("u_Texture", samplers);
 
 		if (!iter->second[0]->m_IsCullingFace)
 			glDisable(GL_CULL_FACE);
@@ -122,7 +139,15 @@ void Doom::Instancing::Render()
 		gliter->first->m_Ib.UnBind();
 		gliter->first->m_Va.UnBind();
 		gliter->first->m_Vb.UnBind();
-		glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
+		//glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
+
+		gliter->second.m_TextureSlotsIndex = 3;
+		for (unsigned int i = gliter->second.m_TextureSlotsIndex; i < 32; i++)
+		{
+			gliter->second.m_TextureSlots[i] = 0;
+			glBindTextureUnit(i, 0);
+		}
+		glDisable(GL_TEXTURE_2D_ARRAY);
 	}
 }
 
@@ -169,7 +194,7 @@ void Doom::Instancing::BakeShadows()
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
-		gliter->second.m_LayoutDynamic.Push<float>(2);
+		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
@@ -208,21 +233,34 @@ void Doom::Instancing::PrepareVertexAtrrib()
 		float dif = (float)objsSize / (float)m_NThreads;
 		for (size_t k = 0; k < m_NThreads - 1; k++)
 		{
-			/*glm::vec4 color;
-			if (k == 0)
-				color = COLORS::Red;
-			else if (k == 1)
-				color = COLORS::Green;
-			else if (k == 2)
-				color = COLORS::Yellow;
-			else if (k == 3)
-				color = COLORS::Brown;
-			else if (k == 4)
-				color = COLORS::Silver;
-			else if (k == 5)
-				color = COLORS::DarkGray;
-			else if (k == 6)
-				color = COLORS::Orange;*/
+			//glm::vec4 color;
+			//if (k % 2 == 0)
+			//{
+			//	color = glm::vec4((float)k / (float)m_NThreads);
+			//	color[1] = 1.0f;
+			//	color[3] = 1.0f;
+			//}
+			//else
+			//{
+			//	color = glm::vec4((float)k / (float)m_NThreads);
+			//	color[0] = 1.0f;
+			//	color[3] = 1.0f;
+			//}
+			
+			//if (k == 0)
+			//	color = COLORS::Red;
+			//else if (k == 1)
+			//	color = COLORS::Green;
+			//else if (k == 2)
+			//	color = COLORS::Yellow;
+			//else if (k == 3)
+			//	color = COLORS::Brown;
+			//else if (k == 4)
+			//	color = COLORS::Silver;
+			//else if (k == 5)
+			//	color = COLORS::DarkGray;
+			//else if (k == 6)
+			//	color = COLORS::Orange;
 		ThreadPool::GetInstance().Enqueue([=] {
 			{
 				std::lock_guard lg(World::GetInstance().m_Mtx);
@@ -231,8 +269,37 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			uint32_t thisSegmentOfObjectsV = k * dif + dif;
 			for (uint32_t i = k * dif; i < thisSegmentOfObjectsV; i++)
 			{
-				//if (iter->second.size() <= i) continue;
+				uint32_t m_TextureIndex = 0;
 				Renderer3D& r3d = *(iter->second[i]);
+
+				bool isFound = false;
+				if (r3d.m_DiffuseTexture != nullptr)
+				{
+					
+					auto iter = std::find(gliter->second.m_TextureSlots.begin(), gliter->second.m_TextureSlots.end(), r3d.m_DiffuseTexture->m_RendererID);
+					if (iter != gliter->second.m_TextureSlots.end())
+					{
+						m_TextureIndex = (iter - gliter->second.m_TextureSlots.begin());
+						isFound = true;
+					}
+					if (!isFound)
+					{
+						if (gliter->second.m_TextureSlotsIndex >= 32)
+						{
+							std::cout << BOLDYELLOW << "WARNING: limit of texture slots, texture will be set to white!" << RESET << std::endl;
+						}
+						else
+						{
+							std::lock_guard lg(World::GetInstance().m_Mtx);
+							m_TextureIndex = gliter->second.m_TextureSlotsIndex;
+							gliter->second.m_TextureSlots[gliter->second.m_TextureSlotsIndex] = r3d.m_DiffuseTexture->m_RendererID;
+							gliter->second.m_TextureSlotsIndex++;
+						}
+					}
+				}
+
+				//if (iter->second.size() <= i) continue;
+			
 				//if (r3d.m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
 				GameObject& owner = *(r3d.GetOwnerOfComponent());
 				if (owner.m_IsStatic && r3d.m_IsInitializedInInstancing) continue;
@@ -240,11 +307,16 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(posPtr, &owner.GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner.GetScale()[0], 12);
 				float* view = glm::value_ptr(owner.m_Transform.m_ViewMat4);
-				memcpy(&posPtr[12], view, 64);
-				//r->m_Color = color;
+				memcpy(&posPtr[13], view, 64);
+				//r3d.m_Color = color;
 				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
 				posPtr[10] = r3d.m_Material.m_Ambient;
 				posPtr[11] = r3d.m_Material.m_Specular;
+				posPtr[12] = (float)m_TextureIndex;
+				//{
+				//	std::lock_guard lg(World::GetInstance().m_Mtx);
+				//	std::cout << posPtr[12] << std::endl;
+				//}
 				r3d.m_IsInitializedInInstancing = true;
 			}
 			{
@@ -263,6 +335,34 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			{
 				//if (iter->second.size() <= i) continue;
 				Renderer3D& r3d = *(iter->second[i]);
+				uint32_t m_TextureIndex = 0;
+
+				bool isFound = false;
+				if (r3d.m_DiffuseTexture != nullptr)
+				{
+					std::lock_guard lg(World::GetInstance().m_Mtx);
+					auto iter = std::find(gliter->second.m_TextureSlots.begin(), gliter->second.m_TextureSlots.end(), r3d.m_DiffuseTexture->m_RendererID);
+					if (iter != gliter->second.m_TextureSlots.end())
+					{
+						m_TextureIndex = (iter - gliter->second.m_TextureSlots.begin());
+						isFound = true;
+					}
+					if (!isFound)
+					{
+						if (gliter->second.m_TextureSlotsIndex >= 32)
+						{
+							std::cout << BOLDYELLOW << "WARNING: limit of texture slots, texture will be set to white!" << RESET << std::endl;
+						}
+						else
+						{
+							std::lock_guard lg(World::GetInstance().m_Mtx);
+							m_TextureIndex = gliter->second.m_TextureSlotsIndex;
+							gliter->second.m_TextureSlots[gliter->second.m_TextureSlotsIndex] = r3d.m_DiffuseTexture->m_RendererID;
+							gliter->second.m_TextureSlotsIndex++;
+						}
+					}
+				}
+
 				//if (r3d.m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
 				GameObject& owner = *(r3d.GetOwnerOfComponent());
 				if (owner.m_IsStatic && r3d.m_IsInitializedInInstancing) continue;
@@ -270,11 +370,16 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(posPtr, &owner.GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner.GetScale()[0], 12);
 				float* view = glm::value_ptr(owner.m_Transform.m_ViewMat4);
-				memcpy(&posPtr[12], view, 64);
-				//r->m_Color = COLORS::Blue;
+				memcpy(&posPtr[13], view, 64);
+				//r3d.m_Color = COLORS::Blue;
 				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
 				posPtr[10] = r3d.m_Material.m_Ambient;
 				posPtr[11] = r3d.m_Material.m_Specular;
+				posPtr[12] = (float)m_TextureIndex;
+				//{
+				//	std::lock_guard lg(World::GetInstance().m_Mtx);
+				//	std::cout << posPtr[12] << std::endl;
+				//}
 				r3d.m_IsInitializedInInstancing = true;
 			}
 			{

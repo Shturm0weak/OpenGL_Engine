@@ -44,7 +44,6 @@ extern "C"
 #include "OpenGl/VertexArray.h"
 #include "OpenGl/Texture.h"
 #include "Objects/GameObject.h"
-#include <Windows.h>
 #include "FileDialogs/FileDialogs.h"
 #include "Core/World.h"
 #endif //PCH_H

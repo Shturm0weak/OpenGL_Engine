@@ -1,4 +1,6 @@
-#include "Application.h"
+#define OLC_PGE_APPLICATION
+#include "Network/olcPGEX_Network.h"
+#include "NetWork/Client.h"
 #include "EntryPoint.h"
 #include "Audio/SoundManager.h"
 #include "src/Examples/RayCastTest.h"
@@ -14,9 +16,10 @@
 #include "Hexagon/Hexagon.h"
 #include "Examples/Test.h"
 
+
 int main()
 {
-	Test app;
+	Hexagon app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

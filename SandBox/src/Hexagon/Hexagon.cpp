@@ -128,28 +128,28 @@ void Doom::Hexagon::OnStart()
 		for (uint32_t j = 0; j < height; j++)
 		{
 			GameObject* go = GameObject::Create("Hex");
-			GameObject* sprite = GameObject::Create("Sprite");
-			go->AddChild(sprite);
-			sprite->m_Enable = false;
-			go->m_IsStatic = true;
+			//GameObject* sprite = GameObject::Create("Sprite");
+			//go->AddChild(sprite);
+			//sprite->m_Enable = false;
+			go->m_IsStatic = false;
 			if (i % 2 == 1)
 			{
 				go->m_Transform.Translate(j * hexX + hexX * 0.5f, 0, i * 1.5f);
-				sprite->m_Transform.Translate(j * hexX + hexX * 0.5f, 0.15, i * 1.5f);
+				//sprite->m_Transform.Translate(j * hexX + hexX * 0.5f, 0.15, i * 1.5f);
 			}
 			else
 			{
 				go->m_Transform.Translate(j * hexX, 0, i * 1.5f);
-				sprite->m_Transform.Translate(j * hexX, 0.15, i * 1.5f);
+				//sprite->m_Transform.Translate(j * hexX, 0.15, i * 1.5f);
 			}
 			Renderer3D* r = go->AddComponent<Renderer3D>();
 			r->LoadMesh(MeshManager::GetInstance().GetMesh("hex"));
 			r->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
-			r->m_Color = Colors(noise[i * (int)width + j], sprite);
+			//r->m_Color = Colors(noise[i * (int)width + j], sprite);
 			go->m_Transform.RotateOnce(glm::vec3(-90, 0, 0));
 			go->m_Transform.Scale(glm::vec3(0.99, 0.99, 0.99));
-			sprite->m_Transform.Scale(glm::vec3(0.7, 0.7, 1));
-			sprite->m_Transform.RotateOnce(-90, 0, 0);
+			//sprite->m_Transform.Scale(glm::vec3(0.7, 0.7, 1));
+			//sprite->m_Transform.RotateOnce(-90, 0, 0);
 		}
 	}
 }

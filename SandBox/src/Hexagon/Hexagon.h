@@ -7,8 +7,8 @@ namespace Doom {
 	class Hexagon : public Application {
 	private:
 
-		float width = 128;
-		float height = 128;
+		float width = 64;
+		float height = 64;
 		float cameraSpeed = 5;
 		GameObject* selectedObj = nullptr;
 		glm::vec4 prevColor;
