@@ -15,16 +15,17 @@ namespace Doom {
 	class DOOM_API Mesh {
 	public:
 
-		bool m_IsInitialized = false;
+		float* m_VertAttrib = nullptr;
+		glm::vec3 m_TheHighestPoint = glm::vec3(1.0f);
+		glm::vec3 m_TheLowestPoint = glm::vec3(-1.0f);
+		glm::vec3 m_Color = glm::vec3(1.0f);
 		VertexBuffer m_Vb;
 		VertexArray m_Va;
 		IndexBuffer m_Ib;
 		VertexBufferLayout m_Layout;
 		std::string m_Name;
 		std::string m_FilePath;
-		glm::vec3 m_TheHighestPoint = glm::vec3(1.0f);
-		glm::vec3 m_TheLowestPoint = glm::vec3(-1.0f);
-		float* m_VertAttrib = nullptr;
+		bool m_IsInitialized = false;
 		uint32_t m_IdOfMeshInFile = 0;
 		uint32_t m_VertAttribSize = 0;
 		uint32_t m_IndicesSize = 0;

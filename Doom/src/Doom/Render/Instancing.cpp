@@ -273,7 +273,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				Renderer3D& r3d = *(iter->second[i]);
 
 				bool isFound = false;
-				if (r3d.m_DiffuseTexture != nullptr)
+				if (r3d.m_DiffuseTexture != Texture::s_WhiteTexture)
 				{
 					
 					auto iter = std::find(gliter->second.m_TextureSlots.begin(), gliter->second.m_TextureSlots.end(), r3d.m_DiffuseTexture->m_RendererID);
@@ -290,8 +290,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 						}
 						else
 						{
-							std::lock_guard lg(World::GetInstance().m_Mtx);
 							m_TextureIndex = gliter->second.m_TextureSlotsIndex;
+							std::lock_guard lg(World::GetInstance().m_Mtx);
 							gliter->second.m_TextureSlots[gliter->second.m_TextureSlotsIndex] = r3d.m_DiffuseTexture->m_RendererID;
 							gliter->second.m_TextureSlotsIndex++;
 						}
@@ -338,9 +338,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				uint32_t m_TextureIndex = 0;
 
 				bool isFound = false;
-				if (r3d.m_DiffuseTexture != nullptr)
+				if (r3d.m_DiffuseTexture != Texture::s_WhiteTexture)
 				{
-					std::lock_guard lg(World::GetInstance().m_Mtx);
 					auto iter = std::find(gliter->second.m_TextureSlots.begin(), gliter->second.m_TextureSlots.end(), r3d.m_DiffuseTexture->m_RendererID);
 					if (iter != gliter->second.m_TextureSlots.end())
 					{
@@ -355,8 +354,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 						}
 						else
 						{
-							std::lock_guard lg(World::GetInstance().m_Mtx);
 							m_TextureIndex = gliter->second.m_TextureSlotsIndex;
+							std::lock_guard lg(World::GetInstance().m_Mtx);
 							gliter->second.m_TextureSlots[gliter->second.m_TextureSlotsIndex] = r3d.m_DiffuseTexture->m_RendererID;
 							gliter->second.m_TextureSlotsIndex++;
 						}

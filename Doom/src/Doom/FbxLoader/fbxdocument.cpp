@@ -122,8 +122,7 @@ namespace fbx {
 			{
 				if (m_Nodes[i].getName() == "Objects") {
 
-					//m_Nodes[i].print();
-					size_t sizec = m_Nodes[i].getChildren().size();
+					m_Nodes[i].print();
 					fbx::FBXNode node = m_Nodes[i].getChildren()[meshId];
 					if (node.getName() == "Geometry") {
 						Data data;
@@ -131,11 +130,23 @@ namespace fbx {
 						mesh->m_IdOfMeshInFile = meshId;
 						LoadData(data, node, mesh);
 						GenerateMesh(data, mesh);
-						return mesh;
+					}
+					size_t sizec = m_Nodes[i].getChildren().size();
+					for (size_t j = 0; j < sizec; j++)
+					{
+						node = m_Nodes[i].getChildren()[j];
+						if (node.getName() == "Material")
+						{
+							//node.print();
+							fbx::FBXNode matNode = node.getChildren()[3].children[0];
+							glm::vec3 color = glm::vec3(matNode.properties[4].value.f64, matNode.properties[5].value.f64, matNode.properties[6].value.f64);
+							if (mesh != nullptr)
+								mesh->m_Color = color;
+						}
 					}
 				}
 			}
-			return nullptr;
+			return mesh;
 		}
 		catch (std::string e) {
 			std::cout << e << std::endl;
