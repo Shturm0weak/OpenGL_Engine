@@ -29,6 +29,8 @@ public:
 		std::vector<float> uvForVert;
 		std::vector<float> tangent;
 		std::vector<float> btangent;
+		std::vector<int> materialsForVerteces;
+		std::vector<glm::vec3> colors;
     };
 
 	void LoadScene(std::string filepath);

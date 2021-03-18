@@ -4,13 +4,14 @@
 layout(location = 0) in vec3 positions;
 layout(location = 1) in vec3 normals;
 layout(location = 2) in vec2 textCoords;
-layout(location = 3) in vec3 tangent;
-layout(location = 4) in vec3 btangent;
-layout(location = 5) in vec3 v;
-layout(location = 6) in vec3 s;
-layout(location = 7) in vec4 m_color;
-layout(location = 8) in vec3 mat;
-layout(location = 9) in mat4 u_View;
+layout(location = 3) in vec3 vertexColor;
+layout(location = 4) in vec3 tangent;
+layout(location = 5) in vec3 btangent;
+layout(location = 6) in vec3 v;
+layout(location = 7) in vec3 s;
+layout(location = 8) in vec4 m_color;
+layout(location = 9) in vec3 mat;
+layout(location = 10) in mat4 u_View;
 mat4 u_Model = mat4(1.0, 0.0, 0.0, 0.0,
 					0.0, 1.0, 0.0, 0.0,
 					0.0, 0.0, 1.0, 0.0,
@@ -22,6 +23,7 @@ mat4 u_Scale = mat4(s.x, 0.0, 0.0, 0.0,
 flat out int tex_index;
 out vec4 FragPosLightSpace;
 out mat3 TBN;
+out vec3 out_vertexColor;
 out vec2 v_textcoords;
 out float ambient;
 out float specular;
@@ -34,6 +36,7 @@ uniform vec3 u_CameraPos;
 uniform mat4 u_LightSpaceMatrix;
 
 void main() {
+	out_vertexColor = vertexColor;
 	tex_index = int(mat.z);
 	vec4 tempFragPos = u_Model * u_View * u_Scale * vec4(positions, 1.0);
 	FragPos = vec3(tempFragPos);
@@ -68,6 +71,7 @@ in float ambient;
 in float specular;
 in mat3 TBN;
 in vec4 FragPosLightSpace;
+in vec3 out_vertexColor;
 flat in int tex_index;
 
 struct PointLight {
@@ -200,7 +204,7 @@ void main() {
 		result += PointLightsCompute(texColor.xyz, pointLights[i], normal, FragPos, CameraPos);
 	}
 	float gamma = 2.2;
-	FragColor = vec4(pow(result * out_color.rgb, vec3(1.0 / gamma)), 1.0);
+	FragColor = vec4(pow(result * out_color.rgb * out_vertexColor, vec3(1.0 / gamma)), 1.0);
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > Brightness)
 		BrightColor = vec4(FragColor.rgb, 1.0);

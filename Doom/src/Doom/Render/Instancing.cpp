@@ -115,7 +115,7 @@ void Doom::Instancing::Render()
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
-		gliter->first->m_Va.AddBuffer(gliter->second.m_VboDynamic, gliter->second.m_LayoutDynamic, 5, 1);
+		gliter->first->m_Va.AddBuffer(gliter->second.m_VboDynamic, gliter->second.m_LayoutDynamic, 6, 1);
 
 
 		int samplers[32];
@@ -199,7 +199,7 @@ void Doom::Instancing::BakeShadows()
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
-		gliter->first->m_Va.AddBuffer(gliter->second.m_VboDynamic, gliter->second.m_LayoutDynamic, 5, 1);
+		gliter->first->m_Va.AddBuffer(gliter->second.m_VboDynamic, gliter->second.m_LayoutDynamic, 6, 1);
 
 		glDrawElementsInstanced(GL_TRIANGLES, gliter->first->m_Ib.m_count, GL_UNSIGNED_INT, 0, iter->second.size());
 

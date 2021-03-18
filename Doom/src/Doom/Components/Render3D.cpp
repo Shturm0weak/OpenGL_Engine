@@ -44,7 +44,6 @@ void Doom::Renderer3D::LoadMesh(Mesh* mesh)
 	ChangeRenderTechnic(m_RenderTechnic);
 	if (m_Mesh != nullptr && !m_IsSkyBox)
 	{
-		m_Color = glm::vec4(mesh->m_Color, 1.0);
 		CubeCollider3D* cc = m_OwnerOfCom->m_ComponentManager.GetComponent<CubeCollider3D>();
 		if (cc == nullptr) 
 		{

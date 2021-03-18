@@ -55,7 +55,7 @@ void Doom::Renderer::RenderBloomEffect()
 	if (!s_BloomEffect) return;
 
 	bool horizontal = true, first_iteration = true;
-	unsigned int amount = 10;
+	unsigned int amount = 20;
 
 	std::vector<FrameBuffer*> fb = window.m_FrameBufferBlur;
 

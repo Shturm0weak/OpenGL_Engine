@@ -124,8 +124,8 @@ namespace fbx {
 
 					m_Nodes[i].print();
 					fbx::FBXNode node = m_Nodes[i].getChildren()[meshId];
+					Data data;
 					if (node.getName() == "Geometry") {
-						Data data;
 						mesh = new Mesh(name, filepath);
 						mesh->m_IdOfMeshInFile = meshId;
 						LoadData(data, node, mesh);
@@ -140,8 +140,23 @@ namespace fbx {
 							//node.print();
 							fbx::FBXNode matNode = node.getChildren()[3].children[0];
 							glm::vec3 color = glm::vec3(matNode.properties[4].value.f64, matNode.properties[5].value.f64, matNode.properties[6].value.f64);
-							if (mesh != nullptr)
-								mesh->m_Color = color;
+							data.colors.push_back(color);
+						}
+					}
+					if(data.colors.size() > 0 && data.materialsForVerteces.size() > 0 && data.materialsForVerteces.size() * 17 * 3 == mesh->m_VertAttribSize)
+					{
+						size_t materialCount = 0;
+						size_t count = 0;
+						for (size_t k = 0; k < mesh->m_VertAttribSize; k += 17)
+						{
+							mesh->m_VertAttrib[k + 8] = data.colors[data.materialsForVerteces[materialCount]][0];
+							mesh->m_VertAttrib[k + 9] = data.colors[data.materialsForVerteces[materialCount]][1];
+							mesh->m_VertAttrib[k + 10] = data.colors[data.materialsForVerteces[materialCount]][2];
+							count++;
+							if (count % 3 == 0) {
+								materialCount++;
+								//materialCount = glm::clamp(materialCount, (size_t)0, data.materialsForVerteces.size() - 1);
+							}
 						}
 					}
 				}
@@ -562,6 +577,20 @@ namespace fbx {
 					}
 				}
 			}
+			if (nodeG.getName() == "LayerElementMaterial") 
+			{
+				for (size_t i = 0; i < nodeG.getChildren().size(); i++)
+				{
+					if (nodeG.getChildren()[i].name == "Materials")
+					{
+						auto values = nodeG.getChildren()[i].properties[0].values;
+						for (size_t j = 0; j < values.size(); j++)
+						{
+							data.materialsForVerteces.push_back(values[j].i32);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -645,7 +674,7 @@ namespace fbx {
 			uvCounter += 6;
 		}
 
-		mesh->m_VertAttribSize = data.vertecesSizeForNormals * 3 + data.normalsSize + data.uvSizeForVert;
+		mesh->m_VertAttribSize = data.vertecesSizeForNormals * 3 + data.normalsSize + data.uvSizeForVert + data.vertecesSizeForNormals;
 		mesh->m_VertAttrib = new float[mesh->m_VertAttribSize];
 		uint32_t counter = 0;
 		uint32_t normalIndex = 0;
@@ -674,12 +703,17 @@ namespace fbx {
 				counter++;
 			}
 			else if (counter < 11) {
+				mesh->m_VertAttrib[i] = 1.0f;
+				//std::cout << "color" << std::endl;
+				counter++;
+			}
+			else if (counter < 14) {
 				mesh->m_VertAttrib[i] = data.tangent[tangentIndex];
 				//std::cout << "tangent" << std::endl;
 				tangentIndex++;
 				counter++;
 			}
-			else if (counter < 14) {
+			else if (counter < 17) {
 				mesh->m_VertAttrib[i] = data.btangent[btangentIndex];
 				//std::cout << "btangent" << std::endl;
 				btangentIndex++;

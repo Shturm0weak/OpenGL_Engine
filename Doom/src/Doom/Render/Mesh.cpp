@@ -9,11 +9,12 @@ void Mesh::Init()
 		return;
 	m_Va.Init();
 	m_Vb.Init(m_VertAttrib, m_VertAttribSize * sizeof(float));
-	m_Layout.Push<float>(3);
-	m_Layout.Push<float>(3);
-	m_Layout.Push<float>(2);
-	m_Layout.Push<float>(3);
-	m_Layout.Push<float>(3);
+	m_Layout.Push<float>(3); //verteces
+	m_Layout.Push<float>(3); //normals
+	m_Layout.Push<float>(2); //uvs
+	m_Layout.Push<float>(3); //color
+	m_Layout.Push<float>(3); //tangent
+	m_Layout.Push<float>(3); //btangent
 	m_Va.AddBuffer(m_Vb, m_Layout);
 	m_Ib.Init(m_Indices, m_IndicesSize);
 	m_Ib.UnBind();

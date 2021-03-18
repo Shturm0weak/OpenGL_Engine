@@ -4,8 +4,8 @@
 layout(location = 0) in vec3 positions;
 layout(location = 1) in vec3 normals;
 layout(location = 2) in vec2 textCoords;
-layout(location = 3) in vec3 tangent;
-layout(location = 4) in vec3 btangent;
+layout(location = 4) in vec3 tangent;
+layout(location = 5) in vec3 btangent;
 
 out vec2 TexCoords;
 
@@ -31,7 +31,7 @@ void main()
     hdrColor += (bloomColorH); // additive blending
     // tone mapping
     vec3 result;
-    if (bloomColorH.x > 0.1 || bloomColorH.y > 0.1) {
+    if (bloomColorH.x > 0.01 || bloomColorH.y > 0.01) {
         result = vec3(1.0) - exp(-hdrColor * exposure);
     }
     else {
