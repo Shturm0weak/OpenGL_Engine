@@ -4,24 +4,13 @@
 #include "Objects/GridLayOut.h"
 #include "Integrals.h"
 
-double Doom::FEM::CalculateAreaOfTriangle(const Triangle& triangle)
+using namespace Doom;
+
+double Doom::Triangle::CalculateAreaOfTriangle()
 {
-    math::Matrix A(3,3);
-    A.AssignCol(math::Vector(3, 1), 0);
-
-    math::Vector col2(3);
-    col2[0] = triangle.m_Nodes[0].x;
-    col2[1] = triangle.m_Nodes[1].x;
-    col2[2] = triangle.m_Nodes[2].x;
-    A.AssignCol(col2, 1);
-
-    math::Vector col3(3);
-    col3[0] = triangle.m_Nodes[0].y;
-    col3[1] = triangle.m_Nodes[1].y;
-    col3[2] = triangle.m_Nodes[2].y;
-A.AssignCol(col3, 2);
-
-return math::Determinant(A, A.m_Cols) * 0.5;
+    dvec3 x = dvec3(m_Nodes[0].x, m_Nodes[1].x, m_Nodes[2].x);
+    dvec3 y = dvec3(m_Nodes[0].y, m_Nodes[1].y, m_Nodes[2].y);
+    return abs(0.5 * (x[0] * (y[1] - y[2]) + x[1] * (y[2] - y[0]) + x[2] * (y[0] - y[1])));
 }
 
 void Doom::FEM::OnStart()
@@ -35,11 +24,6 @@ void Doom::FEM::OnStart()
     sun->m_Transform.RotateOnce(75, 0, 0);
     sun->AddComponent<DirectionalLight>();
     {
-        //weights.push_back({ 0, 128.0 / 225.0 });
-        //weights.push_back({ (1.0 / 3.0) * glm::sqrt(5.0 - 2.0 * sqrt(10.0 / 7.0)), (332 + 13 * sqrt(70)) / 900 });
-        //weights.push_back({ -(1.0 / 3.0) * glm::sqrt(5.0 - 2.0 * sqrt(10.0 / 7.0)), (332 + 13 * sqrt(70)) / 900 });
-        //weights.push_back({ (1.0 / 3.0) * glm::sqrt(5.0 + 2.0 * sqrt(10.0 / 7.0)), (332 - 13 * sqrt(70)) / 900 });
-        //weights.push_back({ -(1.0 / 3.0) * glm::sqrt(5.0 + 2.0 * sqrt(10.0 / 7.0)), (332 - 13 * sqrt(70)) / 900 });
         weights.push_back({ 1.0 / 3.0, 1.0 / 3.0, 0.11250 });
         weights.push_back({ 0.0597159, 0.470142,  0.0661971 });
         weights.push_back({ 0.470142,  0.470142,  0.0661971 });
@@ -50,14 +34,14 @@ void Doom::FEM::OnStart()
     }
 }
 
-double Doom::FEM::CalculateR(const Triangle& triangle)
+double Doom::Triangle::CalculateR()
 {
-    return glm::abs((triangle.m_Nodes[0].x + triangle.m_Nodes[1].x + triangle.m_Nodes[2].x) / 3.0);
+    return glm::abs((m_Nodes[0].x + m_Nodes[1].x + m_Nodes[2].x) / 3.0);
 }
 
-double Doom::FEM::CalculateZ(const Triangle& triangle)
+double Doom::Triangle::CalculateZ()
 {
-    return  glm::abs((triangle.m_Nodes[0].y + triangle.m_Nodes[1].y + triangle.m_Nodes[2].y) / 3.0);
+    return  glm::abs((m_Nodes[0].y + m_Nodes[1].y + m_Nodes[2].y) / 3.0);
 }
 
 void Doom::FEM::OnUpdate()
@@ -65,21 +49,21 @@ void Doom::FEM::OnUpdate()
     Window::GetInstance().GetCamera().CameraMovement();
 }
 
-glm::dvec3 Doom::FEM::CalculateAlpha(const Triangle& triangle)
+glm::dvec3 Doom::Triangle::CalculateAlpha()
 {
     glm::dvec3 a;
-    a.x = triangle.m_Nodes[1].x * triangle.m_Nodes[2].y - triangle.m_Nodes[2].x * triangle.m_Nodes[1].y;
-    a.y = triangle.m_Nodes[2].x * triangle.m_Nodes[0].y - triangle.m_Nodes[0].x * triangle.m_Nodes[2].y;
-    a.z = triangle.m_Nodes[0].x * triangle.m_Nodes[1].y - triangle.m_Nodes[1].x * triangle.m_Nodes[0].y;
+    a.x = m_Nodes[1].x * m_Nodes[2].y - m_Nodes[2].x * m_Nodes[1].y;
+    a.y = m_Nodes[2].x * m_Nodes[0].y - m_Nodes[0].x * m_Nodes[2].y;
+    a.z = m_Nodes[0].x * m_Nodes[1].y - m_Nodes[1].x * m_Nodes[0].y;
     return a;
 }
 
-glm::dvec3 Doom::FEM::CalculateBeta(const Triangle& triangle)
+glm::dvec3 Doom::Triangle::CalculateBeta()
 {
     glm::dvec3 b;
-    b.x = triangle.m_Nodes[1].y - triangle.m_Nodes[2].y;
-    b.y = triangle.m_Nodes[2].y - triangle.m_Nodes[0].y;
-    b.z = triangle.m_Nodes[0].y - triangle.m_Nodes[1].y;
+    b.x = m_Nodes[1].y - m_Nodes[2].y;
+    b.y = m_Nodes[2].y - m_Nodes[0].y;
+    b.z = m_Nodes[0].y - m_Nodes[1].y;
     return b;
 }
 
@@ -93,27 +77,27 @@ void Doom::FEM::Clear()
     triangles.clear();
 }
 
-glm::dvec3 Doom::FEM::CalculateGamma(const Triangle& triangle)
+glm::dvec3 Doom::Triangle::CalculateGamma()
 {
     glm::dvec3 c;
-    c.x = triangle.m_Nodes[2].x - triangle.m_Nodes[1].x;
-    c.y = triangle.m_Nodes[0].x - triangle.m_Nodes[2].x;
-    c.z = triangle.m_Nodes[1].x - triangle.m_Nodes[0].x;
+    c.x = m_Nodes[2].x - m_Nodes[1].x;
+    c.y = m_Nodes[0].x - m_Nodes[2].x;
+    c.z = m_Nodes[1].x - m_Nodes[0].x;
     return c;
 }
 
-math::Matrix Doom::FEM::CalculateMatrixJ(Triangle& triangle)
+math::Matrix Doom::Triangle::CalculateMatrixJ()
 {
     math::Matrix J(2, 2);
 
     math::Vector col1(2);
-    col1[0] = triangle.m_Nodes[0].x - triangle.m_Nodes[2].x;
-    col1[1] = triangle.m_Nodes[1].x - triangle.m_Nodes[2].x;
+    col1[0] = m_Nodes[0].x - m_Nodes[2].x;
+    col1[1] = m_Nodes[1].x - m_Nodes[2].x;
     J.AssignCol(col1, 0);
 
     math::Vector col2(2);
-    col2[0] = triangle.m_Nodes[0].y - triangle.m_Nodes[2].y;
-    col2[1] = triangle.m_Nodes[1].y - triangle.m_Nodes[2].y;
+    col2[0] = m_Nodes[0].y - m_Nodes[2].y;
+    col2[1] = m_Nodes[1].y - m_Nodes[2].y;
     J.AssignCol(col2, 1);
 
     return J;
@@ -267,7 +251,59 @@ math::Matrix Doom::FEM::CalculateMatrixD(double E, double u) {
     return D * (E / ((1.0 + u) * (1.0 - 2.0 * u)));
 }
 
-math::Matrix Doom::FEM::CalculateMatrixB(double Area, double R, double Z,glm::dvec3 A, glm::dvec3 B, glm::dvec3 Y)
+math::Matrix Doom::Triangle::CalculateMatrixB(Weight weight, double Area, double r, double z, glm::dvec3 A, glm::dvec3 B, glm::dvec3 Y)
+{
+    math::Matrix matB(4, 6);
+    math::Vector col(4);
+
+    double R = weight.r * m_Nodes[0].x + weight.z * m_Nodes[1].x + ((1 - (weight.r + weight.z)) * m_Nodes[2].x);
+
+    //1
+    col[0] = B[0];
+    col[1] = 0;
+    col[2] = Y[0];
+    col[3] = (A[0] + (B[0] * r) + (Y[0] * z)) / R;
+    matB.AssignCol(col, 0);
+
+    //2
+    col[0] = 0;
+    col[1] = Y[0];
+    col[2] = B[0];
+    col[3] = 0;
+    matB.AssignCol(col, 1);
+
+    //3
+    col[0] = B[1];
+    col[1] = 0;
+    col[2] = Y[1];
+    col[3] = (A[1] + (B[1] * r) + (Y[1] * z)) / R;
+    matB.AssignCol(col, 2);
+
+    //4
+    col[0] = 0;
+    col[1] = Y[1];
+    col[2] = B[1];
+    col[3] = 0;
+    matB.AssignCol(col, 3);
+
+    //5
+    col[0] = B[2];
+    col[1] = 0;
+    col[2] = Y[2];
+    col[3] = (A[2] + (B[2] * r) + (Y[2] * z)) / R;
+    matB.AssignCol(col, 4);
+
+    //6
+    col[0] = 0;
+    col[1] = Y[2];
+    col[2] = B[2];
+    col[3] = 0;
+    matB.AssignCol(col, 5);
+
+    return matB * (1 / (2 * Area));
+}
+
+math::Matrix Doom::Triangle::CalculateMatrixBAprox(double Area, double R, double Z,glm::dvec3 A, glm::dvec3 B, glm::dvec3 Y)
 {
     math::Matrix matB(4,6);
     math::Vector col(4);
@@ -354,33 +390,34 @@ void Doom::FEM::IndexNodes(std::vector<Triangle*> triangles)
 void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
 {
     Clear();
-    mesh->m_VertAttrib;
-    for (uint32_t i = 0; i < mesh->m_VertAttribSize; i += (14 * 3))
+    for (uint32_t i = 0; i < mesh->m_VertAttribSize; i += (17 * 3))
     {
         glm::dvec2 a = glm::dvec2(mesh->m_VertAttrib[i + 0], mesh->m_VertAttrib[i + 1]);
-        glm::dvec2 b = glm::dvec2(mesh->m_VertAttrib[i + 14 + 0], mesh->m_VertAttrib[i + 14 + 1]);
-        glm::dvec2 c = glm::dvec2(mesh->m_VertAttrib[i + 28 + 0], mesh->m_VertAttrib[i + 28 + 1]);
+        glm::dvec2 c = glm::dvec2(mesh->m_VertAttrib[i + 17 + 0], mesh->m_VertAttrib[i + 17 + 1]);
+        glm::dvec2 b = glm::dvec2(mesh->m_VertAttrib[i + 17 * 2 + 0], mesh->m_VertAttrib[i + 17 * 2 + 1]);
         triangles.push_back(new Triangle(a, b, c));
     }
+    //glm::dvec2 a = glm::dvec2(0, 0);
+    //glm::dvec2 b = glm::dvec2(50, 0);
+    //glm::dvec2 c = glm::dvec2(0, 50);
+    //triangles.push_back(new Triangle(a, b, c));
     IndexNodes(triangles);
     m_GlobalStiffnessMatrix = math::Matrix(maxDimension, maxDimension);
     math::Matrix matD = CalculateMatrixD(m_E, m_U);
     for (size_t i = 0; i < triangles.size(); i++)
     {
         Triangle* triangle = triangles[i];
-        double area = CalculateAreaOfTriangle(*triangle);
-        double R = CalculateR(*triangle);
-        double Z = CalculateZ(*triangle);
-        glm::dvec3 A = CalculateAlpha(*triangle);
-        glm::dvec3 B = CalculateBeta(*triangle);
-        glm::dvec3 Y = CalculateGamma(*triangle);
-        //math::Matrix matJ = CalculateMatrixJ(*triangle);
-        math::Matrix matB = CalculateMatrixB(area, R, Z, A, B, Y);
+        double area = triangle->CalculateAreaOfTriangle();
+        double R = triangle->CalculateR();
+        double Z = triangle->CalculateZ();
+        glm::dvec3 A = triangle->CalculateAlpha();
+        glm::dvec3 B = triangle->CalculateBeta();
+        glm::dvec3 Y = triangle->CalculateGamma();
+        math::Matrix matB = triangle->CalculateMatrixBAprox(area, R, Z, A, B, Y);
         math::Matrix matK = (math::Transpose(matB) * (matD * matB));
         triangle->m_MatK = matK * 2 * glm::pi<double>() * R * area;
         std::cout << "Approx" << std::endl;
-        math::Print(triangle->m_MatK);
-        //double detJ = math::Determinant(matJ, matJ.m_Rows);
+        math::Print(triangle->m_MatK * (1.0 / (4.39 * 10e5)));
         triangle->m_MatK = math::Matrix(matK.m_Rows, matK.m_Cols);
         for (size_t u = 0; u < triangle->m_MatK.m_Rows; u++)
         {
@@ -389,20 +426,20 @@ void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
                 double s = 0;
                 for (size_t k = 0; k < 7; k++)
                 {
-                    math::Matrix matBTest = CalculateMatrixB(area, weights[k].r, weights[k].z, A, B, Y);
-                    math::Matrix matKTest = (math::Transpose(matBTest) * (matD * matBTest));
-                    double r = weights[k].r * triangle->m_Nodes[0].x + weights[k].w * triangle->m_Nodes[1].x + abs(1 - weights[k].r - weights[k].w) * triangle->m_Nodes[2].x;
-                    s += (matKTest.operator()(u, j) * abs(r) * weights[k].w * 2 * area);
-                   
+                    Weight weight = weights[k];
+                    double r = weight.r * triangle->m_Nodes[0].x + weight.z * triangle->m_Nodes[1].x + ((1 - (weight.r + weight.z)) * triangle->m_Nodes[2].x);
+                    //math::Matrix matB = triangle->CalculateMatrixB(weight, area, weight.r, weight.z, A, B, Y);
+                    math::Matrix matB = triangle->CalculateMatrixBAprox(area, weight.r, weight.z, A, B, Y);
+                    math::Matrix matKTest = (math::Transpose(matB) * (matD * matB));
+                    s += (matKTest.operator()(u, j) * r * weight.w * area * 2.0);
                 }
                 triangle->m_MatK.operator()(u, j) += s * glm::pi<double>() * 2.0;
             }
         }
         std::cout << "Exact" << std::endl;
-        math::Print(triangle->m_MatK);
+        math::Print(triangle->m_MatK * (1.0 / (4.39 * 10e5)));
         AddMatrices(m_GlobalStiffnessMatrix, triangle);
     }
-
     math::Vector vec(m_GlobalStiffnessMatrix.m_Rows);
     for (size_t i = 0; i < m_GlobalStiffnessMatrix.m_Rows; i+=2)
     {

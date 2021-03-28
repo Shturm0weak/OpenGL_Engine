@@ -122,7 +122,7 @@ namespace fbx {
 			{
 				if (m_Nodes[i].getName() == "Objects") {
 
-					m_Nodes[i].print();
+					//m_Nodes[i].print();
 					fbx::FBXNode node = m_Nodes[i].getChildren()[meshId];
 					Data data;
 					if (node.getName() == "Geometry") {

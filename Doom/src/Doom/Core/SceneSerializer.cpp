@@ -224,6 +224,9 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 {
 	//uint64_t id = go["GameObject"].as<uint64_t>();
 	std::string name = go["Name"].as<std::string>();
+	std::string tag = "General";
+	if (go["Tag"])
+		tag = go["Tag"].as<std::string>();
 	int id = go["GameObject"].as<int>();
 	auto renderer3DComponent = go["Renderer3D"];
 	if (renderer3DComponent)
@@ -239,6 +242,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 
 	GameObject* obj = GameObject::Create(name);
 	obj->m_Id = id;
+	obj->m_Tag = tag;
 
 	auto transformComponent = go["Transform"];
 	if (transformComponent)
@@ -428,6 +432,7 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 	out << YAML::BeginMap;
 	out << YAML::Key << "GameObject" << YAML::Value << std::to_string(go->m_Id);
 	out << YAML::Key << "Name" << YAML::Value << go->m_Name;
+	out << YAML::Key << "Tag" << YAML::Value << go->m_Tag;
 	ComponentManager* cm = &go->m_ComponentManager;
 
 	SerializeTransformComponent(out, cm);

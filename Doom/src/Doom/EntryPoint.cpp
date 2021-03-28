@@ -45,7 +45,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	window.m_FrameBufferBlur.push_back(new FrameBuffer(size[0], size[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
 	if (this->m_App->m_Type == TYPE_3D) 
 	{
-		GridLayOut::DrawGrid(51, 50);
+		//GridLayOut::DrawGrid(51, 50);
 		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
 	}
 

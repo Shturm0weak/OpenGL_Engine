@@ -147,7 +147,7 @@ GameObject* Doom::World::SelectObject3D()
 				{
 					glm::dvec3 a = glm::dvec3(mesh->m_VertAttrib[i + 0], mesh->m_VertAttrib[i + 1], mesh->m_VertAttrib[i + 2]);
 					glm::dvec3 b = glm::dvec3(mesh->m_VertAttrib[i + 17 + 0], mesh->m_VertAttrib[i + 17 + 1], mesh->m_VertAttrib[i + 17 + 2]);
-					glm::dvec3 c = glm::dvec3(mesh->m_VertAttrib[i + 31 + 0], mesh->m_VertAttrib[i + 31 + 1], mesh->m_VertAttrib[i + 31 + 2]);
+					glm::dvec3 c = glm::dvec3(mesh->m_VertAttrib[i + 17 * 2 + 0], mesh->m_VertAttrib[i + 17 * 2 + 1], mesh->m_VertAttrib[i + 17 * 2 + 2]);
 					glm::dvec3 n = glm::dvec3(mesh->m_VertAttrib[i + 3], mesh->m_VertAttrib[i + 4], mesh->m_VertAttrib[i + 5]);
 					a = glm::dvec3(model * view * scale * glm::vec4(a, 1.0f));
 					b = glm::dvec3(model * view * scale * glm::vec4(b, 1.0f));

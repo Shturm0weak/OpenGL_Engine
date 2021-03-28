@@ -5,8 +5,15 @@
 #define EPSILON 10e-6
 
 namespace Doom {
+	
+	class Weight {
+	public:
+		double r = 0.0;
+		double z = 0.0;
+		double w = 0.0;
+	};
 
-	struct Triangle {
+	class Triangle {
 	public:
 
 		std::vector<glm::dvec2> m_Nodes;
@@ -19,13 +26,17 @@ namespace Doom {
 			m_Nodes.push_back(b);
 			m_Nodes.push_back(c);
 		}
-	};
 
-	struct Weight {
-	public:
-		double r;
-		double z;
-		double w;
+		math::Matrix CalculateMatrixJ();
+		math::Matrix CalculateMatrixB(Weight weight, double Area, double r, double z, glm::dvec3 A, glm::dvec3 B, glm::dvec3 Y);
+		math::Matrix CalculateMatrixBAprox(double Area, double R, double Z, glm::dvec3 A, glm::dvec3 B, glm::dvec3 Y);
+
+		double CalculateAreaOfTriangle();
+		double CalculateR();
+		double CalculateZ();
+		glm::dvec3 CalculateAlpha();
+		glm::dvec3 CalculateBeta();
+		glm::dvec3 CalculateGamma();
 	};
 
 	class FEM : public Application {
@@ -35,7 +46,7 @@ namespace Doom {
 		std::vector<Triangle*> triangles;
 		std::vector<glm::dvec2> g_Nodes;
 		std::vector<Weight> weights;
-		double m_E = 30e6;
+		double m_E = 2.1e5;
 		double m_U = 0.25;
 		size_t maxDimension = 0;
 		GameObject* m_Go = nullptr;
@@ -45,9 +56,8 @@ namespace Doom {
 		math::Vector m_GSMMulVec = math::Vector(0);
 		math::Matrix m_GlobalStiffnessMatrix = math::Matrix(0, 0);
 
-		math::Matrix CalculateMatrixJ(Triangle& triangle);
 		math::Matrix CalculateMatrixD(double m_E, double m_u);
-		math::Matrix CalculateMatrixB(double Area, double R, double Z, glm::dvec3 A, glm::dvec3 B, glm::dvec3 Y);
+
 		void AddMatrices(math::Matrix& globalMatK, Triangle* triangle);
 
 		static bool CompareNodes(dvec2 a, dvec2 b);
@@ -55,13 +65,6 @@ namespace Doom {
 		void Clear();
 		void IndexNodes(std::vector<Triangle*> triangles);
 		void CalculateGlobalStiffnessMatrix(Mesh* mesh);
-
-		double CalculateAreaOfTriangle(const Triangle& triangle);
-		double CalculateR(const Triangle& triangle);
-		double CalculateZ(const Triangle& triangle);
-		glm::dvec3 CalculateAlpha(const Triangle& triangle);
-		glm::dvec3 CalculateBeta(const Triangle& triangle);
-		glm::dvec3 CalculateGamma(const Triangle& triangle);
 
 		FEM(std::string name = "FEM axisymmentric problem", int width = 800, int height = 600, bool Vsync = true) : Application(name, TYPE_3D, width, height, Vsync) {}
 

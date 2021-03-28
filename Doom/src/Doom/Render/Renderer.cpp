@@ -54,7 +54,7 @@ void Doom::Renderer::RenderBloomEffect()
 	Window& window = Window::GetInstance();
 	if (!s_BloomEffect) return;
 
-	bool horizontal = true, first_iteration = true;
+	bool horizontal = true, firstIteration = true;
 	unsigned int amount = 20;
 
 	std::vector<FrameBuffer*> fb = window.m_FrameBufferBlur;
@@ -66,14 +66,14 @@ void Doom::Renderer::RenderBloomEffect()
 
 		shader->Bind();
 		shader->SetUniform1i("horizontal", horizontal);
-		int id = first_iteration ? window.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
+		int id = firstIteration ? window.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
 		glBindTexture(GL_TEXTURE_2D, id);
 
 		Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
 		
 		horizontal = !horizontal;
-		if (first_iteration)
-			first_iteration = false;
+		if (firstIteration)
+			firstIteration = false;
 	}
 	shader->UnBind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
