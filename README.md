@@ -2,13 +2,13 @@ Welcome to the OpenGL_Engine!
 
 I've been making this game engine for a (year * 1.2f).
 
+![Screenshot_7](https://user-images.githubusercontent.com/48869588/112764134-ecff5e00-900f-11eb-9f7b-081ee5e2eb25.png)
+
 And now engine has:
 
-Simple sprite animation component
+Simple sprite animations
 
 Collision2D component SAT algorithm
-
-Collision3D component AABB, ray to OBB , ray to triangle algorithms
 
 Component's manager
 
@@ -16,19 +16,19 @@ Poor material component for 3D (Ambient and Specular, Normal maps)
 
 Can draw lines and squares and 3d meshes
 
-Forward,Instancing and Batch renderers
+Forward, Instancing renderers for 3D and Batch renderer for 2D
 
-Text rendering
+Text rendering!
 
 Event system
 
-Simple sprite particle system
+Simple particle system
 
-Multithreading
+Multithreading (simple job system)
 
 Editor with ImGui
 
-2D textures and texture atlases
+2D textures, skyboxes and texture atlases
 
 Ray casting in 2D and 3D
 
@@ -36,12 +36,12 @@ File dialogs
 
 Point and Directional lights
 
-Audio
+Audio (OpenAL)
 
-Custom UI(buttons,panels,text,sliders,bars,checkboxes)
+Custom UI(buttons, panels, text, sliders, bars, checkboxes)
 
 
-Show case: https://www.youtube.com/watch?v=BLJPgcl5DrY&t=189s
+Show case: https://www.youtube.com/watch?v=BLJPgcl5DrY&t=189s (outdated)
 
 No memory leak in runtime
-Engine is build as dll and uses a premake to compose it all together automatically. Engine has a class EntryPoint that takes as argument class Application that has OnStart,OnUpdate,OnClose methods and here the app must be written in a new project such as SandBox in this repository. There is a lot of junk code.
+Engine is build as dll and uses a premake to compose it all together automatically. Engine has a class EntryPoint that takes as argument class Application that has OnStart, OnUpdate, OnClose, OnGuiRender methods and here the app must be written in a new project such as SandBox in this repository. There is a lot of junk code.
