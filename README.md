@@ -35,7 +35,11 @@ Ray casting in 2D and 3D
 
 File dialogs
 
-Point and Directional lights
+Point, Spot and Directional lights
+
+Directional light shadows
+
+Bloom effect
 
 Audio (OpenAL)
 
