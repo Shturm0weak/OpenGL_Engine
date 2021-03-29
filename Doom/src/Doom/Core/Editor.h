@@ -62,7 +62,8 @@ namespace Doom {
 		void MenuRectangleCollider2D(RectangleCollider2D* col);
 		void MenuAnimator2D();
 		void MenuTransform(Transform* tr);
-		void MenuLightPoint();
+		void MenuPointLight();
+		void MenuSpotLight();
 		void MenuDirectionalLight();
 		void MenuSphereCollisionComponent();
 		void MenuScriptComponent();

@@ -69,6 +69,29 @@ void Doom::Instancing::Render()
 			m_Shader->SetUniform1f(buffer, pl->m_Quadratic);
 		}
 
+		int slightSize = SpotLight::s_SpotLights.size();
+		m_Shader->SetUniform1i("sLightSize", slightSize);
+		for (int i = 0; i < slightSize; i++)
+		{
+			SpotLight* sl = SpotLight::s_SpotLights[i];
+			sprintf(buffer, "spotLights[%i].position", i);
+			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->GetPosition());
+			sprintf(buffer, "spotLights[%i].dir", i);
+			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1));
+			sprintf(buffer, "spotLights[%i].color", i);
+			m_Shader->SetUniform3fv(buffer, sl->m_Color);
+			sprintf(buffer, "spotLights[%i].constant", i);
+			m_Shader->SetUniform1f(buffer, sl->m_Constant);
+			sprintf(buffer, "spotLights[%i]._linear", i);
+			m_Shader->SetUniform1f(buffer, sl->m_Linear);
+			sprintf(buffer, "spotLights[%i].quadratic", i);
+			m_Shader->SetUniform1f(buffer, sl->m_Quadratic);
+			sprintf(buffer, "spotLights[%i].innerCutOff", i);
+			m_Shader->SetUniform1f(buffer, sl->m_InnerCutOff);
+			sprintf(buffer, "spotLights[%i].outerCutOff", i);
+			m_Shader->SetUniform1f(buffer, sl->m_OuterCutOff);
+		}
+
 		//m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 		if (iter->second[0]->m_IsUsingNormalMap) 
 		{

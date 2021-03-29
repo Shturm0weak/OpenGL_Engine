@@ -40,6 +40,7 @@ namespace Doom {
 		bool m_IsUsingNormalMap = false;
 		bool m_IsCullingFace = true;
 		bool m_IsRenderable = true;
+		bool m_HighLight = false;
 
 		std::map<std::string, float> m_FloatUniforms;
 		

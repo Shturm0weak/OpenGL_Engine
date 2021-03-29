@@ -165,7 +165,20 @@ GameObject* Doom::World::SelectObject3D()
 						new Line(a, c);
 						new Line(c, b);*/
 #ifndef _IS_GAME_BUILD
+						GameObject* prevGo = Editor::GetInstance().go;
 						Editor::GetInstance().go = go;
+						if (prevGo != nullptr)
+						{
+							Renderer3D* r3d = prevGo->GetComponent<Renderer3D>();
+							if (r3d != nullptr)
+								r3d->m_HighLight = false;
+						}
+						if (go != nullptr)
+						{
+							Renderer3D* r3d = go->GetComponent<Renderer3D>();
+							if (r3d != nullptr)
+								r3d->m_HighLight = true;
+						}
 #endif
 						return go;
 					}

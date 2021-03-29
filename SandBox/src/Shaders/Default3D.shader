@@ -86,17 +86,29 @@ struct PointLight {
 	float quadratic;
 };
 
+struct SpotLight {
+	vec3 position;
+	vec3 dir;
+	vec3 color;
+	float innerCutOff;
+	float outerCutOff;
+	float constant;
+	float _linear;
+	float quadratic;
+};
+
 struct DirectionalLight {
 	vec3 dir;
 	vec3 color;
 };
 
-
-#define MAX_LIGHT 64
+#define MAX_LIGHT 32
 uniform int pLightSize;
 uniform PointLight pointLights[MAX_LIGHT];
 uniform int dLightSize;
 uniform DirectionalLight dirLights[MAX_LIGHT];
+uniform int sLightSize;
+uniform SpotLight spotLights[MAX_LIGHT];
 
 uniform sampler2D u_DiffuseTexture;
 uniform sampler2D u_ShadowTexture;
@@ -182,6 +194,47 @@ vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 Camera
 	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
 }
 
+vec3 SpotLightsCompute(SpotLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+
+	vec3 LightDir = normalize(light.position - FragPos);
+	float theta = dot(LightDir, normalize(-light.dir));
+
+	if (theta > light.outerCutOff)
+	{
+		float epsilon = light.innerCutOff - light.outerCutOff;
+		float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+
+		vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
+		float ambientStrength = ambient;
+		vec3 ambient = ambientStrength * diffuseTexColor * light.color;
+
+		float diffuseStrength = max(dot(normal, LightDir), 0.0);
+		vec3 diffuse = diffuseTexColor * diffuseStrength;
+
+		float specularStrength = specular;
+		vec3 viewDir = normalize(CameraPos - FragPos);
+		vec3 reflectDir = reflect(-LightDir, normal);
+		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+		vec3 specular = specularStrength * spec * diffuseTexColor;
+
+		float distance = length(light.position - FragPos);
+		float attenuation = 1.0 / (light.constant + light._linear * distance +
+			light.quadratic * (distance * distance));
+
+		ambient  *= attenuation;
+		specular *= attenuation;
+		diffuse  *= attenuation;
+
+		ambient  *= intensity;
+		specular *= intensity;
+		diffuse  *= intensity;
+
+		return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
+	}
+	else  // else, use ambient light so scene isn't completely dark outside the spotlight.
+		return vec3(0.0, 0.0, 0.0);
+}
+
 void main() {
 	vec4 texColor = texture(u_DiffuseTexture, v_textcoords);
 	if (texColor.a < 0.1)
@@ -190,7 +243,8 @@ void main() {
 	ambient = tempambient;
 	vec3 normal = (Normal);
 	vec3 result = vec3(0, 0, 0);
-	if (u_isNormalMapping) {
+	if (u_isNormalMapping)
+	{
 		normal = texture(u_NormalMapTexture, v_textcoords).rgb;
 		normal *= normal * 2.0 - 1.0;
 		normal = normalize(TBN *  normal);
@@ -205,9 +259,16 @@ void main() {
 		result += DirLightsCompute(dirLights[i], normal, FragPos, CameraPos);
 	}
 
-	for (int i = 0; i < pLightSize; i++) {
+	for (int i = 0; i < pLightSize; i++) 
+	{
 		result += PointLightsCompute(pointLights[i], normal, FragPos, CameraPos);
 	}  
+
+	for (int i = 0; i < sLightSize; i++)
+	{
+		result += SpotLightsCompute(spotLights[i], normal, FragPos, CameraPos);
+	}
+
 	float gamma = 2.2;
 	FragColor = vec4(pow(result * out_color.rgb * out_vertexColor, vec3(1.0 / gamma)), 1.0);
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));

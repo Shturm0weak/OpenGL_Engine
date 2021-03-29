@@ -14,6 +14,7 @@
 #include "../Enums/ColoredOutput.h"
 #include "../Components/PointLight.h"
 #include "../Components/DirectionalLight.h"
+#include "../Components/SpotLight.h"
 #include "../Components/SphereCollider.h"
 #include "../Components/ScriptComponent.h"
 #include "../Components/ParticleEmitter.h"
@@ -42,6 +43,7 @@ namespace Doom {
 			CopyComponent<Transform>(rhs);
 			CopyComponent<PointLight>(rhs);
 			CopyComponent<DirectionalLight>(rhs);
+			CopyComponent<SpotLight>(rhs);
 			CopyComponent<Renderer3D>(rhs);
 			CopyComponent<SpriteRenderer>(rhs);
 			CopyComponent<SphereCollider>(rhs);
@@ -49,7 +51,8 @@ namespace Doom {
 			CopyComponent<ParticleEmitter>(rhs);
 		}
 
-		static void ShutDown() {
+		static void ShutDown() 
+		{
 			for (auto iter = Renderer3D::s_MemoryPool.begin(); iter != Renderer3D::s_MemoryPool.end(); iter++)
 			{
 				delete[] (Renderer3D*)iter->first;
@@ -95,7 +98,8 @@ namespace Doom {
 			Clear();
 		}
 
-		void Clear() {
+		void Clear() 
+		{
 			delete[] m_NamesOfMembers;
 
 			std::vector<ScriptComponent*> scripts = GetScripts();

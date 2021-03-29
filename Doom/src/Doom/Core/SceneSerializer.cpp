@@ -341,6 +341,19 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		pl->m_Color = pointLightComponent["Color"].as<glm::vec3>();
 	}
 
+	auto spotLightComponent = go["Spot light"];
+	if (spotLightComponent)
+	{
+		SpotLight* sl = obj->m_ComponentManager.AddComponent<SpotLight>();
+		auto atenuation = spotLightComponent["Attenuation"];
+		sl->m_InnerCutOff = spotLightComponent["InnerCutOff"].as<float>();
+		sl->m_OuterCutOff = spotLightComponent["OuterCutOff"].as<float>();
+		sl->m_Constant = atenuation["Constant"].as<float>();
+		sl->m_Linear = atenuation["Linear"].as<float>();
+		sl->m_Quadratic = atenuation["Quadratic"].as<float>();
+		sl->m_Color = spotLightComponent["Color"].as<glm::vec3>();
+	}
+
 	auto sphereColliderComponent = go["Sphere collider"];
 	if (sphereColliderComponent)
 	{
@@ -439,6 +452,7 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 	SerializeRenderer3DComponent(out, cm);
 	SerializeDirectionalLightComponent(out, cm);
 	SerializePointLightComponent(out, cm);
+	SerializeSpotLightComponent(out, cm);
 	SerializeSpriteRendererComponent(out, cm);
 	SerializeCubeColliderComponent(out, cm);
 	SerializeSphereColliderComponent(out, cm);
@@ -588,6 +602,26 @@ void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter& out, Com
 		out << YAML::Key << "Constant" << YAML::Value << pl->m_Constant;
 		out << YAML::Key << "Linear" << YAML::Value << pl->m_Linear;
 		out << YAML::Key << "Quadratic" << YAML::Value << pl->m_Quadratic;
+		out << YAML::EndMap;
+		out << YAML::EndMap;
+	}
+}
+
+void Doom::SceneSerializer::SerializeSpotLightComponent(YAML::Emitter& out, ComponentManager* cm)
+{
+	if (cm->GetComponent<SpotLight>() != nullptr)
+	{
+		SpotLight* sl = cm->GetComponent<SpotLight>();
+		out << YAML::Key << "Spot light";
+		out << YAML::BeginMap;
+		out << YAML::Key << "Color" << YAML::Value << sl->m_Color;
+		out << YAML::Key << "InnerCutOff" << YAML::Value << sl->m_InnerCutOff;
+		out << YAML::Key << "OuterCutOff" << YAML::Value << sl->m_OuterCutOff;
+		out << YAML::Key << "Attenuation";
+		out << YAML::BeginMap;
+		out << YAML::Key << "Constant" << YAML::Value << sl->m_Constant;
+		out << YAML::Key << "Linear" << YAML::Value << sl->m_Linear;
+		out << YAML::Key << "Quadratic" << YAML::Value << sl->m_Quadratic;
 		out << YAML::EndMap;
 		out << YAML::EndMap;
 	}

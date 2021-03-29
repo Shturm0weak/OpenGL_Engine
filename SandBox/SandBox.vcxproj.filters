@@ -81,6 +81,7 @@
     <None Include="src\Scripts\Color.lua" />
     <None Include="src\Scripts\Camera.lua" />
     <None Include="src\Scripts\Vec3.lua" />
+    <None Include="src\Shaders\HighLightBorder.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\Fonts\arial.png" />

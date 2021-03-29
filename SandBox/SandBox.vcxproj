@@ -164,6 +164,7 @@
     <None Include="src\Shaders\Default3D.shader" />
     <None Include="src\Shaders\DepthBuffer.shader" />
     <None Include="src\Shaders\Font.shader" />
+    <None Include="src\Shaders\HighLightBorder.shader" />
     <None Include="src\Shaders\Instancing3D.shader" />
     <None Include="src\Shaders\Line.shader" />
     <None Include="src\Shaders\LineSimple.shader" />

@@ -14,7 +14,7 @@ using namespace Doom;
 
 void Doom::Renderer::Clear()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glClearDepth(1.0f);
 	glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 }
@@ -94,6 +94,36 @@ void Doom::Renderer::RenderBloomEffect()
 	//void* te = reinterpret_cast<void*>(fb[!horizontal]->m_Textures[0]);
 	//ImGui::Image(te, ImVec2(Window::GetSize()[0], Window::GetSize()[1]), ImVec2(0, 1), ImVec2(1, 0));
 	//ImGui::End();
+}
+
+void Doom::Renderer::RenderOutLined3dObjects()
+{
+	//@deprecated
+	//Right now working version is located at Renderer3D
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glDisable(GL_DEPTH_TEST);
+	for (size_t i = 0; i < s_OutLined3dObjects.size(); i++)
+	{
+		Renderer3D* r3d = s_OutLined3dObjects[i];
+		GameObject* owner = r3d->GetOwnerOfComponent();
+		
+		Shader* shader = Shader::Get("HighLightBorder");
+		shader->Bind();
+		shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
+		shader->SetUniformMat4f("u_Model", owner->m_Transform.m_PosMat4);
+		shader->SetUniformMat4f("u_View", owner->m_Transform.m_ViewMat4);
+		glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
+		glm::vec3 d = camPos - owner->GetPosition();
+		glm::vec3 scaleV3 = owner->GetScale();
+		float distance = glm::sqrt(d.x * d.x + d.y * d.y + d.z * d.z);
+		glm::vec3 koef = glm::vec3(1.0f) + glm::vec3(distance / scaleV3.x, distance / scaleV3.y, distance / scaleV3.z) * 0.003f;
+		koef = glm::clamp(koef, 1.00f, 100000.0f);
+		shader->SetUniformMat4f("u_Scale", glm::scale(owner->m_Transform.m_ScaleMat4, koef));
+		glDrawElements(GL_TRIANGLES, r3d->m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
+
+	}
+	glDisable(GL_STENCIL_TEST);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)

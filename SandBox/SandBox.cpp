@@ -19,7 +19,7 @@
 
 int main()
 {
-	Hexagon app;
+	Test app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

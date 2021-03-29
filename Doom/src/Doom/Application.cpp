@@ -81,6 +81,7 @@ void Doom::Application::Init() const
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		Window::GetInstance().GetCamera().SetPerspective(1, m_Width, m_Height, 0.1, 1000.0);
 		break;
 	default:

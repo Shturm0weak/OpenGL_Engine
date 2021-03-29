@@ -47,6 +47,7 @@ namespace Doom {
 		static std::vector <SpriteRenderer*> s_Objects2d;
 		static std::vector <Renderer3D*> s_Objects3d;
 		static std::vector <Renderer3D*> s_Objects3dTransparent;
+		static std::vector <Renderer3D*> s_OutLined3dObjects;
 
 		static void Render2DObjects();
 		static void Render3DObjects();
@@ -65,6 +66,7 @@ namespace Doom {
 		static void SortTransparentObjects();
 		static void RenderForPostEffect(Mesh* mesh, Shader* shader);
 		static void RenderBloomEffect();
+		static void RenderOutLined3dObjects();
 
 		friend class EntryPoint;
 		friend class Renderer2DLayer;

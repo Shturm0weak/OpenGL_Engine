@@ -82,6 +82,7 @@ void EntryPoint::Run()
 	EventSystem::GetInstance().SendEvent(EventType::ONSTART, nullptr);
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow())) 
 	{
+		Renderer::s_OutLined3dObjects.clear();
 		RectangleCollider2D::CollidersToInit();
 		Window::GetInstance().s_CursorStateChanged = false;
 		Gui::GetInstance().m_IsAnyPanelHovered = false;

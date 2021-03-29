@@ -29,6 +29,7 @@ DOOM_API std::vector<SphereCollider*> SphereCollider::s_Spheres;
 DOOM_API std::vector <SpriteRenderer*> Renderer::s_Objects2d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3d;
 DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
+DOOM_API std::vector <Renderer3D*> Renderer::s_OutLined3dObjects;
 
 DOOM_API std::vector<std::string> SkyBox::s_Faces;
 
@@ -109,6 +110,7 @@ DOOM_API const char** Shader::s_NamesOfShaders;
 
 DOOM_API std::vector<PointLight*> PointLight::s_PointLights;
 DOOM_API std::vector<DirectionalLight*> DirectionalLight::s_DirLights;
+DOOM_API std::vector<SpotLight*> SpotLight::s_SpotLights;
 
 DOOM_API unsigned int SpriteRenderer::s_Indices2D[6] = { 0,1,2,3,2,0 };
 DOOM_API float RectangleCollider2D::m_Vertices[8] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f,  0.5f, -0.5f,  0.5f };

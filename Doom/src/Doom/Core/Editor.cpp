@@ -165,6 +165,10 @@ void Editor::EditorUpdate()
 			{
 				go->m_ComponentManager.AddComponent<PointLight>();
 			}
+			if (ImGui::MenuItem("SpotLight"))
+			{
+				go->m_ComponentManager.AddComponent<SpotLight>();
+			}
 			if (ImGui::MenuItem("CubeCollider3D"))
 			{
 				go->m_ComponentManager.AddComponent<CubeCollider3D>();
@@ -224,8 +228,9 @@ void Editor::EditorUpdate()
 		MenuAnimator2D();
 		MenuCubeCollider3D();
 		MenuRectangleCollider2D(col);
-		MenuLightPoint();
+		MenuPointLight();
 		MenuDirectionalLight();
+		MenuSpotLight();
 		MenuRenderer3D();
 		MeshPicker();
 		MenuParticleEmitterComponent();
@@ -563,7 +568,7 @@ void Doom::Editor::MenuTransform(Transform* tr)
 	}
 }
 
-void Doom::Editor::MenuLightPoint()
+void Doom::Editor::MenuPointLight()
 {
 	PointLight* pl = go->m_ComponentManager.GetComponent<PointLight>();
 	if (pl == nullptr)
@@ -574,6 +579,23 @@ void Doom::Editor::MenuLightPoint()
 			ImGui::SliderFloat("Linear", &pl->m_Linear, 0, 0.100f);
 			ImGui::SliderFloat("Quadratic", &pl->m_Quadratic, 0, 0.100);
 			ImGui::ColorPicker3("Point light color", &pl->m_Color[0]);
+		}
+	}
+}
+
+void Doom::Editor::MenuSpotLight()
+{
+	SpotLight* sl = go->m_ComponentManager.GetComponent<SpotLight>();
+	if (sl == nullptr)
+		return;
+	if (MenuRemoveComponent<SpotLight>()) {
+		if (ImGui::CollapsingHeader("Spot light")) {
+			ImGui::SliderFloat("Inner CutOff", &sl->m_InnerCutOff, 0, 1);
+			ImGui::SliderFloat("Outer CutOff", &sl->m_OuterCutOff, 0, 1);
+			ImGui::SliderFloat("Constant", &sl->m_Constant, 0, 1);
+			ImGui::SliderFloat("Linear", &sl->m_Linear, 0, 0.100f);
+			ImGui::SliderFloat("Quadratic", &sl->m_Quadratic, 0, 0.100);
+			ImGui::ColorPicker3("Spot light color", &sl->m_Color[0]);
 		}
 	}
 }

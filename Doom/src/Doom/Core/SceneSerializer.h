@@ -22,6 +22,7 @@ namespace Doom {
 		static void SerializeSpriteRendererComponent(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializeDirectionalLightComponent(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializePointLightComponent(YAML::Emitter& out, ComponentManager* cm);
+		static void SerializeSpotLightComponent(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializeCubeColliderComponent(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializeSphereColliderComponent(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializeRegisteredEvents(YAML::Emitter& out, GameObject* go);

@@ -123,6 +123,7 @@
     <ClInclude Include="src\Doom\Components\Render3D.h" />
     <ClInclude Include="src\Doom\Components\ScriptComponent.h" />
     <ClInclude Include="src\Doom\Components\SphereCollider.h" />
+    <ClInclude Include="src\Doom\Components\SpotLight.h" />
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h" />
     <ClInclude Include="src\Doom\Components\Transform.h" />
     <ClInclude Include="src\Doom\Core\Core.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
     <ClCompile Include="src\Doom\Components\ScriptComponent.cpp" />
     <ClCompile Include="src\Doom\Components\SphereCollider.cpp" />
+    <ClCompile Include="src\Doom\Components\SpotLight.cpp" />
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp" />
     <ClCompile Include="src\Doom\Components\Transform.cpp" />
     <ClCompile Include="src\Doom\Core\Editor.cpp" />

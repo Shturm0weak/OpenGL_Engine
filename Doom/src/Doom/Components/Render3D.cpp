@@ -248,9 +248,9 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 		AdditionalUniformsLoad();
 		int dlightSize = DirectionalLight::s_DirLights.size();
 		m_Shader->SetUniform1i("dLightSize", dlightSize);
+		char buffer[64];
 		for (int i = 0; i < dlightSize; i++)
 		{
-			char buffer[64];
 			DirectionalLight* dl = DirectionalLight::s_DirLights[i];
 			dl->m_Dir = dl->GetOwnerOfComponent()->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1);
 			sprintf(buffer, "dirLights[%i].dir", i);
@@ -261,7 +261,6 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 
 		int plightSize = PointLight::s_PointLights.size();
 		m_Shader->SetUniform1i("pLightSize", plightSize);
-		char buffer[64];
 		for (int i = 0; i < plightSize; i++)
 		{
 			PointLight* pl = PointLight::s_PointLights[i];
@@ -276,6 +275,30 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 			sprintf(buffer, "pointLights[%i].quadratic", i);
 			m_Shader->SetUniform1f(buffer, pl->m_Quadratic);
 		}
+
+		int slightSize = SpotLight::s_SpotLights.size();
+		m_Shader->SetUniform1i("sLightSize", slightSize);
+		for (int i = 0; i < slightSize; i++)
+		{
+			SpotLight* sl = SpotLight::s_SpotLights[i];
+			sprintf(buffer, "spotLights[%i].position", i);
+			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->GetPosition());
+			sprintf(buffer, "spotLights[%i].dir", i);
+			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1));
+			sprintf(buffer, "spotLights[%i].color", i);
+			m_Shader->SetUniform3fv(buffer, sl->m_Color);
+			sprintf(buffer, "spotLights[%i].constant", i);
+			m_Shader->SetUniform1f(buffer, sl->m_Constant);
+			sprintf(buffer, "spotLights[%i]._linear", i);
+			m_Shader->SetUniform1f(buffer, sl->m_Linear);
+			sprintf(buffer, "spotLights[%i].quadratic", i);
+			m_Shader->SetUniform1f(buffer, sl->m_Quadratic);
+			sprintf(buffer, "spotLights[%i].innerCutOff", i);
+			m_Shader->SetUniform1f(buffer, sl->m_InnerCutOff);
+			sprintf(buffer, "spotLights[%i].outerCutOff", i);
+			m_Shader->SetUniform1f(buffer, sl->m_OuterCutOff);
+		}
+
 		m_Shader->SetUniform3fv("u_CameraPos", Window::GetInstance().GetCamera().GetPosition());
 		m_Shader->SetUniform1f("u_Ambient", m_Material.m_Ambient);
 		m_Shader->SetUniform1f("u_Specular", m_Material.m_Specular);
@@ -298,7 +321,40 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 		Renderer::s_Stats.m_DrawCalls++;
 		if (!m_IsCullingFace)
 			glDisable(GL_CULL_FACE);
-		glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
+
+		if (m_HighLight)
+		{
+			//Need to refactor
+			glEnable(GL_STENCIL_TEST);
+
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilMask(0xFF);
+			m_Shader->Bind();
+			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
+
+			Renderer::s_OutLined3dObjects.push_back(this);
+
+			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+			glStencilMask(0x00);
+			Shader* shader = Shader::Get("HighLightBorder");
+			shader->Bind();
+			shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
+			shader->SetUniformMat4f("u_Model", pos);
+			shader->SetUniformMat4f("u_View", view);
+			glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
+			glm::vec3 d = camPos - GetOwnerOfComponent()->GetPosition();
+			glm::vec3 scaleV3 = GetOwnerOfComponent()->GetScale();
+			float distance = glm::sqrt(d.x * d.x + d.y * d.y + d.z * d.z);
+			glm::vec3 koef = glm::vec3(1.0f) + glm::vec3(distance / scaleV3.x, distance / scaleV3.y, distance / scaleV3.z) * 0.003f;
+			koef = glm::clamp(koef, 1.00f, 100000.0f);
+			shader->SetUniformMat4f("u_Scale", glm::scale(scale, koef));
+			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
+
+			glStencilMask(0xFF);
+			glDisable(GL_STENCIL_TEST);
+		}
+		else
+			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
 		glEnable(GL_CULL_FACE);
 		m_Shader->UnBind();
 		m_Mesh->m_Ib.UnBind();
