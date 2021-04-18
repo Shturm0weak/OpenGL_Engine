@@ -3,6 +3,7 @@ Welcome to the OpenGL_Engine!
 I've been making this game engine for a (year * 1.2f).
 
 ![Screenshot_7](https://user-images.githubusercontent.com/48869588/112764134-ecff5e00-900f-11eb-9f7b-081ee5e2eb25.png)
+![image](https://user-images.githubusercontent.com/48869588/112905075-8141f180-90f2-11eb-9d49-136ede113d1e.png)
 
 And now engine has:
 
@@ -34,7 +35,11 @@ Ray casting in 2D and 3D
 
 File dialogs
 
-Point and Directional lights
+Point, Spot and Directional lights
+
+Directional light shadows
+
+Bloom effect
 
 Audio (OpenAL)
 
