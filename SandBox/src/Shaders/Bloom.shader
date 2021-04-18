@@ -26,17 +26,17 @@ uniform float exposure;
 
 void main()
 {
+    const float gamma = 2.2;
     vec3 hdrColor = texture(scene, TexCoords).rgb;
     vec3 bloomColorH = texture(bloomBlurH, TexCoords).rgb;
-    hdrColor += (bloomColorH); // additive blending
-    // tone mapping
+    hdrColor += bloomColorH;
     vec3 result;
-    if (bloomColorH.x > 0.01 || bloomColorH.y > 0.01) {
+    //if (bloomColorH.x > 0.01 || bloomColorH.y > 0.01) {
         result = vec3(1.0) - exp(-hdrColor * exposure);
-    }
-    else {
-        result = hdrColor;
-    }
-    // also gamma correct while we're at it
+    //  result = pow(result, vec3(1.0 / gamma));
+    //}
+    //else {
+    //    result = hdrColor;
+    //}
     FragColor = vec4(result, 1.0);
 }

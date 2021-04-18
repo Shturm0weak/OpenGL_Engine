@@ -1,8 +1,5 @@
 #pragma once
 
-#include "../pch.h"
-#include "Core/ViewPort.h"
-
 namespace Doom {
 
 	class Font;
@@ -18,11 +15,9 @@ namespace Doom {
 		-0.5f,  0.5f, 0.0f, 1.0f
 		};
 
-		glm::vec4 m_Color = COLORS::White;
+		glm::vec4 m_Color = glm::vec4(1.0f);
 		glm::vec2 m_Position;
 		glm::vec2 m_Scale;
-		
-		Shader* m_Shader = nullptr;
 
 		float m_XOffset;
 		float m_YOffset;
@@ -34,18 +29,18 @@ namespace Doom {
 		int m_Height;
 		
 		friend class Gui;
-		friend class Doom::Batch;
-		friend class Doom::Font;
+		friend class Batch;
+		friend class Font;
 	public:
 
 		Font* m_Font = nullptr;
 		int m_IsRelatedToCam = 0;
-		char m_Ch;
+		wchar_t m_Ch;
 
 		~Character();
 		Character();
 
-		void Init(Font* font, int ch, float x = 0, float y = 0, float scale = 1);
+		void Init(Font* font, wchar_t ch, float x = 0, float y = 0, float scale = 1);
 		void Scale(float scale);
 
 		inline float GetRightBottomX() const { return (m_Mesh2D[8] + m_Position.x); }
@@ -58,7 +53,7 @@ namespace Doom {
 	private:
 
 		Character* m_CharacterPtr = nullptr;
-		unsigned int* m_Id;
+		wchar_t* m_Id;
 		int* m_X;
 		int* m_Y;
 		int* m_Width;
@@ -68,10 +63,9 @@ namespace Doom {
 		int* m_XAdvance;
 	public:
 
-		std::map<char,Character*> m_Characters;
+		std::unordered_map<wchar_t, Character*> m_Characters;
 		Texture* m_FontAtlas = nullptr;
 		std::string m_Name = "";
-		static Shader* s_Shader;
 		unsigned int m_Count = 0;
 		unsigned int m_Size = 0;
 
@@ -81,7 +75,7 @@ namespace Doom {
 		Font() {}
 		~Font();
 	
-		friend class Doom::Character;
+		friend class Character;
 	};
 
 }

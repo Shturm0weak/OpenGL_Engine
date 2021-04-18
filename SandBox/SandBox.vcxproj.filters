@@ -4,8 +4,17 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\2Dshootergame">
-      <UniqueIdentifier>{90C01BBA-FCD6-1950-454E-A571B1A3EAD7}</UniqueIdentifier>
+    <Filter Include="src\AimTrainer">
+      <UniqueIdentifier>{A8179425-94E5-872B-7D79-F85169E66390}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Examples">
+      <UniqueIdentifier>{5B3F7059-47A2-FFFD-F027-38B4DC69CB80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\FEM">
+      <UniqueIdentifier>{74722FA9-E051-AE44-E969-391B55C814A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Hexagon">
+      <UniqueIdentifier>{662DA6A7-D2E2-1E9D-5BD7-1874C78B15A1}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Minecraft">
       <UniqueIdentifier>{D503A428-41C4-1F5F-0AFF-68DC767E643B}</UniqueIdentifier>
@@ -13,120 +22,99 @@
     <Filter Include="src\SpaceFire">
       <UniqueIdentifier>{CE48086C-3A09-84A2-0344-CD1F6FC3C87E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\game">
-      <UniqueIdentifier>{165530CF-0222-8BDA-2B3B-79821767C068}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="src\FEM\MathFunctions.h" />
-    <ClInclude Include="src\FEM\Matrix.h" />
-    <ClInclude Include="src\FEM\Vector.h" />
-    <ClInclude Include="src\game\BlankProject.h" />
-    <ClInclude Include="src\SpaceFire\Ammo.h" />
-    <ClInclude Include="src\SpaceFire\Bullet.h" />
-    <ClInclude Include="src\SpaceFire\ShipEnemy.h" />
-    <ClInclude Include="src\SpaceFire\ShipPlayer.h" />
-    <ClInclude Include="src\SpaceFire\SpaceFire.h" />
-    <ClInclude Include="src\game\RayCastTest.h" />
-    <ClInclude Include="src\game\TicTacToe.h" />
-    <ClInclude Include="src\game\StressTest.h" />
-    <ClInclude Include="src\Hexagon\Hexagon.h" />
-    <ClInclude Include="src\AimTrainer\AimTrainer.h" />
-    <ClInclude Include="src\Examples\Test.h" />
-    <ClInclude Include="src\Examples\RayCastTest.h" />
-    <ClInclude Include="src\Examples\StressTest.h" />
-    <ClInclude Include="src\Examples\TicTacToe.h" />
-    <ClInclude Include="src\Examples\TestCollision2D.h" />
-    <ClInclude Include="src\FEM\FEM.h" />
-    <ClInclude Include="src\FEM\Integrals.h" />
-    <ClInclude Include="src\NetWork\Client.h" />
-    <ClInclude Include="src\NetWork\olcPGEX_Network.h" />
+    <ClInclude Include="src\AimTrainer\AimTrainer.h">
+      <Filter>src\AimTrainer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Examples\BlankProject.h">
+      <Filter>src\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Examples\RayCastTest.h">
+      <Filter>src\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Examples\StressTest.h">
+      <Filter>src\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Examples\StressTest2D.h">
+      <Filter>src\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Examples\Test.h">
+      <Filter>src\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Examples\TestCollision2D.h">
+      <Filter>src\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Examples\TicTacToe.h">
+      <Filter>src\Examples</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FEM\FEM.h">
+      <Filter>src\FEM</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FEM\Integrals.h">
+      <Filter>src\FEM</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FEM\MathFunctions.h">
+      <Filter>src\FEM</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FEM\Matrix.h">
+      <Filter>src\FEM</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FEM\Vector.h">
+      <Filter>src\FEM</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hexagon\Hexagon.h">
+      <Filter>src\Hexagon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Minecraft\Minecraft.h">
+      <Filter>src\Minecraft</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\Ammo.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\Bullet.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\ShipEnemy.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\ShipPlayer.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpaceFire\SpaceFire.h">
+      <Filter>src\SpaceFire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="src\FEM\MathFunctions.cpp" />
-    <ClCompile Include="src\FEM\Matrix.cpp" />
-    <ClCompile Include="src\FEM\Vector.cpp" />
-    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp" />
-    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp" />
-    <ClCompile Include="src\Hexagon\Hexagon.cpp" />
-    <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
-    <ClCompile Include="src\FEM\FEM.cpp" />
-    <ClCompile Include="src\FEM\Integrals.cpp" />
-    <ClCompile Include="src\NetWork\Client.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Shaders\BakeShadows.shader" />
-    <None Include="src\Shaders\BakeShadowsInstancing.shader" />
-    <None Include="src\Shaders\Collision2D.shader" />
-    <None Include="src\Shaders\CubeCollider.shader" />
-    <None Include="src\Shaders\Default2D.shader" />
-    <None Include="src\Shaders\Default3D.shader" />
-    <None Include="src\Shaders\DepthBuffer.shader" />
-    <None Include="src\Shaders\Font.shader" />
-    <None Include="src\Shaders\Instancing3D.shader" />
-    <None Include="src\Shaders\Line.shader" />
-    <None Include="src\Shaders\LineSimple.shader" />
-    <None Include="src\Shaders\SkyBox.shader" />
-    <None Include="src\Shaders\Tron.shader" />
-    <None Include="src\Shaders\Blur.shader" />
-    <None Include="src\Shaders\Bloom.shader" />
-    <None Include="src\Shaders\QuadFullScreen.shader" />
-    <None Include="src\Scenes\RayCastTest.yaml" />
-    <None Include="src\Scenes\scene.yaml" />
-    <None Include="src\Shaders\TestShader.shader" />
-    <None Include="src\Scripts\Move.lua" />
-    <None Include="src\Scripts\Color.lua" />
-    <None Include="src\Scripts\Camera.lua" />
-    <None Include="src\Scripts\Vec3.lua" />
-    <None Include="src\Shaders\HighLightBorder.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="src\Fonts\arial.png" />
-    <Image Include="src\Fonts\calibri.png" />
-    <Image Include="src\Fonts\harrington.png" />
-    <Image Include="src\Fonts\peak.png" />
-    <Image Include="src\Fonts\playball.png" />
-    <Image Include="src\Fonts\segoe.png" />
-    <Image Include="src\GameRPG\Textures\RPGpack_sheet_2X.png" />
-    <Image Include="src\Images\arial.png" />
-    <Image Include="src\Images\background.png" />
-    <Image Include="src\Images\bird.png" />
-    <Image Include="src\Images\bomb.png" />
-    <Image Include="src\Images\Box.png" />
-    <Image Include="src\Images\Box1.png" />
-    <Image Include="src\Images\Box1normalmap.png" />
-    <Image Include="src\Images\car.png" />
-    <Image Include="src\Images\Circle.png" />
-    <Image Include="src\Images\coin.png" />
-    <Image Include="src\Images\CrossLines.png" />
-    <Image Include="src\Images\default.png" />
-    <Image Include="src\Images\dirt.jpg" />
-    <Image Include="src\Images\download.png" />
-    <Image Include="src\Images\earth.png" />
-    <Image Include="src\Images\Gladiator_BaseColor.png" />
-    <Image Include="src\Images\Gladiator_body_normal_3ds_Max.png" />
-    <Image Include="src\Images\Heart.png" />
-    <Image Include="src\Images\Leaves01.png" />
-    <Image Include="src\Images\man.png" />
-    <Image Include="src\Images\MuzzleFlash.png" />
-    <Image Include="src\Images\normalMap.png" />
-    <Image Include="src\Images\one.png" />
-    <Image Include="src\Images\reddot.png" />
-    <Image Include="src\Images\Stone.png" />
-    <Image Include="src\Images\tgorecfs_2K_Normal.png" />
-    <Image Include="src\Images\tube.png" />
-    <Image Include="src\Images\watermellon.png" />
-    <Image Include="src\Images\WhiteCircle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\Fonts\arial.txt" />
-    <Text Include="src\Fonts\calibri.txt" />
-    <Text Include="src\Fonts\harrington.txt" />
-    <Text Include="src\Fonts\peak.txt" />
-    <Text Include="src\Fonts\playball.txt" />
-    <Text Include="src\Fonts\segoe.txt" />
+    <ClCompile Include="src\AimTrainer\AimTrainer.cpp">
+      <Filter>src\AimTrainer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FEM\FEM.cpp">
+      <Filter>src\FEM</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FEM\Integrals.cpp">
+      <Filter>src\FEM</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FEM\MathFunctions.cpp">
+      <Filter>src\FEM</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FEM\Matrix.cpp">
+      <Filter>src\FEM</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FEM\Vector.cpp">
+      <Filter>src\FEM</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hexagon\Hexagon.cpp">
+      <Filter>src\Hexagon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpaceFire\ShipEnemy.cpp">
+      <Filter>src\SpaceFire</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpaceFire\ShipPlayer.cpp">
+      <Filter>src\SpaceFire</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

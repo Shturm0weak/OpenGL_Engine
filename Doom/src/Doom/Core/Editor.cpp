@@ -926,18 +926,18 @@ void Doom::Editor::ShortCuts()
 {
 	if (!Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) {
 		if (Input::IsKeyPressed(Keycode::KEY_W)) {
-			ViewPort::GetInstance()->m_GizmoOperation = 0;
+			ViewPort::GetInstance().m_GizmoOperation = 0;
 		}
 		else if (Input::IsKeyPressed(Keycode::KEY_R)) {
-			ViewPort::GetInstance()->m_GizmoOperation = 1;
+			ViewPort::GetInstance().m_GizmoOperation = 1;
 		}
 		else if (Input::IsKeyPressed(Keycode::KEY_S)) {
-			ViewPort::GetInstance()->m_GizmoOperation = 2;
+			ViewPort::GetInstance().m_GizmoOperation = 2;
 		}
 		else if (Input::IsKeyPressed(Keycode::KEY_Q)) {
-			ViewPort::GetInstance()->m_GizmoOperation = -1;
+			ViewPort::GetInstance().m_GizmoOperation = -1;
 		}
-		if (Input::IsKeyPressed(Keycode::KEY_BACKSPACE)) {
+		if (Input::IsKeyPressed(Keycode::KEY_DELETE)) {
 			if (Editor::GetInstance().go != nullptr) {
 				World::GetInstance().DeleteObject(Editor::GetInstance().go->m_Id);
 				if (World::GetInstance().s_GameObjects.size() > 0)

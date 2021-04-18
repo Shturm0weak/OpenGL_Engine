@@ -8,44 +8,44 @@ namespace math {
 	class Vector {
 	private:
 
-		double* m_array;
-		uint32_t m_size = 0;
+		double* m_Array = nullptr;
+		size_t m_Size = 0;
 	public:
 
-		Vector();
-		Vector(uint32_t size);
-		Vector(uint32_t size, double value);
-		Vector(uint32_t size, double* value);
-		Vector(const Vector& vec);
+		Vector(size_t size = 0, double value = 0.0);
+		Vector(size_t size, double* value);
+		Vector(const Vector& vector);
 		~Vector();
 
-		Vector& operator = (const Vector& vec);
-		void operator +=(const Vector& vec);
-		void operator -=(const Vector& vec);
-		void operator *=(double value);
+		void operator=(const Vector& vector);
+		void operator=(Vector&& vector) noexcept;
+		void operator+=(const Vector& vector);
+		void operator-=(const Vector& vector);
+		void operator*=(double value);
 
-		double operator *(const Vector& vec);
-		Vector operator *(Matrix& matrix);
-		Vector operator *(double value);
-		Vector operator +(const Vector& vec);
-		Vector operator -(const Vector& vec);
+		double operator*(const Vector& vector);
+		Vector operator*(const Matrix& matrix);
+		Vector operator*(double value);
+		Vector operator+(const Vector& vector);
+		Vector operator-(const Vector& vector);
 
 		double Length() const;
 
-		double& operator[](uint32_t index);
+		double& operator[](size_t index);
 
-		bool operator>(const Vector& vec);
-		bool operator<(const Vector& vec);
-		bool operator>=(const Vector& vec);
-		bool operator<=(const Vector& vec);
-		bool operator==(const Vector& vec);
-		bool operator!=(const Vector& vec);
+		bool operator<(const Vector& vector);
 
-		inline int GetSize() { return m_size; }
+		size_t GetSize() { return m_Size; }
+
+		void Clear();
+
+		void Erase(size_t index);
+		void Join(Vector& vector, size_t index);
 
 		friend class Matrix;
-		friend void Print(const Vector & vec);
-		friend Vector Normalize(Vector& vec);
+		friend void Print(const Vector & vector);
+		friend Vector Normalize(Vector& vector);
+		friend Vector Solve(const Matrix& matrix, const Vector& vector, double& progress, std::string& progressMessage);
 	};
 
 }

@@ -13,7 +13,7 @@
 #include "Components/PointLight.h"
 #include "Lua/LuaState.h"
 #include "Core/SceneSerializer.h"
-#include "Input/WindowsInput.h"
+#include "Input/Input.h"
 #include "Rays/Ray3D.h"
 #include "EntryPoint.h"
 #include "Objects/GridLayOut.h"
@@ -74,7 +74,7 @@ DOOM_API double Timer::s_OutTime = 0;
 DOOM_API ThreadPool* ThreadPool::s_Instance = nullptr;
 DOOM_API bool ThreadPool::m_IsInitialized;
 
-DOOM_API Input* Input::s_Instance = new WindowsInput();
+DOOM_API std::unordered_map<int, int> Input::s_Keys;
 
 DOOM_API float DeltaTime::s_Time;
 DOOM_API float DeltaTime::s_Lasttime = (float)glfwGetTime();
@@ -105,7 +105,6 @@ DOOM_API std::unordered_map<std::string, Shader*> Shader::s_Shaders;
 
 DOOM_API std::vector<Particle*> Particle::s_Particles;
 
-DOOM_API Shader* Font::s_Shader = nullptr;
 DOOM_API const char** Shader::s_NamesOfShaders;
 
 DOOM_API std::vector<PointLight*> PointLight::s_PointLights;

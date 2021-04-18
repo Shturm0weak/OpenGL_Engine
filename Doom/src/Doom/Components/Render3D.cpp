@@ -52,7 +52,7 @@ void Doom::Renderer3D::LoadMesh(Mesh* mesh)
 		}
 		cc->m_MinP = m_Mesh->m_TheLowestPoint;
 		cc->m_MaxP = m_Mesh->m_TheHighestPoint;
-		cc->m_Offset = (cc->m_MaxP - (glm::abs(cc->m_MinP) + glm::abs(cc->m_MaxP)) * 0.5f);
+		cc->m_Offset = ((cc->m_MaxP - cc->m_MinP) * 0.5f) + cc->m_MinP;
 	}
 	m_Tr = m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
 	//std::cout << "offset " << cc->offset.x << " " << cc->offset.y << " " << cc->offset.z << "\n";

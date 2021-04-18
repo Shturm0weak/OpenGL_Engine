@@ -11,9 +11,16 @@ void Doom::IndexBuffer::Init(const uint32_t * data, uint32_t count)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32), data, GL_DYNAMIC_DRAW);
 }
 
+void Doom::IndexBuffer::Clear()
+{
+	m_RendererID = UINT_MAX;
+	m_count = 0;
+	glDeleteBuffers(1, &m_RendererID);
+}
+
 Doom::IndexBuffer::~IndexBuffer()
 {
-	glDeleteBuffers(1, &m_RendererID);
+	Clear();
 }
 
 void Doom::IndexBuffer::Bind() const

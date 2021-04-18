@@ -57,9 +57,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;DOOM_ENGINE;_WIN64;VORBIS_FPU_CONTROL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Includes\LUA;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;$(SolutionDir)Includes\Asio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Includes\LUA;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -81,10 +81,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;DOOM_ENGINE;_WIN64;VORBIS_FPU_CONTROL;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Includes\LUA;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;$(SolutionDir)Includes\Asio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(SolutionDir)Includes\GLEW;$(SolutionDir)Includes\GLFW;$(SolutionDir)Includes\LUA;$(SolutionDir)vendor;$(SolutionDir)Doom\src\Doom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -93,7 +93,6 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <SupportJustMyCode>true</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -118,6 +117,7 @@
     <ClInclude Include="src\Doom\Components\CubeCollider.h" />
     <ClInclude Include="src\Doom\Components\DirectionalLight.h" />
     <ClInclude Include="src\Doom\Components\IRenderer.h" />
+    <ClInclude Include="src\Doom\Components\ParticleEmitter.h" />
     <ClInclude Include="src\Doom\Components\PointLight.h" />
     <ClInclude Include="src\Doom\Components\RectangleCollider2D.h" />
     <ClInclude Include="src\Doom\Components\Render3D.h" />
@@ -152,7 +152,6 @@
     <ClInclude Include="src\Doom\FileDialogs\FileDialogs.h" />
     <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="src\Doom\Input\Input.h" />
-    <ClInclude Include="src\Doom\Input\WindowsInput.h" />
     <ClInclude Include="src\Doom\Lua\LuaState.h" />
     <ClInclude Include="src\Doom\Lua\LuaVec3.h" />
     <ClInclude Include="src\Doom\Objects\Camera.h" />
@@ -161,6 +160,7 @@
     <ClInclude Include="src\Doom\Objects\Line.h" />
     <ClInclude Include="src\Doom\Objects\ParticleSystem.h" />
     <ClInclude Include="src\Doom\Objects\SkyBox.h" />
+    <ClInclude Include="src\Doom\ObjLoader\OBJLoader.h" />
     <ClInclude Include="src\Doom\OpenGl\FrameBuffer.h" />
     <ClInclude Include="src\Doom\OpenGl\IndexBuffer.h" />
     <ClInclude Include="src\Doom\OpenGl\Shader.h" />
@@ -169,7 +169,6 @@
     <ClInclude Include="src\Doom\OpenGl\VertexBuffer.h" />
     <ClInclude Include="src\Doom\OpenGl\VertexBufferLayout.h" />
     <ClInclude Include="src\Doom\OpenGl\stb_image.h" />
-    <ClInclude Include="src\Doom\Components\ParticleEmitter.h" />
     <ClInclude Include="src\Doom\Rays\Ray2D.h" />
     <ClInclude Include="src\Doom\Rays\Ray3D.h" />
     <ClInclude Include="src\Doom\Render\Batch.h" />
@@ -250,6 +249,7 @@
     <ClCompile Include="src\Doom\Components\Animator.cpp" />
     <ClCompile Include="src\Doom\Components\CubeCollider.cpp" />
     <ClCompile Include="src\Doom\Components\DirectionalLight.cpp" />
+    <ClCompile Include="src\Doom\Components\ParticleEmitter.cpp" />
     <ClCompile Include="src\Doom\Components\PointLight.cpp" />
     <ClCompile Include="src\Doom\Components\RectangleCollider2D.cpp" />
     <ClCompile Include="src\Doom\Components\Render3D.cpp" />
@@ -277,7 +277,7 @@
     <ClCompile Include="src\Doom\FbxLoader\fbxutil.cpp" />
     <ClCompile Include="src\Doom\FileDialogs\FileDialogs.cpp" />
     <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
-    <ClCompile Include="src\Doom\Input\WindowsInput.cpp" />
+    <ClCompile Include="src\Doom\Input\Input.cpp" />
     <ClCompile Include="src\Doom\Lua\LuaState.cpp" />
     <ClCompile Include="src\Doom\Lua\LuaVec3.cpp" />
     <ClCompile Include="src\Doom\Objects\Camera.cpp" />
@@ -285,6 +285,7 @@
     <ClCompile Include="src\Doom\Objects\Line.cpp" />
     <ClCompile Include="src\Doom\Objects\ParticleSystem.cpp" />
     <ClCompile Include="src\Doom\Objects\SkyBox.cpp" />
+    <ClCompile Include="src\Doom\ObjLoader\OBJLoader.cpp" />
     <ClCompile Include="src\Doom\OpenGl\FrameBuffer.cpp" />
     <ClCompile Include="src\Doom\OpenGl\IndexBuffer.cpp" />
     <ClCompile Include="src\Doom\OpenGl\Shader.cpp" />
@@ -292,7 +293,6 @@
     <ClCompile Include="src\Doom\OpenGl\VertexArray.cpp" />
     <ClCompile Include="src\Doom\OpenGl\VertexBuffer.cpp" />
     <ClCompile Include="src\Doom\OpenGl\stb_image.cpp" />
-    <ClCompile Include="src\Doom\Components\ParticleEmitter.cpp" />
     <ClCompile Include="src\Doom\Rays\Ray2D.cpp" />
     <ClCompile Include="src\Doom\Rays\Ray3D.cpp" />
     <ClCompile Include="src\Doom\Render\Batch.cpp" />
@@ -304,8 +304,8 @@
     <ClCompile Include="src\Doom\Render\TileMap.cpp" />
     <ClCompile Include="src\Doom\STLloader\STLloader.cpp" />
     <ClCompile Include="src\Doom\Text\Character.cpp" />
-    <ClCompile Include="src\Doom\Text\Gui.cpp" />
     <ClCompile Include="src\Doom\pch.cpp" />
+    <ClCompile Include="src\Doom\Text\Gui.cpp" />
     <ClCompile Include="src\Doom\yaml-cpp\src\binary.cpp" />
     <ClCompile Include="src\Doom\yaml-cpp\src\contrib\graphbuilder.cpp" />
     <ClCompile Include="src\Doom\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />

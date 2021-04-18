@@ -35,6 +35,7 @@ namespace Doom {
 		~Mesh();
 
 		void Init();
+		void Refresh();
 	};
 
 }

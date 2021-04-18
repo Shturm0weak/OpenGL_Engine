@@ -5,214 +5,217 @@
 
 using namespace math;
 
-Vector::Vector()
+Vector::Vector(size_t size, double value) : m_Size(size)
 {
-#ifdef _DEBUG
-	std::cout << "Vector is created\n";
-#endif 
-	m_array = nullptr;
-	m_size = 0;
-}
+//#ifdef _DEBUG
+//	std::cout << "Vector is created\n";
+//#endif 
 
-Vector::Vector(uint32_t size) : m_size(size)
-{
-#ifdef _DEBUG
-	std::cout << "Vector is created\n";
-#endif 
-	m_array = new double[m_size];
-	for (uint32_t i = 0; i < m_size; i++)
+	m_Array = new double[m_Size];
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		m_array[i] = 0;
+		m_Array[i] = value;
 	}
 }
 
-Vector::Vector(uint32_t size, double value) : m_size(size)
+Vector::Vector(size_t size, double* value) : m_Size(size)
 {
-#ifdef _DEBUG
-	std::cout << "Vector is created\n";
-#endif 
-	m_array = new double[m_size];
-	for (uint32_t i = 0; i < m_size; i++)
-	{
-		m_array[i] = value;
-	}
+//#ifdef _DEBUG
+//	std::cout << "Vector is created\n";
+//#endif 
+
+	m_Array = new double[m_Size];
+	memcpy(m_Array, value, m_Size * 8);
 }
 
-Vector::Vector(uint32_t size, double * value) : m_size(size)
+Vector::Vector(const Vector& vector) : m_Size(vector.m_Size)
 {
-#ifdef _DEBUG
-	std::cout << "Vector is created\n";
-#endif 
-	m_array = new double[m_size];
-	for (uint32_t i = 0; i < m_size; i++)
-	{
-		m_array[i] = value[i];
-	}
-}
+//#ifdef _DEBUG
+//	std::cout << "Vector is copied\n";
+//#endif 
 
-Vector::Vector(const Vector& vec) : m_size(vec.m_size)
-{
-#ifdef _DEBUG
-	std::cout << "Vector is copied\n";
-#endif 
-	m_array = new double[m_size];
-	for (uint32_t i = 0; i < m_size; i++)
-	{
-		m_array[i] = vec.m_array[i];
-	}
+	m_Array = new double[m_Size];
+	memcpy(m_Array, vector.m_Array, m_Size * 8);
 }
 
 Vector::~Vector()
 {
-#ifdef _DEBUG
-	std::cout << "Vector is destroyed " << m_array << std::endl;
-#endif 
-	delete[] m_array;
-	m_array = nullptr;
+//#ifdef _DEBUG
+//	std::cout << "Vector is destroyed " << m_array << std::endl;
+//#endif 
+
+	Clear();
 }
 
-Vector& Vector::operator=(const Vector & vec)
+void Vector::operator=(const Vector& vector)
 {
-#ifdef _DEBUG
-	std::cout << "Vector is copied\n";
-#endif 
-	delete[] m_array;
-	m_size = vec.m_size;
-	m_array = new double[m_size];
-	for (uint32_t i = 0; i < m_size; i++)
-	{
-		m_array[i] = vec.m_array[i];
-	}
+//#ifdef _DEBUG
+//	std::cout << "Vector is copied\n";
+//#endif 
 
-	return *this;
-}
-
-void Vector::operator+=(const Vector & vec)
-{
-	if (m_size != vec.m_size)
-		return;
-	for (uint32_t i = 0; i < m_size; i++)
+	delete[] m_Array;
+	m_Size = vector.m_Size;
+	m_Array = new double[m_Size];
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		m_array[i] += vec.m_array[i];
+		memcpy(m_Array, vector.m_Array, m_Size * 8);
 	}
 }
 
-void Vector::operator-=(const Vector & vec)
+void math::Vector::operator=(Vector&& vector) noexcept
 {
-	if (m_size != vec.m_size)
-		return;
-	for (uint32_t i = 0; i < m_size; i++)
+	if (&vector == this) return;
+	m_Size = vector.m_Size;
+	delete[] m_Array;
+	m_Array = vector.m_Array;
+	vector.m_Array = nullptr;
+	vector.m_Size = 0;
+}
+
+void Vector::operator+=(const Vector & vector)
+{
+	if (m_Size != vector.m_Size) throw std::string("Vectors have to have equal sizes!");
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		m_array[i] -= vec.m_array[i];
+		m_Array[i] += vector.m_Array[i];
+	}
+}
+
+void Vector::operator-=(const Vector & vector)
+{
+	if (m_Size != vector.m_Size) throw std::string("Vectors have to have equal sizes!");
+	for (size_t i = 0; i < m_Size; i++)
+	{
+		m_Array[i] -= vector.m_Array[i];
 	}
 }
 
 void Vector::operator*=(double value)
 {
-	for (uint32_t i = 0; i < m_size; i++)
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		m_array[i] *= value;
+		m_Array[i] *= value;
 	}
 }
 
-double Vector::operator*(const Vector & vec)
+double Vector::operator*(const Vector& vector)
 {
-	if (m_size != vec.m_size)
-		return NULL;
-	double dotProduct = 0;
-	for (uint32_t i = 0; i < m_size; i++)
+	if (m_Size != vector.m_Size) throw std::string("Vectors have to have equal sizes!");
+	double scalar = 0.0;
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		dotProduct += m_array[i] * vec.m_array[i];
+		scalar += m_Array[i] * vector.m_Array[i];
 	}
-	return dotProduct;
+	return scalar;
 }
 
-Vector Vector::operator*(Matrix & matrix)
+Vector Vector::operator*(const Matrix& matrix)
 {
-	if (matrix.m_Rows == m_size) {
-		Vector c(matrix.m_Rows);
-		for (uint32_t i = 0; i < matrix.m_Rows; i++)
+	if (matrix.m_Cols != m_Size) throw std::string("Matrix and Vector have to have equal amount of rows and columns!");
+	Vector result (matrix.m_Rows);
+	for (size_t i = 0; i < matrix.m_Rows; i++)
+	{
+		for (size_t j = 0; j < matrix.m_Cols; j++)
 		{
-			for (uint32_t j = 0; j < matrix.m_Cols; j++)
-			{
-				c.m_array[i] += matrix.operator()(i, j) * m_array[j];
-			}
+			result.m_Array[i] += matrix.m_Matrix[i * matrix.m_Cols + j] * m_Array[j];
 		}
-		return c;
 	}
+	return result;
 }
 
 Vector Vector::operator*(double value)
 {
-	Vector v(m_size);
-	for (uint32_t i = 0; i < m_size; i++)
+	Vector result(m_Size);
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		v.m_array[i] = m_array[i] * value;
+		result.m_Array[i] = m_Array[i] * value;
 	}
-	return v;
+	return result;
 }
 
-Vector Vector::operator+(const Vector & vec)
+Vector Vector::operator+(const Vector& vector)
 {
-	Vector v(m_size);
-	for (uint32_t i = 0; i < m_size; i++)
+	if (m_Size != vector.m_Size) throw std::string("Vectors have to have equal sizes!");
+	Vector result(m_Size);
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		v.m_array[i] = m_array[i] + vec.m_array[i];
+		result.m_Array[i] = m_Array[i] + vector.m_Array[i];
 	}
-	return v;
+	return result;
 }
 
-Vector Vector::operator-(const Vector & vec)
+Vector Vector::operator-(const Vector& vector)
 {
-	Vector v(m_size);
-	for (uint32_t i = 0; i < m_size; i++)
+	if (m_Size != vector.m_Size) throw std::string("Vectors have to have equal sizes!");
+	Vector vec(m_Size);
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		v.m_array[i] = m_array[i] - vec.m_array[i];
+		vec.m_Array[i] = m_Array[i] - vec.m_Array[i];
 	}
-	return v;
+	return vec;
 }
 
 double Vector::Length() const
 {
-	double length = 0;
-	for (uint32_t i = 0; i < m_size; i++)
+	double length = 0.0;
+	for (size_t i = 0; i < m_Size; i++)
 	{
-		length += m_array[i] * m_array[i];
+		length += (m_Array[i]);
 	}
-	return sqrtl(length);
+	return length;
 }
 
-double& Vector::operator[](uint32_t index)
+double& Vector::operator[](size_t index)
 {
-	return m_array[index];
+	return m_Array[index];
 }
 
-bool Vector::operator>(const Vector & vec)
+bool Vector::operator<(const Vector& vector)
 {
-	return (Length() > vec.Length());
+	return (Length() < vector.Length());
 }
 
-bool Vector::operator<(const Vector & vec)
+void math::Vector::Clear()
 {
-	return (Length() < vec.Length());
+	m_Size = 0;
+	delete[] m_Array;
+	m_Array = nullptr;
 }
 
-bool Vector::operator>=(const Vector & vec)
+void math::Vector::Erase(size_t index)
 {
-	return (Length() >= vec.Length());
+	Vector temp;
+	temp = std::move(*this);
+	m_Size = temp.m_Size;
+	m_Array = new double[m_Size - 1];
+	for (size_t i = 0; i < index; i++)
+	{
+		memcpy(m_Array, temp.m_Array, index * 8);
+	}
+	for (size_t i = index + 1; i < m_Size; i++)
+	{
+		m_Array[i - 1] = temp[i];
+	}
+	m_Size--;
 }
 
-bool Vector::operator<=(const Vector & vec)
+void math::Vector::Join(Vector& vector, size_t index)
 {
-	return (Length() <= vec.Length());
-}
-
-bool Vector::operator==(const Vector & vec)
-{
-	return (Length() == vec.Length());
-}
-
-bool Vector::operator!=(const Vector & vec)
-{
-	return (Length() != vec.Length());
+	Vector temp;
+	temp = std::move(*this);
+	m_Size = temp.m_Size;
+	m_Array = new double[m_Size + vector.m_Size];
+	for (size_t i = index; i < index + vector.m_Size; i++)
+	{
+		m_Array[i] = vector[i - index];
+	}
+	for (size_t i = 0; i < index; i++)
+	{
+		memcpy(m_Array, temp.m_Array, index * 8);
+	}
+	for (size_t i = index + vector.m_Size; i < m_Size + vector.m_Size; i++)
+	{
+		m_Array[i] = temp[i - vector.m_Size];
+	}
+	m_Size += vector.m_Size;
 }

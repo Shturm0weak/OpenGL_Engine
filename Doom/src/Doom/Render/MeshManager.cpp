@@ -4,7 +4,7 @@
 #include "../Objects/GameObject.h"
 #include "../STLloader/STLloader.h"
 #include "Instancing.h"
-
+#include "ObjLoader/OBJLoader.h"
 
 using namespace Doom;
 
@@ -19,21 +19,26 @@ int Doom::MeshManager::GetAmountOfMeshes()
 	return s_Meshes.size();
 }
 
-void MeshManager::LoadMesh(std::string name, std::string filepath, uint32_t meshId)
+void MeshManager::LoadMesh(std::string name, std::string filePath, size_t meshId)
 {
 	if (meshId > 0)
 		name = name.append(std::to_string(meshId));
 	auto iter = s_Meshes.find(name);
 	if (iter != s_Meshes.end())
 		return;
-	std::string subStr = filepath.substr(filepath.size() - 3, 3);
+	std::string subStr = filePath.substr(filePath.size() - 3, 3);
 	if (subStr == "fbx")
 	{
 		fbx::FBXDocument doc;
-		s_Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filepath, meshId)));
+		s_Meshes.insert(std::make_pair(name, doc.LoadMesh(name, filePath, meshId)));
 	}
 	else if (subStr == "stl") 
-		s_Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filepath)));
+		s_Meshes.insert(std::make_pair(name, StlLoader::LoadMesh(name, filePath)));
+	else if (subStr == "obj")
+	{
+		Mesh* mesh = objl::Loader::Load(filePath);
+		s_Meshes.insert(std::make_pair(mesh->m_Name, mesh));
+	}
 	else return;
 	std::vector<Renderer3D*> New;
 #define	_LOAD_MESH_
@@ -53,7 +58,7 @@ void Doom::MeshManager::LoadScene(std::string filepath)
 	doc.LoadScene(filepath);
 }
 
-void Doom::MeshManager::AsyncLoadMesh(std::string nametemp, std::string filepath, uint32_t meshId)
+void Doom::MeshManager::AsyncLoadMesh(std::string nametemp, std::string filePath, size_t meshId)
 {
 	Doom::ThreadPool::GetInstance().Enqueue([=] {
 		std::lock_guard<std::mutex> lock(s_Mtx);
@@ -63,15 +68,20 @@ void Doom::MeshManager::AsyncLoadMesh(std::string nametemp, std::string filepath
 		
 		auto iter = s_Meshes.find(name);
 		if (iter != s_Meshes.end()) return;
-		std::string subStr = filepath.substr(filepath.size() - 3, 3);
+		std::string subStr = filePath.substr(filePath.size() - 3, 3);
 		Mesh* mesh = nullptr;
 		if (subStr == "fbx") 
 		{
 			fbx::FBXDocument doc;
-			mesh = doc.LoadMesh(name, filepath, meshId);
+			mesh = doc.LoadMesh(name, filePath, meshId);
 		}
 		else if (subStr == "stl")
-			mesh = StlLoader::LoadMesh(name, filepath);
+			mesh = StlLoader::LoadMesh(name, filePath);
+		else if (subStr == "obj")
+		{
+			mesh = objl::Loader::Load(filePath);
+			s_Meshes.insert(std::make_pair(mesh->m_Name, mesh));
+		}
 		else return;
 		if (mesh == nullptr) return;
 		{
@@ -102,7 +112,7 @@ const char** Doom::MeshManager::GetListOfMeshes()
 	if (s_NamesOfMeshes != nullptr)
 		delete[] s_NamesOfMeshes;
 	s_NamesOfMeshes = new const char* [s_Meshes.size()];
-	uint32_t i = 0;
+	size_t i = 0;
 	for (auto mesh = s_Meshes.begin(); mesh != s_Meshes.end(); mesh++)
 	{
 		s_NamesOfMeshes[i] = mesh->first.c_str();
@@ -159,7 +169,7 @@ void MeshManager::ShutDown()
 
 void MeshManager::DispatchLoadedMeshes()
 {
-	for (uint32_t i = 0; i < s_NeedToInitMeshes.size();)
+	for (size_t i = 0; i < s_NeedToInitMeshes.size();)
 	{
 		s_NeedToInitMeshes.back()->Init();
 		std::vector<Renderer3D*> New;

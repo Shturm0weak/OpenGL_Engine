@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "TextureAtlas.h"
 
 Doom::TextureAtlas::TextureAtlas(std::string name, float spriteWidth, float spriteHeight, Texture * texture) : m_Name(name), m_SpriteHeight(spriteHeight), m_SpriteWidth(spriteWidth)

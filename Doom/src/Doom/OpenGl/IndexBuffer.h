@@ -13,6 +13,8 @@ namespace Doom {
 
 		void Init(const uint32_t* data, uint32_t count);
 
+		void Clear();
+
 		void Bind() const;
 		void UnBind() const;
 	};

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Character.h"
-#include "Render/Batch.h"
+#include "../Render/Batch.h"
 #include <stdarg.h>
+#include "Core/ViewPort.h"
 
 namespace Doom {
 
@@ -13,7 +14,6 @@ namespace Doom {
 		public:
 
 			bool m_IsHovered = false;
-			float m_YScrollOffset = 0;
 		};
 
 		struct UIProperties {
@@ -21,8 +21,6 @@ namespace Doom {
 
 			glm::vec2 m_Pos = glm::vec2(0.0f);
 			glm::vec2 m_Size = glm::vec2(0.0f);
-			glm::vec2 m_PanelPosForShader;
-			glm::vec2 m_PanelSizeForShader;
 			glm::vec2 m_Margin = glm::vec2(10.0f);
 			glm::vec2 m_Padding = glm::vec2(10.0f);
 			float m_YOffset = 0.0f;
@@ -33,11 +31,11 @@ namespace Doom {
 		struct TextProperties {
 		public:
 
-			float m_Width = 0.4f;
+			float m_Width = 0.5f;
 			float m_Edge = 0.1f;
 			float m_BorderWidth = 0.0f;
 			float m_BorderEdge = 0.01f;
-			glm::vec4 m_OutLineColor = COLORS::White;
+			glm::vec4 m_OutLineColor = glm::vec4(1.0f);
 			glm::vec2 m_ShadowOffset = glm::vec2(0.0f);
 		};
 
@@ -48,8 +46,10 @@ namespace Doom {
 
 		glm::mat4 m_ViewProjecTionMat4RelatedToCamera;
 
-		std::map <std::string, bool> m_Interactable;
-		std::map <std::string, PanelStruct> m_Panels;
+		std::map <std::wstring, bool> m_Interactable;
+		std::map <std::wstring, PanelStruct> m_Panels;
+		std::map <std::wstring, bool> m_NegativeInputs;
+		std::map <std::wstring, std::string> m_DoubleInput;
 
 		bool m_IsInteracting = false;
 		bool m_IsAnyPanelHovered = false;
@@ -83,33 +83,40 @@ namespace Doom {
 		static Gui& GetInstance() { static Gui instance; return instance; }
 
 		//x,y in pixels
-		void Text(std::string text, int m_static = 1, float x = 0, float y = 0,
-			float fontScale = 20, glm::vec4 color = COLORS::White, int charsAfterComma = 0, ...);
+		void Text(const std::wstring& text, int m_static = 1, float x = 0, float y = 0,
+			float fontScale = 20, glm::vec4 color = glm::vec4(1.0f), int charsAfterComma = 0, ...);
 
 		//x,y,width and height in pixels
-		bool Button(std::string label, float x = 0, float y = 0,
+		bool Button(const std::wstring& label, float x = 0, float y = 0,
 			float scale = 24, float width = 100, float height = 50,
-			glm::vec4 btnColor = COLORS::Gray, glm::vec4 pressedBtnColor = COLORS::Gray * 0.5f,
-			glm::vec4 textColor = COLORS::White, Texture* texture = nullptr);
+			glm::vec4 btnColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f), glm::vec4 pressedBtnColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f) * 0.5f,
+			glm::vec4 textColor = glm::vec4(1.0f), Texture* texture = nullptr);
 
-		void Panel(std::string label, float x = 0, float y = 0, float width = 400,
-			float height = 400, glm::vec4 color = COLORS::Gray, 
+		void Panel(const std::wstring& label, float x = 0, float y = 0, float width = 400,
+			float height = 400, glm::vec4 color = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f), 
 			bool changeColorWhenHovered = false, Texture* texture = nullptr);
 
 		void Bar(float x, float y, float value, float maxValue,
 			glm::vec4 color, glm::vec4 outColor, float width, float height);
 
-		bool CheckBox(std::string label,bool* value, float x = 0.0f, float y = 0.0f,
-			float size = 0.0f, glm::vec4 textColor = COLORS::White, glm::vec4 imageColor = COLORS::White);
+		bool CheckBox(const std::wstring& label,bool* value, float x = 0.0f, float y = 0.0f,
+			float size = 0.0f, glm::vec4 textColor = glm::vec4(1.0f), glm::vec4 imageColor = glm::vec4(1.0f));
 
-		bool SliderFloat(std::string label, float* value, float min = 0.0f, float max = 1.0f,
+		bool SliderFloat(const std::wstring& label, float* value, float min = 0.0f, float max = 1.0f,
 			float x = 0.0f, float y = 0.0f, float width = 100.0f, float height = 50.0f,
 			glm::vec4 sliderColor = glm::vec4(0.3, 0.3, 0.3, 1), glm::vec4 panelColor = glm::vec4(0.5,0.5,0.5,1));
 
-		void Image(float x = 0.0f, float y = 0.0f, float width = 100.0f, float height = 100.0f,
-			Texture* texture = nullptr, glm::vec4 color = COLORS::White);
+		void InputInt(const std::wstring& label, int64_t* value, float x = 0.0f, float y = 0.0f,
+			float width = 100.0f, float height = 50.0f, glm::vec4 panelColor = glm::vec4(0.5, 0.5, 0.5, 1));
 
-		bool CollapsingHeader(std::string label, float x, float y, vec4 color);
+		void InputDouble(const std::wstring& label, double* value, float x = 0.0f, float y = 0.0f,
+			float width = 100.0f, float height = 50.0f, glm::vec4 panelColor = glm::vec4(0.5, 0.5, 0.5, 1));
+
+		void Image(float x = 0.0f, float y = 0.0f, float width = 100.0f, float height = 100.0f,
+			Texture* texture = nullptr, glm::vec4 color = glm::vec4(1.0f));
+
+		bool CollapsingHeader(const std::wstring& label, float x, float y, glm::vec4 color);
+
 		bool IsPanelHovered();
 		void RelateToPanel();
 		void UnRelateToPanel();
@@ -117,7 +124,7 @@ namespace Doom {
 		void End() const;
 		void RecalculateProjectionMatrix();
 		void ShutDown();
-
+		void LoadStandartFonts();
 		void FontBind(Font* font);
 		std::vector<Font*>& GetStandartFonts() { return m_StandartFonts; }
 	private:
@@ -128,7 +135,7 @@ namespace Doom {
 
 		Character* m_Character = nullptr;
 
-		glm::vec4 m_BtnColor = COLORS::Gray;
+		glm::vec4 m_BtnColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
 		glm::vec2 m_Position;
 		std::string m_S;
 		std::vector<Font*> m_StandartFonts;
@@ -138,9 +145,8 @@ namespace Doom {
 		Texture* m_TriangleRightTexture = Texture::Create("src/UIimages/triangleRight.png");
 		Texture* m_TriangleDownTexture = Texture::Create("src/UIimages/triangleDown.png");
 
-		void LoadStandartFonts();
 		void ApplyRelatedToPanelProperties(float* x, float* y);
-		void FindCharInFont(std::vector<Character*>& localCharV, char c);
+		void FindCharInFont(std::vector<Character*>& localCharV, wchar_t c);
 
 		Gui& operator=(const Gui& rhs) { return *this; }
 		Gui(const Gui&) = delete;

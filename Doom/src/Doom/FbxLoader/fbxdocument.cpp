@@ -474,8 +474,8 @@ namespace fbx {
 				{
 					data.vertecesSize = nodeG.properties[l].values.size();
 					data.verteces = std::vector<float>(data.vertecesSize);
-					mesh->m_TheHighestPoint = glm::vec3(0);
-					mesh->m_TheLowestPoint = glm::vec3(0);
+					mesh->m_TheHighestPoint = glm::vec3(-10000);
+					mesh->m_TheLowestPoint = glm::vec3(  10000);
 					uint32_t tcount = 0;
 					for (size_t a = 0; a < data.vertecesSize; a++)
 					{

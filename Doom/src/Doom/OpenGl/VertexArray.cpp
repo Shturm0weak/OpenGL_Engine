@@ -9,9 +9,15 @@ void VertexArray::Init()
 	Bind();
 }
 
+void Doom::VertexArray::Clear()
+{
+	m_RendererID = UINT_MAX;
+	glDeleteVertexArrays(1, &m_RendererID);
+}
+
 VertexArray::~VertexArray()
 {
-	glDeleteVertexArrays(1, &m_RendererID);
+	Clear();
 }
 
 void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout,const GLuint offsetOfGlVertexAttribArray,const GLuint devisor) 

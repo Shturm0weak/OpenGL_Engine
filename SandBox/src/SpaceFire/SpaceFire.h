@@ -77,11 +77,11 @@ public:
 		g.m_RelatedPanelProperties.m_AutoAllignment = true;
 		g.m_RelatedPanelProperties.m_Padding.y = 20;
 		g.m_RelatedPanelProperties.m_Margin = glm::vec2(50,40);
-		g.Panel("##1",x, y, 450, 200, COLORS::DarkGray * 0.8f);
-		if (g.Button("Exit", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+		g.Panel(L"##1",x, y, 450, 200, COLORS::DarkGray * 0.8f);
+		if (g.Button(L"Exit", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			Window::GetInstance().Exit();
 		}
-		if (g.Button("Restart", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
+		if (g.Button(L"Restart", 0, 0, 30, 350, 50, COLORS::Gray * 0.7f, COLORS::Gray * 0.7f * 0.5f)) {
 			pl->Respawn();
 			pause = false;
 			spawnTimer = 16;
@@ -102,8 +102,8 @@ public:
 		{
 			if (enemies[i]->isDead)
 				continue;
-			glm::dvec2 pos = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetPosition().x - enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetWidth() / 2.0), (enemies[i]->GetOwnerOfComponent()->GetPosition().y + enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetHeight() / 2.0));
-			glm::vec2 size = ViewPort::GetInstance()->GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>())->GetWidth(), 0);
+			glm::dvec2 pos = ViewPort::GetInstance().GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetPosition().x - enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetWidth() / 2.0), (enemies[i]->GetOwnerOfComponent()->GetPosition().y + enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>()->GetHeight() / 2.0));
+			glm::vec2 size = ViewPort::GetInstance().GetFromWorldToScreenSpace((enemies[i]->GetOwnerOfComponent()->GetComponent<SpriteRenderer>())->GetWidth(), 0);
 		
 			g.Bar(pos.x, pos.y + 30, enemies[i]->hp, 100, COLORS::Red, COLORS::DarkGray, size.x,25 / (camera.GetZoomLevel() / 10));
 		}
@@ -114,12 +114,12 @@ public:
 		else {
 			Debug();
 			//g.Text("HP %f", true,1350, -800, fontSize, COLORS::White, 0, pl->hp);
-			g.Bar(g_Width * 0.7, -g_Height / camera.GetAspectRatio() * 0.8, pl->hp, 100, COLORS::Red, COLORS::DarkGray, 200, 25);
-			g.Text("Kills %d", true, g_Width * 0.7, -g_Height / camera.GetAspectRatio() * 0.9, fontSize, COLORS::White, 0, pl->kills);
+			g.Bar(g_ScaleUI * 0.7, -g_ScaleUI / camera.GetAspectRatio() * 0.8, pl->hp, 100, COLORS::Red, COLORS::DarkGray, 200, 25);
+			g.Text(L"Kills %d", true, g_ScaleUI * 0.7, -g_ScaleUI / camera.GetAspectRatio() * 0.9, fontSize, COLORS::White, 0, pl->kills);
 			g.m_YAlign = Gui::AlignVertically::YCENTER;
-			g.Text("%d", true, -g_Width * 0.85, -g_Height / camera.GetAspectRatio() * 0.8, fontSize, COLORS::White, 0, pl->ammo);
+			g.Text(L"%d", true, -g_ScaleUI * 0.85, -g_ScaleUI / camera.GetAspectRatio() * 0.8, fontSize, COLORS::White, 0, pl->ammo);
 			g.m_YAlign = Gui::AlignVertically::TOP;
-			g.Image(-g_Width * 0.9, -g_Height / camera.GetAspectRatio() * 0.8, 100, 100, ammoTexture, COLORS::White);
+			g.Image(-g_ScaleUI * 0.9, -g_ScaleUI / camera.GetAspectRatio() * 0.8, 100, 100, ammoTexture, COLORS::White);
 		}
 
 		if (Input::IsKeyPressed(Keycode::KEY_ESCAPE) && !pl->isDead) {
@@ -161,11 +161,11 @@ public:
 		g.RelateToPanel();
 		g.m_RelatedPanelProperties.m_AutoAllignment = true;
 		g.m_RelatedPanelProperties.m_Padding.y = 10;
-		g.Panel("##2",g_Width * 0.5, g_Height / camera.GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
-		g.Text("FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
-		g.Text("Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance()->GetMousePositionToScreenSpace().x, ViewPort::GetInstance()->GetMousePositionToScreenSpace().y);
-		g.Text("Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, camera.GetPosition().x, camera.GetPosition().y);
-		g.Text("Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetOwnerOfComponent()->GetPosition().x, pl->GetOwnerOfComponent()->GetPosition().y);
+		g.Panel(L"##2",g_ScaleUI * 0.5, g_ScaleUI / camera.GetAspectRatio() * 0.5, 450, 200, glm::vec4(1,1,1,0));
+		g.Text(L"FPS : %f", true, 0, 0, fontSize, COLORS::White, 0, fps);
+		g.Text(L"Mouse X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, ViewPort::GetInstance().GetMousePositionToScreenSpace().x, ViewPort::GetInstance().GetMousePositionToScreenSpace().y);
+		g.Text(L"Camera X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, camera.GetPosition().x, camera.GetPosition().y);
+		g.Text(L"Player X : %f Y : %f", true, 0, 0, fontSize, COLORS::White, 1, pl->GetOwnerOfComponent()->GetPosition().x, pl->GetOwnerOfComponent()->GetPosition().y);
 		g.m_XAlign = Gui::AlignHorizontally::LEFT;
 		g.m_RelatedPanelProperties.m_AutoAllignment = false;
 		g.UnRelateToPanel();

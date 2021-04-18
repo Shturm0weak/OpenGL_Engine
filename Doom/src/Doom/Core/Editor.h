@@ -13,7 +13,6 @@ namespace Doom {
 
 		std::mutex mtx_updateNormals;
 		float campos[2] = { 0,0 };
-		bool isBoundingBoxesVisible = false;
 		bool isActiveTextureAtlasCreation = false;
 		bool isActiveEditor = false;
 		bool tool_active = true;
@@ -86,6 +85,7 @@ namespace Doom {
 
 	public:
 
+		bool isBoundingBoxesVisible = false;
 		bool drawNormals = false;
 		static std::vector<Texture*> s_TextureVecTemp;
 		GameObject* go = nullptr;

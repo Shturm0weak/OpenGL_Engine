@@ -24,9 +24,9 @@ namespace Doom {
 
 		static MeshManager& GetInstance();
 		int GetAmountOfMeshes();
-		void LoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
+		void LoadMesh(std::string name, std::string filePath, size_t meshId = 0);
 		void LoadScene(std::string filepath);
-		void AsyncLoadMesh(std::string name, std::string filepath, uint32_t meshId = 0);
+		void AsyncLoadMesh(std::string name, std::string filePath, size_t meshId = 0);
 		Mesh* GetMesh(std::string name);
 		const char** GetListOfMeshes();
 		void AddMesh(Mesh* mesh);

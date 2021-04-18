@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Character.h"
 
 using namespace Doom;
@@ -11,14 +12,13 @@ Character::Character()
 	
 }
 
-void Doom::Character::Init(Font* font, int ch, float posx, float posy, float scale)
+void Character::Init(Font* font, wchar_t ch, float posx, float posy, float scale)
 {
-	m_Shader = font->s_Shader;
 	this->m_Font = font;
 	m_Position.x = posx;
 	m_Position.y = posy;
 	{
-		int i = ch;
+		wchar_t i = ch;
 		this->m_Ch = font->m_Id[i];
 		m_Id = font->m_Id[i];
 		m_X = font->m_X[i];
@@ -41,8 +41,8 @@ void Doom::Character::Init(Font* font, int ch, float posx, float posy, float sca
 		m_Mesh2D[14] = m_X / size;
 		m_Mesh2D[15] = abs(m_Y - size) / size;
 
-		double widthRatio = Window::GetInstance().GetCamera().GetAspectRatio() / ViewPort::GetInstance()->GetSize()[0];
-		double heightRatio = 1 / ViewPort::GetInstance()->GetSize()[1];
+		double widthRatio = Window::GetInstance().GetCamera().GetAspectRatio() / Window::GetInstance().GetSize()[0];
+		double heightRatio = 1 / Window::GetInstance().GetSize()[1];
 
 		m_Mesh2D[0] = 0;
 		m_Mesh2D[1] = 0;
@@ -54,7 +54,6 @@ void Doom::Character::Init(Font* font, int ch, float posx, float posy, float sca
 		m_Mesh2D[13] = (heightRatio * (m_Height + m_YOffset));
 	}
 	this->Scale(scale);
-	this->m_Shader->UnBind();
 }
 
 void Character::Scale(float argscale)
@@ -64,7 +63,7 @@ void Character::Scale(float argscale)
 	m_Scale.y = argscale;
 }
 
-Doom::Font::~Font()
+Font::~Font()
 {
 	delete[] m_Id;
 	delete[] m_X;
@@ -79,7 +78,7 @@ Doom::Font::~Font()
 	m_Characters.clear();
 }
 
-void Doom::Font::LoadFont(const std::string& filename, const std::string& pathToTexture)
+void Font::LoadFont(const std::string& filename, const std::string& pathToTexture)
 {
 	this->m_FontAtlas = Texture::Create(pathToTexture);
 	
@@ -88,9 +87,8 @@ void Doom::Font::LoadFont(const std::string& filename, const std::string& pathTo
 	if (in_file.is_open()) {
 		in_file >> m_Name;
 		in_file >> m_Count;
-		m_Count++;
 		in_file >> m_Size;
-		m_Id = new unsigned int[m_Count];
+		m_Id = new wchar_t[m_Count];
 		m_X = new int[m_Count];
 		m_Y = new int[m_Count];
 		m_Width = new int[m_Count];
@@ -101,7 +99,9 @@ void Doom::Font::LoadFont(const std::string& filename, const std::string& pathTo
 		for (unsigned int i = 0; i < m_Count; i++)
 		{
 			//std::cout << i << "	";
-			in_file >> m_Id[i];
+			uint16_t id;
+			in_file >> id;
+			m_Id[i] = id;
 			//std::cout << id[i] << "	\n";
 			in_file >> m_X[i];
 			//std::cout << x[i] << "	";
@@ -123,12 +123,12 @@ void Doom::Font::LoadFont(const std::string& filename, const std::string& pathTo
 	std::cout << BOLDGREEN << "Font: <" << NAMECOLOR << m_Name << BOLDGREEN << "> has been loaded" << RESET << std::endl;
 }
 
-void Doom::Font::LoadCharacters()
+void Font::LoadCharacters()
 {
 	m_CharacterPtr = new Character[m_Count];
 	for (unsigned int i = 0; i < m_Count; i++)
 	{
-		m_CharacterPtr[i].Init(this, i);
+		m_CharacterPtr[i].Init(this, (wchar_t)i);
 		m_Characters.insert(std::make_pair(m_CharacterPtr[i].m_Ch, &m_CharacterPtr[i]));
 	}
 	//std::cout << BOLDGREEN << "Characters has been loaded" << RESET << std::endl;

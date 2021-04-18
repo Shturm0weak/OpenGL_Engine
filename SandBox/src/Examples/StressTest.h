@@ -46,33 +46,34 @@ public:
 	}
 
 	void OnGuiRender() {
-		glm::vec2 posInScreen = ViewPort::GetInstance()->GetMousePositionToScreenSpace();
+		glm::vec2 posInScreen = ViewPort::GetInstance().GetMousePositionToScreenSpace();
 		if(MoveWithMouse)
 			pos = posInScreen;
 		Gui& g = Gui::GetInstance();
-		g.FontBind(g.GetStandartFonts()[g.ARIAL]);
+		g.FontBind(g.GetStandartFonts()[g.CALIBRI]);
 		g.RelateToPanel();
 		g.m_RelatedPanelProperties.m_AutoAllignment = true;
 		g.m_RelatedPanelProperties.m_Margin = glm::vec2(30);
 		g.m_RelatedPanelProperties.m_Padding.y = 15;
-		g.Panel("##Properties", pos.x, pos.y, 1000, 700, glm::vec4(0.3, 0.3, 0.3, 0.8));
-		if (g.Button("Exit", 0, 0, 20, 100, 50, COLORS::Silver, COLORS::Silver * 0.8f)) {
+		g.Panel(L"##Properties", pos.x, pos.y, 1000, 700, glm::vec4(0.3, 0.3, 0.3, 0.8));
+		if (g.Button(L"Выход", 0, 0, 20, 100, 50, COLORS::Silver, COLORS::Silver * 0.8f)) {
 		Window::GetInstance().Exit();
 		}
 		g.Bar(0, 0, hp, 100, COLORS::Red, COLORS::Silver, 150, 25);
 		isHovered = g.IsPanelHovered();
-		g.CheckBox("Does mouse intersect the panel?", &isHovered, 0, 0, 20, COLORS::White);
-		g.Text("Panel coords.", true, 0, 0, 20);
-		g.Text("X: %f Y: %f", true, 0, 0, 20, COLORS::White, 2, pos.x, pos.y);
-		g.CheckBox("Check box", &value, 0, 0, 20, COLORS::White);
-		g.FontBind(g.GetStandartFonts()[g.PLAYBALL]);
-		g.Button("Pointless", 0, 0, 20, 150, 50, COLORS::Silver, COLORS::Silver * 0.8f);
-		g.Text("FPS: %f", true, 0, 0, 20, COLORS::White, 2, Window::GetInstance().GetFPS());
+		g.CheckBox(L"Пересекает ли мышь панель?", &isHovered, 0, 0, 20, COLORS::White);
+		g.Text(L"Координаты панели.", true, 0, 0, 20);
+		g.Text(L"X: %f Y: %f", true, 0, 0, 20, COLORS::White, 2, pos.x, pos.y);
+		g.CheckBox(L"Флажок", &value, 0, 0, 20, COLORS::White);
+		g.Button(L"Бесмысленно", 0, 0, 20, 175, 50, COLORS::Silver, COLORS::Silver * 0.8f);
 		g.Bar(0, 0, panelRadius, 100, COLORS::Yellow, COLORS::Silver, 150, 25);
-		g.SliderFloat("Bar", &panelRadius, 0, 100, 0, 0, 200, 25);
+		g.SliderFloat(L"Ползунок", &panelRadius, 0, 100, 0, 0, 200, 25);
+		g.FontBind(g.GetStandartFonts()[g.PLAYBALL]);
+		g.Text(L"K/C: %f", true, 0, 0, 20, COLORS::White, 2, Window::GetInstance().GetFPS());
 		g.m_RelatedPanelProperties.m_AutoAllignment = false;
 		g.m_RelatedPanelProperties.m_Margin = glm::vec2(0);
 		g.m_RelatedPanelProperties.m_Padding.y = 0;
 		g.UnRelateToPanel();
 	}
+
  };

@@ -28,7 +28,8 @@ project "Doom"
 		"$(SolutionDir)Includes/GLFW",
 		"$(SolutionDir)Includes/LUA",
 		"$(SolutionDir)vendor",
-		"$(SolutionDir)%{prj.name}/src/%{prj.name}"
+		"$(SolutionDir)%{prj.name}/src/%{prj.name}",
+		
 	}
 
 	libdirs {"$(SolutionDir)Libs"}

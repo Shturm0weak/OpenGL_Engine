@@ -47,7 +47,7 @@ void Doom::AimTrainer::RayCast()
 
 void Doom::AimTrainer::CameraMovement()
 {
-	glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
+	glm::dvec2 delta = ViewPort::GetInstance().GetMouseDragDelta();
 	delta *= 0.1;
 	delta *= m_MouseSensetivity;
 	glm::vec3 rot = Window::GetInstance().GetCamera().GetRotation();
@@ -165,17 +165,17 @@ void Doom::AimTrainer::MainMenu()
 	g.m_RelatedPanelProperties.m_AutoAllignment = true;
 	g.m_RelatedPanelProperties.m_Margin.y = 50;
 	g.m_RelatedPanelProperties.m_Padding.y = 25;
-	g.Panel("##1", 0, 0, 800, 600, glm::vec4(0.3, 0.3, 0.3, 0.8));
+	g.Panel(L"##1", 0, 0, 800, 600, glm::vec4(0.3, 0.3, 0.3, 0.8));
 	g.m_XAlign = g.XCENTER;
-	if (g.Button("Continue", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f)) {
+	if (g.Button(L"Continue", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f)) {
 		m_Pause = false;
 		Window::GetInstance().DisableCursor();
 	}
 	g.m_XAlign = g.XCENTER;
-	if (g.Button("Options", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f))
+	if (g.Button(L"Options", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f))
 		m_Options = true;
 	g.m_XAlign = g.XCENTER;
-	if (g.Button("Exit", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f))
+	if (g.Button(L"Exit", 0, 0, 50, 300, 150, COLORS::Gray * 0.8f))
 		Window::GetInstance().Exit();
 	g.m_RelatedPanelProperties.m_AutoAllignment = false;
 	g.UnRelateToPanel();
@@ -191,19 +191,19 @@ void Doom::AimTrainer::OptionsMenu()
 	g.m_RelatedPanelProperties.m_Padding.y = 25.0f;
 	g.m_RelatedPanelProperties.m_PanelLabelSize = 40.0f;
 	g.m_XAlign = g.XCENTER;
-	g.Panel("Options", 0, 0, 800, 600, glm::vec4(0.3, 0.3, 0.3, 0.8));
+	g.Panel(L"Options", 0, 0, 800, 600, glm::vec4(0.3, 0.3, 0.3, 0.8));
 	g.m_XAlign = g.LEFT;
-	g.SliderFloat("Cross hair scale", &m_CrossHairScale, 0.1f, 5.0f, 0, 0, 200, 50);
-	g.SliderFloat("Audio volume", &m_AudioVolume, 0.0f, 1.0f, 0, 0, 200, 50);
-	g.SliderFloat("Mouse sensetivity", &m_MouseSensetivity, 0.1f, 3.0f, 0, 0, 200, 50);
-	g.CheckBox("Draw shadows", &m_DrawShadows, 0, 0, 25);
-	g.CheckBox("Bloom", &Renderer::s_BloomEffect, 0, 0, 25);
-	if (g.Button("Choose crosshair", 0, 0, 30, 400, 50, COLORS::Gray * 0.8f))
+	g.SliderFloat(L"Cross hair scale", &m_CrossHairScale, 0.1f, 5.0f, 0, 0, 200, 50);
+	g.SliderFloat(L"Audio volume", &m_AudioVolume, 0.0f, 1.0f, 0, 0, 200, 50);
+	g.SliderFloat(L"Mouse sensetivity", &m_MouseSensetivity, 0.1f, 3.0f, 0, 0, 200, 50);
+	g.CheckBox(L"Draw shadows", &m_DrawShadows, 0, 0, 25);
+	g.CheckBox(L"Bloom", &Renderer::s_BloomEffect, 0, 0, 25);
+	if (g.Button(L"Choose crosshair", 0, 0, 30, 400, 50, COLORS::Gray * 0.8f))
 		m_ChooseCrossHair = true;
 	Instancing::GetInstance()->m_DrawShadows = m_DrawShadows ? 1.0f : 0.0f;
 	SoundManager::GetInstance().SetVolume(m_AudioVolume);
 	g.m_RelatedPanelProperties.m_AutoAllignment = false;
-	if (g.Button("Back", 0, -475, 30, 200, 50, COLORS::Gray * 0.8f))
+	if (g.Button(L"Back", 0, -475, 30, 200, 50, COLORS::Gray * 0.8f))
 		m_Options = false;
 	g.UnRelateToPanel();
 	g.m_XAlign = g.LEFT;
@@ -214,7 +214,7 @@ void Doom::AimTrainer::ChooseCrossHairMenu()
 	Gui& g = Gui::GetInstance();
 	g.m_XAlign = Gui::AlignHorizontally::XCENTER;
 	g.RelateToPanel();
-	g.Panel("##Choose CrossHair", 0, 0, 800, 600, glm::vec4(0.3, 0.3, 0.3, 0.8));
+	g.Panel(L"##Choose CrossHair", 0, 0, 800, 600, glm::vec4(0.3, 0.3, 0.3, 0.8));
 	float tempMarginX = g.m_RelatedPanelProperties.m_Margin.x;
 	g.m_RelatedPanelProperties.m_Margin.x = 25;
 	g.m_XAlign = g.LEFT;
@@ -232,7 +232,7 @@ void Doom::AimTrainer::ChooseCrossHairMenu()
 			counter = 0;
 		}
 		else counter++;
-		if (g.Button("", pos.x, pos.y, 30, size, size, COLORS::Gray * 0.8f, COLORS::Gray * 0.5f, COLORS::White, textures[i])) 
+		if (g.Button(L"", pos.x, pos.y, 30, size, size, COLORS::Gray * 0.8f, COLORS::Gray * 0.5f, COLORS::White, textures[i])) 
 		{
 			m_ChooseCrossHair = false;
 			m_CrossHair = textures[i];
@@ -251,15 +251,15 @@ void Doom::AimTrainer::OnGuiRender()
 		Gui& g = Gui::GetInstance();
 		if (m_CrossHair != nullptr)
 			g.Image(0, 0, 50 * m_CrossHairScale, 50 * m_CrossHairScale, m_CrossHair);
-		g.Text("FPS %f", 1, 700, 500, 40, COLORS::White, 3, Window::GetInstance().GetFPS());
-		g.Text("Missed %d", 1, 700, 450, 40, COLORS::White, 0, m_Missed);
-		g.Text("Hits %d", 1, 700, 400, 40, COLORS::White, 0, m_Hits);
-		g.Text("Time %f", 1, 700, 350, 40, COLORS::White, 2, m_Time);
+		g.Text(L"FPS %f", 1, 700, 500, 40, COLORS::White, 3, Window::GetInstance().GetFPS());
+		g.Text(L"Missed %d", 1, 700, 450, 40, COLORS::White, 0, m_Missed);
+		g.Text(L"Hits %d", 1, 700, 400, 40, COLORS::White, 0, m_Hits);
+		g.Text(L"Time %f", 1, 700, 350, 40, COLORS::White, 2, m_Time);
 		if (m_Hits > 0)
-			g.Text("Accuracy %f#%", 1, 700, 300, 40, COLORS::White, 0, ((float)m_Hits / (float)(m_Hits + m_Missed)) * 100.0f);
+			g.Text(L"Accuracy %f#%", 1, 700, 300, 40, COLORS::White, 0, ((float)m_Hits / (float)(m_Hits + m_Missed)) * 100.0f);
 
 		g.m_XAlign = g.XCENTER;
-		g.Text("%d", 1, 0, 600, 80, COLORS::White, 0, m_Hits);
+		g.Text(L"%d", 1, 0, 600, 80, COLORS::White, 0, m_Hits);
 		g.m_XAlign = g.LEFT;
 	}
 	else 

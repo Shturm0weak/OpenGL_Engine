@@ -40,7 +40,7 @@ public:
 	}
 
 	virtual void OnUpdate() override {
-		pos = ViewPort::GetInstance()->GetMousePositionToWorldSpace();
+		pos = ViewPort::GetInstance().GetMousePositionToWorldSpace();
 		coin->m_Enable = false;
 		for (unsigned int i = 0; i < 2000; i++)
 		{

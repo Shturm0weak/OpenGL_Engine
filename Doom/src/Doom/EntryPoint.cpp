@@ -30,7 +30,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	MainThread::GetInstance();
 	Texture::s_WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
 	Texture::ColoredTexture("InvalidTexture", 0xFF00AC);
-
+	Input::SetupCallBack();
 	Gui::GetInstance().LoadStandartFonts();
 	
 	Window& window = Window::GetInstance();
@@ -85,10 +85,8 @@ void EntryPoint::Run()
 		Renderer::s_OutLined3dObjects.clear();
 		RectangleCollider2D::CollidersToInit();
 		Window::GetInstance().s_CursorStateChanged = false;
-		Gui::GetInstance().m_IsAnyPanelHovered = false;
 		EventSystem::GetInstance().SendEvent(EventType::ONUPDATE, nullptr);
 		DeltaTime::calculateDeltaTime();
-		Editor::GetInstance().ShortCuts();
 
 		if (FirstFrame) 
 		{
@@ -113,6 +111,7 @@ void EntryPoint::Run()
 		if (isEditorEnable)
 			Editor::GetInstance().EditorUpdate();
 		Window::GetInstance().GetCamera().CameraMovement();
+		Editor::GetInstance().ShortCuts();
 //#endif
 		MeshManager::GetInstance().DispatchLoadedMeshes();
 		Texture::DispatchLoadedTextures();
@@ -128,6 +127,7 @@ void EntryPoint::Run()
 
 #ifdef _IS_GAME_BUILD
 		m_App->OnUpdate();
+		Gui::GetInstance().m_IsAnyPanelHovered = false;
 		Gui::GetInstance().Begin();
 		m_App->OnGuiRender();
 		Gui::GetInstance().End();
@@ -135,8 +135,8 @@ void EntryPoint::Run()
 
 		Renderer::Render();
 
-		ViewPort::GetInstance()->Update();
-		if (ViewPort::GetInstance()->m_IsViewportResized)
+		ViewPort::GetInstance().Update();
+		if (ViewPort::GetInstance().m_IsViewportResized)
 		{
 			Window& window = Window::GetInstance();
 			int* size = Window::GetInstance().GetSize();
@@ -151,6 +151,7 @@ void EntryPoint::Run()
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			glfwSwapBuffers(Window::GetInstance().GetWindow());
+			Input::ResetInput();
 			glfwPollEvents();
 		}
 		catch (const std::exception& e)

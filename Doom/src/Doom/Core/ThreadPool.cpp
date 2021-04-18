@@ -8,7 +8,6 @@ ThreadPool::ThreadPool(int n)
 {
 	m_NumThreads = n;
 	InfiniteLoopFunction();
-	
 }
 
 ThreadPool::~ThreadPool()
@@ -34,7 +33,7 @@ void ThreadPool::InfiniteLoopFunction()
 						if (m_Tasks.empty() && m_IsStoped) break;
 
 						task = std::move(m_Tasks.front());
-						m_Tasks.pop(); 
+						m_Tasks.pop();
 
 						if (iter != m_IsThreadBusy.end())
 							iter->second = true;

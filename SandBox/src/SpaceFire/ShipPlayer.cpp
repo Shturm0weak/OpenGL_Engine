@@ -40,7 +40,7 @@ void ShipPlayer::ShipMovement()
 	}
 
 	tr->Move(speed.x, speed.y, speed.z);
-	dir = glm::vec3(ViewPort::GetInstance()->GetMousePositionToWorldSpace(), 0);
+	dir = glm::vec3(ViewPort::GetInstance().GetMousePositionToWorldSpace(), 0);
 	glm::vec3 pos = GetOwnerOfComponent()->GetPosition();
 	dir.x -= pos.x;
 	dir.y -= pos.y;

@@ -95,7 +95,7 @@ public:
 	}
 
 	virtual void OnUpdate()override {
-		mousePos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+		mousePos = glm::vec2(ViewPort::GetInstance().GetMousePositionToWorldSpace().x, ViewPort::GetInstance().GetMousePositionToWorldSpace().y);
 
 		if (timer > 0.2f && Input::IsMousePressed(Keycode::MOUSE_BUTTON_1) && !end && turn == 1 && !end) {
 			timer = 0.0;
@@ -201,8 +201,8 @@ public:
 			g.Begin();
 			g.m_XAlign = g.AlignHorizontally::XCENTER;
 			g.m_YAlign = g.AlignVertically::YCENTER;
-			g.Text("Draw", true, 0, 0, 40, COLORS::Yellow);
-			g.Text("Press Enter to restart", true, 0, -80, 40, COLORS::Yellow);
+			g.Text(L"Draw", true, 0, 0, 40, COLORS::Yellow);
+			g.Text(L"Press Enter to restart", true, 0, -80, 40, COLORS::Yellow);
 			g.m_XAlign = g.AlignHorizontally::LEFT;
 			g.m_YAlign = g.AlignVertically::BOTTOM;
 			Batch::GetInstance().EndText();
@@ -213,8 +213,8 @@ public:
 		if (whowin > -1) {
 			g.m_XAlign = g.AlignHorizontally::XCENTER;
 			g.m_YAlign = g.AlignVertically::YCENTER;
-			g.Text("Player %d won!!!", true, -0, 0, 40, COLORS::Yellow, 0, whowin);
-			g.Text("Press Enter to restart", true, -0, -80, 40, COLORS::Yellow, 0, whowin);
+			g.Text(L"Player %d won!!!", true, -0, 0, 40, COLORS::Yellow, 0, whowin);
+			g.Text(L"Press Enter to restart", true, -0, -80, 40, COLORS::Yellow, 0, whowin);
 			g.m_XAlign = g.AlignHorizontally::LEFT;
 			g.m_YAlign = g.AlignVertically::BOTTOM;
 		}

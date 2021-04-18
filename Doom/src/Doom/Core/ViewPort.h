@@ -27,7 +27,7 @@ namespace Doom {
 		bool m_IsHovered = false;
 		bool m_IsActive = false;
 
-		static ViewPort* ViewPort::GetInstance();
+		static ViewPort& ViewPort::GetInstance();
 
 		void RecalculateMouseCoords();
 		void Update();

@@ -13,9 +13,15 @@ void VertexBuffer::Init(const void* data, unsigned int size, bool Static)
 		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
 }
 
+void Doom::VertexBuffer::Clear()
+{
+	m_RendererID = UINT_MAX;
+	glDeleteBuffers(1, &m_RendererID);
+}
+
 VertexBuffer::~VertexBuffer()
 {
-	glDeleteBuffers(1, &m_RendererID);
+	Clear();
 }
 
 void VertexBuffer::Bind() const 

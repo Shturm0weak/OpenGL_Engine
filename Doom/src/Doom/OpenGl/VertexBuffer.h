@@ -12,6 +12,8 @@ namespace Doom {
 
 		void Init(const void* data, unsigned int size, bool Static = true);
 
+		void Clear();
+
 		void Bind()const;
 		void UnBind()const;
 		void Invalidate();

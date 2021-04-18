@@ -196,7 +196,7 @@ unsigned int Doom::World::GetAmountOfObjects()
 
 bool Doom::World::ObjectCollided(std::vector<glm::vec2>& p, int i)
 {
-	glm::vec2 MousePos = glm::vec2(ViewPort::GetInstance()->GetMousePositionToWorldSpace().x, ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+	glm::vec2 MousePos = glm::vec2(ViewPort::GetInstance().GetMousePositionToWorldSpace().x, ViewPort::GetInstance().GetMousePositionToWorldSpace().y);
 
 	for (unsigned int a = 0; a < p.size(); a++)
 	{

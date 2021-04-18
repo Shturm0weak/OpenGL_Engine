@@ -137,7 +137,7 @@ void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
 	glm::vec3 position = Utils::GetPosition(m_PosMat4);
 	glm::vec3 b = glm::vec3(0, 1, 0);
 	float angleRad = acosf((dir.x * b.x + dir.y * b.y + dir.z * b.z) / ((sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z) * (sqrtf(b.x * b.x + b.y * b.y + b.z * b.z)))));
-	if (ViewPort::GetInstance()->GetMousePositionToWorldSpace().x > position.x)
+	if (ViewPort::GetInstance().GetMousePositionToWorldSpace().x > position.x)
 		angleRad = -angleRad;
 	axis *= angleRad;
 	m_ViewMat4 = glm::toMat4(glm::quat(axis));

@@ -11,7 +11,6 @@ using namespace Doom;
 
 Camera::Camera()
 {
-	m_Position = glm::vec3(0, 0, 0);
 	EventSystem::GetInstance().RegisterClient(EventType::ONWINDOWRESIZE, this);
 }
 
@@ -59,14 +58,14 @@ void Camera::WindowResize()
 		if (m_Props == nullptr) return;
 		if (m_Props[0] == 0 || m_Props[1] == 0) return;
 		glViewport(0, 0, m_Props[0], m_Props[1]);
-		m_Ratio = ViewPort::GetInstance()->GetSize().x / ViewPort::GetInstance()->GetSize().y;
+		m_Ratio = ViewPort::GetInstance().GetSize().x / ViewPort::GetInstance().GetSize().y;
 		switch (m_Type)
 		{
 		case Doom::Camera::ORTHOGRAPHIC:
 			SetOrthographic(m_Ratio);
 			break;
 		case Doom::Camera::PERSPECTIVE:
-			SetPerspective(m_Fov, ViewPort::GetInstance()->GetSize().x, ViewPort::GetInstance()->GetSize().y, m_Znear, m_Zfar);
+			SetPerspective(m_Fov, ViewPort::GetInstance().GetSize().x, ViewPort::GetInstance().GetSize().y, m_Znear, m_Zfar);
 			break;
 		default:
 			break;
@@ -132,8 +131,8 @@ glm::vec3 Doom::Camera::GetRotation()
 glm::dvec3 Doom::Camera::GetMouseDirVec()
 {
 	glm::dvec2 pos;
-	pos.x = ViewPort::GetInstance()->GetStaticMousePosition().x / (Window::GetInstance().GetCamera().GetAspectRatio() * g_Height);
-	pos.y = ViewPort::GetInstance()->GetStaticMousePosition().y / (g_Height);
+	pos.x = ViewPort::GetInstance().GetStaticMousePosition().x / (Window::GetInstance().GetCamera().GetAspectRatio() * g_ScaleUI);
+	pos.y = ViewPort::GetInstance().GetStaticMousePosition().y / (g_ScaleUI);
 	glm::dvec4 clipCoords = glm::dvec4(pos.x, pos.y, -1.0f, 1.0f);
 	glm::dvec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMat4);
 	eyeCoords.z = -1.0f; eyeCoords.w = 0.0f;
@@ -190,7 +189,7 @@ void Camera::SetOnStart() {
 
 void Camera::CameraMovement()
 {
-	if (ViewPort::GetInstance()->m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) 
+	if (ViewPort::GetInstance().m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) 
 	{
 		if (m_Type == ORTHOGRAPHIC)
 		{
@@ -210,8 +209,8 @@ void Camera::CameraMovement()
 			{
 				if (Editor::GetInstance().go != nullptr)
 					Editor::GetInstance().go->m_ComponentManager.GetComponent<Transform>()->Translate(
-						ViewPort::GetInstance()->GetMousePositionToWorldSpace().x,
-						ViewPort::GetInstance()->GetMousePositionToWorldSpace().y);
+						ViewPort::GetInstance().GetMousePositionToWorldSpace().x,
+						ViewPort::GetInstance().GetMousePositionToWorldSpace().y);
 			}
 			Increase();
 		}
@@ -231,7 +230,7 @@ void Camera::CameraMovement()
 				MovePosition(glm::vec3(0, -5.0f * DeltaTime::s_Deltatime, 0));
 		
 			Window::GetInstance().DisableCursor();
-			glm::dvec2 delta = ViewPort::GetInstance()->GetMouseDragDelta();
+			glm::dvec2 delta = ViewPort::GetInstance().GetMouseDragDelta();
 			delta *= 0.2;
 			glm::vec3 rot = Window::GetInstance().GetCamera().GetRotation();
 			Window::GetInstance().GetCamera().SetRotation(glm::vec3((rot.x + delta.y * (2 * 3.14159f) / 360.0f), (rot.y - delta.x * (2 * 3.14159f) / 360.0f), 0));
@@ -275,6 +274,6 @@ void Camera::CameraMovement()
 	SetOnStart();
 }
 
-float Camera::GetRationWH() const { return ((float)ViewPort::GetInstance()->GetSize()[0] / (float)ViewPort::GetInstance()->GetSize()[1]); }
-float Camera::GetRationHW() const { return ((float)ViewPort::GetInstance()->GetSize()[1] / (float)ViewPort::GetInstance()->GetSize()[0]); }
+float Camera::GetRationWH() const { return ((float)ViewPort::GetInstance().GetSize()[0] / (float)ViewPort::GetInstance().GetSize()[1]); }
+float Camera::GetRationHW() const { return ((float)ViewPort::GetInstance().GetSize()[1] / (float)ViewPort::GetInstance().GetSize()[0]); }
 

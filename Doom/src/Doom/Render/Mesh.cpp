@@ -24,6 +24,17 @@ void Mesh::Init()
 	m_IsInitialized = true;
 }
 
+void Doom::Mesh::Refresh()
+{
+	m_Va.Clear();
+	m_Vb.Clear();
+	m_Layout.Clear();
+	m_Ib.Clear();
+
+	m_IsInitialized = false;
+	Init();
+}
+
 Mesh::~Mesh()
 {
 	delete[] m_VertAttrib;

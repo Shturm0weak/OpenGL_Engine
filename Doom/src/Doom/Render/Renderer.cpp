@@ -16,7 +16,7 @@ void Doom::Renderer::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glClearDepth(1.0f);
-	glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
 void Doom::Renderer::SortTransparentObjects()

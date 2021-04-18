@@ -94,6 +94,9 @@
     <ClInclude Include="src\Doom\Components\IRenderer.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\Components\ParticleEmitter.h">
+      <Filter>Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\Components\PointLight.h">
       <Filter>Components</Filter>
     </ClInclude>
@@ -107,6 +110,9 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Components\SphereCollider.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Components\SpotLight.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Components\SpriteRenderer.h">
@@ -185,13 +191,16 @@
     <ClInclude Include="src\Doom\FileDialogs\FileDialogs.h">
       <Filter>FileDialogs</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h">
+      <Filter>ImGuizmo</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\Input\Input.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Input\WindowsInput.h">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="src\Doom\Lua\LuaState.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Doom\Lua\LuaVec3.h">
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Objects\Camera.h">
@@ -206,6 +215,9 @@
     <ClInclude Include="src\Doom\Objects\Line.h">
       <Filter>Objects</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\Objects\ParticleSystem.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
     <ClInclude Include="src\Doom\Objects\SkyBox.h">
       <Filter>Objects</Filter>
     </ClInclude>
@@ -216,9 +228,6 @@
       <Filter>OpenGl</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\OpenGl\Shader.h">
-      <Filter>OpenGl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\OpenGl\Texture.h">
       <Filter>OpenGl</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\OpenGl\VertexArray.h">
@@ -447,11 +456,10 @@
     <ClInclude Include="src\Doom\yaml-cpp\yaml.h">
       <Filter>yaml-cpp</Filter>
     </ClInclude>
-    <ClInclude Include="src\Doom\Objects\ParticleSystem.h" />
-    <ClInclude Include="src\Doom\ImGuizmo\ImGuizmo.h" />
-    <ClInclude Include="src\Doom\Lua\LuaVec3.h" />
-    <ClInclude Include="src\Doom\Components\ParticleEmitter.h" />
-    <ClInclude Include="src\Doom\Components\SpotLight.h" />
+    <ClInclude Include="src\Doom\ObjLoader\OBJLoader.h" />
+    <ClInclude Include="src\Doom\OpenGl\Texture.h">
+      <Filter>OpenGl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -470,6 +478,9 @@
     <ClCompile Include="src\Doom\Components\DirectionalLight.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\Doom\Components\ParticleEmitter.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
     <ClCompile Include="src\Doom\Components\PointLight.cpp">
       <Filter>Components</Filter>
     </ClCompile>
@@ -483,6 +494,9 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Components\SphereCollider.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Components\SpotLight.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Components\SpriteRenderer.cpp">
@@ -509,11 +523,17 @@
     <ClCompile Include="src\Doom\Core\ViewPort.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Doom\Core\Window.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Doom\Core\World.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Doom.cpp" />
     <ClCompile Include="src\Doom\ECS\Component.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\ECS\ComponentManager.cpp">
       <Filter>ECS</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\EntryPoint.cpp" />
@@ -535,10 +555,13 @@
     <ClCompile Include="src\Doom\FileDialogs\FileDialogs.cpp">
       <Filter>FileDialogs</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Input\WindowsInput.cpp">
-      <Filter>Input</Filter>
+    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp">
+      <Filter>ImGuizmo</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Lua\LuaState.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Lua\LuaVec3.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Objects\Camera.cpp">
@@ -548,6 +571,9 @@
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Objects\Line.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Doom\Objects\ParticleSystem.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Objects\SkyBox.cpp">
@@ -605,9 +631,6 @@
       <Filter>STLloader</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Text\Character.cpp">
-      <Filter>Text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Text\Gui.cpp">
       <Filter>Text</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\pch.cpp" />
@@ -704,12 +727,8 @@
     <ClCompile Include="src\Doom\yaml-cpp\src\tag.cpp">
       <Filter>yaml-cpp\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Doom\Objects\ParticleSystem.cpp" />
-    <ClCompile Include="src\Doom\ImGuizmo\ImGuizmo.cpp" />
-    <ClCompile Include="src\Doom\Core\Window.cpp" />
-    <ClCompile Include="src\Doom\Lua\LuaVec3.cpp" />
-    <ClCompile Include="src\Doom\ECS\ComponentManager.cpp" />
-    <ClCompile Include="src\Doom\Components\ParticleEmitter.cpp" />
-    <ClCompile Include="src\Doom\Components\SpotLight.cpp" />
+    <ClCompile Include="src\Doom\ObjLoader\OBJLoader.cpp" />
+    <ClCompile Include="src\Doom\Input\Input.cpp" />
+    <ClCompile Include="src\Doom\Text\Gui.cpp" />
   </ItemGroup>
 </Project>

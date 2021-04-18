@@ -13,7 +13,7 @@ namespace Doom {
 		static bool s_IsTextureAdded;
 		unsigned char* m_LocalBuffer = nullptr;
 
-		Texture(const std::string& path, int flip = 1,bool repeat = false);
+		Texture(const std::string& path, int flip = 1, bool repeat = false);
 		Texture();
 
 		static void DispatchLoadedTextures();
@@ -23,7 +23,7 @@ namespace Doom {
 		friend class EntryPoint;
 	public:
 
-		static std::unordered_map<void*, std::function<Texture*()>> s_WaitingForTextures;
+		static std::unordered_map<void*, std::function<Texture* ()>> s_WaitingForTextures;
 		static std::mutex s_LockTextureLoadingMtx;
 		static std::vector<Texture*> s_LoadedTextures;
 		static Texture* s_WhiteTexture;
@@ -41,7 +41,7 @@ namespace Doom {
 		static void AsyncLoadTexture(const std::string& filePath);
 		static std::vector<Texture*> GetLoadedTexturesFromFolder(std::string filePath);
 		static Texture* Get(const std::string filePath, bool showErrors = true);
-		static void GetAsync(void* ptr, std::function<Texture*()> f);
+		static void GetAsync(void* ptr, std::function<Texture* ()> f);
 		static void RemoveFromGetAsync(void* ptr);
 		static Texture* ColoredTexture(const std::string& name, uint32_t color);
 		static Texture* Create(const std::string& filePath, bool flip = true, bool repeat = false);

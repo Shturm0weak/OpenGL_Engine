@@ -5,166 +5,150 @@
 
 using namespace math;
 
-Matrix::Matrix(uint32_t rows, uint32_t cols) : m_Cols(cols),m_Rows(rows)
+Matrix::Matrix(size_t rows, size_t cols, double initValue) : m_Cols(cols),m_Rows(rows)
 {
-#ifdef _DEBUG
-	std::cout << "Matrix is created\n";
-#endif 
+//#ifdef _DEBUG
+//	std::cout << "Matrix is created\n";
+//#endif 
 
-	uint32_t size = rows * cols;
-	m_matrix = new double[size];
-	for (uint32_t i = 0; i < size; i++)
+	size_t size = rows * cols;
+	m_Matrix = new double[size];
+	for (size_t i = 0; i < size; i++)
 	{
-		m_matrix[i] = 0;
+		m_Matrix[i] = initValue;
 	}
 }
 
-Matrix::Matrix(uint32_t rows, uint32_t cols, double matrix[]) : m_Cols(cols),m_Rows(rows)
+Matrix::Matrix(size_t rows, size_t cols, double matrix[]) : m_Cols(cols),m_Rows(rows)
 {
-#ifdef _DEBUG
-	std::cout << "Matrix is created\n";
-#endif 
+//#ifdef _DEBUG
+//	std::cout << "Matrix is created\n";
+//#endif 
 
-	uint32_t size = rows * cols;
-	m_matrix = new double[size];
-	for (uint32_t i = 0; i < size; i++)
-	{
-		m_matrix[i] = matrix[i];
-	}
+	size_t size = rows * cols;
+	m_Matrix = new double[size];
+	memcpy(m_Matrix, matrix, size * 8);
 }
 
-Matrix::Matrix(const Matrix & matrix) : m_Cols(matrix.m_Cols),m_Rows(matrix.m_Rows)
+Matrix::Matrix(const Matrix& matrix) : m_Cols(matrix.m_Cols),m_Rows(matrix.m_Rows)
 {
-#ifdef _DEBUG
-	std::cout << "Matrix is copied\n";
-#endif 
+//#ifdef _DEBUG
+//	std::cout << "Matrix is copied\n";
+//#endif 
 
-	m_matrix = new double[m_Rows * m_Cols];
-
-	uint32_t size = m_Rows * m_Cols;
-	for (uint32_t i = 0; i < size; i++)
-	{
-		m_matrix[i] = matrix.m_matrix[i];
-	}
+	if (&matrix == this) return;
+	size_t size = m_Rows * m_Cols;
+	delete[] m_Matrix;
+	m_Matrix = new double[m_Rows * m_Cols];
+	memcpy(m_Matrix, matrix.m_Matrix,size * 8);
 }
 
 Matrix::~Matrix()
 {
-#ifdef _DEBUG
-	std::cout << "Matrix is destroyed " << m_matrix << std::endl;
-#endif
-	delete[] m_matrix;
-	m_matrix = nullptr;
+//#ifdef _DEBUG
+//	std::cout << "Matrix is destroyed " << m_matrix << std::endl;
+//#endif
+
+	Clear();
 }
 
-double& Matrix::operator()(uint32_t i, uint32_t j)
+double& Matrix::operator()(size_t i, size_t j)
 {
-	return m_matrix[i * m_Cols + j];
+	return m_Matrix[i * m_Cols + j];
 }
 
-void Matrix::operator+=(const Matrix & matrix)
+void Matrix::operator+=(const Matrix& matrix)
 {
-	if (m_Rows == matrix.m_Rows && m_Cols == matrix.m_Cols) {
-		uint32_t size = m_Rows * m_Cols;
-		for (uint32_t i = 0; i < size; i++)
-		{
-			m_matrix[i] += matrix.m_matrix[i];
-		}
+	if (m_Rows != matrix.m_Rows && m_Cols != matrix.m_Cols) throw std::string("Matrices have to have equal amount of rows and columns!");
+	size_t size = m_Rows * m_Cols;
+	for (size_t i = 0; i < size; i++)
+	{
+		m_Matrix[i] += matrix.m_Matrix[i];
 	}
 }
 
-void Matrix::operator-=(const Matrix & matrix)
+void Matrix::operator-=(const Matrix& matrix)
 {
-	if (m_Rows == matrix.m_Rows && m_Cols == matrix.m_Cols) {
-		uint32_t size = m_Rows * m_Cols;
-		for (uint32_t i = 0; i < size; i++)
-		{
-			m_matrix[i] -= matrix.m_matrix[i];
-		}
+	if (m_Rows != matrix.m_Rows && m_Cols != matrix.m_Cols) throw std::string("Matrices have to have equal amount of rows and columns!");
+	size_t size = m_Rows * m_Cols;
+	for (size_t i = 0; i < size; i++)
+	{
+		m_Matrix[i] -= matrix.m_Matrix[i];
 	}
 }
 
 void Matrix::operator*=(double value)
 {
-	uint32_t size = m_Rows * m_Cols;
-	for (uint32_t i = 0; i < size; i++)
+	size_t size = m_Rows * m_Cols;
+	for (size_t i = 0; i < size; i++)
 	{
-		m_matrix[i] *= value;
+		m_Matrix[i] *= value;
 	}
 }
 
 void Matrix::operator=(const Matrix& matrix)
 {
-#ifdef _DEBUG
-	std::cout << "Matrix is copied\n";
-#endif 
+//#ifdef _DEBUG
+//	std::cout << "Matrix is copied\n";
+//#endif
+
+	if (&matrix == this) return;
 	m_Rows = matrix.m_Rows;
 	m_Cols = matrix.m_Cols;
-	m_matrix = new double[m_Rows * m_Cols];
-
-	uint32_t size = m_Rows * m_Cols;
-	for (uint32_t i = 0; i < size; i++)
-	{
-		m_matrix[i] = matrix.m_matrix[i];
-	}
+	delete[] m_Matrix;
+	size_t size = m_Rows * m_Cols;
+	m_Matrix = new double[size];
+	memcpy(m_Matrix, matrix.m_Matrix, size * 8);
 }
 
-void math::Matrix::Copy(Matrix * matrix)
+void Matrix::operator=(Matrix&& matrix) noexcept
 {
-#ifdef _DEBUG
-	std::cout << "Matrix is copied\n";
-#endif 
-	m_Rows = matrix->m_Rows;
-	m_Cols = matrix->m_Cols;
-	m_matrix = new double[m_Rows * m_Cols];
-
-	uint32_t size = m_Rows * m_Cols;
-	for (uint32_t i = 0; i < size; i++)
-	{
-		m_matrix[i] = matrix->m_matrix[i];
-	}
+	if (&matrix == this) return;
+		m_Rows = matrix.m_Rows;
+		m_Cols = matrix.m_Cols;
+		delete[] m_Matrix;
+		m_Matrix = matrix.m_Matrix;
+		matrix.m_Matrix = nullptr;
+		matrix.m_Rows = 0;
+		matrix.m_Cols = 0;
 }
 
-Matrix math::Matrix::FastMul(const Matrix & matrix)
+void Matrix::Copy(const Matrix& matrix)
 {
-	if (m_Rows == matrix.m_Cols) {
-		Matrix C(m_Rows, matrix.m_Cols);
-		for (uint32_t i = 0; i < m_Rows; ++i)
-		{
-			double* c = C.m_matrix + i * m_Cols;
-			for (uint32_t j = 0; j < m_Cols; ++j)
-				c[j] = 0;
-			for (uint32_t k = 0; k < m_Rows; ++k)
-			{
-				const double * b = matrix.m_matrix + k * m_Cols;
-				double a = m_matrix[i*m_Rows + k];
-				for (uint32_t j = 0; j < m_Cols; ++j)
-					c[j] += a * b[j];
-			}
-		}
-		return C;
+//#ifdef _DEBUG
+//	std::cout << "Matrix is copied\n";
+//#endif 
+
+	if (&matrix == this) return;
+	m_Rows = matrix.m_Rows;
+	m_Cols = matrix.m_Cols;
+	delete[] m_Matrix;
+	m_Matrix = new double[m_Rows * m_Cols];
+	size_t size = m_Rows * m_Cols;
+	for (size_t i = 0; i < size; i++)
+	{
+		m_Matrix[i] = matrix.m_Matrix[i];
 	}
-	return Matrix(1, 1);
 }
 
-Matrix Matrix::operator+(const Matrix & matrix)
+Matrix Matrix::operator+(const Matrix& matrix)
 {
 	Matrix c(m_Rows, m_Cols);
-	uint32_t size = m_Rows * m_Cols;
-	for (uint32_t i = 0; i < size; i++)
+	size_t size = m_Rows * m_Cols;
+	for (size_t i = 0; i < size; i++)
 	{
-		c.m_matrix[i] = m_matrix[i] + matrix.m_matrix[i];
+		c.m_Matrix[i] = m_Matrix[i] + matrix.m_Matrix[i];
 	}
 	return c;
 }
 
-Matrix Matrix::operator-(const Matrix & matrix)
+Matrix Matrix::operator-(const Matrix& matrix)
 {
 	Matrix c(m_Rows, m_Cols);
-	uint32_t size = m_Rows * m_Cols;
-	for (uint32_t i = 0; i < size; i++)
+	size_t size = m_Rows * m_Cols;
+	for (size_t i = 0; i < size; i++)
 	{
-		c.m_matrix[i] = m_matrix[i] - matrix.m_matrix[i];
+		c.m_Matrix[i] = m_Matrix[i] - matrix.m_Matrix[i];
 	}
 	return c;
 }
@@ -172,112 +156,186 @@ Matrix Matrix::operator-(const Matrix & matrix)
 Matrix Matrix::operator*(double value)
 {
 	Matrix c(m_Rows, m_Cols);
-	uint32_t size = m_Rows * m_Cols;
-	for (uint32_t i = 0; i < size; i++)
+	size_t size = m_Rows * m_Cols;
+	for (size_t i = 0; i < size; i++)
 	{
-		c.m_matrix[i] = m_matrix[i] * value;
+		c.m_Matrix[i] = m_Matrix[i] * value;
 	}
 	return c;
 }
 
 Vector Matrix::operator*(const Vector& value)
 {
-	if (m_Rows == value.m_size) {
-		Vector c(m_Rows);
-		for (uint32_t i = 0; i < m_Rows; i++)
+	if (m_Cols != value.m_Size) throw std::string("Matrix and Vector have to have equal amount of rows and columns!");
+	Vector result(m_Rows);
+	for (size_t i = 0; i < m_Rows; i++)
+	{
+		for (size_t j = 0; j < m_Cols; j++)
 		{
-			for (uint32_t j = 0; j < m_Cols; j++)
-			{
-				c.m_array[i] += operator()(i, j) * value.m_array[j];
-			}
+			result.m_Array[i] += operator()(i, j) * value.m_Array[j];
 		}
-		return c;
 	}
+	return result;
 }
-
-//@Deprecated!
-//#include "ThreadPool.h"
-//Matrix Matrix::operator*(Matrix& matrix)
-//{
-//	std::unique_lock<std::mutex> lk(cv_m);	
-//	Timer timer;
-//	if (m == matrix.n) {
-//		std::shared_ptr<Matrix> c(new Matrix(m, matrix.n));
-//		std::shared_ptr<Matrix> b(new Matrix(matrix));
-//		std::shared_ptr<Matrix> a(new Matrix(*this));
-//		uint32_t th = ThreadPool::Instance()->num_Threads;
-//		uint32_t counter = 0;
-//		uint32_t offsetM = m / th;
-//		uint32_t newM = 0;
-//		if (offsetM == 0) { offsetM = 1; th = m; }
-//		complete = new bool[th];
-//		for (uint32_t i = 0; i < th; i++)
-//		{
-//			ThreadPool::Instance()->enqueue([=] {
-//				for (uint32_t i = newM; i < newM + offsetM; i++) {
-//					for (uint32_t j = 0; j < n; j++) {
-//						c->m_matrix[i * m + j] = 0;
-//						for (uint32_t k = 0; k < m; k++) {
-//							c->m_matrix[i * m + j] += a->m_matrix[i * m + k] * b->m_matrix[k * m + j];
-//						}
-//					}
-//				}
-//				complete[i] = true;
-//				cv.notify_all();
-//			});
-//			newM += offsetM;
-//		}
-//		cv.wait(lk, [=] {
-//			bool check = false;
-//			for (uint32_t i = 0; i < th; i++)
-//			{
-//				check = complete[i];
-//			}
-//			return check;
-//		});
-//		for (uint32_t i = 0; i < th; i++)
-//		{
-//			complete[i] = false;
-//		}
-//		return *c;
-//	}
-//}
 
 Matrix Matrix::operator*(const Matrix& matrix)
 {
-	Matrix C(m_Rows, matrix.m_Cols);
+	if (m_Cols != matrix.m_Rows) throw std::string("Matrix and Vector have to have equal amount of rows and columns!");
+	Matrix c(m_Rows, matrix.m_Cols);
 	int K = m_Cols > matrix.m_Rows ? m_Cols : matrix.m_Rows;
 	for (int i = 0; i < m_Rows; ++i)
 	{
-		for (int j = 0; j < C.m_Cols; ++j)
+		for (int j = 0; j < c.m_Cols; ++j)
 		{
-			C.m_matrix[i*C.m_Cols + j] = 0;
+			c.m_Matrix[i * c.m_Cols + j] = 0;
 			for (int k = 0; k < K; ++k)
-				C.m_matrix[i*C.m_Cols + j] += m_matrix[i*K + k] * matrix.m_matrix[k*C.m_Cols + j];
+				c.m_Matrix[i * c.m_Cols + j] += m_Matrix[i * K + k] * matrix.m_Matrix[k * c.m_Cols + j];
 		}
 	}
-	return C;
+	return c;
 }
 
-void Matrix::AssignCol(const Vector& vec, int col)
+void Matrix::AssignCol(const Vector& vector, size_t col)
 {
-	if (vec.m_size != m_Rows) {
-		return;
-	}
-	for (uint32_t i = 0; i < m_Rows; i++)
+	if(col > m_Cols - 1) throw std::string("Column index is out of range!");
+	if (vector.m_Size != m_Rows) throw std::string("Matrix and Vector have to have equal amount of rows and columns!");
+	for (size_t i = 0; i < m_Rows; i++)
 	{
-		operator()(i, col) = vec.m_array[i];
+		operator()(i, col) = vector.m_Array[i];
 	}
 }
 
-Vector Matrix::GetCol(uint32_t col)
+void Matrix::AssignRow(const Vector& vector, size_t row)
 {
-	if (col < m_Cols) {
-		Vector temp(m_Rows);
-		for (uint32_t i = 0; i < m_Rows; i++)
-		{
-			temp[i] = operator()(i, col);
-		}
-		return temp;
+	if (row > m_Rows - 1) throw std::string("Row index is out of range!");
+	if (vector.m_Size != m_Cols) throw std::string("Matrix and Vector have to have equal amount of rows and columns!");
+	for (size_t i = 0; i < m_Cols; i++)
+	{
+		operator()(row, i) = vector.m_Array[i];
 	}
+}
+
+void Matrix::AppendCol(const Vector& vector)
+{
+	if (vector.m_Size != m_Rows) throw std::string("Matrix and Vector have to have equal amount of rows and columns!");
+	Matrix tempMat(0, 0);
+	tempMat = std::move(*this);
+	m_Rows = tempMat.m_Rows;
+	m_Cols = tempMat.m_Cols;
+	m_Matrix = new double[m_Rows * (m_Cols + 1)];
+	m_Cols++;
+	for (size_t i = 0; i < m_Rows; i++)
+	{
+		for (size_t j = 0; j < m_Cols - 1; j++)
+		{
+			operator()(i, j) = tempMat.operator()(i, j);
+		}
+	}
+	for (size_t k = 0; k < m_Rows; k++)
+	{
+		operator()(k, m_Cols - 1) = vector.m_Array[k];
+	}
+}
+
+void math::Matrix::AppendRow(const Vector& vector)
+{
+	if (vector.m_Size != m_Cols) throw std::string("Matrix and Vector have to have equal amount of rows and columns!");
+	Matrix tempMat(0, 0);
+	tempMat = std::move(*this);
+	m_Rows = tempMat.m_Rows;
+	m_Cols = tempMat.m_Cols;
+	m_Matrix = new double[(m_Rows + 1) * m_Cols];
+	m_Rows++;
+	for (size_t i = 0; i < m_Rows - 1; i++)
+	{
+		for (size_t j = 0; j < m_Cols; j++)
+		{
+			operator()(i, j) = tempMat.operator()(i, j);
+		}
+	}
+	for (size_t k = 0; k < m_Cols; k++)
+	{
+		operator()(m_Rows - 1, k) = vector.m_Array[k];
+	}
+}
+
+void Matrix::RemoveCol(size_t col)
+{
+	if (col > m_Cols - 1) throw std::string("Column index is out of range!");
+	Matrix tempMat(0, 0);
+	tempMat = std::move(*this);
+	m_Rows = tempMat.m_Rows;
+	m_Cols = tempMat.m_Cols;
+	m_Matrix = new double[m_Rows * (m_Cols - 1)];
+	m_Cols--;
+	for (size_t i = 0; i < m_Rows; i++)
+	{
+		for (size_t j = 0; j < col; j++)
+		{
+			operator()(i, j) = tempMat.operator()(i, j);
+		}
+	}
+	for (size_t i = 0; i < m_Rows; i++)
+	{
+		for (size_t j = col; j < m_Cols; j++)
+		{
+			operator()(i, j) = tempMat.operator()(i, j + 1);
+		}
+	}
+}
+
+void Matrix::RemoveRow(size_t row)
+{
+	if (row > m_Rows - 1)  throw std::string("Row index is out of range!");
+	Matrix tempMat(0, 0);
+	tempMat = std::move(*this);
+	m_Rows = tempMat.m_Rows;
+	m_Cols = tempMat.m_Cols;
+	m_Matrix = new double[(m_Rows -1) * m_Cols];
+	m_Rows--;
+	for (size_t i = 0; i < row; i++)
+	{
+		for (size_t j = 0; j < m_Cols; j++)
+		{
+			operator()(i, j) = tempMat.operator()(i, j);
+		}
+	}
+	for (size_t i = row; i < m_Rows; i++)
+	{
+		for (size_t j = 0; j < m_Cols; j++)
+		{
+			operator()(i, j) = tempMat.operator()(i + 1, j);
+		}
+	}
+
+}
+
+Vector Matrix::GetCol(size_t col)
+{
+	if (col > m_Cols - 1) throw std::string("Column index is out of range!");
+	Vector result(m_Rows);
+	for (size_t i = 0; i < m_Rows; i++)
+	{
+		result[i] = operator()(i, col);
+	}
+	return result;
+}
+
+Vector Matrix::GetRow(size_t row)
+{
+	if (row > m_Rows - 1) throw std::string("Row index is out of range!");
+	Vector result(m_Rows);
+	for (size_t i = 0; i < m_Cols; i++)
+	{
+		result[i] = operator()(row, i);
+	}
+	return result;
+}
+
+void Matrix::Clear()
+{
+	m_Rows = 0;
+	m_Cols = 0;
+	delete[] m_Matrix;
+	m_Matrix = nullptr;
 }
