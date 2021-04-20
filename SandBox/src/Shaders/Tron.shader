@@ -82,17 +82,29 @@ struct PointLight {
 	float quadratic;
 };
 
+struct SpotLight {
+	vec3 position;
+	vec3 dir;
+	vec3 color;
+	float innerCutOff;
+	float outerCutOff;
+	float constant;
+	float _linear;
+	float quadratic;
+};
+
 struct DirectionalLight {
 	vec3 dir;
 	vec3 color;
 };
 
-
-#define MAX_LIGHT 64
+#define MAX_LIGHT 32
 uniform int pLightSize;
 uniform PointLight pointLights[MAX_LIGHT];
 uniform int dLightSize;
 uniform DirectionalLight dirLights[MAX_LIGHT];
+uniform int sLightSize;
+uniform SpotLight spotLights[MAX_LIGHT];
 
 uniform sampler2D u_DiffuseTexture;
 uniform sampler2D u_ShadowTexture;

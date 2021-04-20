@@ -20,6 +20,7 @@ using namespace Doom;
 
 EntryPoint::EntryPoint(Doom::Application* app)
 {
+	Logger::UpdateTime();
 	m_App = app == nullptr ? new Application : app;
 	World::GetInstance().s_Application = m_App;
 
@@ -82,6 +83,7 @@ void EntryPoint::Run()
 	EventSystem::GetInstance().SendEvent(EventType::ONSTART, nullptr);
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow())) 
 	{
+		Logger::UpdateTime();
 		Renderer::s_OutLined3dObjects.clear();
 		RectangleCollider2D::CollidersToInit();
 		Window::GetInstance().s_CursorStateChanged = false;
@@ -101,7 +103,6 @@ void EntryPoint::Run()
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
 		Window::GetInstance().ClampCursorPos();
-		Window::GetInstance().GetCamera().WindowResize();
 
 //#ifndef _IS_GAME_BUILD
 		if (Input::IsKeyPressed(Keycode::KEY_E))
@@ -136,15 +137,8 @@ void EntryPoint::Run()
 		Renderer::Render();
 
 		ViewPort::GetInstance().Update();
-		if (ViewPort::GetInstance().m_IsViewportResized)
-		{
-			Window& window = Window::GetInstance();
-			int* size = Window::GetInstance().GetSize();
-			window.m_FrameBufferColor->  Resize(size[0], size[1]);
-			window.m_FrameBufferBlur[0]->Resize(size[0], size[1]);
-			window.m_FrameBufferBlur[1]->Resize(size[0], size[1]);
-		}
-		
+		ViewPort::GetInstance().Resize();
+
 		try
 		{
 			ImGui::EndFrame();

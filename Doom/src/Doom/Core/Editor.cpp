@@ -20,7 +20,8 @@ template<class T>
 bool Editor::MenuRemoveComponent()
 {
 	ImGui::PushID(closedButtonsId);
-	if (ImGui::Button("x")) {
+	if (ImGui::Button("x"))
+	{
 		go->m_ComponentManager.RemoveComponent<T>();
 		ImGui::PopID();
 		return false;
@@ -104,7 +105,7 @@ void Editor::EditorUpdate()
 					{
 						int64_t index = files[i].find("src");
 						if (index == -1)
-							std::cout << RED << "ERROR:<" << NAMECOLOR << "SkyBox texture[" << i << "]" << RED << "> is not in the 'src' folder!" << RESET << std::endl;
+							Logger::Error("is not in the 'src' folder!", "SkyBox texture", std::to_string(i).c_str());
 						else
 							files[i] = files[i].substr(index, files.size() - index);
 					}
@@ -216,7 +217,7 @@ void Editor::EditorUpdate()
 		if (go->m_ComponentManager.GetComponent<SpriteRenderer>() != nullptr && go->m_ComponentManager.GetComponent<SpriteRenderer>()->m_RenderType == TYPE_2D) {
 			if (ImGui::Button("Change layer")) {
 				if (go->GetLayer() > World::GetInstance().GetAmountOfObjects() - 1) {
-					std::cout << "Error: layer out of range" << std::endl;
+					Logger::Error("Layer out of range!");
 					return;
 				}
 				go->GetComponent<SpriteRenderer>()->Setlayer(go->GetLayer());
@@ -332,7 +333,7 @@ void Doom::Editor::MenuRenderer3D()
 					ImGui::SliderFloat("Ambient", &r->m_Material.m_Ambient, 0, 1);
 					ImGui::SliderFloat("Specular", &r->m_Material.m_Specular, 0, 50);
 					void* my_tex_id = reinterpret_cast<void*>(r->m_DiffuseTexture->m_RendererID);
-					if (ImGui::ImageButton(my_tex_id, { 64,64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
+					if (ImGui::ImageButton(my_tex_id, { 64, 64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
 						isActiveTexturePicker = true;
 						texturePickerId = 1;
 					}
@@ -823,13 +824,12 @@ void Doom::Editor::TexturePicker()
 
 void Doom::Editor::SceneHierarchy()
 {
-	if (ImGui::CollapsingHeader("Game Objects")) {
+	if (ImGui::CollapsingHeader("Game Objects"))
+	{
 		for (uint32_t i = 0; i < World::GetInstance().GetAmountOfObjects(); i++)
 		{
 			GameObject* go = World::GetInstance().s_GameObjects[i];
-			if (go->GetOwner() != nullptr) {
-				continue;
-			}
+			if (go->GetOwner() != nullptr) continue;
 			ImGuiTreeNodeFlags flags = ((this->go == go)) ? ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Selected : 0;
 			DrawNode(go, flags);
 		}
@@ -838,13 +838,14 @@ void Doom::Editor::SceneHierarchy()
 
 void Doom::Editor::DrawNode(GameObject* go, ImGuiTreeNodeFlags flags)
 {
-	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)go, flags, go->m_Name.c_str());
-	if (ImGui::IsItemClicked()) {
-		if(this->go != nullptr)
-			this->go = go;
+	bool opened = ImGui::TreeNodeEx((void*)go, flags, go->m_Name.c_str());
+	if (ImGui::IsItemClicked())
+	{
+		if(this->go != nullptr) this->go = go;
 	}
 
-	if (opened) {
+	if (opened) 
+	{
 		ImGui::TreePop();
 		DrawChilds(go);
 	}
@@ -864,13 +865,14 @@ void Doom::Editor::DrawChilds(GameObject * go)
 
 void Doom::Editor::ShaderMenu()
 {
-	if (!isActiveShaderMenu)
-		return;
+	if (!isActiveShaderMenu) return;
 	ImGui::Begin("Shaders", &isActiveShaderMenu);
 	ImGui::ListBox("Shaders", &selectedShader, Shader::GetListOfShaders(), Shader::s_Shaders.size());
-	if (ImGui::Button("Reload")) {
+	if (ImGui::Button("Reload")) 
+	{
 		auto shader = Shader::s_Shaders.begin();
-		if (selectedShader > -1) {
+		if (selectedShader > -1) 
+		{
 			for (int i = 0; i < selectedShader; i++)
 			{
 				shader++;
@@ -1192,62 +1194,3 @@ Editor&  Doom::Editor::GetInstance()
 	static Editor instance;
 	return instance;
 }
-
-//void Doom::Editor::EditorUpdateMyGui()
-//{
-//	Gui& g = Gui::GetInstance();
-//	DirectionalLight* dirlight = DirectionalLight::s_DirLights[0];
-//	GameObject* go = dirlight->GetOwnerOfComponent();
-//	Transform* tr = go->GetComponent<Transform>();
-//	if (go != nullptr) {
-//		g.m_XAlign = Gui::AlignHorizontally::XCENTER;
-//		g.Text("FPS: %f", true, 900, 500, 40, COLORS::White, 0, Window::GetFPS());
-//
-//		g.FontBind(Gui::GetInstance().GetStandartFonts()[Gui::GetInstance().ARIAL]);
-//		g.RelateToPanel();
-//		g.m_RelatedPanelProperties.m_AutoAllignment = true;
-//		g.Panel("Directional light", -1080 + 200 + 5, 0, 400, 1080, glm::vec4(0.3, 0.3, 0.3, 0.8));
-//		g.m_XAlign = g.LEFT;
-//		g.Text("ID %d", true, 0, 0, 20, COLORS::White, 0, go->m_Id);
-//		g.CheckBox("Enable", &go->m_Enable, 0, 0, 20);
-//		if (g.CollapsingHeader("Transform", 0, 0, COLORS::DarkGray * 0.7f)) {
-//			g.Text("Position");
-//			glm::vec3 pos = go->GetPosition();
-//			g.SliderFloat("X pos", &(pos.x), -50, 50, 0, 0, 200, 25);
-//			g.SliderFloat("Y pos", &(pos.y), -50, 50, 0, 0, 200, 25);
-//			g.SliderFloat("Z pos", &(pos.z), -50, 50, 0, 0, 200, 25);
-//			g.Text("Scale");
-//			glm::vec3 scale = go->GetScale();
-//			g.SliderFloat("X scale", &scale[0], -20, 50, 0, 0, 200, 25);
-//			g.SliderFloat("Y scale", &scale[1], -20, 50, 0, 0, 200, 25);
-//			g.SliderFloat("Z scale", &scale[2], -20, 50, 0, 0, 200, 25);
-//			g.Text("Rotation");
-//			g.SliderFloat("Pitch", &tr->m_Rotation[0], -6.28, 6.28, 0, 0, 200, 25);
-//			g.SliderFloat("Yaw", &tr->m_Rotation[1], -6.28, 6.28, 0, 0, 200, 25);
-//			g.SliderFloat("Roll", &tr->m_Rotation[2], -6.28, 6.28, 0, 0, 200, 25);
-//			if (g.Button("Reset", 0, 0, 20, 100, 20, glm::vec4(0.5, 0.5, 0.5, 1))) {
-//				tr->m_Rotation = glm::vec3(0, 0, 0);
-//				scale = glm::vec3(1, 1, 1);
-//				pos = glm::vec3(0, 0, 0);
-//			}
-//			tr->Scale(scale[0], scale[1], scale[2]);
-//			tr->Translate(pos.x, pos.y, pos.z);
-//			tr->RotateOnce(tr->m_Rotation.x, tr->m_Rotation.y, tr->m_Rotation.z, true);
-//		}
-//		if (g.CollapsingHeader("Light Component", 0, 0, COLORS::DarkGray * 0.7f)) {
-//			g.SliderFloat("Intensity", &dirlight->m_Intensity, 0, 10, 0, 0, 200, 25);
-//			g.Bar(0, 0, dirlight->m_Intensity, 10,COLORS::Red,COLORS::White,200,25);
-//		}
-//		if (g.CollapsingHeader("Shadow map", 0, 0, COLORS::DarkGray * 0.7f)) {
-//			Texture* shadowMap = new Texture;
-//			shadowMap->m_RendererID = camera.m_FrameBufferShadowMap->m_Textures[0];
-//			glm::vec2 size{256,256};
-//			g.Image(size.x / 2, -size.y / 2, size.x, size.y, shadowMap);
-//			g.SliderFloat("Znear", &camera.m_ZnearSM, -500, 500, 0, 0, 200, 25);
-//			g.SliderFloat("Zfar", &camera.m_ZfarSM, 0, 500, 0, 0, 200, 25);
-//			g.SliderFloat("Projection", &camera.m_RationProjectionSM, 0, 1000, 0, 0, 200, 25);
-//			g.SliderFloat("DrawShadows", &Instancing::GetInstance()->m_DrawShadows, 0, 1, 0, 0, 200, 25);
-//		}
-//		g.UnRelateToPanel();
-//	}
-//}

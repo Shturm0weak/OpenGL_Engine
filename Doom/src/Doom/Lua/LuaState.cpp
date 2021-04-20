@@ -7,7 +7,7 @@ bool Doom::LuaState::CL(int error)
 {
 	if (error)
 	{
-		std::cout << RED "<" << NAMECOLOR << m_FilePath << RED << "> LUA::ERROR::STATE::" << lua_tostring(m_L, -1) << "\n" << RESET;
+		Logger::Error("LUA", lua_tostring(m_L, -1), m_FilePath.c_str());
 		return false;
 	}
 	return true;
@@ -17,7 +17,7 @@ bool Doom::LuaState::CL(LuaState* l, int error)
 {
 	if (error)
 	{
-		std::cout << RED "<" << NAMECOLOR << l->m_FilePath << RED << "> LUA::ERROR::STATE::" << lua_tostring(l->m_L, -1) << "\n" << RESET;
+		Logger::Error("LUA", lua_tostring(l->m_L, -1), l->m_FilePath.c_str());
 		return false;
 	}
 	return true;
@@ -575,7 +575,7 @@ Doom::LuaState::~LuaState()
 	if (iter != s_LuaStates.end())
 		s_LuaStates.erase(iter);
 #ifdef _DEBUG
-	std::cout << "Destroy LuaState\n";
+	Logger::Log("Destroy LuaState");
 #endif
 }
 

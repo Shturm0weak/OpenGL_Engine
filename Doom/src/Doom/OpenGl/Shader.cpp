@@ -7,7 +7,7 @@ Shader::Shader(const std::string& name, const std::string& filepath) : m_Name(na
 {
 	ShaderProgramSource source = Parseshader(filepath);
 	m_RendererID = CreateShader(source.m_VertexSource, source.m_FragmentSource);
-	std::cout << BOLDGREEN << "Shader: <" << NAMECOLOR << name << BOLDGREEN << "> has been created" << RESET << std::endl;
+	Logger::Success("has been created!", "Shader", name.c_str());
 }
 
 Shader::~Shader()
@@ -29,7 +29,7 @@ Shader* Doom::Shader::Create(const std::string& name, const std::string& path)
 	else 
 	{
 #ifdef _DEBUG
-		std::cout << BOLDYELLOW << "Shader: <" << NAMECOLOR << name << BOLDYELLOW << "> has been already existed!" << RESET << std::endl;
+		Logger::Warning("has been already existed!", "Shader", name.c_str());
 #endif
 		return iter->second;
 	}
@@ -40,7 +40,7 @@ Shader * Doom::Shader::Get(const std::string& name, bool showErrors)
 	auto iter = s_Shaders.find(name);
 	if (iter != s_Shaders.end()) return iter->second;
 	else if (showErrors)
-		std::cout << BOLDYELLOW << "Shader: <" << NAMECOLOR << name << BOLDYELLOW << "> doesn't exist!" << RESET << std::endl;
+		Logger::Warning("doesn't exist!", "Shader", name.c_str());
 	return nullptr;
 }
 
@@ -101,7 +101,7 @@ void Doom::Shader::Reload()
 	glDeleteProgram(m_RendererID);
 	ShaderProgramSource source = Parseshader(m_FilePath);
 	m_RendererID = CreateShader(source.m_VertexSource, source.m_FragmentSource);
-	std::cout << BOLDGREEN << "Shader: <" << NAMECOLOR << m_Name << BOLDGREEN << "> has been updated" << RESET << std::endl;
+	Logger::Success("has been updated!", "Shader", m_Name.c_str());
 }
 
 const char ** Doom::Shader::GetListOfShaders()
@@ -135,7 +135,7 @@ int Shader::GetUniformLocation(const std::string& name)
 		return m_UniformLocationCache[name];
 	int location = glGetUniformLocation(m_RendererID, name.c_str());
 	if (location == -1)
-		std::cout << RED << "Warning: uniform <" << NAMECOLOR << name << RED << "> doesn't exist!" << RESET << std::endl;
+		Logger::Warning("doesn't exist!", "Uniform", name.c_str());
 	m_UniformLocationCache[name] = location;
 	return location;
 }
@@ -184,7 +184,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 		char* message = new char[length * sizeof(char)];
 		glGetShaderInfoLog(id, length, &length, message);
-		std::cout << RED << "Failed to compile <" << NAMECOLOR << m_Name << RED << "> shader!" << RESET << std::endl;
+		Logger::Error("failed to compile!", "Shader", m_Name.c_str());
 		std::cout << message << std::endl;
 		delete[] message;
 		glDeleteShader(id);

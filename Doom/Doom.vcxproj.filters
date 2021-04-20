@@ -460,6 +460,7 @@
     <ClInclude Include="src\Doom\OpenGl\Texture.h">
       <Filter>OpenGl</Filter>
     </ClInclude>
+    <ClInclude Include="src\Doom\Core\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -730,5 +731,6 @@
     <ClCompile Include="src\Doom\ObjLoader\OBJLoader.cpp" />
     <ClCompile Include="src\Doom\Input\Input.cpp" />
     <ClCompile Include="src\Doom\Text\Gui.cpp" />
+    <ClCompile Include="src\Doom\Core\Logger.cpp" />
   </ItemGroup>
 </Project>

@@ -217,7 +217,7 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 			iter->first->AddChild((void*)ch);
 		}
 	}
-	std::cout << BOLDGREEN << "Scene: <" << NAMECOLOR << s_CurrentSceneFilePath << BOLDGREEN << "> has been loaded\n" << RESET;
+	Logger::Success("has been loaded!", "Scene", s_CurrentSceneFilePath.c_str());
 }
 
 void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& go, std::map<GameObject*, std::vector<int>>& childs)

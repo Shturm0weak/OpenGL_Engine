@@ -3,6 +3,7 @@
 #include "Editor.h"
 #include "ImGuizmo/ImGuizmo.h"
 #include "Core/Utils.h"
+#include "Text/Gui.h"
 
 using namespace Doom;
 
@@ -79,6 +80,31 @@ void Doom::ViewPort::Update()
 	}
 	ImGui::PopStyleVar();
 	ImGui::End();
+}
+
+void Doom::ViewPort::Resize()
+{
+	if (ViewPort::GetInstance().m_IsViewportResized == false) return;
+	Camera& camera = Window::GetInstance().GetCamera();
+	camera.m_Ratio = m_Size.x / m_Size.y;
+	switch (camera.m_Type)
+	{
+	case Doom::Camera::ORTHOGRAPHIC:
+		camera.SetOrthographic(camera.m_Ratio);
+		break;
+	case Doom::Camera::PERSPECTIVE:
+		camera.SetPerspective(camera.m_Fov, m_Size.x, m_Size.y, camera.m_Znear, camera.m_Zfar);
+		break;
+	default:
+		break;
+	}
+	camera.RecalculateViewMatrix();
+	Gui::GetInstance().RecalculateProjectionMatrix();
+	Window& window = Window::GetInstance();
+	int* size = window.GetSize();
+	window.m_FrameBufferColor  ->Resize(size[0], size[1]);
+	window.m_FrameBufferBlur[0]->Resize(size[0], size[1]);
+	window.m_FrameBufferBlur[1]->Resize(size[0], size[1]);
 }
 
 void Doom::ViewPort::GetMousePositionToWorldSpaceImpl()

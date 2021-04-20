@@ -79,7 +79,7 @@ Doom::Mesh* objl::Loader::Load(const std::string& filePath)
 				mesh->m_Indices[j] = curMesh.Indices[j];
 			}
 			return mesh;
-			std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << curMesh.MeshName << BOLDGREEN << "> has been loaded\n" << RESET;
+			Doom::Logger::Success("has been loaded!", "Mesh", curMesh.MeshName.c_str());
 		}
 	}
 }

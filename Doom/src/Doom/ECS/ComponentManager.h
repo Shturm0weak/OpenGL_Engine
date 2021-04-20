@@ -226,7 +226,7 @@ namespace Doom {
 				object->m_Id = m_Components.size();
 				m_Components.push_back(object);
 #ifdef _DEBUG
-				std::cout << NAMECOLOR << Utils::GetComponentTypeName<T>() << " size:" << sizeof(T) << RESET << ": has been added to GameObject <" NAMECOLOR << m_Owner->m_Name << RESET << ">" << std::endl;
+				Logger::Log("has been added to GameObject!", Utils::GetComponentTypeName<T>().c_str(), m_Owner->m_Name.c_str(), RESET);
 #endif
 				return static_cast<T*>(object);
 			}

@@ -65,7 +65,7 @@ void ThreadPool::Init()
 	if (m_IsInitialized == false)
 	{
 		s_Instance = new ThreadPool(thread::hardware_concurrency());
-		std::cout << BOLDGREEN << "Initialized Thread pool" << RESET << std::endl;
+		Logger::Success("Thread pool has been initialized!");
 		m_IsInitialized = true;
 	}
 }

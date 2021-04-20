@@ -120,7 +120,7 @@ void Font::LoadFont(const std::string& filename, const std::string& pathToTextur
 		}
 	}
 	in_file.close();
-	std::cout << BOLDGREEN << "Font: <" << NAMECOLOR << m_Name << BOLDGREEN << "> has been loaded" << RESET << std::endl;
+	Logger::Success("has been loaded!", "Font", m_Name.c_str());
 }
 
 void Font::LoadCharacters()

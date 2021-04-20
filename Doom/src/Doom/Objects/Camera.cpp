@@ -11,7 +11,6 @@ using namespace Doom;
 
 Camera::Camera()
 {
-	EventSystem::GetInstance().RegisterClient(EventType::ONWINDOWRESIZE, this);
 }
 
 Doom::Camera::~Camera()
@@ -51,32 +50,12 @@ void Doom::Camera::MovePosition(const glm::vec3 position)
 	//std::cout << "x " << m_Position.x << " y " << m_Position.y << " z " << m_Position.z << std::endl;
 }
 
-void Camera::WindowResize()
+void Camera::WindowResize(glm::ivec2 size)
 {
-	if (m_IsWindowResized)
-	{
-		if (m_Props == nullptr) return;
-		if (m_Props[0] == 0 || m_Props[1] == 0) return;
-		glViewport(0, 0, m_Props[0], m_Props[1]);
-		m_Ratio = ViewPort::GetInstance().GetSize().x / ViewPort::GetInstance().GetSize().y;
-		switch (m_Type)
-		{
-		case Doom::Camera::ORTHOGRAPHIC:
-			SetOrthographic(m_Ratio);
-			break;
-		case Doom::Camera::PERSPECTIVE:
-			SetPerspective(m_Fov, ViewPort::GetInstance().GetSize().x, ViewPort::GetInstance().GetSize().y, m_Znear, m_Zfar);
-			break;
-		default:
-			break;
-		}
-		RecalculateViewMatrix();
-		Gui::GetInstance().RecalculateProjectionMatrix();
-		//glBindTexture(GL_TEXTURE_2D, frameBuffer->texture);
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, props[0], props[1], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-		//glBindTexture(GL_TEXTURE_2D, 0);
-		m_IsWindowResized = false;
-	}
+	
+	//glBindTexture(GL_TEXTURE_2D, frameBuffer->texture);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, props[0], props[1], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Doom::Camera::SetPosition(const glm::vec3 position)
@@ -159,12 +138,6 @@ void Camera::Zoom(float zoomlevel)
 	else if(m_Type == PERSPECTIVE)
 		m_ProjectionMat4 = glm::perspective(m_Fov, abs(m_AspectRatio[0]) / abs(m_AspectRatio[3]),m_Znear,m_Zfar);
 	m_ViewProjectionMat4 = m_ProjectionMat4 * m_ViewMat4;
-}
-
-void Camera::OnWindowResize(void * _props)
-{
-	m_Props = static_cast<int*>(_props);
-	m_IsWindowResized = true;
 }
 
 void Camera::Increase() {

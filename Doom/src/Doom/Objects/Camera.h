@@ -7,7 +7,7 @@
 
 namespace Doom {
 
-	class DOOM_API Camera : public Listener {
+	class DOOM_API Camera {
 	public:
 
 		enum CameraTypes {
@@ -35,8 +35,7 @@ namespace Doom {
 		float GetAspectRatio() const { return m_Ratio; }
 		double GetZoomLevel() const { return m_ZoomLevel; }
 
-		void OnWindowResize(void* _props);
-		void WindowResize();
+		void WindowResize(glm::ivec2 size);
 		void Increase();
 		void SetOnStart();
 		void CameraMovement();
@@ -55,6 +54,8 @@ namespace Doom {
 
 		friend class Editor;
 		friend class Batch;
+		friend class Window;
+		friend class ViewPort;
 	private:
 
 		std::mutex m_Mtx;
@@ -71,8 +72,6 @@ namespace Doom {
 		float m_Pitch = 0.0f;
 		float m_Yaw = 0.0f;
 		float m_AspectRatio[4]; 
-		int* m_Props = nullptr;
-		bool m_IsWindowResized = false;
 	};
 
 }

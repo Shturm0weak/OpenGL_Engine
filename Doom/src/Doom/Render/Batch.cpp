@@ -7,10 +7,10 @@ using namespace Doom;
 
 Batch::Batch()
 {
-	std::cout << BOLDGREEN << "Initialized Batch rendering" << RESET << std::endl;
 	InitText();
 	InitGameObjects();
 	InitLines();
+	Logger::Success("Batch renderer has been initialized!");
 }
 
 Batch::~Batch()
@@ -375,7 +375,7 @@ void Batch::Submit(RectangleCollider2D& c)
 		EndGameObjects();
 		FlushGameObjects(m_Shader);
 		BeginGameObjects();
-		std::cout << "max texture" << std::endl;
+		Logger::Warning("texture limit", "Batch renderer", "Sprites");
 	}
 
 	m_GoB.m_TextureIndex = 0.0f;

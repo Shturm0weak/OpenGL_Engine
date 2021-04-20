@@ -18,8 +18,12 @@
 #include "EntryPoint.h"
 #include "Objects/GridLayOut.h"
 #include "Objects/SkyBox.h"
+#include "Core/Logger.h"
 
 using namespace Doom;
+
+DOOM_API std::tm* Logger::s_CurrentTime;
+DOOM_API std::string Logger::s_TimeString;
 
 DOOM_API std::vector<LuaState*> LuaState::s_LuaStates;
 

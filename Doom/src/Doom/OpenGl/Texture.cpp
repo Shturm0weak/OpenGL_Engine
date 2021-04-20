@@ -16,7 +16,7 @@ Texture::Texture(const std::string& path, int flip, bool repeat)
 	else
 	{
 #ifdef _DEBUG
-		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << path << BOLDYELLOW << "> has already existed\n" << RESET;
+		Logger::Warning("has already existed!", "Texture", path.c_str());
 #endif
 		return;
 	}
@@ -155,7 +155,7 @@ Texture* Doom::Texture::Get(std::string filePath, bool showErrors)
 	else
 	{
 		if (showErrors)
-			std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << filePath << BOLDYELLOW << "> doesn't exist\n" << RESET;
+			Logger::Warning("doesn't exist!", "Texture", filePath.c_str());
 		return nullptr;
 	}
 }
@@ -202,7 +202,7 @@ Texture* Doom::Texture::ColoredTexture(const std::string& name, uint32_t color)
 	if (iter != s_Textures.end())
 	{
 #ifdef _DEBUG
-		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << name << BOLDYELLOW << "> has already existed\n" << RESET;
+		Logger::Warning("has already existed!", "Texture", name.c_str());
 #endif
 		return iter->second;
 	}
@@ -252,7 +252,7 @@ bool Doom::Texture::LoadTextureInRAM(const std::string& filePath, bool flip)
 	else
 	{
 #ifdef _DEBUG
-		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << filePath << BOLDYELLOW << "> m_localBuffer is not empty\n" << RESET;
+		Logger::Warning("m_localBuffer is not empty!", "Texture", filePath.c_str());
 #endif
 		return false;
 	}
@@ -265,7 +265,7 @@ bool Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFr
 	if (t->m_RendererID != -1)
 	{
 #ifdef _DEBUG
-		std::cout << NAMECOLOR << "Texture" << BOLDYELLOW << ": <" << NAMECOLOR << filePath << BOLDYELLOW << "> has been already in VRAM\n" << RESET;
+		Logger::Warning("has been already in VRAM!", "Texture", filePath.c_str());
 #endif
 		//UnloadFromVRAM(filePath);
 		return true;
@@ -273,7 +273,7 @@ bool Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFr
 	if (t->m_LocalBuffer == nullptr)
 	{
 #ifdef _DEBUG
-		std::cout << NAMECOLOR << "Texture" << RED ": <" << NAMECOLOR << filePath << RED << "> Can't be loaded in VRAM, m_LocalBuffer is unloaded from RAM!\n" << RESET;
+		Logger::Warning("can't be loaded in VRAM, m_LocalBuffer is unloaded from RAM!", "Texture", filePath.c_str());
 #endif
 		return false;
 	}
@@ -307,7 +307,7 @@ unsigned int Doom::Texture::LoadCubeMap(std::vector<std::string> faces)
 			stbi_image_free(data);
 		}
 		else {
-			std::cout << RED << "Cube map texture failed to load at path: " + faces[i] << RESET << std::endl;
+			Logger::Error("cube map texture failed to load", "Texture", faces[i].c_str());
 			stbi_image_free(data);
 		}
 	}

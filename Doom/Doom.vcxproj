@@ -132,6 +132,7 @@
     <ClInclude Include="src\Doom\Core\Event.h" />
     <ClInclude Include="src\Doom\Core\EventSystem.h" />
     <ClInclude Include="src\Doom\Core\Listener.h" />
+    <ClInclude Include="src\Doom\Core\Logger.h" />
     <ClInclude Include="src\Doom\Core\SceneSerializer.h" />
     <ClInclude Include="src\Doom\Core\ThreadPool.h" />
     <ClInclude Include="src\Doom\Core\Timer.h" />
@@ -261,6 +262,7 @@
     <ClCompile Include="src\Doom\Core\Editor.cpp" />
     <ClCompile Include="src\Doom\Core\EventSystem.cpp" />
     <ClCompile Include="src\Doom\Core\Listener.cpp" />
+    <ClCompile Include="src\Doom\Core\Logger.cpp" />
     <ClCompile Include="src\Doom\Core\SceneSerializer.cpp" />
     <ClCompile Include="src\Doom\Core\ThreadPool.cpp" />
     <ClCompile Include="src\Doom\Core\ViewPort.cpp" />

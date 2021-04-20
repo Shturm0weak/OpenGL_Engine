@@ -1,4 +1,5 @@
 #include "SoundManager.h"
+#include "Core/Logger.h"
 
 using namespace Doom;
 
@@ -18,7 +19,7 @@ void SoundManager::Init()
 	s_AlcDevice = alcOpenDevice(NULL);
 	s_AlcContext = alcCreateContext(s_AlcDevice, NULL);
 	alcMakeContextCurrent(s_AlcContext);
-	std::cout << BOLDGREEN << "Initialized SoundManager\n" << RESET;
+	Logger::Success("Sound manager has been initialized!");
 }
 
 void SoundManager::Resume(Sound * sound)

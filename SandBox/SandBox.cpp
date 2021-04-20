@@ -15,7 +15,7 @@
 
 int main()
 {
-	StressTest app;
+	Test app;
 	Doom::EntryPoint entrypoint(&app);
 	entrypoint.Run();
 	return 0;

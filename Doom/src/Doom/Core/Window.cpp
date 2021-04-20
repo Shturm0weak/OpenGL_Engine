@@ -50,10 +50,9 @@ int Doom::Window::Init(const char* Label, float width, float height, bool vsync)
 
 	if (glewInit() != GLEW_OK) 
 	{
-		std::cout << "error" << std::endl;
+		Logger::Error("failed to initialize GLEW!");
 		return -1;
 	}
-	std::cout << BOLDGREEN << "Initialized window" << RESET << std::endl;
 
 	glfwSwapInterval(vsync); // Enable vsync
 
@@ -62,11 +61,12 @@ int Doom::Window::Init(const char* Label, float width, float height, bool vsync)
 		});
 
 	glfwSetWindowSizeCallback(Window::GetWindow(), [](GLFWwindow* window, int width, int height) {
-		int* props = Window::GetInstance().GetSize();
-		props[0] = width;
-		props[1] = height;
-		EventSystem::GetInstance().SendEvent(EventType::ONWINDOWRESIZE, nullptr, props);
-		});
+		Window& w = Window::GetInstance();
+		int* size = w.GetSize();
+		size[0] = width;
+		size[1] = height;
+		glViewport(0, 0, size[0], size[1]);
+	});
 	s_ImGuiContext = ImGui::CreateContext();
 	s_ImGuiIO = &ImGui::GetIO();
 	(void)s_ImGuiIO;
@@ -75,6 +75,9 @@ int Doom::Window::Init(const char* Label, float width, float height, bool vsync)
 
 	ImGui::StyleColorsClassic();
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	
+	Logger::Success("Window has been Initialized!");
+
 	return 0;
 }
 

@@ -251,15 +251,15 @@ void Doom::AimTrainer::OnGuiRender()
 		Gui& g = Gui::GetInstance();
 		if (m_CrossHair != nullptr)
 			g.Image(0, 0, 50 * m_CrossHairScale, 50 * m_CrossHairScale, m_CrossHair);
-		g.Text(L"FPS %f", 1, 700, 500, 40, COLORS::White, 3, Window::GetInstance().GetFPS());
-		g.Text(L"Missed %d", 1, 700, 450, 40, COLORS::White, 0, m_Missed);
-		g.Text(L"Hits %d", 1, 700, 400, 40, COLORS::White, 0, m_Hits);
-		g.Text(L"Time %f", 1, 700, 350, 40, COLORS::White, 2, m_Time);
+		g.Text(L"FPS %f", 1, 700, 500, 20, COLORS::White, 3, Window::GetInstance().GetFPS());
+		g.Text(L"Missed %d", 1, 700, 450, 20, COLORS::White, 0, (int64_t)m_Missed);
+		g.Text(L"Hits %d", 1, 700, 400, 20, COLORS::White, 0, (int64_t)m_Hits);
+		g.Text(L"Time %f", 1, 700, 350, 20, COLORS::White, 2, m_Time);
 		if (m_Hits > 0)
-			g.Text(L"Accuracy %f#%", 1, 700, 300, 40, COLORS::White, 0, ((float)m_Hits / (float)(m_Hits + m_Missed)) * 100.0f);
+			g.Text(L"Accuracy %f#%", 1, 700, 300, 20, COLORS::White, 0, ((float)m_Hits / (float)(m_Hits + m_Missed)) * 100.0f);
 
 		g.m_XAlign = g.XCENTER;
-		g.Text(L"%d", 1, 0, 600, 80, COLORS::White, 0, m_Hits);
+		g.Text(L"%d", 1, 0, 600, 40, COLORS::White, 0, (int64_t)m_Hits);
 		g.m_XAlign = g.LEFT;
 	}
 	else 

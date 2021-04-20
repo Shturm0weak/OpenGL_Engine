@@ -35,7 +35,7 @@ namespace fbx {
 					//node.print();
 					if (node.getName() == "Geometry") {
 						Data data;
-						std::cout << node.properties[1].to_string() << std::endl;
+						//std::cout << node.properties[1].to_string() << std::endl;
 						std::string name = GetNameOfModel(node.properties[1].to_string());
 						if (std::find_if(meshes.begin(), meshes.end(), [=](Mesh* _mesh) {return _mesh->m_Name == name; }) == meshes.end()) {
 							mesh = new Mesh(name, filepath);

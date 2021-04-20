@@ -10,6 +10,7 @@
 #include <functional>
 #include <limits>
 #include <math.h>
+#include <ctime>    
 
 #include <string>
 #include <sstream>
@@ -46,4 +47,5 @@ extern "C"
 #include "Objects/GameObject.h"
 #include "FileDialogs/FileDialogs.h"
 #include "Core/World.h"
+#include "Core/Logger.h"
 #endif //PCH_H

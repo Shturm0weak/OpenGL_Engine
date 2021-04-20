@@ -31,6 +31,7 @@ namespace Doom {
 
 		void RecalculateMouseCoords();
 		void Update();
+		void Resize();
 		glm::dvec2 GetFromWorldToScreenSpaceImpl(glm::vec2 pos);
 		glm::dvec2 GetFromWorldToScreenSpace(float x, float y);
 		glm::dvec2 GetMousePositionToScreenSpace() { return m_MousePosS; }

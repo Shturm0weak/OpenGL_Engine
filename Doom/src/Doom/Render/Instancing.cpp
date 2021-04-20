@@ -309,7 +309,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 					{
 						if (gliter->second.m_TextureSlotsIndex >= 32)
 						{
-							std::cout << BOLDYELLOW << "WARNING: limit of texture slots, texture will be set to white!" << RESET << std::endl;
+							Logger::Warning("limit of texture slots, texture will be set to white!");
 						}
 						else
 						{

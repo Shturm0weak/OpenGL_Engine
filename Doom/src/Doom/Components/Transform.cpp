@@ -48,16 +48,7 @@ void Doom::Transform::operator=(const Transform& rhs)
 
 Component* Doom::Transform::Create()
 {
-	//char* ptr = Utils::PreAllocateMemory<Transform>(s_MemoryPool, s_FreeMemory);
-	//Transform* component = (Transform*)((void*)ptr);
-	//component->m_MemoryPoolPtr = ptr;
-	//return component;
 	return nullptr;
-}
-
-void Doom::Transform::Delete()
-{
-	//s_FreeMemory.push_back(m_MemoryPoolPtr);
 }
 
 glm::vec3 Doom::Transform::GetRotation()
@@ -80,56 +71,30 @@ glm::mat4 Doom::Transform::GetTransform()
 	return std::move(m_PosMat4  * m_ViewMat4 * m_ScaleMat4);
 }
 
-void Transform::Move(float speedX,float speedY,float speedZ) 
+void Transform::Move(float x,float y,float z) 
 {
-	glm::vec3 position = Utils::GetPosition(m_PosMat4);
-	position.x += speedX * DeltaTime::GetDeltaTime();
-	position.y += speedY * DeltaTime::GetDeltaTime();
-	position.z += speedZ * DeltaTime::GetDeltaTime();
-	m_PosMat4 = glm::translate(glm::mat4(1.0f),position);
-
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
-
-	if (m_OwnerOfCom->m_Enable) 
-	{
-		unsigned int size = m_OwnerOfCom->GetChilds().size();
-		for (unsigned int i = 0; i < size; i++)
-		{
-			GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
-			if (go->m_Enable == true)
-				go->m_ComponentManager.GetComponent<Transform>()->Move(speedX, speedY, speedZ);
-		}
-	}
-	//EventSystem::GetInstance().SendEvent(EventType::ONMOVE,(Listener*)m_OwnerOfCom);
+	Move(glm::vec3(x, y, z));
 }
 
 void Transform::RotateOnce(float x, float y, float z,bool isRad)
 {
-	m_Rotation.x = x;
-	m_Rotation.y = y;
-	m_Rotation.z = z;
-		if (!isRad)
-			m_Rotation = glm::radians(m_Rotation);
-		//m_ViewMat4 = glm::mat4(1.0f);
-		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
-		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
-		//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
-		m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
-		
-		m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-		//RealVertexPositions();
+	RotateOnce(glm::vec3(x, y, z), isRad);
+}
 
-	//	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom);
-		/*if (owner->Enable) {
-			unsigned int size = owner->GetChilds().size();
-			for (unsigned int i = 0; i < size; i++)
-			{
-				GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
-				if (go->Enable == true)
-					go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
-			}
-		}*/
+
+void Transform::Rotate(float x, float y, float z, bool isRad) 
+{
+	Rotate(glm::vec3(x, y, z), isRad);
+}
+
+void Transform::Scale(float x, float y,float z)
+{
+	Scale(glm::vec3(x, y, z));
+}
+
+void Transform::Translate(float x, float y,float z)
+{
+	Translate(glm::vec3(x, y, z));
 }
 
 void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
@@ -144,90 +109,6 @@ void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
 
 	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	//RealVertexPositions();
-	
-	//EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom);
-	/*if (owner->Enable) {
-		unsigned int size = owner->GetChilds().size();
-		for (unsigned int i = 0; i < size; i++)
-		{
-			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
-			if (go->Enable == true)
-				go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(axis.x, axis.y, axis.z);
-		}
-	}*/
-}
-
-void Transform::Rotate(float x, float y, float z, bool isRad) 
-{
-	m_Rotation.x = x;
-	m_Rotation.y = y;
-	m_Rotation.z = z;
-	if (!isRad)
-		m_Rotation = glm::radians(m_Rotation);
-	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
-	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
-
-	//EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom);
-	/*if (owner->Enable) {
-		unsigned int size = owner->GetChilds().size();
-		for (unsigned int i = 0; i < size; i++)
-		{
-			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
-			if (go->Enable == true)
-				go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
-		}
-	}*/
-}
-
-void Transform::Scale(float scaleX, float scaleY,float scaleZ)
-{
-	glm::vec3 vScale(scaleX, scaleY, scaleZ);
-	m_ScaleMat4 = glm::scale(glm::mat4(1.f), vScale);
-	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
-
-	//EventSystem::GetInstance().SendEvent(EventType::ONSCALE, (Listener*)m_OwnerOfCom);
-
-
-	//Need to find a better solution!!!
-	//unsigned int size = m_OwnerOfCom->GetChilds().size();
-	//for (unsigned int i = 0; i < size; i++)
-	//{
-	//	GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
-	//	if (go->m_Enable == true)
-	//		go->m_ComponentManager.GetComponent<Transform>()->Scale(scaleX, scaleY, scaleZ);
-	//}
-}
-
-void Transform::Translate(float x, float y,float z)
-{
-	glm::vec3 position = Utils::GetPosition(m_PosMat4);
-	if (m_OwnerOfCom->m_Enable) {
-		uint32_t size = m_OwnerOfCom->GetChilds().size();
-		for (uint32_t i = 0; i < size; i++)
-		{
-			GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
-			if (go->m_Enable == true) {
-				glm::vec3 _pos = go->GetPosition() - m_OwnerOfCom->GetPosition();
-				go->m_ComponentManager.GetComponent<Transform>()->Translate(_pos.x + x, _pos.y + y, _pos.z + z);
-			}
-		}
-	}
-	position.x = x;
-	position.y = y;
-	position.z = z;
-	m_PosMat4 = translate(glm::mat4(1.f), position);
-	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
-
-	//EventSystem::GetInstance().SendEvent(EventType::ONTRANSLATE, (Listener*)m_OwnerOfCom);
 }
 
 void Transform::Move(glm::vec3 vdir) 
@@ -259,56 +140,21 @@ void Transform::RotateOnce(glm::vec3 vangles, bool isRad)
 	if (isRad) m_Rotation = vangles;
 	else m_Rotation = glm::radians(vangles);
 	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
-	//m_ViewMat4 = glm::mat4(1.0f);
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x, glm::vec3(1, 0, 0));
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y, glm::vec3(0, 1, 0));
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z, glm::vec3(0, 0, 1));
 	
 	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	//RealVertexPositions();
-
-	//EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom);
-	//if(m_PrevRotation.x != vangles.x || m_PrevRotation.y != vangles.y || m_PrevRotation.z != vangles.z){
-	//	m_PrevRotation = vangles;
-	//	if (m_Owner->m_Enable) {
-	//		unsigned int size = m_Owner->GetChilds().size();
-	//		for (unsigned int i = 0; i < size; i++)
-	//		{
-	//			GameObject* go = static_cast<GameObject*>(m_Owner->GetChilds()[i]);
-	//			if (go->m_Enable == true) {
-	//				Transform* goTr = go->m_Transform;
-	//				goTr->RotateOnce(GetRotation() + goTr->GetRotation(), true);
-	//				glm::vec3 _end = goTr->m_ViewMat4 * glm::vec4(goTr->GetPosition(), 1.0f);
-	//				goTr->Translate(_end);
-	//				
-	//			}
-	//		}
-	//	}
-	//}
 }
 
 void Transform::Rotate(glm::vec3 vangles, bool isRad)
 {
 	if (isRad) m_Rotation = vangles;
 	else m_Rotation = glm::radians(vangles);
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.x * DeltaTime::GetDeltaTime(), glm::vec3(1, 0, 0));
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.y * DeltaTime::GetDeltaTime(), glm::vec3(0, 1, 0));
-	//m_ViewMat4 = glm::rotate(m_ViewMat4, m_Rotation.z * DeltaTime::GetDeltaTime(), glm::vec3(0, 0, 1));
 	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
 	
 	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 	//RealVertexPositions();
 
 	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom);
-	/*if (owner->Enable) {
-		unsigned int size = owner->GetChilds().size();
-		for (unsigned int i = 0; i < size; i++)
-		{
-			GameObject* go = static_cast<GameObject*>(owner->GetChilds()[i]);
-			if (go->Enable == true)
-				go->m_ComponentManager.GetComponent<Transform>()->RotateOnce(rotation.x, rotation.y, rotation.z);
-		}
-	}*/
 }
 
 void Transform::Scale(glm::vec3 vscale)
@@ -319,15 +165,6 @@ void Transform::Scale(glm::vec3 vscale)
 	//RealVertexPositions();
 
 	//EventSystem::GetInstance().SendEvent(EventType::ONSCALE, (Listener*)m_OwnerOfCom);
-
-	//Need to find a better solution!!!
-	//unsigned int size = m_OwnerOfCom->GetChilds().size();
-	//for (unsigned int i = 0; i < size; i++)
-	//{
-	//	GameObject* go = static_cast<GameObject*>(m_OwnerOfCom->GetChilds()[i]);
-	//	if (go->m_Enable == true)
-	//		go->m_ComponentManager.GetComponent<Transform>()->Scale(vscale);
-	//}
 }
 
 void Transform::Translate(glm::vec3 vpos)

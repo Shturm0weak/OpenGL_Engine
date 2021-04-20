@@ -171,9 +171,6 @@ void SpriteRenderer::Setlayer(int layer)
 {
 	World& world = World::GetInstance();
 	unsigned int size = world.s_GameObjects.size();
-#ifdef _DEBUG
-	std::cout << m_OwnerOfCom->m_Name << " is set from layer " << m_OwnerOfCom->m_Id << " to " << layer << std::endl;
-#endif
 	world.s_GameObjects.erase(world.s_GameObjects.begin() + m_OwnerOfCom->m_Id);
 	world.s_GameObjects.insert(world.s_GameObjects.begin() + layer, m_OwnerOfCom);
 	for (unsigned int i = 0; i < world.s_GameObjects.size(); i++)

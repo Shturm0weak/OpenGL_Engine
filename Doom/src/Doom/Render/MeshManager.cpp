@@ -49,7 +49,7 @@ void MeshManager::LoadMesh(std::string name, std::string filePath, size_t meshId
 	mesh->Init();
 	Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(mesh, New));
 	Instancing::GetInstance()->Create(mesh);
-	std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
+	Logger::Success("has been loaded!", "Mesh", name.c_str());
 }
 
 void Doom::MeshManager::LoadScene(std::string filepath)
@@ -89,7 +89,7 @@ void Doom::MeshManager::AsyncLoadMesh(std::string nametemp, std::string filePath
 			s_Meshes.insert(std::make_pair(name, mesh));
 			s_NeedToInitMeshes.push_back(mesh);
 		}
-		std::cout << BOLDGREEN << "Mesh: <" << NAMECOLOR << name << BOLDGREEN << "> has been loaded\n" << RESET;
+		Logger::Success("has been loaded!", "Mesh", name.c_str());
 		});
 }
 
@@ -101,7 +101,7 @@ Mesh* MeshManager::GetMesh(std::string name)
 	else
 	{
 #ifdef _LOAD_MESH_
-		std::cout << RED << "Mesh: <" NAMECOLOR << name << RED << "> has not been found!\n" << RESET;
+		Logger::Warning("has not been found!", "Mesh", name.c_str());
 #endif
 		return nullptr;
 	}

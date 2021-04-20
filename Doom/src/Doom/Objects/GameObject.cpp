@@ -2,6 +2,8 @@
 #include "../Render/Renderer.h"
 #include "GameObject.h"
 #include "../Core/World.h"
+#include "../Core/Utils.h"
+
 
 using namespace Doom;
 
@@ -25,7 +27,7 @@ void Doom::GameObject::Delete()
 	if (iter != goV.end())
 		goV.erase(iter);
 #ifdef _DEBUG
-	std::cout << "GameObject: <" << NAMECOLOR << m_Name << RESET << "> has been destroyed\n";
+	Logger::Log("has been destroyed!", "GameObject", m_Name.c_str(), RESET);
 #endif
 }
 
@@ -63,25 +65,8 @@ Doom::GameObject::~GameObject()
 }
 
 //void GameObject::operator=(GameObject& go) {
-//	this->SetName(go.name.c_str());
-//	this->name.append("(clone)");
-//	Transform* tr = this->GetComponentManager()->GetComponent<Transform>();
-//	Transform* trgo = go.GetComponentManager()->GetComponent<Transform>();
-//	tr->RotateOnce(trgo->rotation.x, trgo->rotation.y, trgo->rotation.z,true);
-//	tr->Translate(go.GetPositions().x, go.GetPositions().y);
-//	tr->Scale(go.scaleValues[0], go.scaleValues[1]);
-//	if (go.GetComponentManager()->GetComponent<RectangleCollider2D>() != nullptr) {
-//		RectangleCollider2D* col = this->GetComponentManager()->AddComponent<RectangleCollider2D>();
-//		RectangleCollider2D* gocol = (RectangleCollider2D*)go.GetComponentManager()->GetComponent<RectangleCollider2D>();
-//		col->SetOffset(gocol->offset.x, gocol->offset.y);
-//		col->Enable = gocol->Enable;
-//		col->Translate(position.x, position.y);
-//		col->IsTrigger = gocol->IsTrigger;
-//		col->SetTag(gocol->GetTag());
-//	}
-//}
 
-#include "../Core/Utils.h"
+//}
 
 glm::vec3 GameObject::GetPosition() {
 	return Utils::GetPosition(m_Transform.m_PosMat4);
