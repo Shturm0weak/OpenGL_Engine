@@ -13,7 +13,7 @@ void Doom::IndexBuffer::Init(const uint32_t * data, uint32_t count)
 
 void Doom::IndexBuffer::Clear()
 {
-	m_RendererID = UINT_MAX;
+	m_RendererID = UINT32_MAX;
 	m_count = 0;
 	glDeleteBuffers(1, &m_RendererID);
 }

@@ -11,7 +11,7 @@ void VertexArray::Init()
 
 void Doom::VertexArray::Clear()
 {
-	m_RendererID = UINT_MAX;
+	m_RendererID = UINT32_MAX;
 	glDeleteVertexArrays(1, &m_RendererID);
 }
 

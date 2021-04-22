@@ -1,12 +1,11 @@
+#include "pch.h"
 #include "EntryPoint.h"
 #include "Core/Timer.h"
 #include "Objects/Line.h"
 #include "Core/World.h"
-#include "Audio/SoundManager.h"
 #include "Core/Editor.h"
 #include "Objects/GridLayOut.h"
 #include "Objects/SkyBox.h"
-#include "Render/MeshManager.h"
 #include "Render/Instancing.h"
 #include "Core/Utils.h"
 #include "Core/SceneSerializer.h"
@@ -21,30 +20,43 @@ using namespace Doom;
 EntryPoint::EntryPoint(Doom::Application* app)
 {
 	Logger::UpdateTime();
-	m_App = app == nullptr ? new Application : app;
-	World::GetInstance().s_Application = m_App;
 
-	Window::GetInstance().Init(m_App->m_Name.c_str(), m_App->m_Width, m_App->m_Height, m_App->m_Vsync);
-	this->m_App->Init();
+	Window::GetInstance().Init(app);
 	ThreadPool::Init();
 	SoundManager::GetInstance().Init();
 	MainThread::GetInstance();
+	Input::SetupCallBack();
+
+	Utils::SetStandardTexParams();
 	Texture::s_WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
 	Texture::ColoredTexture("InvalidTexture", 0xFF00AC);
-	Input::SetupCallBack();
+
 	Gui::GetInstance().LoadStandartFonts();
 	
 	Window& window = Window::GetInstance();
 	int* size = Window::GetInstance().GetSize();
-	window.m_FrameBufferShadowMap = new FrameBuffer(2056, 2056, GL_DEPTH_COMPONENT, GL_FLOAT, GL_LINEAR, GL_CLAMP_TO_BORDER, GL_DEPTH_ATTACHMENT, false, false, false);
-	window.m_FrameBufferColor = new FrameBuffer(size[0], size[1], GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, true, true, true, 2);
+
+	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER };
+	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER };
+	FrameBufferParams shadowMapParams = { 2056, 2056, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_FLOAT, false, false, false };
+	window.m_FrameBufferShadowMap = new FrameBuffer(shadowMapParams);
+
+	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE };
+	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE };
+	FrameBufferParams colorParams = { size[0], size[1], GL_COLOR_ATTACHMENT0, GL_RGB, GL_UNSIGNED_BYTE, true, true, true, 2 };
+	window.m_FrameBufferColor = new FrameBuffer(colorParams);
 	window.m_FrameBufferColor->Bind();
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 	window.m_FrameBufferColor->UnBind();
-	window.m_FrameBufferBlur.push_back(new FrameBuffer(size[0], size[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
-	window.m_FrameBufferBlur.push_back(new FrameBuffer(size[0], size[1], GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, false, true, true, 1));
-	if (this->m_App->m_Type == TYPE_3D) 
+
+	FrameBufferParams Blur1Params = { size[0], size[1], GL_COLOR_ATTACHMENT0, GL_RGBA, GL_UNSIGNED_BYTE, false, true, true };
+	window.m_FrameBufferBlur.push_back(new FrameBuffer(Blur1Params));
+	window.m_FrameBufferBlur.push_back(new FrameBuffer(Blur1Params));
+
+	Utils::SetStandardTexParams();
+
+	if (window.s_Application->m_Type == TYPE_3D)
 	{
 		//GridLayOut::DrawGrid(51, 50);
 		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
@@ -75,19 +87,25 @@ EntryPoint::EntryPoint(Doom::Application* app)
 
 void EntryPoint::Run()
 {
+	Window& window = Window::GetInstance();
+	EventSystem& eventSystem = EventSystem::GetInstance();
+	ViewPort& viewPort = ViewPort::GetInstance();
+	Gui& gui = Gui::GetInstance();
+	World& world = World::GetInstance();
+
 	bool isEditorEnable = false;
 	bool FirstFrame = true;
 #ifdef _IS_GAME_BUILD
-	m_App->OnStart();
+	window.s_Application->OnStart();
 #endif
-	EventSystem::GetInstance().SendEvent(EventType::ONSTART, nullptr);
-	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow())) 
+	eventSystem.SendEvent(EventType::ONSTART, nullptr);
+	while (!glfwWindowShouldClose(window.GetWindow())) 
 	{
 		Logger::UpdateTime();
 		Renderer::s_OutLined3dObjects.clear();
 		RectangleCollider2D::CollidersToInit();
-		Window::GetInstance().s_CursorStateChanged = false;
-		EventSystem::GetInstance().SendEvent(EventType::ONUPDATE, nullptr);
+		window.s_CursorStateChanged = false;
+		eventSystem.SendEvent(EventType::ONUPDATE, nullptr);
 		DeltaTime::calculateDeltaTime();
 
 		if (FirstFrame) 
@@ -102,49 +120,49 @@ void EntryPoint::Run()
 		ImGuizmo::BeginFrame();
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-		Window::GetInstance().ClampCursorPos();
+		window.ClampCursorPos();
 
 //#ifndef _IS_GAME_BUILD
 		if (Input::IsKeyPressed(Keycode::KEY_E))
 			isEditorEnable = !isEditorEnable;
-		if (m_App->m_Type == RenderType::TYPE_3D) 
-			World::GetInstance().SelectObject3D();
+		if (Window::GetInstance().s_Application->m_Type == RenderType::TYPE_3D) 
+			world.SelectObject3D();
 		if (isEditorEnable)
 			Editor::GetInstance().EditorUpdate();
-		Window::GetInstance().GetCamera().CameraMovement();
+		window.GetCamera().CameraMovement();
 		Editor::GetInstance().ShortCuts();
 //#endif
-		MeshManager::GetInstance().DispatchLoadedMeshes();
+		Mesh::DispatchLoadedMeshes();
 		Texture::DispatchLoadedTextures();
 		SoundManager::GetInstance().UpdateSourceState();
 
-		World::GetInstance().UpdateLuaStates();
-		EventSystem::GetInstance().ProcessEvents();
+		world.UpdateLuaStates();
+		eventSystem.ProcessEvents();
 
-		if (m_App->m_Type == RenderType::TYPE_3D)
+		if (window.s_Application->m_Type == RenderType::TYPE_3D)
 			Renderer::SortTransparentObjects();
 
 		Renderer::UpdateLightSpaceMatrices();
 
 #ifdef _IS_GAME_BUILD
-		m_App->OnUpdate();
-		Gui::GetInstance().m_IsAnyPanelHovered = false;
-		Gui::GetInstance().Begin();
-		m_App->OnGuiRender();
-		Gui::GetInstance().End();
+		window.s_Application->OnUpdate();
+		gui.m_IsAnyPanelHovered = false;
+		gui.Begin();
+		window.s_Application->OnGuiRender();
+		gui.End();
 #endif
 
 		Renderer::Render();
 
-		ViewPort::GetInstance().Update();
-		ViewPort::GetInstance().Resize();
+		viewPort.Update();
+		viewPort.Resize();
 
 		try
 		{
 			ImGui::EndFrame();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-			glfwSwapBuffers(Window::GetInstance().GetWindow());
+			glfwSwapBuffers(window.GetWindow());
 			Input::ResetInput();
 			glfwPollEvents();
 		}
@@ -156,14 +174,14 @@ void EntryPoint::Run()
 		
 	}
 #ifdef _IS_GAME_BUILD
-	m_App->OnClose();
+	window.s_Application->OnClose();
 #endif
 }
 
 EntryPoint::~EntryPoint()
 {
 	World::GetInstance().ShutDown();
-	MeshManager::GetInstance().ShutDown();
+	Mesh::ShutDown();
 	Gui::GetInstance().ShutDown();
 	EventSystem::GetInstance().Shutdown();
 	ThreadPool::GetInstance().Shutdown();

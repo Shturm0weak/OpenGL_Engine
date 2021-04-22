@@ -116,7 +116,6 @@
     <ClInclude Include="src\FEM\Matrix.h" />
     <ClInclude Include="src\FEM\Vector.h" />
     <ClInclude Include="src\Hexagon\Hexagon.h" />
-    <ClInclude Include="src\Minecraft\Minecraft.h" />
     <ClInclude Include="src\SpaceFire\Ammo.h" />
     <ClInclude Include="src\SpaceFire\Bullet.h" />
     <ClInclude Include="src\SpaceFire\ShipEnemy.h" />

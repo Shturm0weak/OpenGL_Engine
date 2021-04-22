@@ -8,7 +8,7 @@ namespace Doom {
 	class DOOM_API VertexArray {
 	public:
 
-		unsigned int m_RendererID = UINT_MAX;
+		unsigned int m_RendererID = UINT32_MAX;
 
 		VertexArray() {}
 		~VertexArray();

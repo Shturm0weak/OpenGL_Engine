@@ -1,19 +1,15 @@
+#include "pch.h"
 #include "AimTrainer.h"
-#include <iostream>
-#include "Core/ViewPort.h"
 #include "Rays/Ray3D.h"
-#include "Objects/Line.h"
 #include "Text/Gui.h"
-#include <random>
-#include "Audio/SoundManager.h"
 #include "Render/Instancing.h"
 #include "Objects/SkyBox.h"
-#include "Core/Utils.h"
 #include "Core/SceneSerializer.h"
+#include "Core/Timer.h"
 
 using namespace Doom;
 
-void Doom::AimTrainer::RayCast()
+void AimTrainer::RayCast()
 {
 	if (Input::IsMousePressed(Keycode::MOUSE_BUTTON_1))
 	{
@@ -45,7 +41,7 @@ void Doom::AimTrainer::RayCast()
 	}
 }
 
-void Doom::AimTrainer::CameraMovement()
+void AimTrainer::CameraMovement()
 {
 	glm::dvec2 delta = ViewPort::GetInstance().GetMouseDragDelta();
 	delta *= 0.1;
@@ -54,11 +50,11 @@ void Doom::AimTrainer::CameraMovement()
 	Window::GetInstance().GetCamera().SetRotation(glm::vec3(rot.x + glm::radians(delta.y), rot.y - glm::radians(delta.x), 0));
 }
 
-void Doom::AimTrainer::SpawnObject()
+void AimTrainer::SpawnObject()
 {
 	GameObject* go = GameObject::Create("obj");
 	Renderer3D* r = go->m_ComponentManager.AddComponent<Renderer3D>();
-	r->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
+	r->LoadMesh(Mesh::GetMesh("cube"));
 	go->m_Tag = "Target";
 	go->m_IsSerializable = false;
 	glm::vec3 pos = RandomPos(m_LimX, m_LimY, m_LimZ);
@@ -71,7 +67,7 @@ void Doom::AimTrainer::SpawnObject()
 	m_Objs.insert(std::make_pair(go, 0.3));
 }
 
-void Doom::AimTrainer::UpdateObjects()
+void AimTrainer::UpdateObjects()
 {
 	for (auto iter = m_Objs.begin(); iter != m_Objs.end();) 
 	{
@@ -90,7 +86,7 @@ void Doom::AimTrainer::UpdateObjects()
 	}
 }
 
-glm::vec3 Doom::AimTrainer::RandomPos(glm::vec2 limX, glm::vec2 limY, glm::vec2 limZ)
+glm::vec3 AimTrainer::RandomPos(glm::vec2 limX, glm::vec2 limY, glm::vec2 limZ)
 {
 	glm::vec3 pos;
 	std::random_device rd;
@@ -112,7 +108,7 @@ void AimTrainer::OnStart()
 	GameObject* startGo = GameObject::Create("Start", 0, 10, -10);
 	Renderer3D* r = startGo->m_ComponentManager.AddComponent<Renderer3D>();
 	startGo->m_IsSerializable = false;
-	r->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
+	r->LoadMesh(Mesh::GetMesh("cube"));
 	r->m_Color = COLORS::Green;
 	r->m_Material.m_Ambient = 5;
 	startGo->m_Tag = "Start";
@@ -157,7 +153,7 @@ void AimTrainer::OnClose()
 	m_Objs.clear();
 }
 
-void Doom::AimTrainer::MainMenu() 
+void AimTrainer::MainMenu() 
 {
 	Gui& g = Gui::GetInstance().GetInstance();
 	g.m_XAlign = Gui::AlignHorizontally::XCENTER;
@@ -182,7 +178,7 @@ void Doom::AimTrainer::MainMenu()
 	g.m_XAlign = g.LEFT;
 }
 
-void Doom::AimTrainer::OptionsMenu()
+void AimTrainer::OptionsMenu()
 {
 	Gui& g = Gui::GetInstance();
 	g.m_XAlign = Gui::AlignHorizontally::XCENTER;
@@ -209,7 +205,7 @@ void Doom::AimTrainer::OptionsMenu()
 	g.m_XAlign = g.LEFT;
 }
 
-void Doom::AimTrainer::ChooseCrossHairMenu() 
+void AimTrainer::ChooseCrossHairMenu() 
 {
 	Gui& g = Gui::GetInstance();
 	g.m_XAlign = Gui::AlignHorizontally::XCENTER;
@@ -243,7 +239,7 @@ void Doom::AimTrainer::ChooseCrossHairMenu()
 	g.m_XAlign = g.LEFT;
 }
 
-void Doom::AimTrainer::OnGuiRender()
+void AimTrainer::OnGuiRender()
 {
 	Timer t;
 	if (!m_Pause) 

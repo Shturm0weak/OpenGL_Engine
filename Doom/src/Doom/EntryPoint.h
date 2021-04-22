@@ -14,7 +14,6 @@ namespace Doom {
 	class DOOM_API EntryPoint {
 	public:
 
-		Doom::Application* m_App = nullptr;
 		EntryPoint(Doom::Application* app);
 		~EntryPoint();
 

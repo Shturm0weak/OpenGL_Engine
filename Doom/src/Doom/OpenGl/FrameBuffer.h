@@ -2,6 +2,18 @@
 
 namespace Doom {
 
+	struct DOOM_API FrameBufferParams {
+		uint32_t m_Width = 800;
+		uint32_t m_Height = 600;
+		int m_FrameBufferAttachment = GL_COLOR_ATTACHMENT0;
+		int m_TextureInternalFormat = GL_RGBA;
+		int TextureType = GL_UNSIGNED_BYTE;
+		bool m_HasRBO = false;
+		bool m_ReadBuffer = true;
+		bool m_DrawBuffer = true;
+		uint32_t m_TexturesAmount = 1;
+	};
+
 	class DOOM_API FrameBuffer {
 	public:
 
@@ -11,12 +23,12 @@ namespace Doom {
 		unsigned int m_Fbo = 0;
 		std::vector<unsigned int> m_Textures;
 
-		FrameBuffer(int width, int height, int TextureParameterinternalFormat, int TextureParametertextureType, int TextureParamLinear, int TextureParameterClamp, int FrameBufferAttachment, bool NeedRBO, bool ReadBuffer, bool DrawBuffer, int NumOfTextures = 1);
+		FrameBuffer(const FrameBufferParams& params);
 		~FrameBuffer();
 
-		void Resize(float width, float height);
-		void Bind();
-		void UnBind();
+		void Resize(uint32_t width, uint32_t height);
+		void Bind() const;
+		void UnBind() const;
 	};
 
 }

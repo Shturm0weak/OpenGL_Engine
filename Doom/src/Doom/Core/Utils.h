@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Render/MeshManager.h"
 #include <filesystem>
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/matrix_decompose.hpp"
@@ -8,6 +7,15 @@
 namespace fs = std::filesystem;
 
 namespace Utils {
+
+	static void SetStandardTexParams()
+	{
+		Doom::Texture::s_TexParameters.resize(4);
+		Doom::Texture::s_TexParameters[0] = { GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR };
+		Doom::Texture::s_TexParameters[1] = { GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR };
+		Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE };
+		Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE };
+	}
 
 	static std::string GetNameFromFilePath(const std::string& path, int resolutionLength = 3)
 	{
@@ -26,7 +34,7 @@ namespace Utils {
 			size_t index = 0;
 			index = meshes.back().find("\\", index);
 			meshes.back().replace(index, 1, "/");
-			Doom::MeshManager::GetInstance().LoadMesh(GetNameFromFilePath(meshes.back()),meshes.back());
+			Doom::Mesh::LoadMesh(GetNameFromFilePath(meshes.back()),meshes.back());
 		}
 	}
 

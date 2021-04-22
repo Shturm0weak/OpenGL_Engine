@@ -5,7 +5,7 @@ namespace Doom {
 	class DOOM_API VertexBuffer {
 	public:
 
-		unsigned int m_RendererID = UINT_MAX;
+		unsigned int m_RendererID = UINT32_MAX;
 
 		VertexBuffer() {}
 		~VertexBuffer();
@@ -14,9 +14,9 @@ namespace Doom {
 
 		void Clear();
 
-		void Bind()const;
-		void UnBind()const;
-		void Invalidate();
+		void Bind() const;
+		void UnBind() const;
+		void Invalidate() const;
 	};
 
 }

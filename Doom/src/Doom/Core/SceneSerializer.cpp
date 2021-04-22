@@ -124,7 +124,7 @@ void Doom::SceneSerializer::Serialize(const std::string& filePath)
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene";
-	out << YAML::Value << ((Application*)World::GetInstance().s_Application)->m_Type;
+	out << YAML::Value << Window::GetInstance().GetApp().m_Type;
 	out << YAML::Key << "Camera";
 	out << YAML::BeginMap;
 	out << YAML::Key << "Transform";
@@ -310,10 +310,10 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		if (_meshId)
 			meshId = _meshId.as<uint32_t>();
 		std::string meshName = Utils::GetNameFromFilePath(meshPath);
-		MeshManager::GetInstance().AsyncLoadMesh(meshName, meshPath, meshId);
+		Mesh::AsyncLoadMesh(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
 		r->m_RenderTechnic = ((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
-		MeshManager::GetInstance().GetMeshWhenLoaded(meshName, (void*)r);
+		Mesh::GetMeshWhenLoaded(meshName, (void*)r);
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{

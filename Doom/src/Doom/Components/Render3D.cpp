@@ -4,7 +4,9 @@
 #include "../Render/Instancing.h"
 #include "../Components/PointLight.h"
 
-void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
+using namespace Doom;
+
+void Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 {
 	if (m_IsTransparent) return;
 	if (rt == RenderTechnic::Instancing)
@@ -37,7 +39,7 @@ void Doom::Renderer3D::ChangeRenderTechnic(RenderTechnic rt)
 	m_RenderTechnic = rt;
 }
 
-void Doom::Renderer3D::LoadMesh(Mesh* mesh)
+void Renderer3D::LoadMesh(Mesh* mesh)
 {
 	EraseFromInstancing();
 	m_Mesh = mesh;
@@ -60,12 +62,12 @@ void Doom::Renderer3D::LoadMesh(Mesh* mesh)
 	//std::cout << "the lowest " << mesh->theLowestPoint.x << " " << mesh->theLowestPoint.y << " " << mesh->theLowestPoint.z << "\n";
 }
 
-void Doom::Renderer3D::operator=(const Renderer3D& rhs)
+void Renderer3D::operator=(const Renderer3D& rhs)
 {
 	Copy(rhs);
 }
 
-void Doom::Renderer3D::EraseFromInstancing()
+void Renderer3D::EraseFromInstancing()
 {
 	if (m_RenderTechnic == RenderTechnic::Instancing)
 	{
@@ -85,12 +87,12 @@ void Doom::Renderer3D::EraseFromInstancing()
 	}
 }
 
-Doom::Renderer3D::Renderer3D(const Renderer3D& rhs)
+Renderer3D::Renderer3D(const Renderer3D& rhs)
 {
 	Copy(rhs);
 }
 
-Doom::Renderer3D::Renderer3D()
+Renderer3D::Renderer3D()
 {
 	m_RenderType = RenderType::TYPE_3D;
 	//SetType(ComponentType::RENDER3D);
@@ -99,11 +101,11 @@ Doom::Renderer3D::Renderer3D()
 	m_NormalMapTexture = Texture::Get("InvalidTexture");
 }
 
-Doom::Renderer3D::~Renderer3D()
+Renderer3D::~Renderer3D()
 {
 }
 
-void Doom::Renderer3D::Delete()
+void Renderer3D::Delete()
 {
 	s_FreeMemory.push_back(m_MemoryPoolPtr);
 	if (GetOwnerOfComponent() == nullptr) return;
@@ -126,7 +128,7 @@ void Doom::Renderer3D::Delete()
 	this->Copy(Renderer3D());
 }
 
-Doom::Component* Doom::Renderer3D::Create()
+Component* Renderer3D::Create()
 {
 	char* ptr = Utils::PreAllocateMemory<Renderer3D>(s_MemoryPool, s_FreeMemory);
 	Renderer3D* component = (Renderer3D*)((void*)ptr);
@@ -140,7 +142,7 @@ Doom::Component* Doom::Renderer3D::Create()
 #include "../Core/Timer.h"
 #include "DirectionalLight.h"
 
-void Doom::Renderer3D::BakeShadows()
+void Renderer3D::BakeShadows()
 {
 	if (m_IsCastingShadows && m_Mesh != nullptr && m_Mesh->m_IsInitialized) 
 	{
@@ -167,7 +169,7 @@ void Doom::Renderer3D::BakeShadows()
 	}
 }
 
-void Doom::Renderer3D::MakeTransparent()
+void Renderer3D::MakeTransparent()
 {
 	auto iter = std::find(Renderer::s_Objects3d.begin(), Renderer::s_Objects3d.end(), this);
 	if(iter != Renderer::s_Objects3d.end()) 
@@ -180,7 +182,7 @@ void Doom::Renderer3D::MakeTransparent()
 	}
 }
 
-void Doom::Renderer3D::MakeSolid()
+void Renderer3D::MakeSolid()
 {
 	auto iter = std::find(Renderer::s_Objects3dTransparent.begin(), Renderer::s_Objects3dTransparent.end(), this);
 	if (iter != Renderer::s_Objects3dTransparent.end()) 
@@ -192,7 +194,7 @@ void Doom::Renderer3D::MakeSolid()
 	}
 }
 
-void Doom::Renderer3D::Render()
+void Renderer3D::Render()
 {
 	if (m_RenderTechnic == RenderTechnic::Forward) 
 	{
@@ -211,7 +213,7 @@ void Doom::Renderer3D::Render()
 	}
 }
 
-void Doom::Renderer3D::Copy(const Renderer3D& rhs)
+void Renderer3D::Copy(const Renderer3D& rhs)
 {
 	m_FloatUniforms = rhs.m_FloatUniforms;
 	m_Material = rhs.m_Material;
@@ -230,7 +232,7 @@ void Doom::Renderer3D::Copy(const Renderer3D& rhs)
 	m_RenderType = rhs.m_RenderType;
 }
 
-void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
+void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
 {
 	if (m_Mesh != nullptr && m_Mesh->m_IsInitialized)
 	{
@@ -362,7 +364,7 @@ void Doom::Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4&
 	}
 }
 
-void Doom::Renderer3D::RenderSkyBox()
+void Renderer3D::RenderSkyBox()
 {
 	m_Shader = Shader::Get("SkyBox");
 	glDepthFunc(GL_LEQUAL);
@@ -392,7 +394,7 @@ void Doom::Renderer3D::RenderSkyBox()
 	glEnable(GL_CULL_FACE);
 }
 
-void Doom::Renderer3D::AdditionalUniformsLoad()
+void Renderer3D::AdditionalUniformsLoad()
 {
 	for (auto i = m_FloatUniforms.begin(); i != m_FloatUniforms.end(); i++)
 	{

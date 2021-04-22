@@ -4,7 +4,6 @@
 #include "src/Examples/TicTacToe.h"
 #include "src/Examples/StressTest.h"
 #include "src/SpaceFire/SpaceFire.h"
-#include "src/Minecraft/Minecraft.h"
 #include "src/Examples/BlankProject.h"
 #include "FEM/FEM.h"
 #include "AimTrainer/AimTrainer.h"

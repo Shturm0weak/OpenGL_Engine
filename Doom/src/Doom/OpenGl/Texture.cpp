@@ -6,7 +6,7 @@ namespace fs = std::filesystem;
 
 using namespace Doom;
 
-Texture::Texture(const std::string& path, int flip, bool repeat)
+Texture::Texture(const std::string& path, int flip)
 	:m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr),
 	m_height(0), m_width(0), m_BPP(0)
 {
@@ -26,18 +26,11 @@ Texture::Texture(const std::string& path, int flip, bool repeat)
 	glGenTextures(1, &m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	if (repeat)
+	for (size_t i = 0; i < s_TexParameters.size(); i++)
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+		glTexParameteri(s_TexParameters[i].m_Target, s_TexParameters[i].m_Pname, s_TexParameters[i].m_Param);
 	}
-	else
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	}
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	if (m_LocalBuffer)
@@ -49,7 +42,7 @@ Texture::Texture()
 {
 }
 
-std::vector<Texture*> Texture::GetLoadedTexturesFromFolder(std::string filePath)
+std::vector<Texture*> Texture::GetLoadedTexturesFromFolder(const std::string& filePath)
 {
 	std::vector<Texture*> ts;
 	for (const auto& entry : fs::directory_iterator(filePath))
@@ -212,20 +205,21 @@ Texture* Doom::Texture::ColoredTexture(const std::string& name, uint32_t color)
 	glGenTextures(1, &t->m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, t->m_RendererID);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	for (size_t i = 0; i < s_TexParameters.size(); i++)
+	{
+		glTexParameteri(s_TexParameters[i].m_Target, s_TexParameters[i].m_Pname, s_TexParameters[i].m_Param);
+	}
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	s_Textures.insert(std::make_pair(t->m_FilePath, t));
 	return t;
 }
 
-Texture* Doom::Texture::Create(const std::string& filePath, bool flip, bool repeat)
+Texture* Doom::Texture::Create(const std::string& filePath, bool flip)
 {
 	Texture* t = Get(filePath, false);
-	if (t == nullptr || t == NULL) return new Texture(filePath, flip, repeat);
+	if (t == nullptr || t == NULL) return new Texture(filePath, flip);
 	else return t;
 }
 
@@ -280,10 +274,12 @@ bool Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFr
 
 	glGenTextures(1, &t->m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, t->m_RendererID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	for (size_t i = 0; i < s_TexParameters.size(); i++)
+	{
+		glTexParameteri(s_TexParameters[i].m_Target, s_TexParameters[i].m_Pname, s_TexParameters[i].m_Param);
+	}
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->m_width, t->m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, t->m_LocalBuffer);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	if (unloadFromRam)
@@ -291,7 +287,7 @@ bool Doom::Texture::LoadTextureInVRAM(const std::string& filePath, bool unloadFr
 	return true;
 }
 
-unsigned int Doom::Texture::LoadCubeMap(std::vector<std::string> faces)
+unsigned int Doom::Texture::LoadCubeMap(std::vector<std::string>& faces)
 {
 	unsigned int m_RendererID;
 	glGenTextures(1, &m_RendererID);

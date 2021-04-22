@@ -1,5 +1,7 @@
+#include "pch.h"
 #include "Hexagon.h"
 #include "Rays/Ray3D.h"
+#include "Core/Timer.h"
 
 void Doom::Hexagon::PerlinNoise2D(int nWidth, int nHeight, float* fSeed, int nOctaves, float fBias, float* fOutput)
 {
@@ -120,7 +122,7 @@ void Doom::Hexagon::OnStart()
 	PerlinNoise2D(width, height, seed, 5, 0.7, noise);
 	delete[] seed;
 	Texture::Create("src/Images/corn.png");
-	Mesh* hex = MeshManager::GetInstance().GetMesh("hex");
+	Mesh* hex = Mesh::GetMesh("hex");
 	float hexX = hex->m_TheHighestPoint.x * 2;
 	float hexZ = hex->m_TheHighestPoint.z * 2;
 	for (uint32_t i = 0; i < width; i++)

@@ -12,14 +12,14 @@
 
 using namespace Doom;
 
-void Doom::Renderer::Clear()
+void Renderer::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glClearDepth(1.0f);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
-void Doom::Renderer::SortTransparentObjects()
+void Renderer::SortTransparentObjects()
 {
 	std::sort(s_Objects3dTransparent.begin(), s_Objects3dTransparent.end(), [](Renderer3D* r1, Renderer3D* r2) {
 		GameObject* go0 = r1->GetOwnerOfComponent();
@@ -49,7 +49,7 @@ void Doom::Renderer::SortTransparentObjects()
 	});
 }
 
-void Doom::Renderer::RenderBloomEffect()
+void Renderer::RenderBloomEffect()
 {
 	Window& window = Window::GetInstance();
 	if (!s_BloomEffect) return;
@@ -69,7 +69,7 @@ void Doom::Renderer::RenderBloomEffect()
 		int id = firstIteration ? window.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
 		glBindTexture(GL_TEXTURE_2D, id);
 
-		Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
+		Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
 		
 		horizontal = !horizontal;
 		if (firstIteration)
@@ -87,7 +87,7 @@ void Doom::Renderer::RenderBloomEffect()
 	glBindTextureUnit(1, fb[0]->m_Textures[0]);
 	shader->SetUniform1i("bloomBlurH", 1);
 	shader->SetUniform1f("exposure", Renderer::s_Exposure);
-	Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
+	Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
 	window.m_FrameBufferColor->UnBind();
 
 	//ImGui::Begin("Blur");
@@ -96,7 +96,7 @@ void Doom::Renderer::RenderBloomEffect()
 	//ImGui::End();
 }
 
-void Doom::Renderer::RenderOutLined3dObjects()
+void Renderer::RenderOutLined3dObjects()
 {
 	//@deprecated
 	//Right now working version is located at Renderer3D
@@ -126,7 +126,7 @@ void Doom::Renderer::RenderOutLined3dObjects()
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Doom::Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
+void Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 {
 	if (mesh == nullptr) return;
 	shader->Bind();
@@ -184,7 +184,7 @@ void Renderer::Render() {
 			glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
 			shader->Bind();
 			glBindTexture(GL_TEXTURE_2D, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
-			Renderer::RenderForPostEffect(MeshManager::GetInstance().GetMesh("plane"), shader);
+			Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
 			glDisable(GL_DEPTH_TEST);
 			Renderer::RenderCollision3D();
 			Renderer::RenderCollision();
@@ -214,7 +214,7 @@ void Renderer::RenderScene()
 	s_Stats.m_ObjectsRenderTime = Timer::s_OutTime;
 }
 
-void Doom::Renderer::Render2DObjects()
+void Renderer::Render2DObjects()
 {
 	if (Renderer::s_Objects2d.size() > 0 || Particle::s_Particles.size())
 	{
@@ -245,7 +245,7 @@ void Doom::Renderer::Render2DObjects()
 	Batch::GetInstance().FlushGameObjects(Batch::GetInstance().m_BasicShader);
 }
 
-void Doom::Renderer::Render3DObjects()
+void Renderer::Render3DObjects()
 {
 	if(s_PolygonMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -264,7 +264,7 @@ void Doom::Renderer::Render3DObjects()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Doom::Renderer::BakeShadows()
+void Renderer::BakeShadows()
 {
 	for each (Renderer3D* r in Renderer::s_Objects3d)
 	{
@@ -282,9 +282,9 @@ void Doom::Renderer::BakeShadows()
 	}
 }
 
-void Doom::Renderer::Render3D()
+void Renderer::Render3D()
 {
-	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_3D)
+	if (Window::GetInstance().GetApp().m_Type == RenderType::TYPE_3D)
 	{
 		Render3DObjects();
 		RenderLines();
@@ -293,7 +293,7 @@ void Doom::Renderer::Render3D()
 	}
 }
 
-void Doom::Renderer::UpdateLightSpaceMatrices()
+void Renderer::UpdateLightSpaceMatrices()
 {
 	for (DirectionalLight* light : DirectionalLight::s_DirLights)
 	{
@@ -301,9 +301,9 @@ void Doom::Renderer::UpdateLightSpaceMatrices()
 	}
 }
 
-void Doom::Renderer::Render2D()
+void Renderer::Render2D()
 {
-	if (((Application*)World::GetInstance().s_Application)->m_Type == RenderType::TYPE_2D)
+	if (Window::GetInstance().GetApp().m_Type == RenderType::TYPE_2D)
 	{
 		glDisable(GL_DEPTH_TEST);
 		Render2DObjects();
@@ -313,7 +313,7 @@ void Doom::Renderer::Render2D()
 	}
 }
 
-void Doom::Renderer::RenderCollision3D()
+void Renderer::RenderCollision3D()
 {
 	size_t size = CubeCollider3D::s_Colliders.size();
 	if (size > 0)
@@ -343,7 +343,7 @@ void Doom::Renderer::RenderCollision3D()
 	}
 }
 
-void Doom::Renderer::RenderLines()
+void Renderer::RenderLines()
 {
 	Batch::GetInstance().BeginLines();
 	uint32_t size = Line::s_Lines.size();
@@ -358,12 +358,12 @@ void Doom::Renderer::RenderLines()
 	Batch::GetInstance().FlushLines(Batch::GetInstance().m_LineShader);
 }
 
-void Doom::Renderer::RenderText() 
+void Renderer::RenderText() 
 {
 	Batch::GetInstance().FlushText(Batch::GetInstance().m_TextShader);
 }
 
-void Doom::Renderer::RenderTransparent()
+void Renderer::RenderTransparent()
 {
 	for each (Renderer3D* r in Renderer::s_Objects3dTransparent)
 	{
@@ -374,7 +374,7 @@ void Doom::Renderer::RenderTransparent()
 	}
 }
 
-void Doom::Renderer::RenderCollision()
+void Renderer::RenderCollision()
 {
 	if (RectangleCollider2D::s_IsVisible == true)
 	{

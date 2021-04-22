@@ -21,7 +21,7 @@ void ParticleEmitter::Init(size_t amountOfParticles) {
 		m_ParticlesPool[i].m_Particle->m_IsSerializable = false;
 		m_ParticlesPool[i].m_Particle->SetOwner(this->GetOwnerOfComponent());
 		Renderer3D* r3d = m_ParticlesPool[i].m_Particle->AddComponent<Renderer3D>();
-		r3d->LoadMesh(MeshManager::GetInstance().GetMesh("LowPolySphere"));
+		r3d->LoadMesh(Mesh::GetMesh("LowPolySphere"));
 		r3d->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
 		m_ParticlesPool[i].m_Particle->RemoveComponent<CubeCollider3D>();
 		InitParticle(m_ParticlesPool[i], e2);

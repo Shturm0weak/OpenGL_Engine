@@ -48,4 +48,6 @@ extern "C"
 #include "FileDialogs/FileDialogs.h"
 #include "Core/World.h"
 #include "Core/Logger.h"
+#include "Render/Mesh.h"
+#include "Audio/SoundManager.h"
 #endif //PCH_H

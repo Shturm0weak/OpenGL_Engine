@@ -1,11 +1,6 @@
 #pragma once
 
-#include "../Core/Core.h"
-#include "../OpenGl/VertexArray.h"
-#include "../OpenGl/VertexBuffer.h"
-#include "../OpenGl/VertexBufferLayout.h"
-#include "../OpenGl/IndexBuffer.h"
-#include "../Render/MeshManager.h"
+#include "Render/Mesh.h"
 
 namespace Doom {
 
@@ -75,14 +70,14 @@ namespace Doom {
 		void RenderSkyBox();
 		void AdditionalUniformsLoad();
 
-		friend class Doom::Instancing;
-		friend class Doom::SceneSerializer;
-		friend class Doom::EntryPoint;
-		friend class Doom::SkyBox;
-		friend class Doom::MeshManager;
-		friend class Doom::ComponentManager;
-		friend class Doom::Editor;
-		friend class Doom::Renderer;
+		friend class Instancing;
+		friend class SceneSerializer;
+		friend class EntryPoint;
+		friend class SkyBox;
+		friend class Mesh;
+		friend class ComponentManager;
+		friend class Editor;
+		friend class Renderer;
 	};
 
 }

@@ -5,7 +5,7 @@ namespace Doom {
 	class DOOM_API IndexBuffer {
 	public:
 
-		unsigned int m_RendererID = UINT_MAX;
+		unsigned int m_RendererID = UINT32_MAX;
 		unsigned int m_count = 0;
 
 		IndexBuffer() {}

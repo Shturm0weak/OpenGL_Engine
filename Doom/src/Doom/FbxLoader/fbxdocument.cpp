@@ -110,8 +110,8 @@ namespace fbx {
 	{
 		try
 		{
-			if (MeshManager::GetInstance().GetMesh(name) != nullptr)
-				return MeshManager::GetInstance().GetMesh(name);
+			if (Mesh::GetMesh(name) != nullptr)
+				return Mesh::GetMesh(name);
 
 			m_Nodes.clear();
 			read(filepath);

@@ -67,9 +67,6 @@
     <ClInclude Include="src\Hexagon\Hexagon.h">
       <Filter>src\Hexagon</Filter>
     </ClInclude>
-    <ClInclude Include="src\Minecraft\Minecraft.h">
-      <Filter>src\Minecraft</Filter>
-    </ClInclude>
     <ClInclude Include="src\SpaceFire\Ammo.h">
       <Filter>src\SpaceFire</Filter>
     </ClInclude>

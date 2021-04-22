@@ -1,11 +1,10 @@
 #pragma once
-#include "../pch.h"
-#include "../Enums/ColoredOutput.h"
+
 #include <ImGui/imgui.h>
 #include <ImGui/examples/imgui_impl_glfw.h>
 #include <ImGui/examples/imgui_impl_opengl3.h>
-#include "../Objects/Camera.h"
 #include "../Application.h"
+#include "../Objects/Camera.h"
 
 namespace Doom {
 
@@ -14,6 +13,7 @@ namespace Doom {
 
 		GLFWwindow* s_Window = nullptr;
 		Camera* s_Camera = new Camera();
+		Application* s_Application = nullptr;
 		float s_ScrollYOffset = 0;
 		bool s_CursorStateChanged = false; //reset every frame
 
@@ -38,18 +38,19 @@ namespace Doom {
 		int GetCursorMode();
 		void HideCursor();
 		void ShowCursor();
-		int Init(const char* Label, float width, float height, bool vsync);
+		int Init(Application* app);
 		void SetCurrentContext(GLFWwindow* context);
 		glm::dvec2 GlfwGetMousePos();
 		float GetFPS();
 		void DisableCursor();
 		void Exit() { glfwSetWindowShouldClose(s_Window, GLFW_TRUE); }
-		Camera& GetCamera() { return *s_Camera; }
 		float& GetScrollYOffset() { return s_ScrollYOffset; }
 		bool GetCursorStateChanged() { return s_CursorStateChanged; }
+		Application& GetApp() { return *s_Application; }
+		Camera& GetCamera() { return *s_Camera; }
 		GLFWwindow* GetWindow() { return s_Window; }
 
-		friend class Doom::EntryPoint;
+		friend class EntryPoint;
 	};
 
 }

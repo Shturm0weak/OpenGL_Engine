@@ -11,6 +11,7 @@
 #include "Objects/SkyBox.h"
 #include "Lua/LuaState.h"
 #include "Components/ParticleEmitter.h"
+#include "Render/Mesh.h"
 
 namespace fs = std::filesystem;
 
@@ -81,7 +82,7 @@ void Editor::EditorUpdate()
 		if (ImGui::MenuItem("Create 3D GameObject"))
 		{
 			go = GameObject::Create();
-			MeshManager::GetInstance().GetMeshWhenLoaded("cube", (void*)(go->m_ComponentManager.AddComponent<Renderer3D>()));
+			Mesh::GetMeshWhenLoaded("cube", (void*)(go->m_ComponentManager.AddComponent<Renderer3D>()));
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
@@ -187,7 +188,7 @@ void Editor::EditorUpdate()
 				obj->SetOwner((void*)go);
 				go->AddChild((void*)obj);
 				go = World::GetInstance().s_GameObjects.back();
-				go->m_ComponentManager.AddComponent<Renderer3D>()->LoadMesh(MeshManager::GetInstance().GetMesh("cube"));
+				go->m_ComponentManager.AddComponent<Renderer3D>()->LoadMesh(Mesh::GetMesh("cube"));
 			}
 			ImGui::EndPopup();
 		}
@@ -692,9 +693,9 @@ void Doom::Editor::MeshPicker()
 	if (!isActiveMeshPicker)
 		return;
 	ImGui::Begin("Meshes",&isActiveMeshPicker);
-	ImGui::ListBox("Meshes",&selectedMesh, MeshManager::GetInstance().GetListOfMeshes(), MeshManager::GetInstance().GetAmountOfMeshes());
+	ImGui::ListBox("Meshes",&selectedMesh, Mesh::GetListOfMeshes(), Mesh::GetAmountOfMeshes());
 	if (ImGui::Button("Apply")) {
-		auto mesh = MeshManager::GetInstance().s_Meshes.begin();
+		auto mesh = Mesh::s_Meshes.begin();
 		if (selectedMesh > -1) {
 			for (int i = 0; i < selectedMesh; i++)
 			{
@@ -706,13 +707,13 @@ void Doom::Editor::MeshPicker()
 	if (ImGui::Button("Choose ...")) {
 		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
 		if (filePath) {
-			MeshManager::GetInstance().AsyncLoadMesh(Utils::GetNameFromFilePath(*filePath), *filePath);
+			Mesh::AsyncLoadMesh(Utils::GetNameFromFilePath(*filePath), *filePath);
 		}
 	}
 	if (ImGui::Button("Load fbx scene ...")) {
 		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
 		if (filePath) {
-			MeshManager::GetInstance().LoadScene(*filePath);
+			Mesh::LoadScene(*filePath);
 		}
 	}
 	ImGui::End();

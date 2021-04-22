@@ -6,14 +6,24 @@
 
 namespace Doom {
 
+	struct DOOM_API TexParameteri {
+		GLenum m_Target;
+		GLenum m_Pname;
+		GLint m_Param;
+	};
+
 	class DOOM_API Texture {
 	private:
 
+		static std::unordered_map<void*, std::function<Texture* ()>> s_WaitingForTextures;
+		static std::mutex s_LockTextureLoadingMtx;
+		static std::vector<Texture*> s_LoadedTextures;
 		static std::unordered_map<std::string, Texture*> s_Textures;
 		static bool s_IsTextureAdded;
+
 		unsigned char* m_LocalBuffer = nullptr;
 
-		Texture(const std::string& path, int flip = 1, bool repeat = false);
+		Texture(const std::string& path, int flip = 1);
 		Texture();
 
 		static void DispatchLoadedTextures();
@@ -23,10 +33,8 @@ namespace Doom {
 		friend class EntryPoint;
 	public:
 
-		static std::unordered_map<void*, std::function<Texture* ()>> s_WaitingForTextures;
-		static std::mutex s_LockTextureLoadingMtx;
-		static std::vector<Texture*> s_LoadedTextures;
 		static Texture* s_WhiteTexture;
+		static std::vector<TexParameteri> s_TexParameters;
 
 		std::string m_FilePath;
 		std::string m_Name;
@@ -39,17 +47,17 @@ namespace Doom {
 		static void ShutDown();
 		static void Delete(Texture* texture);
 		static void AsyncLoadTexture(const std::string& filePath);
-		static std::vector<Texture*> GetLoadedTexturesFromFolder(std::string filePath);
+		static std::vector<Texture*> GetLoadedTexturesFromFolder(const std::string& filePath);
 		static Texture* Get(const std::string filePath, bool showErrors = true);
 		static void GetAsync(void* ptr, std::function<Texture* ()> f);
 		static void RemoveFromGetAsync(void* ptr);
 		static Texture* ColoredTexture(const std::string& name, uint32_t color);
-		static Texture* Create(const std::string& filePath, bool flip = true, bool repeat = false);
+		static Texture* Create(const std::string& filePath, bool flip = true);
 		static bool UnloadFromRAM(const std::string& filePath);
 		static bool UnloadFromVRAM(const std::string& filePath);
 		static bool LoadTextureInRAM(const std::string& filePath, bool flip = false);
 		static bool LoadTextureInVRAM(const std::string& filePath, bool unloadFromRam = true);
-		static unsigned int LoadCubeMap(std::vector<std::string> faces);
+		static unsigned int LoadCubeMap(std::vector<std::string>& faces);
 
 		~Texture();
 	};

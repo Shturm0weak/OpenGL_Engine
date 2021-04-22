@@ -19,6 +19,7 @@
 #include "../Components/ScriptComponent.h"
 #include "../Components/ParticleEmitter.h"
 #include "Core/Utils.h"
+#include "Core/Logger.h"
 
 namespace Doom {
 

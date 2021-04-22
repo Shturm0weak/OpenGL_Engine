@@ -25,16 +25,16 @@ namespace Doom {
 
 		void Delete();
 
-		friend class Doom::Transform;
-		friend class Doom::RectangleCollider2D;
-		friend class Doom::ComponentManager;
-		friend class Doom::Editor;
-		friend class Doom::Animator;
-		friend class Doom::Batch;
-		friend class Doom::Renderer;
-		friend class Doom::Ray2D;
-		friend class Doom::World;
-		friend class Doom::SkyBox;
+		friend class Transform;
+		friend class RectangleCollider2D;
+		friend class ComponentManager;
+		friend class Editor;
+		friend class Animator;
+		friend class Batch;
+		friend class Renderer;
+		friend class Ray2D;
+		friend class World;
+		friend class SkyBox;
 		friend class ParticleSystem;
 		friend class GridLayOut;
 

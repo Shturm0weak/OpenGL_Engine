@@ -35,7 +35,7 @@ Doom::SphereCollider::SphereCollider(const SphereCollider& rhs)
 }
 
 SphereCollider::SphereCollider() {
-	m_Mesh = MeshManager::GetInstance().GetMesh("sphere");
+	m_Mesh = Mesh::GetMesh("sphere");
 	s_Spheres.push_back(this);
 	//SetType(ComponentType::SPHERECOLLIDER);
 }

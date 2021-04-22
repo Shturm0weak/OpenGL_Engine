@@ -19,8 +19,15 @@
 #include "Objects/GridLayOut.h"
 #include "Objects/SkyBox.h"
 #include "Core/Logger.h"
+#include "Render/Mesh.h"
 
 using namespace Doom;
+
+DOOM_API std::mutex Mesh::s_Mtx;
+DOOM_API std::unordered_map<std::string, Mesh*> Mesh::s_Meshes;
+DOOM_API std::vector <Mesh*> Mesh::s_NeedToInitMeshes;
+DOOM_API std::multimap<std::string, void*> Mesh::s_MeshQueue;
+DOOM_API const char** Mesh::s_NamesOfMeshes;
 
 DOOM_API std::tm* Logger::s_CurrentTime;
 DOOM_API std::string Logger::s_TimeString;
@@ -36,9 +43,6 @@ DOOM_API std::vector <Renderer3D*> Renderer::s_Objects3dTransparent;
 DOOM_API std::vector <Renderer3D*> Renderer::s_OutLined3dObjects;
 
 DOOM_API std::vector<std::string> SkyBox::s_Faces;
-
-//DOOM_API std::vector <char*> Transform::s_FreeMemory;
-//DOOM_API std::map <char*, uint64_t> Transform::s_MemoryPool;
 
 DOOM_API std::vector <char*> GameObject::s_FreeMemory;
 DOOM_API std::map <char*, uint64_t> GameObject::s_MemoryPool;
@@ -66,6 +70,7 @@ DOOM_API float Renderer::s_Brightness = 1.0;
 DOOM_API std::vector<std::string> Editor::s_TexturesPath;
 DOOM_API std::vector<Texture*> Editor::s_Texture;
 DOOM_API std::vector<Texture*> Editor::s_TextureVecTemp;
+DOOM_API std::vector<TexParameteri> Texture::s_TexParameters;
 DOOM_API std::vector<Texture*> Texture::s_LoadedTextures;
 DOOM_API bool Texture::s_IsTextureAdded = false;
 DOOM_API std::unordered_map<void*, std::function<Texture*()>> Texture::s_WaitingForTextures;

@@ -69,7 +69,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Doom\Application.h" />
     <ClInclude Include="src\Doom\Audio\Sound.h">
       <Filter>Audio</Filter>
     </ClInclude>
@@ -252,12 +251,6 @@
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Render\Instancing.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\Mesh.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Doom\Render\MeshManager.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Render\Renderer.h">
@@ -461,6 +454,8 @@
       <Filter>OpenGl</Filter>
     </ClInclude>
     <ClInclude Include="src\Doom\Core\Logger.h" />
+    <ClInclude Include="src\Doom\Render\Mesh.h" />
+    <ClInclude Include="src\Doom\Application.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Doom\Application.cpp" />
@@ -614,9 +609,6 @@
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Render\Mesh.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Doom\Render\MeshManager.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="src\Doom\Render\Renderer.cpp">
