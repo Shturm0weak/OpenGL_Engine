@@ -10,7 +10,7 @@ std::map<double, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::dvec3 start, g
 		bool hasTag = ignoreMask.size() > 0 ? false : true;
 		for (size_t j = 0; j < ignoreMask.size(); j++)
 		{
-			if (CubeCollider3D::s_Colliders[i]->GetOwnerOfComponent()->m_Tag == ignoreMask[j]) 
+			if (CubeCollider3D::s_Colliders[i]->m_OwnerOfCom->m_Tag == ignoreMask[j]) 
 			{
 				hasTag = true;
 				break;
@@ -81,7 +81,7 @@ void Doom::Ray3D::Normilize(glm::dvec3 & vector)
 
 bool Doom::Ray3D::IntersectBoxAABB(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, CubeCollider3D * c)
 {
-	glm::dvec3 pos = c->m_Offset * c->GetOwnerOfComponent()->GetScale() + c->GetOwnerOfComponent()->GetPosition();
+	glm::dvec3 pos = c->m_Offset * c->m_OwnerOfCom->GetScale() + c->m_OwnerOfCom->GetPosition();
 	glm::dvec3 scale = glm::abs(c->m_MinP) + glm::abs(c->m_MaxP);
 	glm::dvec3 bMin = pos + (glm::dvec3(-1, -1, -1) * scale);
 	glm::dvec3 bMax = pos + (glm::dvec3( 1,  1,  1) * scale);
@@ -133,7 +133,7 @@ bool Doom::Ray3D::IntersectBoxOBB(glm::dvec3 start, glm::dvec3 dir, Hit* hit, do
 	glm::dvec3 bounds0 = c->m_MinP;
 	glm::dvec3 bounds1 = c->m_MaxP;
 	glm::vec3 offset = c->m_Offset;
-	Transform* tr = &(c->GetOwnerOfComponent()->m_Transform);
+	Transform* tr = &(c->m_OwnerOfCom->m_Transform);
 	glm::dvec3 vPos = tr->GetPosition() + offset * tr->GetScale();
 	glm::dmat4 pos = glm::translate(glm::dmat4(1.0f), vPos);
 	glm::dmat4 wMat = pos * (glm::dmat4)tr->m_ViewMat4;

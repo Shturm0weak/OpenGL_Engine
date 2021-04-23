@@ -10,7 +10,7 @@ void Doom::ScriptComponent::AssignScript(const char* filePath)
 		m_LState = nullptr;
 	}
 	m_LState = new LuaState(filePath);
-	m_LState->m_Go = GetOwnerOfComponent();
+	m_LState->m_Go = m_OwnerOfCom;
 	LuaState::RegisterFunction(m_LState);
 	m_LState->CL(luaL_dofile(m_LState->m_L, filePath));
 	std::function<void()>* f = new std::function<void()>([=] { m_LState->OnStart(); });  //Nice method to call any function/code on the next frame

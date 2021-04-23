@@ -129,7 +129,7 @@ namespace Doom {
 			m_NamesOfMembers = new const char* [m_Components.size()];
 			for (unsigned int i = 0; i < m_Components.size(); i++)
 			{
-				m_NamesOfMembers[i] = m_Components[i]->GetComponentType().c_str();
+				m_NamesOfMembers[i] = m_Components[i]->m_Type.c_str();
 			}
 			return m_NamesOfMembers;
 		}
@@ -223,7 +223,7 @@ namespace Doom {
 			{
 				Component* object = T::Create();
 				object->m_OwnerOfCom = (this->m_Owner);
-				object->SetType(Utils::GetComponentTypeName<T>());
+				object->m_Type = (Utils::GetComponentTypeName<T>());
 				object->m_Id = m_Components.size();
 				m_Components.push_back(object);
 #ifdef _DEBUG

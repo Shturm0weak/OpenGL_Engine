@@ -19,7 +19,7 @@ Doom::Transform::Transform(const Transform& rhs)
 Transform::Transform(GameObject* owner)
 {
 	m_OwnerOfCom = owner;
-	SetType(Utils::GetComponentTypeName<Transform>());
+ 	m_Type = Utils::GetComponentTypeName<Transform>();
 }
 
 //oid Transform::RealVertexPositions()

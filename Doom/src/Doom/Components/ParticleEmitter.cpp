@@ -10,16 +10,16 @@ ParticleEmitter::ParticleEmitter()
 }
 
 void ParticleEmitter::Init(size_t amountOfParticles) {
-	this->GetOwnerOfComponent()->m_IsSerializalbeChilds = false;
+	this->m_OwnerOfCom->m_IsSerializalbeChilds = false;
 	m_ParticlesPool.resize(amountOfParticles);
 	std::random_device rd;
 	std::mt19937 e2(rd());
-	glm::vec3 pos = this->GetOwnerOfComponent()->GetPosition();
+	glm::vec3 pos = this->m_OwnerOfCom->GetPosition();
 	for (size_t i = 0; i < amountOfParticles; i++)
 	{
 		m_ParticlesPool[i].m_Particle = GameObject::Create("p" + std::to_string(i), pos.x, pos.y, pos.z);
 		m_ParticlesPool[i].m_Particle->m_IsSerializable = false;
-		m_ParticlesPool[i].m_Particle->SetOwner(this->GetOwnerOfComponent());
+		m_ParticlesPool[i].m_Particle->SetOwner(this->m_OwnerOfCom);
 		Renderer3D* r3d = m_ParticlesPool[i].m_Particle->AddComponent<Renderer3D>();
 		r3d->LoadMesh(Mesh::GetMesh("LowPolySphere"));
 		r3d->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
@@ -47,7 +47,7 @@ void ParticleEmitter::InitParticle(Particle3D& particle, std::mt19937& e2) {
 	std::uniform_real_distribution<float> radiusX(m_RadiusToSpawn[0].x, m_RadiusToSpawn[0].y);
 	std::uniform_real_distribution<float> radiusY(m_RadiusToSpawn[1].x, m_RadiusToSpawn[1].y);
 	std::uniform_real_distribution<float> radiusZ(m_RadiusToSpawn[2].x, m_RadiusToSpawn[2].y);
-	particle.m_Particle->m_Transform.Translate(this->GetOwnerOfComponent()->GetPosition() + glm::vec3(radiusX(e2), radiusY(e2), radiusZ(e2)));
+	particle.m_Particle->m_Transform.Translate(this->m_OwnerOfCom->GetPosition() + glm::vec3(radiusX(e2), radiusY(e2), radiusZ(e2)));
 	std::uniform_real_distribution<double> timeToSpawn(m_TimeToSpawn.x, m_TimeToSpawn.y);
 	particle.m_TimeToSpawn = timeToSpawn(e2);
 	std::uniform_real_distribution<float> scale(m_Scale.x, m_Scale.y);

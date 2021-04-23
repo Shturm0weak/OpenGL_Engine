@@ -48,9 +48,9 @@ void Doom::SphereCollider::Render()
 	else m_Radius = sqrtf(scale.x * scale.x + scale.y * scale.y + scale.z * scale.z);
 	this->m_Shader->Bind();
 	this->m_Shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
-	this->m_Shader->SetUniformMat4f("u_Model", glm::translate(GetOwnerOfComponent()->m_Transform.m_PosMat4, m_Offset));
+	this->m_Shader->SetUniformMat4f("u_Model", glm::translate(m_OwnerOfCom->m_Transform.m_PosMat4, m_Offset));
 	this->m_Shader->SetUniformMat4f("u_Scale", glm::scale(glm::mat4(1.0f), glm::vec3(m_Radius, m_Radius, m_Radius)));
-	this->m_Shader->SetUniformMat4f("u_View", GetOwnerOfComponent()->m_Transform.m_ViewMat4);
+	this->m_Shader->SetUniformMat4f("u_View", m_OwnerOfCom->m_Transform.m_ViewMat4);
 	this->m_Shader->SetUniform4fv("u_Color", m_Color);
 	m_Mesh->m_Va.Bind();
 	m_Mesh->m_Ib.Bind();
@@ -67,13 +67,13 @@ void Doom::SphereCollider::Render()
 
 bool Doom::SphereCollider::IntersectSphereToSphere(SphereCollider* sp) {
 	if (sp == this) return false;
-	glm::vec3 pos1 = GetOwnerOfComponent()->GetPosition() + m_Offset;
-	glm::vec3 pos2 = sp->GetOwnerOfComponent()->GetPosition() + m_Offset;
-	glm::vec3 scale = GetOwnerOfComponent()->GetScale();
+	glm::vec3 pos1 = m_OwnerOfCom->GetPosition() + m_Offset;
+	glm::vec3 pos2 = sp->m_OwnerOfCom->GetPosition() + m_Offset;
+	glm::vec3 scale = m_OwnerOfCom->GetScale();
 	float d = glm::distance(pos1, pos2);
 	if (d < m_Radius + sp->m_Radius) 
 	{
-		EventSystem::GetInstance().SendEvent(EventType::ONCOLLISION,(Listener*)GetOwnerOfComponent(),(void*)(sp));
+		EventSystem::GetInstance().SendEvent(EventType::ONCOLLISION,(Listener*)m_OwnerOfCom,(void*)(sp));
 		return true;
 	}
 	return false;

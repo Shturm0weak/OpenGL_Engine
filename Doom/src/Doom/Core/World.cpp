@@ -135,7 +135,7 @@ GameObject* Doom::World::SelectObject3D()
 		{
 			if (i->second != nullptr)
 			{
-				GameObject* go = i->second->GetOwnerOfComponent();
+				GameObject* go = i->second->m_OwnerOfCom;
 				Transform* tr = go->GetComponent<Transform>();
 				glm::mat4 model = tr->m_PosMat4;
 				glm::mat4 view = tr->m_ViewMat4;
@@ -170,14 +170,12 @@ GameObject* Doom::World::SelectObject3D()
 						if (prevGo != nullptr)
 						{
 							Renderer3D* r3d = prevGo->GetComponent<Renderer3D>();
-							if (r3d != nullptr)
-								r3d->m_HighLight = false;
+							if (r3d != nullptr) r3d->m_HighLight = false;
 						}
 						if (go != nullptr)
 						{
 							Renderer3D* r3d = go->GetComponent<Renderer3D>();
-							if (r3d != nullptr)
-								r3d->m_HighLight = true;
+							if (r3d != nullptr) r3d->m_HighLight = true;
 						}
 #endif
 						return go;

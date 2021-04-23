@@ -16,14 +16,14 @@ void Renderer::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glClearDepth(1.0f);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Renderer::SortTransparentObjects()
 {
 	std::sort(s_Objects3dTransparent.begin(), s_Objects3dTransparent.end(), [](Renderer3D* r1, Renderer3D* r2) {
-		GameObject* go0 = r1->GetOwnerOfComponent();
-		GameObject* go1 = r2->GetOwnerOfComponent();
+		GameObject* go0 = r1->m_OwnerOfCom;
+		GameObject* go1 = r2->m_OwnerOfCom;
 		CubeCollider3D* cc0 = nullptr;
 		CubeCollider3D* cc1 = nullptr;
 		if (r1->m_Mesh != nullptr)
@@ -55,7 +55,7 @@ void Renderer::RenderBloomEffect()
 	if (!s_BloomEffect) return;
 
 	bool horizontal = true, firstIteration = true;
-	unsigned int amount = 20;
+	unsigned int amount = 10;
 
 	std::vector<FrameBuffer*> fb = window.m_FrameBufferBlur;
 
@@ -72,8 +72,7 @@ void Renderer::RenderBloomEffect()
 		Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
 		
 		horizontal = !horizontal;
-		if (firstIteration)
-			firstIteration = false;
+		if (firstIteration) firstIteration = false;
 	}
 	shader->UnBind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -105,7 +104,7 @@ void Renderer::RenderOutLined3dObjects()
 	for (size_t i = 0; i < s_OutLined3dObjects.size(); i++)
 	{
 		Renderer3D* r3d = s_OutLined3dObjects[i];
-		GameObject* owner = r3d->GetOwnerOfComponent();
+		GameObject* owner = r3d->m_OwnerOfCom;
 		
 		Shader* shader = Shader::Get("HighLightBorder");
 		shader->Bind();
@@ -226,7 +225,7 @@ void Renderer::Render2DObjects()
 			for (size_t i = 0; i < Renderer::s_Objects2d.size(); i++)
 			{
 				SpriteRenderer* r = Renderer::s_Objects2d[i];
-				if (r->GetOwnerOfComponent()->m_Enable)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
+				if (r->m_OwnerOfCom->m_Enable)// && sqrt(pow((go->position.x - Window::GetCamera().GetPosition().x), 2) + pow((go->position.y - Window::GetCamera().GetPosition().y), 2)) < 50 * Window::GetCamera().GetZoomLevel())
 				{
 					r->Render();
 				}
@@ -252,7 +251,7 @@ void Renderer::Render3DObjects()
 	
 	for each (Renderer3D* r in Renderer::s_Objects3d)
 	{
-		if (r->GetOwnerOfComponent()->m_Enable == true)
+		if (r->m_OwnerOfCom->m_Enable == true)
 		{
 			r->Render();
 		}
@@ -268,14 +267,14 @@ void Renderer::BakeShadows()
 {
 	for each (Renderer3D* r in Renderer::s_Objects3d)
 	{
-		if (r->GetOwnerOfComponent()->m_Enable == true)
+		if (r->m_OwnerOfCom->m_Enable == true)
 		{
 			r->BakeShadows();
 		}
 	}
 	for each (Renderer3D* r in Renderer::s_Objects3dTransparent)
 	{
-		if (r->GetOwnerOfComponent()->m_Enable == true)
+		if (r->m_OwnerOfCom->m_Enable == true)
 		{
 			r->BakeShadows();
 		}
@@ -367,7 +366,7 @@ void Renderer::RenderTransparent()
 {
 	for each (Renderer3D* r in Renderer::s_Objects3dTransparent)
 	{
-		if (r->GetOwnerOfComponent()->m_Enable == true)
+		if (r->m_OwnerOfCom->m_Enable == true)
 		{
 			r->Render();
 		}

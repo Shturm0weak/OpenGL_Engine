@@ -31,7 +31,7 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 		unsigned int ignoreMaskSize = ignoreMask.size();
 		for (unsigned int i = 0; i < ignoreMaskSize; i++)
 		{
-			if (ignoreMask[i] == col->GetOwnerOfComponent()->m_Tag)
+			if (ignoreMask[i] == col->m_OwnerOfCom->m_Tag)
 				ignoreFlag = true;
 		}
 
@@ -50,7 +50,7 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 			corners.push_back(glm::vec2(col->m_TransformedVerPos[12], col->m_TransformedVerPos[13]));
 
 			glm::vec2* result = nullptr;
-			glm::vec3 colPos = col->GetOwnerOfComponent()->GetPosition();
+			glm::vec3 colPos = col->m_OwnerOfCom->GetPosition();
 			result = LineIntersect(corners[3] + glm::vec2(colPos.x, colPos.y), corners[0] + glm::vec2(colPos.x, colPos.y), start, m_End);
 			if (result != nullptr)
 				points.insert(std::make_pair(col, result));

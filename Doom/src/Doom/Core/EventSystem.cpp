@@ -34,14 +34,11 @@ bool EventSystem::AlreadyRegistered(EventType eventId, Listener* client)
 
 void EventSystem::DispatchEvent(Event* _event) 
 {
-	m_Range = m_Database.equal_range((EventType)_event->GetEventId());
+	m_Range = m_Database.equal_range((EventType)_event->m_EventId);
 	for (m_Iter = m_Range.first;m_Iter != m_Range.second; m_Iter++)
 	{
 		(*m_Iter).second->HandleEvent(_event);
-		if (_event->GetEventId() != EventType::ONUPDATE)
-		{
-			return;
-		}
+		if (_event->m_EventId != EventType::ONUPDATE) return;
 	}	
 }
 
@@ -95,15 +92,6 @@ void EventSystem::SendEvent(EventType eventId, Listener* sender, void* data)
 		&& eventId != EventType::ONMAINTHREADPROCESS
 		&& m_IsProcessingEvents == false) return;
 	m_Mtx1.lock();
-	/*for (auto i = database.begin(); i != database.end(); i++)
-	{
-		if (i->first == eventId) {
-			std::unique_ptr<Event> newEvent(new Event(i->first, sender, data));
-			currentEvents.push(*newEvent);
-			mtx1.unlock();
-			return;
-		}
-	}*/
 	std::unique_ptr<Event> newEvent(new Event(eventId, sender, data));
 	m_CurrentEvents.push(*newEvent);
 	m_Mtx1.unlock();

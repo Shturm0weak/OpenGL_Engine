@@ -108,10 +108,10 @@ Renderer3D::~Renderer3D()
 void Renderer3D::Delete()
 {
 	s_FreeMemory.push_back(m_MemoryPoolPtr);
-	if (GetOwnerOfComponent() == nullptr) return;
-	CubeCollider3D* cc = GetOwnerOfComponent()->m_ComponentManager.GetComponent<CubeCollider3D>();
+	if (m_OwnerOfCom == nullptr) return;
+	CubeCollider3D* cc = m_OwnerOfCom->m_ComponentManager.GetComponent<CubeCollider3D>();
 	if (cc != nullptr && cc->m_IsBoundingBox)
-		GetOwnerOfComponent()->m_ComponentManager.RemoveComponent(cc); //Fix: could be dangerous if there is more than 1 CubeCollider
+		m_OwnerOfCom->m_ComponentManager.RemoveComponent(cc); //Fix: could be dangerous if there is more than 1 CubeCollider
 	if (m_IsTransparent)
 	{
 		auto iter = std::find(Renderer::s_Objects3dTransparent.begin(), Renderer::s_Objects3dTransparent.end(), this);
@@ -198,7 +198,7 @@ void Renderer3D::Render()
 {
 	if (m_RenderTechnic == RenderTechnic::Forward) 
 	{
-		m_Tr = &(GetOwnerOfComponent()->m_Transform);
+		m_Tr = &(m_OwnerOfCom->m_Transform);
 		if (m_IsWireMesh) 
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -254,7 +254,7 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		for (int i = 0; i < dlightSize; i++)
 		{
 			DirectionalLight* dl = DirectionalLight::s_DirLights[i];
-			dl->m_Dir = dl->GetOwnerOfComponent()->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1);
+			dl->m_Dir = dl->m_OwnerOfCom->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1);
 			sprintf(buffer, "dirLights[%i].dir", i);
 			m_Shader->SetUniform3fv(buffer, dl->m_Dir);
 			sprintf(buffer, "dirLights[%i].color", i);
@@ -267,7 +267,7 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		{
 			PointLight* pl = PointLight::s_PointLights[i];
 			sprintf(buffer, "pointLights[%i].position", i);
-			m_Shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
+			m_Shader->SetUniform3fv(buffer, pl->m_OwnerOfCom->GetPosition());
 			sprintf(buffer, "pointLights[%i].color", i);
 			m_Shader->SetUniform3fv(buffer, pl->m_Color);
 			sprintf(buffer, "pointLights[%i].constant", i);
@@ -284,9 +284,9 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		{
 			SpotLight* sl = SpotLight::s_SpotLights[i];
 			sprintf(buffer, "spotLights[%i].position", i);
-			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->GetPosition());
+			m_Shader->SetUniform3fv(buffer, sl->m_OwnerOfCom->GetPosition());
 			sprintf(buffer, "spotLights[%i].dir", i);
-			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1));
+			m_Shader->SetUniform3fv(buffer, sl->m_OwnerOfCom->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1));
 			sprintf(buffer, "spotLights[%i].color", i);
 			m_Shader->SetUniform3fv(buffer, sl->m_Color);
 			sprintf(buffer, "spotLights[%i].constant", i);
@@ -344,8 +344,8 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 			shader->SetUniformMat4f("u_Model", pos);
 			shader->SetUniformMat4f("u_View", view);
 			glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
-			glm::vec3 d = camPos - GetOwnerOfComponent()->GetPosition();
-			glm::vec3 scaleV3 = GetOwnerOfComponent()->GetScale();
+			glm::vec3 d = camPos - m_OwnerOfCom->GetPosition();
+			glm::vec3 scaleV3 = m_OwnerOfCom->GetScale();
 			float distance = glm::sqrt(d.x * d.x + d.y * d.y + d.z * d.z);
 			glm::vec3 koef = glm::vec3(1.0f) + glm::vec3(distance / scaleV3.x, distance / scaleV3.y, distance / scaleV3.z) * 0.003f;
 			koef = glm::clamp(koef, 1.00f, 100000.0f);

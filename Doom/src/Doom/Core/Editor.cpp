@@ -139,6 +139,18 @@ void Editor::EditorUpdate()
 		go = World::GetInstance().s_GameObjects[0];
 	}
 
+	if (m_PreviousGo != go && m_PreviousGo != nullptr)
+	{
+		Renderer3D* r3d = m_PreviousGo->GetComponent<Renderer3D>();
+
+		if (r3d != nullptr) r3d->m_HighLight = false;
+	}
+	if (go != nullptr) {
+		Renderer3D* r3d = go->GetComponent<Renderer3D>();
+
+		if (r3d != nullptr) r3d->m_HighLight = true;
+		m_PreviousGo = go;
+	}
 	SceneHierarchy();
 
 	ImGui::NewLine();
@@ -1046,11 +1058,11 @@ void Doom::Editor::MenuAllComponents()
 		uint32_t size = go->m_ComponentManager.m_Components.size();
 		for (uint32_t i = 0; i < size; i++)
 		{
-			if (go->m_ComponentManager.m_Components[i]->GetComponentType().find("Doom::") == std::string::npos)
+			if (go->m_ComponentManager.m_Components[i]->m_Type.find("Doom::") == std::string::npos)
 			{
 				MenuRemoveComponent(go->m_ComponentManager.m_Components[i]);
 				ImGui::SameLine();
-				ImGui::Text("%s", go->m_ComponentManager.m_Components[i]->GetComponentType());
+				ImGui::Text("%s", go->m_ComponentManager.m_Components[i]->m_Type);
 			}
 		}
 	}
@@ -1180,7 +1192,7 @@ void Doom::Editor::UpdateNormals()
 				{
 					glm::vec3 pos = glm::vec3(mesh->m_VertAttrib[j + 0], mesh->m_VertAttrib[j + 1], mesh->m_VertAttrib[j + 2]);
 					glm::vec3 normals = glm::vec3(mesh->m_VertAttrib[j + 3], mesh->m_VertAttrib[j + 4], mesh->m_VertAttrib[j + 5]);
-					glm::mat4 scaleXview = r->GetOwnerOfComponent()->GetComponent<Transform>()->m_ScaleMat4 * r->GetOwnerOfComponent()->GetComponent<Transform>()->m_ViewMat4;
+					glm::mat4 scaleXview = r->m_OwnerOfCom->GetComponent<Transform>()->m_ScaleMat4 * r->m_OwnerOfCom->GetComponent<Transform>()->m_ViewMat4;
 					glm::vec4 transformedPos = scaleXview * glm::vec4(pos.x, pos.y, pos.z, 0);
 					glm::vec4 transformedNor = scaleXview * glm::vec4(normals.x, normals.y, normals.z, 0);
 					counter++;

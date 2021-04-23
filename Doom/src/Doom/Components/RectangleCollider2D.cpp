@@ -40,7 +40,7 @@ void RectangleCollider2D::CalculateRealVerPos()
 {
 	if (this == nullptr) return;
 	float* pSource;
-	Transform& tr = GetOwnerOfComponent()->m_Transform;
+	Transform& tr = m_OwnerOfCom->m_Transform;
 	pSource = (float*)glm::value_ptr(tr.m_ViewMat4 * tr.m_ScaleMat4);
 	for (unsigned int i = 0; i < 4; i++)
 	{
@@ -59,7 +59,7 @@ void RectangleCollider2D::CalculateRealVerPos()
 
 void Doom::RectangleCollider2D::CalculateEdges()
 {
-	glm::vec3 ownerPos = GetOwnerOfComponent()->GetPosition();
+	glm::vec3 ownerPos = m_OwnerOfCom->GetPosition();
 	p.clear();
 	p.push_back(glm::vec2(m_TransformedVerPos[0]  + ownerPos.x, m_TransformedVerPos[1]  + ownerPos.y));
 	p.push_back(glm::vec2(m_TransformedVerPos[4]  + ownerPos.x, m_TransformedVerPos[5]  + ownerPos.y));
@@ -177,7 +177,7 @@ void RectangleCollider2D::IsCollidedSAT()
 						{
 							m_IsCollided = true;
 							m_CollidedObject = m_Col;
-							//std::cout << "Handle Collision " << GetOwnerOfComponent()->m_Name << "\n";
+							//std::cout << "Handle Collision " << m_OwnerOfCom->m_Name << "\n";
 							//std::function<void()> f2 = std::bind(&EventSystem::SendEvent, EventSystem::GetInstance(), EventType::ONCOLLISION, (Listener*)(m_OwnerOfCom), (void*)this->m_CollidedObject);
 							//std::function<void()>* f1 = new std::function<void()>(f2);
 							//EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f1);
@@ -215,7 +215,7 @@ void RectangleCollider2D::IsCollidedDIAGS()
 					if (m_Col == nullptr) return;
 					for (unsigned int p = 0; p < this->p.size(); p++)
 					{
-						glm::vec3 ownerPos = GetOwnerOfComponent()->m_Transform.GetPosition();
+						glm::vec3 ownerPos = m_OwnerOfCom->m_Transform.GetPosition();
 						glm::vec2 line_r1s = { ownerPos.x, ownerPos.y };
 						glm::vec2 line_r1e = this->p[p];
 						m_Displacement.x = 0;
@@ -260,7 +260,7 @@ void Doom::RectangleCollider2D::CollidersToInit()
 {
 	for (uint32_t i = 0; i < RectangleCollider2D::s_CollidersToInit.size(); i++)
 	{
-		Transform& tr = RectangleCollider2D::s_CollidersToInit[i]->GetOwnerOfComponent()->m_Transform;
+		Transform& tr = RectangleCollider2D::s_CollidersToInit[i]->m_OwnerOfCom->m_Transform;
 		RectangleCollider2D* rc = RectangleCollider2D::s_CollidersToInit[i];
 		rc->CalculateRealVerPos();
 	}

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <functional>
 #include "Core.h"
 
@@ -7,25 +8,16 @@ namespace Doom {
 	class Listener;
 
 	class DOOM_API Event {
-	private:
-
-		Listener* m_Sender;
-		void* m_Parameter;
-		int m_EventId;
 	public:
 
+		Listener* m_Sender = nullptr;
+		void* m_Parameter = nullptr;
+		int m_EventId = -1;
+
 		Event(int eventId, Listener* sender, void* parameter = 0)
-		{
-			this->m_EventId = eventId;
-			this->m_Parameter = parameter;
-			this->m_Sender = sender;
-		}
+			: m_EventId(eventId), m_Parameter(parameter), m_Sender(sender) {}
 
 		~Event() {}
-
-		inline int GetEventId() { return m_EventId; }
-		inline void* GetParameter() { return m_Parameter; }
-		inline Listener* GetSender() { return m_Sender; }
 	};
 
 }

@@ -8,15 +8,11 @@ namespace Doom {
 	class GameObject;
 
 	class DOOM_API Component : public Listener {
-	private:
-
-		int m_Id = 0;
-		std::string m_Type;
-	protected:
-
-		GameObject* m_OwnerOfCom = nullptr;
-		void SetType(std::string type) { m_Type = type; }
 	public:
+
+		std::string m_Type;
+		GameObject* m_OwnerOfCom = nullptr;
+		size_t m_Id = 0;
 
 		template <typename T>
 		T* GetComponent()
@@ -36,9 +32,6 @@ namespace Doom {
 			m_OwnerOfCom->m_ComponentManager.RemoveComponent<T>();
 		}
 
-		std::string GetComponentType() const { return m_Type; }
-		GameObject* GetOwnerOfComponent() const { return m_OwnerOfCom; }
-		int GetComponentID() const { return m_Id; }
 		void RemoveComponent();
 		
 		virtual void Delete() { delete this; }

@@ -19,7 +19,6 @@ namespace Doom {
 		bool isActiveMeshPicker = false;
 		bool isActiveTexturePicker = false;
 		bool isActiveShaderMenu = false;
-		int previousSelectedGo = -1;
 		int selectedShader = -1;
 		int selectedAtlas = -1;
 		int selectedanimation = 0;
@@ -44,6 +43,7 @@ namespace Doom {
 		static std::vector<Texture*> s_Texture;
 		static std::vector<std::string> s_TexturesPath;
 		float uvsOffset[2];
+		GameObject* m_PreviousGo = nullptr;
 
 		Editor() {}
 		Editor(const Editor&) = delete;

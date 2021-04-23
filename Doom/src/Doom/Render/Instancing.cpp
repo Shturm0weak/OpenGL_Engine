@@ -43,7 +43,7 @@ void Doom::Instancing::Render()
 		for (int i = 0; i < dlightSize; i++)
 		{	
 			DirectionalLight* dl = DirectionalLight::s_DirLights[i];
-			dl->m_Dir = dl->GetOwnerOfComponent()->GetComponent<Transform>()->m_ViewMat4 * glm::vec4(0, 0, -1, 1);
+			dl->m_Dir = dl->m_OwnerOfCom->GetComponent<Transform>()->m_ViewMat4 * glm::vec4(0, 0, -1, 1);
 			sprintf(buffer, "dirLights[%i].dir", i);
 			m_Shader->SetUniform3fv(buffer, dl->m_Dir);
 			sprintf(buffer, "dirLights[%i].color", i);
@@ -58,7 +58,7 @@ void Doom::Instancing::Render()
 		{
 			PointLight* pl = PointLight::s_PointLights[i];
 			sprintf(buffer, "pointLights[%i].position", i);
-			m_Shader->SetUniform3fv(buffer, pl->GetOwnerOfComponent()->GetPosition());
+			m_Shader->SetUniform3fv(buffer, pl->m_OwnerOfCom->GetPosition());
 			sprintf(buffer, "pointLights[%i].color", i);
 			m_Shader->SetUniform3fv(buffer, pl->m_Color);
 			sprintf(buffer, "pointLights[%i].constant", i);
@@ -75,9 +75,9 @@ void Doom::Instancing::Render()
 		{
 			SpotLight* sl = SpotLight::s_SpotLights[i];
 			sprintf(buffer, "spotLights[%i].position", i);
-			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->GetPosition());
+			m_Shader->SetUniform3fv(buffer, sl->m_OwnerOfCom->GetPosition());
 			sprintf(buffer, "spotLights[%i].dir", i);
-			m_Shader->SetUniform3fv(buffer, sl->GetOwnerOfComponent()->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1));
+			m_Shader->SetUniform3fv(buffer, sl->m_OwnerOfCom->m_Transform.m_ViewMat4 * glm::vec4(0, 0, -1, 1));
 			sprintf(buffer, "spotLights[%i].color", i);
 			m_Shader->SetUniform3fv(buffer, sl->m_Color);
 			sprintf(buffer, "spotLights[%i].constant", i);
@@ -324,7 +324,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				//if (iter->second.size() <= i) continue;
 			
 				//if (r3d.m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
-				GameObject& owner = *(r3d.GetOwnerOfComponent());
+				GameObject& owner = *(r3d.m_OwnerOfCom);
 				if (owner.m_IsStatic && r3d.m_IsInitializedInInstancing) continue;
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				memcpy(posPtr, &owner.GetPosition()[0], 12);
@@ -386,7 +386,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				}
 
 				//if (r3d.m_RenderTechnic != Renderer3D::RenderTechnic::Instancing) continue;
-				GameObject& owner = *(r3d.GetOwnerOfComponent());
+				GameObject& owner = *(r3d.m_OwnerOfCom);
 				if (owner.m_IsStatic && r3d.m_IsInitializedInInstancing) continue;
 				float* posPtr = &gliter->second.m_VertAttrib[i * m_SizeOfAttribs];
 				memcpy(posPtr, &owner.GetPosition()[0], 12);

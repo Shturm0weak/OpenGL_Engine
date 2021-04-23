@@ -38,7 +38,7 @@ void Doom::SpriteRenderer::operator=(const SpriteRenderer& rhs)
 
 void Doom::SpriteRenderer::GetTransformedVertices(float* buffer)
 {
-	Transform* tr = this->GetOwnerOfComponent()->m_ComponentManager.GetComponent<Transform>();
+	Transform* tr = m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
 	float WorldVerPos[16];
 	glm::mat4 scaleXview = tr->m_ViewMat4 * tr->m_ScaleMat4;
 	float* pSource;

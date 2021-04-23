@@ -21,7 +21,9 @@ EntryPoint::EntryPoint(Doom::Application* app)
 {
 	Logger::UpdateTime();
 
-	Window::GetInstance().Init(app);
+	Window& window = Window::GetInstance();
+
+	window.Init(app);
 	ThreadPool::Init();
 	SoundManager::GetInstance().Init();
 	MainThread::GetInstance();
@@ -33,9 +35,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 
 	Gui::GetInstance().LoadStandartFonts();
 	
-	Window& window = Window::GetInstance();
 	int* size = Window::GetInstance().GetSize();
-
 	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER };
 	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER };
 	FrameBufferParams shadowMapParams = { 2056, 2056, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_FLOAT, false, false, false };

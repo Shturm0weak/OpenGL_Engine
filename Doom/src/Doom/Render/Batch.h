@@ -76,6 +76,7 @@ namespace Doom {
 		Shader* m_Shader = nullptr;
 		const unsigned int maxTextureSlots = 32;
 		bool m_IsBegan = false;
+
 		void InitText();
 		void InitGameObjects();
 		void InitLines();
@@ -107,7 +108,6 @@ namespace Doom {
 		void FlushCollision(Shader* shader);
 		void FlushText(Shader* shader);
 		void FlushLines(Shader* shader);
-		//bool isValidBuffer() { return (m_GoB.m_Buffer != nullptr && m_IsBegan && m_GoB.m_Buffer != (void*)0x00000000); }
 
 		void BeginText();
 		void EndText();
