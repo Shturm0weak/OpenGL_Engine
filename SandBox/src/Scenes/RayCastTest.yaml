@@ -1,10 +1,10 @@
-Scene: 0
 Camera:
   Transform:
     Position: [0, 0, 0]
     Rotation: [0, 0, 0]
   Zoom: 30
   FOV: 1
+  Type: 0
 GameObjects:
   - GameObject: 0
     Name: Wall1

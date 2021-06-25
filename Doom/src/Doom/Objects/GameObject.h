@@ -43,7 +43,7 @@ namespace Doom {
 	public:
 		
 		int m_Id = 0;
-		int m_Layer = 0;
+		//int m_Layer = 0;
 		bool m_IsStatic = false;
 		bool m_Enable = true;
 		bool m_IsSerializable = true;
@@ -60,7 +60,7 @@ namespace Doom {
 		std::vector<void*> GetChilds() const { return m_Childs; }
 		glm::vec3 GetScale();
 		glm::vec3 GetPosition();
-		inline int& GetLayer() { return m_Layer; }
+		//inline int& GetLayer() { return m_Layer; }
 		void* GetOwner() const { return m_Owner; }
 		void AddChild(void* child) { m_Childs.push_back(child); static_cast<GameObject*>(child)->m_Owner = this; }
 		void SetOwner(void* owner) { this->m_Owner = owner; static_cast<GameObject*>(owner)->AddChild(this); }

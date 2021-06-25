@@ -57,13 +57,10 @@ void Editor::EditorUpdate()
 	}
 
 	ImGui::SliderFloat("DrawShadows", &Instancing::GetInstance()->m_DrawShadows, 0, 1);
-	ImGui::SliderFloat("Bloom exposure", &Renderer::s_Exposure, 0, 10);
-	ImGui::SliderFloat("Brightness", &Renderer::s_Brightness, 0, 10);
-	ImGui::Checkbox("Bloom effect", &Renderer::s_BloomEffect);
 	CreateTextureAtlas();
 
 	ImGui::SliderFloat("Zoom", &Window::GetInstance().GetCamera().m_ZoomLevel, 0.1f, 100.f);
-	Window::GetInstance().GetCamera().Zoom(abs(Window::GetInstance().GetCamera().GetZoomLevel()));
+	Window::GetInstance().GetCamera().Zoom(abs(Window::GetInstance().GetCamera().m_ZoomLevel));
 	ImGui::End();
 
 	ImGui::Begin("Scene");
@@ -159,6 +156,10 @@ void Editor::EditorUpdate()
 	 {
 		if (ImGui::BeginPopupContextWindow())
 		{
+			if (ImGui::MenuItem("Animator"))
+			{
+				go->m_ComponentManager.AddComponent<Animator>();
+			}
 			if (ImGui::MenuItem("Renderer3D"))
 			{
 				go->m_ComponentManager.AddComponent<Renderer3D>();
@@ -226,14 +227,14 @@ void Editor::EditorUpdate()
 		if (ImGui::Button("Change tag")) {
 			go->m_Tag = name;
 		}
-		ImGui::SliderInt("Layer", &go->GetLayer(), 0, World::GetInstance().GetAmountOfObjects() - 1);
+		ImGui::SliderInt("Layer", &spriteLayer, 0, World::GetInstance().GetAmountOfObjects() - 1);
 		if (go->m_ComponentManager.GetComponent<SpriteRenderer>() != nullptr && go->m_ComponentManager.GetComponent<SpriteRenderer>()->m_RenderType == TYPE_2D) {
 			if (ImGui::Button("Change layer")) {
-				if (go->GetLayer() > World::GetInstance().GetAmountOfObjects() - 1) {
+				if (spriteLayer > World::GetInstance().GetAmountOfObjects() - 1) {
 					Logger::Error("Layer out of range!");
 					return;
 				}
-				go->GetComponent<SpriteRenderer>()->Setlayer(go->GetLayer());
+				go->GetComponent<SpriteRenderer>()->Setlayer(spriteLayer);
 			}
 		}
 
@@ -342,8 +343,8 @@ void Doom::Editor::MenuRenderer3D()
 							r->ChangeRenderTechnic(Renderer3D::RenderTechnic::Forward);
 						}
 					}
-
-					ImGui::SliderFloat("Ambient", &r->m_Material.m_Ambient, 0, 1);
+					ImGui::Checkbox("Emissive", &r->m_Emissive);
+					ImGui::SliderFloat("Ambient", &r->m_Material.m_Ambient, 0, 1000);
 					ImGui::SliderFloat("Specular", &r->m_Material.m_Specular, 0, 50);
 					void* my_tex_id = reinterpret_cast<void*>(r->m_DiffuseTexture->m_RendererID);
 					if (ImGui::ImageButton(my_tex_id, { 64, 64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
@@ -367,10 +368,13 @@ void Doom::Editor::MenuRenderer3D()
 						ImGui::Text("Id: %i", r->m_Mesh->m_IdOfMeshInFile);
 						ImGui::Text("VertAtrib: %i", r->m_Mesh->m_VertAttribSize);
 						CubeCollider3D* cc = r->m_OwnerOfCom->GetComponent<CubeCollider3D>();
-						glm::vec2 minP = cc->m_MinP;
-						glm::vec2 maxP = cc->m_MaxP;
-						ImGui::Text("MinP: %f %f", minP.x, minP.y);
-						ImGui::Text("MaxP: %f %f", maxP.x, maxP.y);
+						if (cc != nullptr)
+						{
+							glm::vec2 minP = cc->m_MinP;
+							glm::vec2 maxP = cc->m_MaxP;
+							ImGui::Text("MinP: %f %f", minP.x, minP.y);
+							ImGui::Text("MaxP: %f %f", maxP.x, maxP.y);
+						}
 					}
 					if (ImGui::Button("Meshes")) {
 						isActiveMeshPicker = true;
@@ -400,6 +404,7 @@ void Doom::Editor::MenuRenderer2D()
 		SpriteRenderer* sr = go->GetComponent<SpriteRenderer>();
 		if (MenuRemoveComponent<SpriteRenderer>()) {
 			if (ImGui::CollapsingHeader("Render2D")) {
+				ImGui::Checkbox("Emissive", &sr->m_Emissive);
 				ImGui::ColorEdit4("Sprite color", &sr->m_Color[0]);
 				delete[] color;
 				int counterImagesButtons = 0;
@@ -458,13 +463,13 @@ void Doom::Editor::MenuRenderer2D()
 
 						Texture* textureOfAtlas = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetTexture();
 						int frame_padding = -1;
-						unsigned int amountOfSpritesX = (textureOfAtlas->m_width) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteWidth());
-						unsigned int amountOfSpritesY = (textureOfAtlas->m_height) / (TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteHeight());
+						unsigned int amountOfSpritesX = (float)(textureOfAtlas->m_width) / (float)(TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteWidth());
+						unsigned int amountOfSpritesY = (float)(textureOfAtlas->m_height) / (float)(TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteHeight());
 						for (unsigned int i = 0; i < amountOfSpritesY; i++)
 						{
 							for (unsigned int j = 0; j < amountOfSpritesX; j++)
 							{
-								float* uvs = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteUVs(j, amountOfSpritesY - i);
+								float* uvs = TextureAtlas::GetTextureAtlas(selectedAtlas)->GetSpriteUVs(j, i);
 								ImGui::PushID((i * amountOfSpritesX) + j);
 								if (ImGui::ImageButton((void*)(intptr_t)textureOfAtlas->m_RendererID, ImVec2(56, 56), ImVec2(uvs[0], uvs[5]), ImVec2(uvs[4], uvs[1]), frame_padding, ImVec4(1.0f, 1.0f, 1.0f, 0.5f)))
 								{
@@ -526,10 +531,25 @@ void Doom::Editor::MenuAnimator2D()
 				Animator* anim = go->m_ComponentManager.GetComponent<Animator>();
 				ImGui::Text("Animator");
 				ImGui::Text("counter %d", anim->m_Counter);
+				if (ImGui::MenuItem("Choose animation"))
+				{
+					std::optional<std::string> filePath = FileDialogs::OpenFile("All Files (*.png)\0");
+					if (filePath) {
+						size_t index = (*filePath).find_last_of("\\");
+						if (index != std::string::npos) {
+							std::string path = (*filePath).substr(0, index);
+							index = (path).find_last_of("\\");
+							if (index != std::string::npos) {
+								path = (path).substr(0, index);
+								anim->SetAnimation(path);
+							}
+						}
+					}
+				}
 				ImGui::ListBox("Animations", &selectedanimation, anim->GetAnimations(), anim->GetAmountOfAnimations());
 
 				int count = 0;
-				ImGui::SliderFloat("Animation speed slider", &anim->m_Speed, 0, 100);
+				ImGui::SliderFloat("Speed", &anim->m_Speed, 0, 100);
 				if (anim->GetAmountOfAnimations() > 0) {
 					auto iter = anim->animations.find(anim->GetAnimations()[selectedanimation]);
 					if (iter._Ptr == nullptr)
@@ -549,6 +569,8 @@ void Doom::Editor::MenuAnimator2D()
 				}
 				ImGui::NewLine();
 				ImGui::Checkbox("Play animation", &anim->m_IsPlayingAnim);
+				if(anim->m_IsPlayingAnim)
+					anim->PlayAnim(anim->animations.find(anim->GetAnimations()[selectedanimation])->second);
 			}
 		}
 	}
@@ -622,7 +644,7 @@ void Doom::Editor::MenuDirectionalLight()
 	if (MenuRemoveComponent<DirectionalLight>()) {
 		if (ImGui::CollapsingHeader("Directional light")) {
 			ImGui::ColorPicker3("Dir light color", &pl->m_Color[0]);
-			ImGui::SliderFloat("Intensity", &pl->m_Intensity, 1, 10);
+			ImGui::SliderFloat("Intensity", &pl->m_Intensity, 0.0f, 10.0f);
 		}
 	}
 }
@@ -899,7 +921,7 @@ void Doom::Editor::ShaderMenu()
 void Doom::Editor::MenuShadowMap()
 {
 	Camera& camera = Window::GetInstance().GetCamera();
-	void* my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferBlur[0]->m_Textures[0]);
+	void* my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferColor->m_Textures[1]);
 	ImGui::Begin("FrameBuffer Bloom");
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::End();
@@ -908,8 +930,23 @@ void Doom::Editor::MenuShadowMap()
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::SliderFloat("Znear", &camera.m_ZnearSM, -500, 500);
 	ImGui::SliderFloat("Zfar", &camera.m_ZfarSM, 0, 500);
-	ImGui::SliderFloat("Projection", &camera.m_RationProjectionSM, 0, 1000);
+	ImGui::SliderFloat("Projection", &camera.m_RatioProjectionSM, 0, 1000);
 	ImGui::SliderFloat("DrawShadows", &Instancing::GetInstance()->m_DrawShadows, 0, 1);
+	ImGui::End();
+}
+
+void Doom::Editor::MenuBloom()
+{
+	ImGui::Begin("Bloom");
+	ImGui::SliderInt("Pixels to blur", &Renderer::s_Bloom.m_PixelsAmount, 1, 6);
+	ImGui::SliderInt("Texel step", &Renderer::s_Bloom.m_StepTexturePixels, 1, 10);
+	ImGui::SliderInt("Blur passes", &Renderer::s_Bloom.m_BlurPasses, 2, 200);
+	ImGui::SliderFloat("Bloom exposure", &Renderer::s_Bloom.m_Exposure, 0, 10);
+	ImGui::SliderFloat("Brightness", &Renderer::s_Bloom.m_Brightness, 0, 10);
+	ImGui::SliderFloat("Gamma", &Renderer::s_Bloom.m_Gamma, 0, 5);
+	ImGui::SliderFloat("Intensity", &Renderer::s_Bloom.m_Intensity, 0, 10);
+	ImGui::Checkbox("Bloom", &Renderer::s_Bloom.m_IsEnabled);
+	ImGui::Checkbox("HDR", &Renderer::s_Bloom.m_IsHdrEnabled);
 	ImGui::End();
 }
 
@@ -1149,6 +1186,7 @@ void Doom::Editor::Debug()
 	ImGui::Checkbox("Visible bounding boxes", &isBoundingBoxesVisible);
 	ImGui::End();
 	TextProps();
+	MenuBloom();
 }
 
 void Doom::Editor::Threads() {

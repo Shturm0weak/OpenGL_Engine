@@ -64,5 +64,6 @@ namespace Doom {
 		void ReverseUVs();
 		void SetUVs(float* uvs);
 		void Setlayer(int layer);
+		void SetFrontLayer();
 	};
 }

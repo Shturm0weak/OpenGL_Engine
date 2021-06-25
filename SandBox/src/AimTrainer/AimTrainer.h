@@ -34,7 +34,7 @@ namespace Doom {
 
 	public:
 
-		AimTrainer(std::string name = "AimTrainer", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
+		AimTrainer(std::string name = "AimTrainer", int width = 800, int height = 600, bool Vsync = false) : Application(name, width, height, Vsync) {}
 
 		void OnStart();
 		void OnUpdate();

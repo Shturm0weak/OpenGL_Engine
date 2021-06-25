@@ -33,6 +33,7 @@ namespace Doom {
 			glm::vec4 m_RotationMat2;
 			glm::vec4 m_RotationMat3;
 			glm::vec3 m_Pos;
+			float m_Emissive;
 		};
 
 		struct VertexLine {

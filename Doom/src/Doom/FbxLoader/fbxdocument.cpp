@@ -47,7 +47,7 @@ namespace fbx {
 						}
 					}
 					if (node.getName() == "Model") {
-						node.print();
+						//node.print();
 						std::string nameOfModel = GetNameOfModel(node.properties[1].to_string());
 						GameObject* go = Doom::GameObject::Create(nameOfModel);
 						go->m_ComponentManager.AddComponent<Renderer3D>();

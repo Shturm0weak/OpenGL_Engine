@@ -1,0 +1,310 @@
+Camera:
+  Transform:
+    Position: [-52.3821716, 7.66625929, 9.44026184]
+    Rotation: [-0.49347806, -0.789748073, 0]
+  Zoom: 1
+  FOV: 1
+  Type: 1
+GameObjects:
+  - GameObject: 0
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, 0, 0]
+      Scale: [259.567871, 1, 300.813202]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+  - GameObject: 1
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [2.38418579e-07, 4.56360292, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+  - GameObject: 2
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, 10.0693254, 0]
+      Scale: [0.999999881, 0.999999046, 0.999999881]
+      Rotation: [2.4128592, -0.291822821, 0.25137952]
+    Directional light:
+      Intensity: 0.323000014
+      Color: [1, 1, 1]
+  - GameObject: 3
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, 6.40049934, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [1, 0, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
+  - GameObject: 4
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0.241777897, 4.67758512, 2.49256563]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [0, 0.210526466, 1]
+      Attenuation:
+        Constant: 0
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
+  - GameObject: 5
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-47.0844002, 3.14727855, 1.14826632]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/sphere.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+  - GameObject: 6
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-47.7899017, 4.32458019, 7.53642559]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.520308912, 1, 0.420229435, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595235825, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Cube collider:
+      Bounding box: true
+  - GameObject: 7
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-47.6604996, 4.32458019, -4.210639]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.520308912, 1, 0.420229435, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595235825, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Cube collider:
+      Bounding box: true
+  - GameObject: 8
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-42.5559692, 4.32458019, 0.651109815]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.520308912, 1, 0.420229435, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595235825, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Cube collider:
+      Bounding box: true
+  - GameObject: 9
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-52.0437279, 4.32458019, 1.50437546]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.613485098, 1, 0.532846689, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595237017, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Cube collider:
+      Bounding box: true
+  - GameObject: 10
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-37.9568939, 5.7581377, 11.8977747]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/Box.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Cube collider:
+      Bounding box: true
+Texture atlases:
+  []

@@ -19,7 +19,7 @@ void Doom::GameObject::Delete()
 	{
 		((GameObject*)m_Owner)->RemoveChild(this);
 	}
-	m_Childs.clear();
+	m_Transform.Copy(Transform());
 	m_ComponentManager.Clear();
 	s_FreeMemory.push_back(m_MemoryPoolPtr);
 	std::vector<GameObject*>& goV = World::GetInstance().s_GameObjects;
@@ -48,7 +48,7 @@ GameObject* Doom::GameObject::Create(const std::string name, float x, float y, f
 	//go->m_Transform = go->m_ComponentManager.AddComponent<Transform>();
 	go->m_MemoryPoolPtr = ptr;
 	go->m_Name = name;
-	go->m_Layer = World::GetInstance().s_GameObjects.size();
+	//go->m_Layer = World::GetInstance().s_GameObjects.size();
 	go->m_Id = World::GetInstance().s_ObjId;
 	World::GetInstance().s_ObjId++;
 	go->m_Transform.Translate(x, y, z);

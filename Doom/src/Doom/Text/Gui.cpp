@@ -10,7 +10,7 @@ void Gui::Text(const std::wstring& str, int relatedToCamera, float x, float y, f
 {
 	ApplyRelatedToPanelProperties(&x, &y);
 	float scale = startscale / m_Font->m_Size;
-	float ratio = Window::GetInstance().GetCamera().GetAspectRatio();
+	float ratio = Window::GetInstance().GetCamera().m_Ratio;
 	std::vector<Character*> characters;
 	std::vector<size_t> newLines;
 	size_t counter = 0;
@@ -122,17 +122,17 @@ void Gui::Text(const std::wstring& str, int relatedToCamera, float x, float y, f
 
 		//Pos is top-left corner
 		m_Character->m_Mesh2D[0] = 0;
-		m_Character->m_Mesh2D[1] = -(ratio * (m_Character->m_Height + m_Character->m_YOffset));
-		m_Character->m_Mesh2D[4] =  (ratio * (m_Character->m_Width));
-		m_Character->m_Mesh2D[5] = -(ratio * (m_Character->m_Height + m_Character->m_YOffset));
-		m_Character->m_Mesh2D[8] =  (ratio * (m_Character->m_Width));
-		m_Character->m_Mesh2D[9] =  -ratio * m_Character->m_YOffset;
+		m_Character->m_Mesh2D[1] = -(m_Character->m_Height + m_Character->m_YOffset);
+		m_Character->m_Mesh2D[4] =  (m_Character->m_Width);
+		m_Character->m_Mesh2D[5] = -(m_Character->m_Height + m_Character->m_YOffset);
+		m_Character->m_Mesh2D[8] =  (m_Character->m_Width);
+		m_Character->m_Mesh2D[9] =  -m_Character->m_YOffset;
 		m_Character->m_Mesh2D[12] = 0;
-		m_Character->m_Mesh2D[13] = -ratio * m_Character->m_YOffset;
+		m_Character->m_Mesh2D[13] = -m_Character->m_YOffset;
 
 		if (i == 0) m_CharacterXOffset = 0;
-		m_Character->m_Position.x = ratio * (x + m_CharacterXOffset);
-		m_Character->m_Position.y = ratio * y;
+		m_Character->m_Position.x = x + m_CharacterXOffset;
+		m_Character->m_Position.y = y;
 		m_CharacterXOffset += m_Character->m_XAdvance * m_Character->m_Scale.x;
 
 		Batch::GetInstance().Submit(m_Character);
@@ -149,13 +149,13 @@ bool Gui::Button(const std::wstring& str, float x, float y,float scale, float wi
 		x += m_RelatedPanelProperties.m_Size.x * 0.5f - m_RelatedPanelProperties.m_Margin.x - width * 0.5f;
 	if (m_YAlign == AlignVertically::YCENTER)
 		y -= m_RelatedPanelProperties.m_Size.y * 0.5f - m_RelatedPanelProperties.m_Margin.y - height * 0.5f;
-	float ratio = Window::GetInstance().GetCamera().GetAspectRatio();
+	float ratio = Window::GetInstance().GetCamera().m_Ratio;
 	this->m_BtnColor = btnColor;
 	bool tempResult = false;
 	bool returnResult = false;
 	glm::dvec2 mousePos = ViewPort::GetInstance().GetStaticMousePosition();
-	glm::vec2 pos = glm::vec2(ratio * x, ratio * y);
-	glm::vec2 realSize = { width * ratio * 0.5f, -height * ratio * 0.5f };
+	glm::vec2 pos = glm::vec2(x, y);
+	glm::vec2 realSize = { width * 0.5f, -height * 0.5f };
 
 	float vertecies[8] = {
 		-realSize.x + pos.x, realSize.y + pos.y,
@@ -209,9 +209,9 @@ void Gui::Panel(const std::wstring& label,float x, float y, float width, float h
 
 	auto iter = m_Panels.find(label);
 	Camera& camera = Window::GetInstance().GetCamera();
-	float ratio = camera.GetAspectRatio();
-	glm::vec2 pos = glm::vec2(ratio * x, ratio * y);
-	glm::vec2 realSize = { width * ratio * 0.5f, -height * ratio * 0.5f };
+	float ratio = camera.m_Ratio;
+	glm::vec2 pos = glm::vec2(x, y);
+	glm::vec2 realSize = { width * 0.5f, -height * 0.5f };
 
 	m_CurrentPanelCoods[0] = -realSize.x + pos.x;  m_CurrentPanelCoods[1] =  realSize.y + pos.y;
 	m_CurrentPanelCoods[2] =  realSize.x + pos.x;  m_CurrentPanelCoods[3] =  realSize.y + pos.y;
@@ -252,7 +252,7 @@ void Gui::Panel(const std::wstring& label,float x, float y, float width, float h
 		if (m_XAlign == AlignHorizontally::XCENTER)
 			x = m_RelatedPanelProperties.m_Size.x * 0.5f - m_RelatedPanelProperties.m_Margin.x;
 		
-		Text(label, true, m_EdgeRadius + x, 0, m_RelatedPanelProperties.m_PanelLabelSize);
+		Text(label, true, x, 0, m_RelatedPanelProperties.m_PanelLabelSize);
 		//m_XAlign = Gui::AlignHorizontally::XCENTER;
 		m_RelatedPanelProperties.m_Margin = tempMargin;
 		m_RelatedPanelProperties.m_Padding = tempPadding;
@@ -294,16 +294,11 @@ bool Gui::CheckBox(const std::wstring& label, bool * value, float x, float y, fl
 		texture = m_CheckBoxTextureFalse;
 	}
 
-	float tempradius = m_EdgeRadius;
-	m_EdgeRadius = 0.0f;
-
-	if (Button(L"##Button" + std::to_wstring(x), x, y, 24, size, size, imageColor, imageColor, glm::vec4(1.0f), texture))
+	if (Button(L"##Button" + std::to_wstring(x), x, y, size, size, size, imageColor, imageColor, glm::vec4(1.0f), texture))
 	{
 		*value = !*value;
 		pressed = true;
 	}
-		
-	m_EdgeRadius = tempradius;
 
 	m_RelatedPanelProperties.m_YOffset -= (size + m_RelatedPanelProperties.m_Padding.y);
 	m_YAlign = AlignVertically::YCENTER;
@@ -358,7 +353,7 @@ bool Gui::SliderFloat(const std::wstring& label, float * value, float min, float
 
 	if (iter->second) 
 	{
-		glm::vec2 mPos = ViewPort::GetInstance().GetMousePositionToScreenSpace();
+		glm::vec2 mPos = ViewPort::GetInstance().GetStaticMousePosition();
 		float _value = (mPos.x - x - width * 0.5f);
 		*value = ((1 + ((_value) / (width))) * maxValue) + min;
 		if (*value > max) *value = max;
@@ -374,7 +369,7 @@ bool Gui::SliderFloat(const std::wstring& label, float * value, float min, float
 	Text(L"##SliderFloat" + uniqueId + L" %f", true, width * 0.5f, -height * 0.5f, height * 0.5f, glm::vec4(1.0f), 3, *value);
 	m_RelatedPanelProperties.m_YOffset -= (height * 0.5f + m_RelatedPanelProperties.m_Padding.y);
 	m_XAlign = LEFT;
-	Text(label, true, width + 10, -height * 0.5f, height * 0.8f, glm::vec4(1.0f));
+	Text(label, true, width + 10, -height * 0.5f, height * 0.5f, glm::vec4(1.0f));
 	m_YAlign = TOP;
 	m_RelatedPanelProperties.m_YOffset += (height - m_LastTextProperties.m_Size.y);
 
@@ -604,10 +599,8 @@ void Gui::InputDouble(const std::wstring& label, double* value, float x, float y
 void Gui::Image(float x, float y, float width, float height, Texture * texture, glm::vec4 color)
 {
 	ApplyRelatedToPanelProperties(&x, &y); //TODO: Need somehow to fix it, kind of a flag if a panel is existed
-	Camera& camera = Window::GetInstance().GetCamera();
-	float ratio = camera.GetAspectRatio();
-	glm::vec2 pos = glm::vec2(ratio * x, ratio * y);
-	glm::vec2 realSize = { width * ratio * 0.5f, -height * ratio * 0.5f };
+	glm::vec2 pos = glm::vec2(x, y);
+	glm::vec2 realSize = { width * 0.5f, -height * 0.5f };
 
 	float verteces[8];
 
@@ -615,27 +608,22 @@ void Gui::Image(float x, float y, float width, float height, Texture * texture, 
 	verteces[2] =  realSize.x + pos.x;  verteces[3] =  realSize.y + pos.y;
 	verteces[4] =  realSize.x + pos.x;  verteces[5] = -realSize.y + pos.y;
 	verteces[6] = -realSize.x + pos.x;  verteces[7] = -realSize.y + pos.y;
-
-	float _size = (g_ScaleUI * 2);
 
 	Batch::GetInstance().Submit(verteces, color, texture);
 	
 	m_RelatedPanelProperties.m_YOffset += height + m_RelatedPanelProperties.m_Padding.y;
 }
 
-bool Gui::CollapsingHeader(const std::wstring& label, float x, float y,glm::vec4 color)
+bool Gui::CollapsingHeader(const std::wstring& label, float x, float y, float height, glm::vec4 color)
 {
 	bool hovered = false;
 	bool pressed = false;
-	float height = 25.f;
 	float width = m_RelatedPanelProperties.m_Size.x;
 	ApplyRelatedToPanelProperties(&x, &y);
 	x += m_RelatedPanelProperties.m_Size.x * 0.5f - m_RelatedPanelProperties.m_Margin.x;
 	y -= height * 0.5f;
-	Camera& camera = Window::GetInstance().GetCamera();
-	float ratio = camera.GetAspectRatio();
-	glm::vec2 pos = glm::vec2(ratio * x, ratio * y);
-	glm::vec2 realSize = { width * ratio * 0.5f, -height * ratio * 0.5f };
+	glm::vec2 pos = glm::vec2(x, y);
+	glm::vec2 realSize = { width * 0.5f, -height * 0.5f };
 
 	float verteces[8];
 
@@ -643,8 +631,6 @@ bool Gui::CollapsingHeader(const std::wstring& label, float x, float y,glm::vec4
 	verteces[2] =  realSize.x + pos.x;  verteces[3] =  realSize.y + pos.y;
 	verteces[4] =  realSize.x + pos.x;  verteces[5] = -realSize.y + pos.y;
 	verteces[6] = -realSize.x + pos.x;  verteces[7] = -realSize.y + pos.y;
-
-	float size = (g_ScaleUI * 2);
 
 	if (m_IsInteracting == false) 
 	{
@@ -671,12 +657,15 @@ bool Gui::CollapsingHeader(const std::wstring& label, float x, float y,glm::vec4
 
 	bool flag = m_Interactable.find(label)->second;
 
-	if(flag) Image(7.5, -height * 0.5f, 15, 15, m_TriangleDownTexture);
-	else Image(7.5, -height * 0.5f, 15, 15, m_TriangleRightTexture);
+	if(flag) Image(height * 0.5f, -height * 0.5f, 0.5f * height, 0.5f * height, m_TriangleDownTexture);
+	else     Image(height * 0.5f, -height * 0.5f, 0.5f * height, 0.5f * height, m_TriangleRightTexture);
 
 	m_RelatedPanelProperties.m_YOffset -= (height * 0.5f + m_RelatedPanelProperties.m_Padding.y);
 
-	Text(label, true, 7.5 + 15 + 5, 0, 20);
+	AlignVertically tempAlign = m_YAlign;
+	m_YAlign = AlignVertically::YCENTER;
+	Text(label, true, height, -height * 0.5f, height * 0.5f);
+	m_YAlign = tempAlign;
 
 	m_RelatedPanelProperties.m_YOffset += height - m_LastTextProperties.m_Size.y;
 
@@ -778,7 +767,7 @@ void Gui::FindCharInFont(std::vector<Character*>& localCharV, wchar_t c)
 
 void Gui::RecalculateProjectionMatrix()
 {
-	float aspectRatio = Window::GetInstance().GetCamera().GetAspectRatio();
+	float aspectRatio = Window::GetInstance().GetCamera().m_Ratio;
 	m_ViewProjecTionMat4RelatedToCamera = glm::ortho(-aspectRatio * (float)g_ScaleUI, aspectRatio * (float)g_ScaleUI, (float)-g_ScaleUI, (float)g_ScaleUI, -1.0f, 1.0f);
 }
 

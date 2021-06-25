@@ -135,6 +135,7 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	m_GoB.m_BufferG->m_RotationMat2 = view[2];
 	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[4] * scale.x, mesh2D[5] * scale.y);
@@ -146,6 +147,7 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	m_GoB.m_BufferG->m_RotationMat2 = view[2];
 	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[8] * scale.x, mesh2D[9] * scale.y);
@@ -157,6 +159,7 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	m_GoB.m_BufferG->m_RotationMat2 = view[2];
 	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(mesh2D[12] * scale.x, mesh2D[13] * scale.y);
@@ -168,6 +171,7 @@ void Doom::Batch::Submit(glm::mat4 pos, glm::mat4 view, glm::vec4 color, glm::ve
 	m_GoB.m_BufferG->m_RotationMat2 = view[2];
 	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = posv;
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GIndexCount += 6;
@@ -329,6 +333,7 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
 	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
 	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
 	m_GoB.m_BufferG++;
 
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[4] * scale[0], c->m_Mesh2D[5] * scale[1]);
@@ -339,6 +344,7 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
 	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
 	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
+	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
 	m_GoB.m_BufferG->m_Pos = pos;
 	m_GoB.m_BufferG++;
 
@@ -350,6 +356,7 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
 	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
 	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
+	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
 	m_GoB.m_BufferG->m_Pos = pos;
 	m_GoB.m_BufferG++;
 
@@ -361,6 +368,7 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
 	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
 	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
+	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
 	m_GoB.m_BufferG->m_Pos = pos;
 	m_GoB.m_BufferG++;
 
@@ -390,6 +398,7 @@ void Batch::Submit(RectangleCollider2D& c)
 	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
 	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
 	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(c.m_Vertices[2] * scaleVal[0], c.m_Vertices[3] * scaleVal[1]);
@@ -400,6 +409,7 @@ void Batch::Submit(RectangleCollider2D& c)
 	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
 	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
 	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(c.m_Vertices[4] * scaleVal[0], c.m_Vertices[5] * scaleVal[1]);
@@ -410,6 +420,7 @@ void Batch::Submit(RectangleCollider2D& c)
 	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
 	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
 	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GoB.m_BufferG->m_Vertex = glm::vec2(c.m_Vertices[6] * scaleVal[0], c.m_Vertices[7] * scaleVal[1]);
@@ -420,6 +431,7 @@ void Batch::Submit(RectangleCollider2D& c)
 	m_GoB.m_BufferG->m_RotationMat1 = mvp[1];
 	m_GoB.m_BufferG->m_RotationMat2 = mvp[2];
 	m_GoB.m_BufferG->m_RotationMat3 = mvp[3];
+	m_GoB.m_BufferG->m_Emissive = false;
 	m_GoB.m_BufferG++;
 
 	m_GIndexCount += 6;
@@ -443,7 +455,9 @@ void Batch::FlushGameObjects(Shader * shader)
 
 	shader->SetUniform1iv("u_Texture", samplers);
 	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().m_ViewProjectionMat4);
-	shader->SetUniform1f("Brightness", Renderer::s_Brightness);
+	shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawElements(GL_TRIANGLES, m_GIndexCount, GL_UNSIGNED_INT, NULL);
 	Renderer::s_Stats.m_DrawCalls++;
 	Renderer::s_Stats.m_Vertices += m_GIndexCount;
@@ -665,6 +679,9 @@ void Batch::InitGameObjects()
 
 	glEnableVertexArrayAttrib(m_GoB.m_Vao, 9);
 	glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_Pos));
+
+	glEnableVertexArrayAttrib(m_GoB.m_Vao, 10);
+	glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, sizeof(GOVertex), (const GLvoid*)offsetof(GOVertex, m_Emissive));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

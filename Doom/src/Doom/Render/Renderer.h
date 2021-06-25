@@ -12,7 +12,8 @@ namespace Doom {
 	class DOOM_API Renderer {
 	public:
 
-		struct Stats {
+		struct Stats 
+		{
 			uint64_t m_Vertices = 0;
 			uint64_t m_DrawCalls = 0;
 			double m_RenderTime = 0;
@@ -36,11 +37,22 @@ namespace Doom {
 			}
 		};
 
+		struct Bloom
+		{
+			int m_StepTexturePixels = 3;
+			int m_PixelsAmount = 6;
+			int m_BlurPasses = 10;
+			float m_Exposure = 1.5f;
+			bool m_IsEnabled = false;
+			bool m_IsHdrEnabled = false;
+			float m_Brightness = 1.0f;
+			float m_Gamma = 2.2f;
+			float m_Intensity = 1.0f;
+		};
+
 		static Stats s_Stats;
+		static Bloom s_Bloom;
 		static bool s_PolygonMode;
-		static float s_Exposure;
-		static bool s_BloomEffect;
-		static float s_Brightness;
 
 	private:
 

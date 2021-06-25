@@ -10,20 +10,22 @@ mat4 u_Model = mat4(1.0, 0.0, 0.0, 0.0,
 					0.0, 0.0, 1.0, 0.0,
 					v.x, v.y, v.z, 1.0);
 mat4 u_Scale = mat4(s.x, 0.0, 0.0, 0.0,
-	0.0, s.y, 0.0, 0.0,
-	0.0, 0.0, s.z, 0.0,
-	0.0, 0.0, 0.0, 1.0);
+					0.0, s.y, 0.0, 0.0,
+					0.0, 0.0, s.z, 0.0,
+					0.0, 0.0, 0.0, 1.0);
 
 uniform mat4 lightSpaceMatrix;
 
-void main() {
+void main() 
+{
 	gl_Position = lightSpaceMatrix * u_Model * u_View * u_Scale * vec4(positions, 1);
-};
+}
 
 
 #shader fragment
 #version 330 core
 
-void main() {
+void main() 
+{
 
-};
+}

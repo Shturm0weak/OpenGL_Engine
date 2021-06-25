@@ -16,9 +16,10 @@ mat4 rot = mat4(
 	rotationMat2,
 	rotationMat3);
 
-void main() {
+void main() 
+{
 	gl_Position = u_ViewProjection * rot * positions;
-};
+}
 
 #shader fragment
 #version 330 core
@@ -27,6 +28,7 @@ layout(location = 0) out vec4 color;
 
 uniform vec4 U_Color;
 
-void main() {
+void main() 
+{
 	color = U_Color;
-};
+}

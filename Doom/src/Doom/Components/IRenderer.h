@@ -17,6 +17,7 @@ namespace Doom {
 
 		glm::vec4 m_Color = COLORS::White;
 		Shader* m_Shader = nullptr;
+		bool m_Emissive = false;
 		RenderType m_RenderType = RenderType::TYPE_2D;
 
 		Irenderer() {}

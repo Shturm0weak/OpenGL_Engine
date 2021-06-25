@@ -169,7 +169,7 @@ float * SpriteRenderer::GetUVs() const
 
 void SpriteRenderer::Setlayer(int layer)
 {
-	World& world = World::GetInstance();
+	/*World& world = World::GetInstance();
 	unsigned int size = world.s_GameObjects.size();
 	world.s_GameObjects.erase(world.s_GameObjects.begin() + m_OwnerOfCom->m_Id);
 	world.s_GameObjects.insert(world.s_GameObjects.begin() + layer, m_OwnerOfCom);
@@ -178,5 +178,12 @@ void SpriteRenderer::Setlayer(int layer)
 		world.s_GameObjects[i]->m_Id = i;
 		world.s_GameObjects[i]->m_Layer = i;
 	}
-	return;
+	return;*/
+	Renderer::s_Objects2d.erase(std::find(Renderer::s_Objects2d.begin(), Renderer::s_Objects2d.end(), this));
+	Renderer::s_Objects2d.insert(Renderer::s_Objects2d.begin() + layer, this);
+}
+
+void Doom::SpriteRenderer::SetFrontLayer()
+{
+	Setlayer(Renderer::s_Objects2d.size() - 1);
 }

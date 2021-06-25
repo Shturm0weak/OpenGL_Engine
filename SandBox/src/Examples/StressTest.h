@@ -14,8 +14,9 @@ public:
 	float radius = 0;
 	float panelRadius = 0;
 	TextureAtlas* textureAtlas = nullptr;
-	StressTest(std::string name = "TileMap", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_2D, width, height, Vsync) {}
+	StressTest(std::string name = "TileMap", int width = 800, int height = 600, bool Vsync = false) : Application(name, width, height, Vsync) {}
 	void OnStart() {
+		Window::GetInstance().GetCamera().SetOrthographic(Window::GetInstance().GetCamera().m_Ratio);
 		textureAtlas = TextureAtlas::CreateTextureAtlas("TileMap",128, 128, Texture::Create("src/GameRPG/Textures/RPGpack_sheet_2X.png"));
 		std::unordered_map<char, glm::vec2> textures;
 		const char* map =

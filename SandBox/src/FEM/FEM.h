@@ -48,7 +48,7 @@ namespace Doom {
 
 		Triangle(Node* a, Node* b, Node* c);
 
-		math::Matrix CalculateMatrixB(Weight weight, double r, double z); //in L coordinates
+		math::Matrix CalculateMatrixB(Weight weight, double r); //in L coordinates
 		math::Matrix CalculateMatrixBAproximation(double R, double Z); //at centroid of the triangle
 		math::Matrix CalculateMatrixK(math::Matrix matD, std::vector<Weight>& weights); //gauss-legendre quadrature
 
@@ -70,6 +70,8 @@ namespace Doom {
 		std::vector<size_t> m_StaticNodes;
 		std::vector<std::wstring> m_StressesNames;
 		std::vector<std::wstring> m_SideNames;
+
+		glm::dvec2 m_MaxDisplacement;
 		double m_E = 3.0 * 10e7;
 		int64_t m_InputE = m_E / 10e6;
 		double m_U = 0.3;
@@ -130,7 +132,7 @@ namespace Doom {
 		void IndexNodes(Mesh* mesh);
 		void CalculateGlobalStiffnessMatrix(Mesh* mesh);
 
-		FEM(std::string name = "FEM axisymmentric problem", int width = 800, int height = 600, bool Vsync = true) : Application(name, TYPE_3D, width, height, Vsync) {}
+		FEM(std::string name = "FEM axisymmentric problem", int width = 800, int height = 600, bool Vsync = true) : Application(name, width, height, Vsync) {}
 
 		virtual void OnStart();
 

@@ -6,22 +6,29 @@ namespace fs = std::filesystem;
 
 void Doom::Animator::SetAnimation(const std::string path)
 {
-	for (const auto & _entry : fs::directory_iterator(path)) {
-		size_t _index = 0;
-		std::vector<Texture*> text;
-		for (const auto & entry : fs::directory_iterator(_entry.path().string())) {
-			m_TexturesPath.push_back(entry.path().string());
-			size_t index = 0;
-			for (int i = 0; i < 2; i++)
-			{
-				index = m_TexturesPath.back().find("\\", index);
-				m_TexturesPath.back().replace(index, 1, "/");
+	try
+	{
+		for (const auto& _entry : fs::directory_iterator(path)) {
+			size_t _index = 0;
+			std::vector<Texture*> text;
+			for (const auto& entry : fs::directory_iterator(_entry.path().string())) {
+				m_TexturesPath.push_back(entry.path().string());
+				size_t index = 0;
+				for (int i = 0; i < 2; i++)
+				{
+					index = m_TexturesPath.back().find("\\", index);
+					m_TexturesPath.back().replace(index, 1, "/");
+				}
+				text.push_back(Texture::Create(m_TexturesPath.back(), 1));
 			}
-			text.push_back(Texture::Create(m_TexturesPath.back(), 1));
+			m_Amount++;
+			animations.insert(std::make_pair(_entry.path().string(), text));
+			m_TexturesPath.clear();
 		}
-		m_Amount++;
-		animations.insert(std::make_pair(_entry.path().string(),text));
-		m_TexturesPath.clear();
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
 	}
 }
 

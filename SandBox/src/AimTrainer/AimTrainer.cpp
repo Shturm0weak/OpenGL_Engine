@@ -21,7 +21,7 @@ void AimTrainer::RayCast()
 		if (hit.m_Object != nullptr)
 		{
 			SoundManager::GetInstance().Play(SoundManager::GetInstance().GetSound("Hit"));
-			if (hit.m_Object->GetOwnerOfComponent()->m_Tag == "Start")
+			if (hit.m_Object->m_OwnerOfCom->m_Tag == "Start")
 			{
 				SpawnObject();
 				SpawnObject();
@@ -30,11 +30,11 @@ void AimTrainer::RayCast()
 			}
 			else 
 			{
-				m_Objs.erase(hit.m_Object->GetOwnerOfComponent());
+				m_Objs.erase(hit.m_Object->m_OwnerOfCom);
 				SpawnObject();
 				m_Hits++;
 			}
-			World::GetInstance().DeleteObject(hit.m_Object->GetOwnerOfComponent()->m_Id);
+			World::GetInstance().DeleteObject(hit.m_Object->m_OwnerOfCom->m_Id);
 		}
 		else
 			m_Missed++;
@@ -193,7 +193,7 @@ void AimTrainer::OptionsMenu()
 	g.SliderFloat(L"Audio volume", &m_AudioVolume, 0.0f, 1.0f, 0, 0, 200, 50);
 	g.SliderFloat(L"Mouse sensetivity", &m_MouseSensetivity, 0.1f, 3.0f, 0, 0, 200, 50);
 	g.CheckBox(L"Draw shadows", &m_DrawShadows, 0, 0, 25);
-	g.CheckBox(L"Bloom", &Renderer::s_BloomEffect, 0, 0, 25);
+	g.CheckBox(L"Bloom", &Renderer::s_Bloom.m_IsEnabled, 0, 0, 25);
 	if (g.Button(L"Choose crosshair", 0, 0, 30, 400, 50, COLORS::Gray * 0.8f))
 		m_ChooseCrossHair = true;
 	Instancing::GetInstance()->m_DrawShadows = m_DrawShadows ? 1.0f : 0.0f;

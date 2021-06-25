@@ -43,24 +43,24 @@ EntryPoint::EntryPoint(Doom::Application* app)
 
 	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE };
 	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE };
-	FrameBufferParams colorParams = { size[0], size[1], GL_COLOR_ATTACHMENT0, GL_RGB, GL_UNSIGNED_BYTE, true, true, true, 2 };
+	FrameBufferParams colorParams = { (uint32)size[0], (uint32)size[1], GL_COLOR_ATTACHMENT0, GL_RGBA , GL_UNSIGNED_BYTE, true, true, true, 2 };
 	window.m_FrameBufferColor = new FrameBuffer(colorParams);
 	window.m_FrameBufferColor->Bind();
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 	window.m_FrameBufferColor->UnBind();
 
-	FrameBufferParams Blur1Params = { size[0], size[1], GL_COLOR_ATTACHMENT0, GL_RGBA, GL_UNSIGNED_BYTE, false, true, true };
+	colorParams = { (uint32)size[0], (uint32)size[1], GL_COLOR_ATTACHMENT0, GL_RGBA , GL_UNSIGNED_BYTE, true, true, true, 1 };
+	window.m_FrameBufferBrightness = new FrameBuffer(colorParams);
+
+	FrameBufferParams Blur1Params = { (uint32)size[0], (uint32)size[1], GL_COLOR_ATTACHMENT0, GL_RGBA, GL_UNSIGNED_BYTE, false, true, true };
 	window.m_FrameBufferBlur.push_back(new FrameBuffer(Blur1Params));
 	window.m_FrameBufferBlur.push_back(new FrameBuffer(Blur1Params));
 
 	Utils::SetStandardTexParams();
 
-	if (window.s_Application->m_Type == TYPE_3D)
-	{
-		//GridLayOut::DrawGrid(51, 50);
-		//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
-	}
+	//GridLayOut::DrawGrid(51, 50);
+	//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
 
 #ifndef LOADFROMFILE
 	Utils::LoadShadersFromFolder("src/Shaders");
@@ -125,8 +125,7 @@ void EntryPoint::Run()
 //#ifndef _IS_GAME_BUILD
 		if (Input::IsKeyPressed(Keycode::KEY_E))
 			isEditorEnable = !isEditorEnable;
-		if (Window::GetInstance().s_Application->m_Type == RenderType::TYPE_3D) 
-			world.SelectObject3D();
+		world.SelectObject3D();
 		if (isEditorEnable)
 			Editor::GetInstance().EditorUpdate();
 		window.GetCamera().CameraMovement();
@@ -139,9 +138,7 @@ void EntryPoint::Run()
 		world.UpdateLuaStates();
 		eventSystem.ProcessEvents();
 
-		if (window.s_Application->m_Type == RenderType::TYPE_3D)
-			Renderer::SortTransparentObjects();
-
+		Renderer::SortTransparentObjects();
 		Renderer::UpdateLightSpaceMatrices();
 
 #ifdef _IS_GAME_BUILD

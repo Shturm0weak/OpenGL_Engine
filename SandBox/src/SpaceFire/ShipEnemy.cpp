@@ -7,8 +7,8 @@
 void ShipEnemy::OnCollision(void * _col)
 {
 	RectangleCollider2D* __col = static_cast<RectangleCollider2D*>(_col);
-	if (__col->GetOwnerOfComponent()->m_Tag == "Bullet") {
-		Bullet* bullet = static_cast<Doom::GameObject*>(__col->GetOwnerOfComponent())->GetComponent<Bullet>();
+	if (__col->m_OwnerOfCom->m_Tag == "Bullet") {
+		Bullet* bullet = static_cast<Doom::GameObject*>(__col->m_OwnerOfCom)->GetComponent<Bullet>();
 		hp -= bullet->damage;
 		bullet->Death();
 	}
@@ -16,18 +16,18 @@ void ShipEnemy::OnCollision(void * _col)
 
 void ShipEnemy::Init(std::string name, float x, float y)
 {
-	GetOwnerOfComponent()->m_Name = name;
+	m_OwnerOfCom->m_Name = name;
 	SoundManager::GetInstance().CreateSoundAsset("explosion",explosionSound);
 	bulletsPlaceHolder = GameObject::Create("bulletsPlaceHolder", 0, 0);
 	bulletsPlaceHolder->m_Enable = false;
-	GetOwnerOfComponent()->AddChild((void*)bulletsPlaceHolder);
-	GetOwnerOfComponent()->m_Listener = this;
+	m_OwnerOfCom->AddChild((void*)bulletsPlaceHolder);
+	m_OwnerOfCom->m_Listener = this;
 	EventSystem::GetInstance().RegisterClient(EventType::ONUPDATE, (Component*)this);
 	EventSystem::GetInstance().RegisterClient(EventType::ONSTART, (Component*)this);
 	EventSystem::GetInstance().RegisterClient(EventType::ONCOLLISION, (Component*)this);
-	sr = GetOwnerOfComponent()->AddComponent<SpriteRenderer>();
-	col = GetOwnerOfComponent()->AddComponent<RectangleCollider2D>();
-	tr = GetOwnerOfComponent()->GetComponent<Transform>();
+	sr = m_OwnerOfCom->AddComponent<SpriteRenderer>();
+	col = m_OwnerOfCom->AddComponent<RectangleCollider2D>();
+	tr = m_OwnerOfCom->GetComponent<Transform>();
 	tr->Scale(5, 5);
 	tr->RotateOnce(0,0,180);
 	sr->m_Color = (COLORS::Red);
@@ -35,7 +35,7 @@ void ShipEnemy::Init(std::string name, float x, float y)
 	col->m_IsTrigger = false;
 	for (unsigned int i = 0; i < amountOfBulletsInPool; i++)
 	{
-		bullets.push_back(GameObject::Create("Bullet" + std::to_string(i), GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y));
+		bullets.push_back(GameObject::Create("Bullet" + std::to_string(i), m_OwnerOfCom->GetPosition().x, m_OwnerOfCom->GetPosition().y));
 		Bullet* bullet = bullets[i]->AddComponent<Bullet>();
 		bullet->Init("EnemyBullet", glm::vec3(0, -1, 0));
 		bullet->isActive = false;
@@ -53,7 +53,7 @@ void ShipEnemy::OnUpdate() {
 	if (psPlay)
 		ps->Play();
 
-	if (GetOwnerOfComponent()->m_Enable == false)
+	if (m_OwnerOfCom->m_Enable == false)
 		return;
 
 	if (hp <= 0) {
@@ -64,7 +64,7 @@ void ShipEnemy::OnUpdate() {
 	col->IsCollidedSAT();// });
 	Fire();
 
-	if (GetOwnerOfComponent()->GetPosition().y < -30)
+	if (m_OwnerOfCom->GetPosition().y < -30)
 		Death();
 
 	if (isDead == false)
@@ -74,20 +74,20 @@ void ShipEnemy::OnUpdate() {
 void ShipEnemy::Spawn()
 {
 	hp = 100;
-	GetOwnerOfComponent()->m_Enable = true;
+	m_OwnerOfCom->m_Enable = true;
 	col->m_Enable = true;
 	isDead = false;
-	tr->Translate(GetOwnerOfComponent()->GetPosition().x, 20);
+	tr->Translate(m_OwnerOfCom->GetPosition().x, 20);
 }
 
 void ShipEnemy::Death()
 {
 	pl->kills++;
-	GetOwnerOfComponent()->m_Enable = false;
+	m_OwnerOfCom->m_Enable = false;
 	col->m_Enable = false;
 	isDead = true;
 	SoundManager::GetInstance().Play(explosionSound);
-	ps->SetPosition(GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y);
+	ps->SetPosition(m_OwnerOfCom->GetPosition().x, m_OwnerOfCom->GetPosition().y);
 	ps->Restart();
 	psPlay = true;
 	std::random_device rd;
@@ -97,13 +97,13 @@ void ShipEnemy::Death()
 	std::uniform_int_distribution<int> distribution1(5, 40);
 	int ammo = distribution1(e2);
 	if (chance <= 1) {
-		GameObject* a = GameObject::Create("AmmoPickUp", GetOwnerOfComponent()->GetPosition().x, GetOwnerOfComponent()->GetPosition().y);
+		GameObject* a = GameObject::Create("AmmoPickUp", m_OwnerOfCom->GetPosition().x, m_OwnerOfCom->GetPosition().y);
 		Ammo* aCom = a->AddComponent<Ammo>();
 		aCom->Init(ammo);
 		RectangleCollider2D* col = a->AddComponent<RectangleCollider2D>();
 		(a->m_ComponentManager.GetComponent<SpriteRenderer>())->m_Texture = (Texture::Create("src/SpaceFire/Images/Ammo.png"));
 		a->m_ComponentManager.GetComponent<Transform>()->Scale(2, 2);
-		col->GetOwnerOfComponent()->m_Tag = ("Ammo");
+		col->m_OwnerOfCom->m_Tag = ("Ammo");
 		col->m_IsTrigger = true;
 	}
 }
@@ -115,7 +115,7 @@ void ShipEnemy::Fire() {
 			usedBulletCounter = 0;
 		Bullet* bullet = bullets[usedBulletCounter]->GetComponent<Bullet>();
 		bullet->SetMoveDirection(glm::vec3(0,-1,0));
-		glm::vec3 pos = GetOwnerOfComponent()->GetPosition();
+		glm::vec3 pos = m_OwnerOfCom->GetPosition();
 		bullets[usedBulletCounter]->m_Transform.Translate(pos.x, pos.y);
 		bullets[usedBulletCounter]->m_Enable = true;
 		bullet->col->m_Enable = true;

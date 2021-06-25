@@ -11,11 +11,13 @@
 #include "Examples/StressTest2D.h"
 #include "Hexagon/Hexagon.h"
 #include "Examples/Test.h"
+#include "Examples/Chess/Chess.h"
+#include "Examples/Tetris/Tetris.h"
 
 int main()
 {
-	Test app;
-	Doom::EntryPoint entrypoint(&app);
+	Tetris app;
+	Doom::EntryPoint entrypoint(nullptr);
 	entrypoint.Run();
 	return 0;
 }

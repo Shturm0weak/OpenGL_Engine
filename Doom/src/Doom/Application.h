@@ -11,13 +11,12 @@ namespace Doom {
 	public:
 
 		std::string m_Name;
-		RenderType m_Type = TYPE_2D;
 		int m_Width = 0;
 		int m_Height = 0;
 		bool m_Vsync = false;
 
-		Application(std::string name = "SandBox", RenderType type = TYPE_2D, int width = 800, int height = 600, bool Vsync = false)
-			: m_Name(name), m_Type(type), m_Width(width), m_Height(height), m_Vsync(Vsync) {}
+		Application(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false)
+			: m_Name(name), m_Width(width), m_Height(height), m_Vsync(Vsync) {}
 		
 		virtual ~Application() {}
 

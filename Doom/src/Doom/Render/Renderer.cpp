@@ -52,20 +52,22 @@ void Renderer::SortTransparentObjects()
 void Renderer::RenderBloomEffect()
 {
 	Window& window = Window::GetInstance();
-	if (!s_BloomEffect) return;
+
+	if (!s_Bloom.m_IsEnabled) return;
 
 	bool horizontal = true, firstIteration = true;
-	unsigned int amount = 10;
 
 	std::vector<FrameBuffer*> fb = window.m_FrameBufferBlur;
 
 	Shader* shader = Shader::Get("Blur");
-	for (unsigned int i = 0; i < amount; i++)
+	shader->Bind();
+	shader->SetUniform1i("u_PixelsAmount", Renderer::s_Bloom.m_PixelsAmount);
+	shader->SetUniform1i("u_StepTexturePixles", Renderer::s_Bloom.m_StepTexturePixels);
+	for (unsigned int i = 0; i < Renderer::s_Bloom.m_BlurPasses; i++)
 	{
 		fb[horizontal]->Bind();
-
-		shader->Bind();
-		shader->SetUniform1i("horizontal", horizontal);
+		shader->SetUniform1i("u_Horizontal", horizontal);
+		
 		int id = firstIteration ? window.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
 		glBindTexture(GL_TEXTURE_2D, id);
 
@@ -74,7 +76,6 @@ void Renderer::RenderBloomEffect()
 		horizontal = !horizontal;
 		if (firstIteration) firstIteration = false;
 	}
-	shader->UnBind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	Renderer::Clear();
 
@@ -84,8 +85,11 @@ void Renderer::RenderBloomEffect()
 	glBindTextureUnit(0, window.m_FrameBufferColor->m_Textures[0]);
 	shader->SetUniform1i("scene", 0);
 	glBindTextureUnit(1, fb[0]->m_Textures[0]);
+	shader->SetUniform1i("hdr", Renderer::s_Bloom.m_IsHdrEnabled);
 	shader->SetUniform1i("bloomBlurH", 1);
-	shader->SetUniform1f("exposure", Renderer::s_Exposure);
+	shader->SetUniform1f("u_Intensity", Renderer::s_Bloom.m_Intensity);
+	shader->SetUniform1f("exposure", s_Bloom.m_Exposure);
+	shader->SetUniform1f("gamma", s_Bloom.m_Gamma);
 	Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
 	window.m_FrameBufferColor->UnBind();
 
@@ -127,16 +131,18 @@ void Renderer::RenderOutLined3dObjects()
 
 void Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 {
-	if (mesh == nullptr) return;
+	if (mesh == nullptr)
+	{
+		Logger::Error("Is nullptr", "plane mesh", " in render for post effect");
+		return;
+	}
 	shader->Bind();
 	mesh->m_Va.Bind();
 	mesh->m_Ib.Bind();
-	mesh->m_Vb.Bind();
 	Renderer::s_Stats.m_Vertices += mesh->m_Ib.m_count;
 	Renderer::s_Stats.m_DrawCalls++;
 	glDrawElements(GL_TRIANGLES, mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
-	shader->UnBind();
-	mesh->m_Ib.UnBind();
+	//shader->UnBind();
 	glBindTextureUnit(0, Texture::s_WhiteTexture->m_RendererID);
 }
 
@@ -164,6 +170,22 @@ void Renderer::Render() {
 	Renderer::RenderScene();
 	Window::GetInstance().GetScrollYOffset() = 0;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//@Deprecated
+	//Due to that textures can't store all information about emissive objects
+	/*{
+		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferBrightness->m_Fbo);
+		Renderer::Clear();
+		Shader* shader = Shader::Get("BrightnessTexture");
+		shader->Bind();
+		shader->SetUniform1i("scene", 0);
+		shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
+		glBindTextureUnit(0, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
+		Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
+		shader->UnBind();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}*/
+
 	Renderer::Clear();
 	Instancing::GetInstance()->PrepareVertexAtrrib();
 
@@ -220,7 +242,6 @@ void Renderer::Render2DObjects()
 		Batch& batch = Batch::GetInstance();
 		batch.BeginGameObjects();
 
-
 		{
 			for (size_t i = 0; i < Renderer::s_Objects2d.size(); i++)
 			{
@@ -241,7 +262,9 @@ void Renderer::Render2DObjects()
 		}
 		batch.EndGameObjects();
 	}
+	glDisable(GL_DEPTH_TEST);
 	Batch::GetInstance().FlushGameObjects(Batch::GetInstance().m_BasicShader);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::Render3DObjects()
@@ -283,13 +306,10 @@ void Renderer::BakeShadows()
 
 void Renderer::Render3D()
 {
-	if (Window::GetInstance().GetApp().m_Type == RenderType::TYPE_3D)
-	{
-		Render3DObjects();
-		RenderLines();
-		Render2DObjects();
-		RenderTransparent();
-	}
+	Render3DObjects();
+	RenderLines();
+	Render2DObjects();
+	RenderTransparent();
 }
 
 void Renderer::UpdateLightSpaceMatrices()
@@ -302,14 +322,7 @@ void Renderer::UpdateLightSpaceMatrices()
 
 void Renderer::Render2D()
 {
-	if (Window::GetInstance().GetApp().m_Type == RenderType::TYPE_2D)
-	{
-		glDisable(GL_DEPTH_TEST);
-		Render2DObjects();
-		RenderLines();
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-	}
+
 }
 
 void Renderer::RenderCollision3D()

@@ -230,6 +230,7 @@ void Renderer3D::Copy(const Renderer3D& rhs)
 	m_Color = rhs.m_Color;
 	m_Shader = rhs.m_Shader;
 	m_RenderType = rhs.m_RenderType;
+	m_Emissive = rhs.m_Emissive;
 }
 
 void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale, glm::vec4& color)
@@ -259,6 +260,8 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 			m_Shader->SetUniform3fv(buffer, dl->m_Dir);
 			sprintf(buffer, "dirLights[%i].color", i);
 			m_Shader->SetUniform3fv(buffer, dl->m_Color);
+			sprintf(buffer, "dirLights[%i].intensity", i);
+			m_Shader->SetUniform1f(buffer, dl->m_Intensity);
 		}
 
 		int plightSize = PointLight::s_PointLights.size();
@@ -309,13 +312,14 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		glBindTextureUnit(2, Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 		m_Shader->SetUniform1i("u_ShadowTexture", 2);
 		m_Shader->SetUniform1f("u_DrawShadows", Instancing::GetInstance()->m_DrawShadows); 
-		m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
 		if (m_IsUsingNormalMap)
 		{
 			glBindTextureUnit(1, m_NormalMapTexture->m_RendererID);
 			m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
 		m_Shader->SetUniform1i("u_isNormalMapping", m_IsUsingNormalMap);
+		m_Shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
+		m_Shader->SetUniform1i("emissive", m_Emissive);
 		m_Mesh->m_Va.Bind();
 		m_Mesh->m_Ib.Bind();
 
@@ -378,7 +382,7 @@ void Renderer3D::RenderSkyBox()
 	m_Shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetInstance().GetCamera().GetViewMatrix())));
 	m_Shader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
 	m_Shader->SetUniform1i("u_DiffuseTexture", 0);
-	m_Shader->SetUniform1f("Brightness", Renderer::s_Brightness);
+	m_Shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
 	m_Shader->Bind();
 	m_Mesh->m_Va.Bind();
 	m_Mesh->m_Ib.Bind();

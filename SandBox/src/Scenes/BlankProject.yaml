@@ -1,10 +1,10 @@
-Scene: 1
 Camera:
   Transform:
     Position: [19.024456, 12.6945591, -11.3884039]
     Rotation: [-0.502653897, 2.09417295, 0]
   Zoom: 1
   FOV: 1
+  Type: 1
 GameObjects:
   - GameObject: 0
     Name: Sun

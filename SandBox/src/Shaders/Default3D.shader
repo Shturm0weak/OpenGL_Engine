@@ -7,12 +7,7 @@ layout(location = 2) in vec2 textCoords;
 layout(location = 3) in vec3 vertexColor;
 layout(location = 4) in vec3 tangent;
 layout(location = 5) in vec3 btangent;
-//layout(location = 5) in vec3 v;
-//vec4 v1 = { v.x,0,0,0 };
-//vec4 v2 = { 0,v.y,0,0 };
-//vec4 v3 = { 0,0,v.z,0 };
-//vec4 v4 = {0,0,0,0}
-//mat4 model = { v1,v2,v3,4 };
+
 out mat3 TBN;
 out vec2 v_textcoords;
 out float tempambient;
@@ -37,7 +32,8 @@ uniform float u_Ambient;
 uniform float u_Specular;
 uniform mat4 u_lightSpaceMatrix;
 
-void main() {
+void main() 
+{
 	out_vertexColor = vertexColor;
 	vec4 tempFragPos = u_Model * u_View * u_Scale * vec4(positions, 1.0);
 	FragPos =  vec3(tempFragPos);
@@ -58,7 +54,7 @@ void main() {
 	TBN = (mat3(T, B, N));
 
 	gl_Position = u_ViewProjection * tempFragPos;
-};
+}
 
 
 #shader fragment
@@ -100,6 +96,7 @@ struct SpotLight {
 struct DirectionalLight {
 	vec3 dir;
 	vec3 color;
+	float intensity;
 };
 
 #define MAX_LIGHT 32
@@ -115,8 +112,8 @@ uniform sampler2D u_ShadowTexture;
 uniform sampler2D u_NormalMapTexture;
 uniform bool u_isNormalMapping;
 uniform float u_DrawShadows;
-
 uniform float Brightness;
+uniform int emissive;
 
 float shadow = 0.0;
 
@@ -150,7 +147,8 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal)
 	return shadow;
 }
 
-vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos)
+{
 	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
 	float ambientStrength = ambient;
 	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
@@ -165,10 +163,11 @@ vec3 DirLightsCompute(DirectionalLight light, vec3 normal, vec3 fragPos, vec3 Ca
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 	vec3 specular = specularStrength * spec * diffuseTexColor;
 
-	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
+	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color) * light.intensity;
 }
 
-vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos)
+{
 	vec3 diffuseTexColor = texture(u_DiffuseTexture, v_textcoords).rgb;
 	float ambientStrength = ambient;
 	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
@@ -194,7 +193,8 @@ vec3 PointLightsCompute(PointLight light, vec3 normal, vec3 fragPos, vec3 Camera
 	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
 }
 
-vec3 SpotLightsCompute(SpotLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+vec3 SpotLightsCompute(SpotLight light, vec3 normal, vec3 fragPos, vec3 CameraPos)
+{
 
 	vec3 LightDir = normalize(light.position - FragPos);
 	float theta = dot(LightDir, normalize(-light.dir));
@@ -235,7 +235,8 @@ vec3 SpotLightsCompute(SpotLight light, vec3 normal, vec3 fragPos, vec3 CameraPo
 		return vec3(0.0, 0.0, 0.0);
 }
 
-void main() {
+void main()
+{
 	vec4 texColor = texture(u_DiffuseTexture, v_textcoords);
 	if (texColor.a < 0.1)
 		discard;
@@ -269,11 +270,14 @@ void main() {
 		result += SpotLightsCompute(spotLights[i], normal, FragPos, CameraPos);
 	}
 
-	float gamma = 2.2;
-	FragColor = vec4(pow(result * out_color.rgb * out_vertexColor, vec3(1.0 / gamma)), 1.0);
+	FragColor = vec4(result * out_color.rgb * out_vertexColor, 1.0);
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-	if (brightness > Brightness)
+	if (brightness > Brightness || emissive == 1)
+	{
 		BrightColor = vec4(FragColor.rgb, 1.0);
+	}
 	else
+	{
 		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
-};
+	}
+}

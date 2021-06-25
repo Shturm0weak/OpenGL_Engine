@@ -9,9 +9,10 @@ uniform mat4 u_View;
 uniform mat4 u_Scale;
 uniform mat4 u_ViewProjection;
 
-void main() {
+void main() 
+{
 	gl_Position = u_ViewProjection * u_Model * u_View * u_Scale * vec4(positions, 1);
-};
+}
 
 #shader fragment
 #version 330 core
@@ -26,7 +27,8 @@ float LinearizeDepth(float depth)
 	return (2.0 * zNear * zFar) / (zFar + zNear - z * (zFar - zNear));
 }
 
-void main() {
+void main()
+{
 	float depth = LinearizeDepth(gl_FragCoord.z) / zFar;
 	gl_FragColor = vec4(vec3(1 - depth,depth,depth),1.0);
-};
+}

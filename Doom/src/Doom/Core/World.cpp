@@ -53,7 +53,7 @@ void Doom::World::DeleteObject(int id)
 		for (unsigned int i = 0; i < size; i++)
 		{
 			World::s_GameObjects[i]->m_Id = (i);
-			World::s_GameObjects[i]->m_Layer = i;
+			//World::s_GameObjects[i]->m_Layer = i;
 		}
 	}
 	unsigned int childsAmount = go->GetChilds().size();
@@ -62,7 +62,7 @@ void Doom::World::DeleteObject(int id)
 		GameObject* owner = static_cast<GameObject*>(go->GetOwner());
 		owner->RemoveChild(go);
 	}
-	if (go->GetComponent<Irenderer>() != nullptr && go->GetComponent<Irenderer>()->m_RenderType == TYPE_3D)
+	if (go->GetComponent<Renderer3D>() != nullptr)
 	{
 		go->GetComponent<Renderer3D>()->EraseFromInstancing();
 	}
@@ -71,32 +71,41 @@ void Doom::World::DeleteObject(int id)
 	go->Delete();
 }
 
-GameObject* Doom::World::SelectObject()
+GameObject* Doom::World::SelectObject(std::vector<std::string> m_Mask)
 {
 	std::vector < glm::vec2> p;
 	for (unsigned int i = 0; i < GetAmountOfObjects(); i++)
 	{
-		GameObject* go = static_cast<GameObject*>(World::s_GameObjects[i]);
-		SpriteRenderer* sr = static_cast<SpriteRenderer*>(go->m_ComponentManager.GetComponent<Irenderer>());
+		GameObject* go = World::s_GameObjects[i];
+		if (go->m_Enable == false) continue;
+		bool isInsideMask = false;
+		for (size_t j = 0; j < m_Mask.size(); j++)
+		{
+			if (go->m_Tag == m_Mask[j]) isInsideMask = true;
+		}
+		if (isInsideMask == false) continue;
+
+		SpriteRenderer* sr = (go->GetComponent<SpriteRenderer>());
+		if (sr == nullptr) continue;
 		p.clear();
 		float worldVertexPositions[8];
 		sr->GetTransformedVertices(worldVertexPositions);
-		p.push_back(glm::vec2(worldVertexPositions[0] + go->GetPosition().x, worldVertexPositions[1] + go->GetPosition().y));
-		p.push_back(glm::vec2(worldVertexPositions[2] + go->GetPosition().x, worldVertexPositions[3] + go->GetPosition().y));
-		p.push_back(glm::vec2(worldVertexPositions[4] + go->GetPosition().x, worldVertexPositions[5] + go->GetPosition().y));
-		p.push_back(glm::vec2(worldVertexPositions[6] + go->GetPosition().x, worldVertexPositions[7] + go->GetPosition().y));
+		glm::vec3 pos = go->GetPosition();
+		p.push_back(glm::vec2(worldVertexPositions[0] + pos.x, worldVertexPositions[1] + pos.y));
+		p.push_back(glm::vec2(worldVertexPositions[2] + pos.x, worldVertexPositions[3] + pos.y));
+		p.push_back(glm::vec2(worldVertexPositions[4] + pos.x, worldVertexPositions[5] + pos.y));
+		p.push_back(glm::vec2(worldVertexPositions[6] + pos.x, worldVertexPositions[7] + pos.y));
 		if (ObjectCollided(p, i)) 
 		{
-			if (Editor::GetInstance().go != go)
-			{
-				Editor::GetInstance().go = go;
+			//if (Editor::GetInstance().go != go)
+			//{
+			//	Editor::GetInstance().go = go;
 				return go;
-			}
+			//}
 		}
 	}
-	Editor::GetInstance().go = nullptr;
+	//Editor::GetInstance().go = nullptr;
 	return nullptr;
-
 }
 
 void Doom::World::ShutDown()

@@ -82,6 +82,8 @@
     <ClInclude Include="src\SpaceFire\SpaceFire.h">
       <Filter>src\SpaceFire</Filter>
     </ClInclude>
+    <ClInclude Include="src\Examples\Chess\Chess.h" />
+    <ClInclude Include="src\Examples\Tetris\Tetris.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox.cpp" />
@@ -113,5 +115,10 @@
     <ClCompile Include="src\SpaceFire\ShipPlayer.cpp">
       <Filter>src\SpaceFire</Filter>
     </ClCompile>
+    <ClCompile Include="src\Examples\Chess\Chess.cpp" />
+    <ClCompile Include="src\Examples\Tetris\Tetris.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shaders\BrightnessTexture.shader" />
   </ItemGroup>
 </Project>

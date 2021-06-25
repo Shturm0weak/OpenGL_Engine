@@ -70,22 +70,9 @@ void Doom::Application::Init() const
 	style->WindowRounding = 0.0f;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	switch (m_Type)
-	{
-	case Doom::TYPE_2D:
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-		Window::GetInstance().GetCamera().SetOrthographic((float)m_Width / m_Height);
-		break;
-	case Doom::TYPE_3D:
-
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		Window::GetInstance().GetCamera().SetPerspective(1, m_Width, m_Height, 0.1, 1000.0);
-		break;
-	default:
-		break;
-	}
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	Window::GetInstance().GetCamera().SetPerspective(1, m_Width, m_Height, 0.1, 1000.0);
 }

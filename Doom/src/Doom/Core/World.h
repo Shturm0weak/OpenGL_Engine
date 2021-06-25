@@ -26,7 +26,7 @@ namespace Doom {
 		GameObject* SelectObject3D();
 		unsigned int GetAmountOfObjects();
 		bool ObjectCollided(std::vector<glm::vec2>& p, int i);
-		GameObject* SelectObject();
+		GameObject* SelectObject(std::vector<std::string> m_Mask = std::vector<std::string>({ "General" }));
 
 		friend class RectangleCollider2D;
 		friend class Instancing;

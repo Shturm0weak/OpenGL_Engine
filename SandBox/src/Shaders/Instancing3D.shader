@@ -35,7 +35,8 @@ uniform mat4 u_ViewProjection;
 uniform vec3 u_CameraPos;
 uniform mat4 u_LightSpaceMatrix;
 
-void main() {
+void main()
+{
 	out_vertexColor = vertexColor;
 	tex_index = int(mat.z);
 	vec4 tempFragPos = u_Model * u_View * u_Scale * vec4(positions, 1.0);
@@ -55,13 +56,14 @@ void main() {
 	TBN = (mat3(T, B, N));
 
 	gl_Position = u_ViewProjection * tempFragPos;
-};
+}
 
 #shader fragment
 #version 330 core
 
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec4 BrightColor;
+
 in vec2 v_textcoords;
 in vec3 CameraPos;
 in vec3 FragPos;
@@ -113,7 +115,6 @@ uniform bool u_isNormalMapping;
 //uniform sampler2D u_ShadowMap;
 uniform float u_DrawShadows;
 uniform sampler2D u_Texture[32];
-
 uniform float Brightness;
 
 float shadow = 0.0;
@@ -148,7 +149,8 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal)
 	return shadow;
 }
 
-vec3 DirLightsCompute(vec3 diffuseTexColor, DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+vec3 DirLightsCompute(vec3 diffuseTexColor, DirectionalLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) 
+{
 	//vec3 diffuseTexColor = texture(u_Texture[tex_index], v_textcoords).rgb;
 	float ambientStrength = ambient;
 	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
@@ -163,10 +165,11 @@ vec3 DirLightsCompute(vec3 diffuseTexColor, DirectionalLight light, vec3 normal,
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 	vec3 specular = specularStrength * spec * diffuseTexColor;
 
-	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color);
+	return (ambient + (1.0 - shadow) * (diffuse + specular) * light.color) * light.intensity;
 }
 
-vec3 PointLightsCompute(vec3 diffuseTexColor, PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) {
+vec3 PointLightsCompute(vec3 diffuseTexColor, PointLight light, vec3 normal, vec3 fragPos, vec3 CameraPos) 
+{
 	//vec3 diffuseTexColor = texture(u_Texture[tex_index], v_textcoords).rgb;
 	float ambientStrength = ambient;
 	vec3 ambient = ambientStrength * diffuseTexColor * light.color;
@@ -233,7 +236,8 @@ vec3 SpotLightsCompute(vec3 diffuseTexColor, SpotLight light, vec3 normal, vec3 
 		return vec3(0.0, 0.0, 0.0);
 }
 
-void main() {
+void main() 
+{
 	vec4 texColor = texture(u_Texture[tex_index], v_textcoords);
 	if (texColor.a < 0.1)
 		discard;
@@ -266,11 +270,10 @@ void main() {
 		result += SpotLightsCompute(texColor.xyz, spotLights[i], normal, FragPos, CameraPos);
 	}
 
-	float gamma = 2.2;
-	FragColor = vec4(pow(result * out_color.rgb * out_vertexColor, vec3(1.0 / gamma)), 1.0);
+	FragColor = vec4(result * out_color.rgb * out_vertexColor, 1.0);
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > Brightness)
 		BrightColor = vec4(FragColor.rgb, 1.0);
 	else
 		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
-};
+}

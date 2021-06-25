@@ -19,7 +19,7 @@ void Doom::DirectionalLight::UpdateLightMatrix()
 {
 	Camera& cam = Window::GetInstance().GetCamera();
 	float near_plane = cam.m_ZnearSM, far_plane = cam.m_ZfarSM;
-	m_LightProjection = glm::ortho(-cam.m_RationProjectionSM, cam.m_RationProjectionSM, -cam.m_RationProjectionSM, cam.m_RationProjectionSM, near_plane, far_plane);
+	m_LightProjection = glm::ortho(-cam.m_RatioProjectionSM, cam.m_RatioProjectionSM, -cam.m_RatioProjectionSM, cam.m_RatioProjectionSM, near_plane, far_plane);
 	glm::vec3 dir = m_OwnerOfCom->m_Transform.m_ViewMat4 * glm::vec4(0, 0, 1, 1);
 	glm::vec3 pos = Window::GetInstance().GetCamera().GetPosition();
 	glm::mat4 view = glm::lookAt(pos, dir + pos, glm::vec3(0, 1, 0));

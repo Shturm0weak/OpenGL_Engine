@@ -13,7 +13,7 @@
 #define DOOM_API __declspec(dllimport)
 #endif
 
-static int g_ScaleUI = 1080;
+static int g_ScaleUI = 1000;
 
 static void GlClearError() 
 {

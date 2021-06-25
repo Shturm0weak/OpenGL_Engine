@@ -104,11 +104,13 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="src\AimTrainer\AimTrainer.h" />
     <ClInclude Include="src\Examples\BlankProject.h" />
+    <ClInclude Include="src\Examples\Chess\Chess.h" />
     <ClInclude Include="src\Examples\RayCastTest.h" />
     <ClInclude Include="src\Examples\StressTest.h" />
     <ClInclude Include="src\Examples\StressTest2D.h" />
     <ClInclude Include="src\Examples\Test.h" />
     <ClInclude Include="src\Examples\TestCollision2D.h" />
+    <ClInclude Include="src\Examples\Tetris\Tetris.h" />
     <ClInclude Include="src\Examples\TicTacToe.h" />
     <ClInclude Include="src\FEM\FEM.h" />
     <ClInclude Include="src\FEM\Integrals.h" />
@@ -126,6 +128,8 @@
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="src\AimTrainer\AimTrainer.cpp" />
+    <ClCompile Include="src\Examples\Chess\Chess.cpp" />
+    <ClCompile Include="src\Examples\Tetris\Tetris.cpp" />
     <ClCompile Include="src\FEM\FEM.cpp" />
     <ClCompile Include="src\FEM\Integrals.cpp" />
     <ClCompile Include="src\FEM\MathFunctions.cpp" />
@@ -142,6 +146,9 @@
     <ProjectReference Include="..\vendor\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shaders\BrightnessTexture.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

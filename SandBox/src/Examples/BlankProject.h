@@ -10,7 +10,7 @@ public:
 	Line* l = nullptr;
 	glm::vec3 start { 1.0f };
 	glm::vec3 end { 0,0,10 };
-	BlankProject(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, TYPE_3D, width, height, Vsync) {}
+	BlankProject(std::string name = "SandBox", int width = 800, int height = 600, bool Vsync = false) : Application(name, width, height, Vsync) {}
 	std::vector<std::string> faces = {
 				"src/SkyBox/skyBox1/1back.png",
 				"src/SkyBox/skyBox1/2front.png",

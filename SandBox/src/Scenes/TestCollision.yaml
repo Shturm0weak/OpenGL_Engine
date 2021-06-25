@@ -1,10 +1,10 @@
-Scene: 0
 Camera:
   Transform:
     Position: [1.35939646, 0.999368608, 0]
     Rotation: [0, 0, 0]
   Zoom: 5.8189997673034668
   FOV: 1
+  Type: 0
 GameObjects:
   - GameObject: 0
     Name: test

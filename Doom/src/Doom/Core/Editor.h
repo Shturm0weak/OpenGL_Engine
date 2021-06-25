@@ -32,6 +32,7 @@ namespace Doom {
 		Texture* textureForAtlas = nullptr;
 		float spriteSize[2] = {128,128};
 		int axes[3] = { 0,0,1 };
+		int spriteLayer = 0;
 		float changeSliderPos[2] = { -25,25 };
 		float changeSliderScale[2] = { 0,25 };
 		float changeSliderCollisionOffset[2] = { -10,10 };
@@ -80,6 +81,7 @@ namespace Doom {
 		void DrawChilds(GameObject* go);
 		void ShaderMenu();
 		void MenuShadowMap();
+		void MenuBloom();
 		void MenuInstancingStats();
 		void MenuStats();
 

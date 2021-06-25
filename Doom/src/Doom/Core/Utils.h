@@ -74,7 +74,8 @@ namespace Utils {
 		for (const auto& entry : fs::directory_iterator(path)) 
 		{
 			std::string pathToTexture = entry.path().string();
-			if (pathToTexture.find(".png") <= pathToTexture.length() || pathToTexture.find(".jpeg") <= pathToTexture.length()) {
+			if (pathToTexture.find(".png") != std::string::npos || pathToTexture.find(".jpeg") != std::string::npos)
+			{
 				files.push_back(entry.path().string());
 			}
 		}

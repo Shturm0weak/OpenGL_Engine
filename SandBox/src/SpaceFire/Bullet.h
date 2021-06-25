@@ -22,10 +22,10 @@ public:
 		EventSystem::GetInstance().RegisterClient(EventType::ONUPDATE, this);
 		EventSystem::GetInstance().RegisterClient(EventType::ONSTART, this);
 		EventSystem::GetInstance().RegisterClient(EventType::ONCOLLISION, this);
-		col = GetOwnerOfComponent()->AddComponent<RectangleCollider2D>();
-		tr = GetOwnerOfComponent()->GetComponent<Transform>();
-		sr = GetOwnerOfComponent()->AddComponent<SpriteRenderer>();
-		col->GetOwnerOfComponent()->m_Tag = (tag);
+		col = m_OwnerOfCom->AddComponent<RectangleCollider2D>();
+		tr = m_OwnerOfCom->GetComponent<Transform>();
+		sr = m_OwnerOfCom->AddComponent<SpriteRenderer>();
+		col->m_OwnerOfCom->m_Tag = (tag);
 		this->moveDir = glm::vec3(moveDir * (1.f / sqrtf(moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z)));
 		sr->m_Texture = (texture);
 		sr->m_Color = (COLORS::Orange);
@@ -50,6 +50,6 @@ public:
 	void Death() {
 		isActive = false;
 		col->m_Enable = false;
-		GetOwnerOfComponent()->m_Enable = false;
+		m_OwnerOfCom->m_Enable = false;
 	}
 };

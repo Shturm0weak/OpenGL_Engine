@@ -63,9 +63,7 @@ DOOM_API std::vector <RectangleCollider2D*> RectangleCollider2D::s_Collision2d;
 DOOM_API Shader* RectangleCollider2D::s_Shader;
 DOOM_API bool Renderer::s_PolygonMode = false;
 DOOM_API Renderer::Stats Renderer::s_Stats;
-DOOM_API float Renderer::s_Exposure = 1.5f;
-DOOM_API bool Renderer::s_BloomEffect = false;
-DOOM_API float Renderer::s_Brightness = 1.0;
+DOOM_API Renderer::Bloom Renderer::s_Bloom;
 
 DOOM_API std::vector<std::string> Editor::s_TexturesPath;
 DOOM_API std::vector<Texture*> Editor::s_Texture;

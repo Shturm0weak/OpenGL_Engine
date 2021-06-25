@@ -53,7 +53,6 @@ namespace Doom {
 
 		bool m_IsInteracting = false;
 		bool m_IsAnyPanelHovered = false;
-		float m_EdgeRadius = 0;
 		TextProperties m_TextProps;
 		Font* m_Font;
 
@@ -83,10 +82,10 @@ namespace Doom {
 		static Gui& GetInstance() { static Gui instance; return instance; }
 
 		//x,y in pixels
-		void Text(const std::wstring& text, int m_static = 1, float x = 0, float y = 0,
+		void Text(const std::wstring& text, int relatedToCamera = 1, float x = 0, float y = 0,
 			float fontScale = 20, glm::vec4 color = glm::vec4(1.0f), int charsAfterComma = 0, ...);
 
-		//x,y,width and height in pixels
+		//x,y,width and height in pixels from -g_UIScale to +g_UIScale
 		bool Button(const std::wstring& label, float x = 0, float y = 0,
 			float scale = 24, float width = 100, float height = 50,
 			glm::vec4 btnColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f), glm::vec4 pressedBtnColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f) * 0.5f,
@@ -100,7 +99,7 @@ namespace Doom {
 			glm::vec4 color, glm::vec4 outColor, float width, float height);
 
 		bool CheckBox(const std::wstring& label,bool* value, float x = 0.0f, float y = 0.0f,
-			float size = 0.0f, glm::vec4 textColor = glm::vec4(1.0f), glm::vec4 imageColor = glm::vec4(1.0f));
+			float size = 24.0f, glm::vec4 textColor = glm::vec4(1.0f), glm::vec4 imageColor = glm::vec4(1.0f));
 
 		bool SliderFloat(const std::wstring& label, float* value, float min = 0.0f, float max = 1.0f,
 			float x = 0.0f, float y = 0.0f, float width = 100.0f, float height = 50.0f,
@@ -115,7 +114,7 @@ namespace Doom {
 		void Image(float x = 0.0f, float y = 0.0f, float width = 100.0f, float height = 100.0f,
 			Texture* texture = nullptr, glm::vec4 color = glm::vec4(1.0f));
 
-		bool CollapsingHeader(const std::wstring& label, float x, float y, glm::vec4 color);
+		bool CollapsingHeader(const std::wstring& label, float x = 0.0f, float y = 0.0f, float height = 25.0f, glm::vec4 color = COLORS::Gray);
 
 		bool IsPanelHovered();
 		void RelateToPanel();
@@ -129,21 +128,20 @@ namespace Doom {
 		std::vector<Font*>& GetStandartFonts() { return m_StandartFonts; }
 	private:
 		
-		bool m_IsRelatedToPanel = false;
-		float m_CharacterXOffset = 0;
-		float m_CurrentPanelCoods[8];
+		std::vector<Font*> m_StandartFonts;
+		glm::vec4 m_BtnColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+		std::string m_S;
 
 		Character* m_Character = nullptr;
-
-		glm::vec4 m_BtnColor = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
-		glm::vec2 m_Position;
-		std::string m_S;
-		std::vector<Font*> m_StandartFonts;
 
 		Texture* m_CheckBoxTextureTrue = Texture::Create("src/UIimages/CheckMarkTrue.png");
 		Texture* m_CheckBoxTextureFalse = Texture::Create("src/UIimages/CheckMarkFalse.png");
 		Texture* m_TriangleRightTexture = Texture::Create("src/UIimages/triangleRight.png");
 		Texture* m_TriangleDownTexture = Texture::Create("src/UIimages/triangleDown.png");
+		
+		float m_CharacterXOffset = 0;
+		float m_CurrentPanelCoods[8];
+		bool m_IsRelatedToPanel = false;
 
 		void ApplyRelatedToPanelProperties(float* x, float* y);
 		void FindCharInFont(std::vector<Character*>& localCharV, wchar_t c);

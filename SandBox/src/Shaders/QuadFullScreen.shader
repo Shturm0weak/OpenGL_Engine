@@ -9,10 +9,11 @@ layout(location = 5) in vec3 btangent;
 
 out vec2 TexCoords;
 
-void main() {
+void main() 
+{
     TexCoords = textCoords;
     gl_Position = vec4(positions, 1);
-};
+}
 
 #shader fragment
 #version 330 core

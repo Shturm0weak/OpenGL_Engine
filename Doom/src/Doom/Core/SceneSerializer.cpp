@@ -123,8 +123,6 @@ void Doom::SceneSerializer::Serialize(const std::string& filePath)
 	s_CurrentSceneFilePath = filePath;
 	YAML::Emitter out;
 	out << YAML::BeginMap;
-	out << YAML::Key << "Scene";
-	out << YAML::Value << Window::GetInstance().GetApp().m_Type;
 	out << YAML::Key << "Camera";
 	out << YAML::BeginMap;
 	out << YAML::Key << "Transform";
@@ -132,8 +130,9 @@ void Doom::SceneSerializer::Serialize(const std::string& filePath)
 	out << YAML::Key << "Position" << YAML::Value << camera.GetPosition();
 	out << YAML::Key << "Rotation" << YAML::Value << camera.GetRotation();
 	out << YAML::EndMap;
-	out << YAML::Key << "Zoom" << YAML::Value << camera.GetZoomLevel();
-	out << YAML::Key << "FOV" << YAML::Value <<  camera.GetFOV();
+	out << YAML::Key << "Zoom" << YAML::Value << camera.m_ZoomLevel;
+	out << YAML::Key << "FOV" << YAML::Value <<  camera.m_Fov;
+	out << YAML::Key << "Type" << YAML::Value << (int)camera.m_Type;
 	out << YAML::EndMap;
 
 	out << YAML::Key << "GameObjects";
@@ -170,19 +169,16 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 	strStream << stream.rdbuf();
 
 	YAML::Node data = YAML::Load(strStream.str());
-	if (!data["Scene"])
-		return;
-
-	RenderType type = (RenderType)data["Scene"].as<int>();
 
 	auto cam = data["Camera"];
 	auto camTransform = cam["Transform"];
+	Camera::CameraTypes type = (Camera::CameraTypes)cam["Type"].as<int>();
 	glm::vec3 position = camTransform["Position"].as<glm::vec3>();
 	glm::vec3 rotation = camTransform["Rotation"].as<glm::vec3>();
 	float fov = cam["FOV"].as<float>();
 	double zoom = cam["Zoom"].as<float>();
 	Camera& camera = Window::GetInstance().GetCamera();
-	if (type == RenderType::TYPE_3D)
+	if (type == Camera::CameraTypes::PERSPECTIVE)
 		camera.SetFov(fov);
 	else
 		camera.Zoom(zoom);
@@ -267,6 +263,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		bool isTransparent = renderer3DComponent["Transparent"].as<bool>();
 		if (isTransparent) r->MakeTransparent();
 		else r->MakeSolid();
+		if(renderer3DComponent["Emissive"]) r->m_Emissive = renderer3DComponent["Emissive"].as<bool>();
 		r->m_IsCastingShadows = renderer3DComponent["Casting shadows"].as<bool>();
 		r->m_IsWireMesh = renderer3DComponent["Wire mesh"].as<bool>();
 		r->m_IsUsingNormalMap = renderer3DComponent["Use normal map"].as<bool>();
@@ -367,6 +364,7 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 		SpriteRenderer* sr = obj->m_ComponentManager.AddComponent<SpriteRenderer>();
 		sr->m_Color = spriteRendererComponent["Color"].as<glm::vec4>();
 		sr->m_Texture = (Texture::Create(spriteRendererComponent["Texture"].as<std::string>()));
+		if (spriteRendererComponent["Emissive"]) sr->m_Emissive = spriteRendererComponent["Emissive"].as<bool>();
 		std::vector<float> vert = spriteRendererComponent["Vertices"].as<std::vector<float>>();
 		for (uint32_t i = 0; i < 16; i++)
 		{
@@ -511,6 +509,7 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 
 			out << YAML::Key << "Shader" << YAML::Value << r->m_Shader->m_FilePath;
 			out << YAML::Key << "Render technic" << YAML::Value << (int)r->m_RenderTechnic;
+			out << YAML::Key << "Emissive" << YAML::Value << r->m_Emissive;
 			out << YAML::Key << "Transparent" << YAML::Value << r->m_IsTransparent;
 			out << YAML::Key << "SkyBox" << YAML::Value << r->m_IsSkyBox;
 			out << YAML::Key << "Casting shadows" << YAML::Value << r->m_IsCastingShadows;
@@ -562,6 +561,7 @@ void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter& out,
 		{
 			out << YAML::Key << "Sprite renderer";
 			out << YAML::BeginMap;
+			out << YAML::Key << "Emissive" << YAML::Value << sr->m_Emissive;
 			out << YAML::Key << "Color" << YAML::Value << sr->m_Color;
 			out << YAML::Key << "Texture" << YAML::Value << (sr->m_Texture != nullptr ? sr->m_Texture->m_FilePath : "InvalidTexture");
 			out << YAML::Key << "Texture atlas" << YAML::Value << (sr->m_TextureAtlas != nullptr ? sr->m_TextureAtlas->GetTexture()->m_FilePath : "InvalidTexture");;

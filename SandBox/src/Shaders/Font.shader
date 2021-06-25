@@ -16,7 +16,8 @@ out vec2 uv;
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Projection;
 
-void main() {
+void main() 
+{
 	if (staticA == 0) {
 		gl_Position = u_ViewProjection * positionA;
 	}
@@ -28,7 +29,7 @@ void main() {
 	color = colorA;
 	isGui = isGuiA;
 	texIndex = int(texIndexA);
-};
+}
 
 #shader fragment
 #version 330 core
@@ -48,7 +49,8 @@ uniform float u_borderedge;
 uniform vec2 u_offset;
 uniform sampler2D u_Texture[32];
 
-void main() {
+void main()
+{
 	if (isGui > 0.5) {
 		vec4 texColor = texture(u_Texture[texIndex], uv);
 		gl_FragColor = color * texColor;
@@ -63,4 +65,4 @@ void main() {
 		vec3 overallcolor = mix(vec3(u_outlineColor.r, u_outlineColor.g, u_outlineColor.b), vec3(color.r, color.g, color.b), alpha / overallalpha);
 		gl_FragColor = vec4(overallcolor, overallalpha);
 	}
-};
+}

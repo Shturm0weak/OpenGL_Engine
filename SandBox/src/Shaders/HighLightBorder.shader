@@ -13,11 +13,11 @@ uniform mat4 u_View;
 uniform mat4 u_Scale;
 uniform mat4 u_ViewProjection;
 
-void main() {
+void main()
+{
 	vec4 tempFragPos = u_Model * u_View * u_Scale * vec4(positions, 1.0);
 	gl_Position = u_ViewProjection * tempFragPos;
-};
-
+}
 
 #shader fragment
 #version 330 core

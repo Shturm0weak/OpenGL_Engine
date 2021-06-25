@@ -1,10 +1,10 @@
-Scene: 1
 Camera:
   Transform:
     Position: [-17.8947849, 11.6359653, 15.8827019]
     Rotation: [-0.294524014, -0.738642573, 0]
   Zoom: 0.10000000149011612
   FOV: 1
+  Type: 1
 GameObjects:
   - GameObject: 0
     Name: Emitter

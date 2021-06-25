@@ -99,6 +99,7 @@ void Doom::FEM::Clear()
     m_StaticNodes.clear();
     m_ShowForces = true;
     m_ShowConstraints = true;
+    m_MaxDisplacement = glm::dvec2(0.0);
     ShowForces();
     ShowConstraints();
 }
@@ -134,10 +135,10 @@ math::Matrix Doom::Triangle::CalculateMatrixK(math::Matrix matD, std::vector<Wei
     {
         Weight weight = weights[k];
         double r = weight.m_L1 * m_Nodes[0]->m_Pos.x + weight.m_L2 * m_Nodes[1]->m_Pos.x + ((1.0 - weight.m_L1 - weight.m_L2) * m_Nodes[2]->m_Pos.x);
-        double z = weight.m_L1 * m_Nodes[0]->m_Pos.y + weight.m_L2 * m_Nodes[1]->m_Pos.y + ((1.0 - weight.m_L1 - weight.m_L2) * m_Nodes[2]->m_Pos.y);
-        math::Matrix matB = CalculateMatrixB(weight, r, z);
+        math::Matrix matB = CalculateMatrixB(weight, r);
         math::Matrix matK = math::Transpose(matB) * matD * matB;
         m_MatB += matB * weight.m_W * 2.0;
+        //m_MatB = CalculateMatrixBAproximation(CalculateRatCentroid(), CalculateZatCentroid());
         for (size_t u = 0; u < elementMatK.m_Rows; u++)
         {
             for (size_t j = 0; j < elementMatK.m_Cols; j++)
@@ -210,20 +211,20 @@ void Doom::FEM::OnGuiRender()
     {
         if (m_IsCalculatedGSM == false && m_IsSolvingSOLE == false)
         {
-            if (g.CollapsingHeader(L"Forces", 0, 0, COLORS::Gray * 0.8f))
+            if (g.CollapsingHeader(L"Forces", 0, 0, 25.0f, COLORS::Gray * 0.8f))
             {
                 glm::vec2 tempPadding = g.m_RelatedPanelProperties.m_Padding;
                 glm::vec2 tempMargin = g.m_RelatedPanelProperties.m_Margin;
                 g.m_RelatedPanelProperties.m_Padding.y = 3;
                 g.m_RelatedPanelProperties.m_Margin = { 50, 3};
-                if (g.CollapsingHeader(L"#F X", 0, 0, COLORS::Gray * 0.8f)) {
+                if (g.CollapsingHeader(L"#F X", 0, 0, 25.0f, COLORS::Gray * 0.8f)) {
                     for (size_t i = 0; i < 4; i++)
                     {
                         //g.CheckBox("Side: " + std::to_string(i), &m_ForcesSidesX[i], 0, 0, 25);
                         g.InputInt(L"##Forces" + std::to_wstring(i) + L" " + m_SideNames[i], &m_ForcesValuesX[i], 0, 0, 200, 50);
                     }
                 }
-                if (g.CollapsingHeader(L"#F Y", 0, 0, COLORS::Gray * 0.8f)) {
+                if (g.CollapsingHeader(L"#F Y", 0, 0, 25.0f, COLORS::Gray * 0.8f)) {
                     for (size_t i = 0; i < 4; i++)
                     {
                         //g.CheckBox("Side: " + std::to_string(i), &m_ForcesSidesY[i], 0, 0, 25);
@@ -238,19 +239,19 @@ void Doom::FEM::OnGuiRender()
                 g.m_RelatedPanelProperties.m_Padding = tempPadding;
                 g.m_RelatedPanelProperties.m_Margin = tempMargin;
             }
-            if (g.CollapsingHeader(L"Constraints", 0, 0, COLORS::Gray * 0.8f))
+            if (g.CollapsingHeader(L"Constraints", 0, 0, 25.0f, COLORS::Gray * 0.8f))
             {
                 glm::vec2 tempPadding = g.m_RelatedPanelProperties.m_Padding;
                 glm::vec2 tempMargin = g.m_RelatedPanelProperties.m_Margin;
                 g.m_RelatedPanelProperties.m_Padding.y = 3;
                 g.m_RelatedPanelProperties.m_Margin = { 50, 3 };
-                if (g.CollapsingHeader(L"#C X", 0, 0, COLORS::Gray * 0.8f)) {
+                if (g.CollapsingHeader(L"#C X", 0, 0, 25.0f, COLORS::Gray * 0.8f)) {
                     for (size_t i = 0; i < 4; i++)
                     {
                         g.CheckBox(L"##Constraints" + std::to_wstring(i + 8) + L" " + m_SideNames[i], &m_ConstraintsSidesX[i], 0, 0, 25);
                     }
                 }
-                if (g.CollapsingHeader(L"#C Y", 0, 0, COLORS::Gray * 0.8f)) {
+                if (g.CollapsingHeader(L"#C Y", 0, 0, 25.0f, COLORS::Gray * 0.8f)) {
                     for (size_t i = 0; i < 4; i++)
                     {
                         g.CheckBox(L"##Constraints" + std::to_wstring(i + 12) + L" " + m_SideNames[i], &m_ConstraintsSidesY[i], 0, 0, 25);
@@ -301,7 +302,7 @@ void Doom::FEM::OnGuiRender()
             }
             mesh->Refresh();
         }
-        if (g.CollapsingHeader(L"Stresses", 0, 0, COLORS::Gray * 0.8f))
+        if (g.CollapsingHeader(L"Stresses", 0, 0, 25.0f, COLORS::Gray * 0.8f))
         {
             for (size_t i = 0; i < 4; i++)
             {
@@ -354,7 +355,9 @@ void Doom::FEM::OnGuiRender()
     }
     g.m_RelatedPanelProperties.m_AutoAllignment = false;
     g.UnRelateToPanel();
-    g.Text(L"FPS %f", true, 800, 450, 40, COLORS::White, 0, Window::GetInstance().GetFPS());
+    g.Text(L"FPS %f", true, 800, 450, 40, COLORS::Red, 0, Window::GetInstance().GetFPS());
+    g.Text(L"Max stress %f", true, 800, 400, 40, COLORS::Red, 6, m_MaxStress[0]);
+    g.Text(L"Max displ %f", true, 800, 350, 40, COLORS::Red, 6, m_MaxDisplacement[0]);
     if (m_IsSolvingSOLE)
     {
         g.Bar(-100.0f, 0.0f, m_Progress, 1.0f, COLORS::Green, COLORS::Gray, 300, 50);
@@ -526,7 +529,7 @@ Doom::Triangle::Triangle(Node* a, Node* b, Node* c)
     m_Area = CalculateAreaOfTriangle();
 }
 
-math::Matrix Doom::Triangle::CalculateMatrixB(Weight weight, double r, double z)
+math::Matrix Doom::Triangle::CalculateMatrixB(Weight weight, double r)
 {
     math::Matrix matB(4, 6);
     math::Vector col(4);
@@ -1092,8 +1095,8 @@ void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
         m_Progress = (double)i / (double)g_Nodes.size();
     }
 
-    std::cout << "Forces\n";
-    math::Print(forces);
+    //std::cout << "Forces\n";
+    //math::Print(forces);
 
     size_t removed = 0;
     m_ProgressMessage = "Assigning constraints";
@@ -1107,13 +1110,13 @@ void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
         m_Progress = (double)i / (double)m_StaticNodes.size();
     }
 
-    std::cout << "Global stiffness matrix\n";
-    math::Print(m_GlobalStiffnessMatrix * (1.0 / 10e6));
+    //std::cout << "Global stiffness matrix\n";
+    //math::Print(m_GlobalStiffnessMatrix * (1.0 / 10e6));
 
     math::Vector displacements = math::Solve(m_GlobalStiffnessMatrix, forces, m_Progress, m_ProgressMessage);
 
-    std::cout << "Displacements * GSM\n";
-    math::Print(displacements * m_GlobalStiffnessMatrix);
+    //std::cout << "Displacements * GSM\n";
+    //math::Print(displacements * m_GlobalStiffnessMatrix);
 
     m_ProgressMessage = "Restoring displacements";
     m_Progress = 0.0;
@@ -1126,8 +1129,8 @@ void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
         progressCounter++;
     }
 
-    std::cout << "Displacements\n";
-    math::Print(displacements * 10e6);
+    //std::cout << "Displacements\n";
+    //math::Print(displacements * 10e6);
     m_ProgressMessage = "Computing stresses";
     m_Progress = 0.0;
     for (size_t i = 0; i < m_Triangles.size(); i++)
@@ -1139,14 +1142,24 @@ void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
         displacementVecOfE[3] = displacements[m_Triangles[i]->m_Nodes[1]->m_Index * 2 + 1];
         displacementVecOfE[4] = displacements[m_Triangles[i]->m_Nodes[2]->m_Index * 2 + 0];
         displacementVecOfE[5] = displacements[m_Triangles[i]->m_Nodes[2]->m_Index * 2 + 1];
-        m_Triangles[i]->m_XPtr[0] += displacementVecOfE[0];
-        m_Triangles[i]->m_XPtr[1] += displacementVecOfE[1];
-        m_Triangles[i]->m_XPtr[17 + 0] += displacementVecOfE[2];
-        m_Triangles[i]->m_XPtr[17 + 1] += displacementVecOfE[3];
-        m_Triangles[i]->m_XPtr[17 * 2 + 0] += displacementVecOfE[4];
-        m_Triangles[i]->m_XPtr[17 * 2 + 1] += displacementVecOfE[5];
+        m_Triangles[i]->m_XPtr[0] += displacementVecOfE[0] * 10e11;
+        m_Triangles[i]->m_XPtr[1] += displacementVecOfE[1] * 10e11;
+        m_Triangles[i]->m_XPtr[17 + 0] += displacementVecOfE[2] * 10e11;
+        m_Triangles[i]->m_XPtr[17 + 1] += displacementVecOfE[3] * 10e11;
+        m_Triangles[i]->m_XPtr[17 * 2 + 0] += displacementVecOfE[4] * 10e11;
+        m_Triangles[i]->m_XPtr[17 * 2 + 1] += displacementVecOfE[5] * 10e11;
         m_Triangles[i]->m_Stress += matD * (m_Triangles[i]->m_MatB * displacementVecOfE);
         m_Progress = (double)i / (double)m_Triangles.size();
+
+        for (size_t j = 0; j < 6; j += 2)
+        {
+            if (m_MaxDisplacement[0] < displacementVecOfE[j]) m_MaxDisplacement[0] = displacementVecOfE[j] * 10e11;
+        }
+
+        for (size_t j = 0; j < 6; j += 1)
+        {
+            if (m_MaxDisplacement[1] < displacementVecOfE[j]) m_MaxDisplacement[1] = displacementVecOfE[j] * 10e11;
+        }
 
         //For blending colors among triangles/nodes
         for (size_t j = 0; j < 3; j++)
@@ -1156,26 +1169,10 @@ void Doom::FEM::CalculateGlobalStiffnessMatrix(Mesh* mesh)
                 double stress = abs(m_Triangles[i]->m_Nodes[j]->m_Stress[k]);
                 if (stress < abs(m_Triangles[i]->m_Stress[k]))
                     m_Triangles[i]->m_Nodes[j]->m_Stress[k] = m_Triangles[i]->m_Stress[k];
+
+                if (stress > m_MaxStress[k])
+                    m_MaxStress[k] = stress;
             }
         }
-    }
-
-    for (size_t i = 0; i < m_Triangles.size(); i++)
-    {
-        double Qr = abs(m_Triangles[i]->m_Stress[0]);
-        if (Qr > m_MaxStress[0])
-            m_MaxStress[0] = Qr;
-
-        double Qz = abs(m_Triangles[i]->m_Stress[1]);
-        if (Qz > m_MaxStress[1])
-            m_MaxStress[1] = Qz;
-
-        double Trz = abs(m_Triangles[i]->m_Stress[2]);
-        if (Trz > m_MaxStress[2])
-            m_MaxStress[2] = Trz;
-
-        double Qo = abs(m_Triangles[i]->m_Stress[3]);
-        if (Qo > m_MaxStress[3])
-            m_MaxStress[3] = Qo;
     }
 }

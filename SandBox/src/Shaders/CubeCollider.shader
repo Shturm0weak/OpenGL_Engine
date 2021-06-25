@@ -8,7 +8,8 @@ uniform mat4 u_Scale;
 uniform mat4 u_View;
 uniform mat4 u_ViewProjection;
 
-void main() {
+void main()
+{
 	gl_Position = u_ViewProjection * u_Model * u_View * u_Scale * vec4(positions, 1.0);
 }
 
@@ -19,6 +20,7 @@ layout(location = 0) out vec4 gl_FragColor;
 
 uniform vec4 u_Color;
 
-void main() {
+void main() 
+{
 	gl_FragColor = u_Color;
 }

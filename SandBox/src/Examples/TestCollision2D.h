@@ -19,10 +19,10 @@ public:
 
 	void OnStart()
 	{
-		GetOwnerOfComponent()->m_IsSerializable = false;
-		GetOwnerOfComponent()->AddComponent<SpriteRenderer>();
-		GetOwnerOfComponent()->AddComponent<RectangleCollider2D>();
-		anim = GetOwnerOfComponent()->AddComponent<Animator>();
+		m_OwnerOfCom->m_IsSerializable = false;
+		m_OwnerOfCom->AddComponent<SpriteRenderer>();
+		m_OwnerOfCom->AddComponent<RectangleCollider2D>();
+		anim = m_OwnerOfCom->AddComponent<Animator>();
 		anim->SetAnimation("src/Animations");
 		anim->m_IsPlayingAnim = true;
 		EventSystem::GetInstance().RegisterClient(EventType::ONSTART, this);
@@ -30,7 +30,7 @@ public:
 	}
 
 	void Movement() {
-		GameObject* owner = GetOwnerOfComponent();
+		GameObject* owner = m_OwnerOfCom;
 		if (Input::IsKeyDown(Keycode::KEY_W)) {
 			owner->m_Transform.Move(0, m_Speed, 0);
 		}
@@ -62,14 +62,14 @@ public:
 	void OnUpdate() {
 		Movement();
 		GetComponent<SpriteRenderer>()->m_Color = COLORS::White;
-		GetOwnerOfComponent()->GetComponent<RectangleCollider2D>()->IsCollidedSAT();
-		Window::GetInstance().GetCamera().SetPosition(GetOwnerOfComponent()->GetPosition());
+		m_OwnerOfCom->GetComponent<RectangleCollider2D>()->IsCollidedSAT();
+		Window::GetInstance().GetCamera().SetPosition(m_OwnerOfCom->GetPosition());
 	}
 
 	void OnCollision(void* col) {
 		if (col != nullptr) {
 			RectangleCollider2D* c = (RectangleCollider2D*)col;
-			if (c->GetOwnerOfComponent()->m_Tag == "Land") {
+			if (c->m_OwnerOfCom->m_Tag == "Land") {
 				m_IsLanded = true;
 			}
 		}
@@ -82,7 +82,7 @@ public:
 
 	GameObject* p = nullptr;
 
-	TestCollision2D(std::string name = "Test Collision2D", float x = 800, float y = 600, bool Vsync = false) : Application(name, TYPE_2D, x, y, Vsync) {
+	TestCollision2D(std::string name = "Test Collision2D", float x = 800, float y = 600, bool Vsync = false) : Application(name, x, y, Vsync) {
 	}
 
 	void OnStart() {

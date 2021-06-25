@@ -35,7 +35,8 @@ uniform float u_Ambient;
 uniform float u_Specular;
 uniform mat4 u_lightSpaceMatrix;
 
-void main() {
+void main()
+{
 	vec4 tempFragPos = u_Model * u_View * u_Scale * vec4(positions, 1.0);
 	FragPos = vec3(tempFragPos);
 	FragPosLightSpace = u_lightSpaceMatrix * tempFragPos;
@@ -55,8 +56,7 @@ void main() {
 	TBN = (mat3(T, B, N));
 
 	gl_Position = u_ViewProjection * tempFragPos;
-};
-
+}
 
 #shader fragment
 #version 330 core
@@ -116,7 +116,6 @@ uniform float u_EdgeThickness;
 uniform float u_EdgeSharpness;
 uniform float u_EdgeSubstruct;
 uniform float u_GlowStrength;
-uniform float Brightness;
 
 float shadow = 0.0;
 
@@ -222,9 +221,4 @@ void main() {
 	float c = clamp(uv.y + uv.x,0.01,1.0) * u_GlowStrength;
 
 	FragColor = vec4(result * (c),1.0) * out_color;
-	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-	if (brightness > Brightness)
-		BrightColor = vec4(FragColor.rgb, 1.0);
-	else
-		BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
-};
+}

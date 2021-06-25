@@ -71,10 +71,10 @@ void Doom::Camera::SetPosition(const glm::vec3 position)
 void Doom::Camera::SetPerspective(float fovy, float width, float height, float znear, float zfar)
 {
 	this->m_Ratio = width / height;
-	m_AspectRatio[0] = -width;
-	m_AspectRatio[1] = width;
-	m_AspectRatio[2] = height;
-	m_AspectRatio[3] = -height;
+	m_CameraProjParams[0] = -width;
+	m_CameraProjParams[1] = width;
+	m_CameraProjParams[2] = height;
+	m_CameraProjParams[3] = -height;
 	this->m_Zfar = (zfar);
 	this->m_Znear = (znear);
 	this->m_Fov = (fovy);
@@ -84,7 +84,7 @@ void Doom::Camera::SetPerspective(float fovy, float width, float height, float z
 
 void Doom::Camera::SetFov(float fov)
 {
-	m_ProjectionMat4 = glm::perspective(m_Fov, (m_AspectRatio[1]) / (m_AspectRatio[2]), m_Znear, m_Zfar);
+	m_ProjectionMat4 = glm::perspective(m_Fov, (m_CameraProjParams[1]) / (m_CameraProjParams[2]), m_Znear, m_Zfar);
 	RecalculateViewMatrix();
 	m_Type = PERSPECTIVE;
 }
@@ -92,25 +92,20 @@ void Doom::Camera::SetFov(float fov)
 void Doom::Camera::SetOrthographic(float ratio)
 {
 	this->m_Ratio = ratio;
-	m_Znear = -1.0;
+	m_Znear = -5.0;
 	m_Zfar = 100;
-	m_AspectRatio[0] = -ratio;
-	m_AspectRatio[1] = ratio;
-	m_AspectRatio[2] = 1;
-	m_AspectRatio[3] = -1;
-	m_ProjectionMat4 = glm::ortho(m_AspectRatio[0] * m_ZoomLevel, m_AspectRatio[1] * m_ZoomLevel, m_AspectRatio[3] * m_ZoomLevel, m_AspectRatio[2] * m_ZoomLevel, m_Znear, m_Zfar);
+	m_CameraProjParams[0] = -ratio;
+	m_CameraProjParams[1] = ratio;
+	m_CameraProjParams[2] = 1;
+	m_CameraProjParams[3] = -1;
+	m_ProjectionMat4 = glm::ortho(m_CameraProjParams[0] * m_ZoomLevel, m_CameraProjParams[1] * m_ZoomLevel, m_CameraProjParams[3] * m_ZoomLevel, m_CameraProjParams[2] * m_ZoomLevel, m_Znear, m_Zfar);
 	m_Type = ORTHOGRAPHIC;
-}
-
-glm::vec3 Doom::Camera::GetRotation()
-{
-	return glm::vec3(m_Pitch, m_Yaw, m_Roll);
 }
 
 glm::dvec3 Doom::Camera::GetMouseDirVec()
 {
 	glm::dvec2 pos;
-	pos.x = ViewPort::GetInstance().GetStaticMousePosition().x / (Window::GetInstance().GetCamera().GetAspectRatio() * g_ScaleUI);
+	pos.x = ViewPort::GetInstance().GetStaticMousePosition().x / (m_Ratio * g_ScaleUI);
 	pos.y = ViewPort::GetInstance().GetStaticMousePosition().y / (g_ScaleUI);
 	glm::dvec4 clipCoords = glm::dvec4(pos.x, pos.y, -1.0f, 1.0f);
 	glm::dvec4 eyeCoords = clipCoords * glm::inverse(m_ProjectionMat4);
@@ -134,9 +129,9 @@ void Camera::Zoom(float zoomlevel)
 {
 	this->m_ZoomLevel = zoomlevel;
 	if(m_Type == ORTHOGRAPHIC)
-		m_ProjectionMat4 = glm::ortho(m_AspectRatio[0] * zoomlevel,m_AspectRatio[1] * zoomlevel,m_AspectRatio[3] * zoomlevel,m_AspectRatio[2] * zoomlevel,m_Znear,m_Zfar);
-	else if(m_Type == PERSPECTIVE)
-		m_ProjectionMat4 = glm::perspective(m_Fov, abs(m_AspectRatio[0]) / abs(m_AspectRatio[3]),m_Znear,m_Zfar);
+		m_ProjectionMat4 = glm::ortho(m_CameraProjParams[0] * zoomlevel,m_CameraProjParams[1] * zoomlevel,m_CameraProjParams[3] * zoomlevel,m_CameraProjParams[2] * zoomlevel,m_Znear,m_Zfar);
+	//else if(m_Type == PERSPECTIVE)
+	//	m_ProjectionMat4 = glm::perspective(m_Fov, abs(m_CameraProjParams[0]) / abs(m_CameraProjParams[3]),m_Znear,m_Zfar);
 	m_ViewProjectionMat4 = m_ProjectionMat4 * m_ViewMat4;
 }
 
@@ -145,12 +140,12 @@ void Camera::Increase() {
 	{
 		if (Input::IsKeyDown(Keycode::KEY_PAGE_UP)) 
 		{
-			Zoom(abs(GetZoomLevel() + (1 * DeltaTime::GetDeltaTime())));
+			Zoom(abs(m_ZoomLevel + (1 * DeltaTime::GetDeltaTime())));
 		}
 		else if (Input::IsKeyDown(Keycode::KEY_PAGE_DOWN)) 
 		{
-			if (GetZoomLevel() <= 0) return;
-			Zoom(abs(GetZoomLevel() - (1 * DeltaTime::GetDeltaTime())));
+			if (m_ZoomLevel <= 0) return;
+			Zoom(abs(m_ZoomLevel - (1 * DeltaTime::GetDeltaTime())));
 		}
 	}
 }
@@ -164,20 +159,18 @@ void Camera::CameraMovement()
 {
 	if (ViewPort::GetInstance().m_IsActive && Input::IsMouseDown(Keycode::MOUSE_BUTTON_2)) 
 	{
+		float speed = 2.f;
+		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) speed *= 10;
 		if (m_Type == ORTHOGRAPHIC)
 		{
-			if (Input::IsKeyDown(Keycode::KEY_UP))
-				MovePosition(glm::vec3(0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
-			if (Input::IsKeyDown(Keycode::KEY_DOWN))
-				MovePosition(glm::vec3(0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
-			if (Input::IsKeyDown(Keycode::KEY_RIGHT))
-				MovePosition(glm::vec3((20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
-			if (Input::IsKeyDown(Keycode::KEY_LEFT))
-				MovePosition(glm::vec3(-(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
-			if (Input::IsKeyDown(Keycode::KEY_BACKSPACE))
-				MovePosition(glm::vec3(0, 0, -(20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
-			if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT))
-				MovePosition(glm::vec3(0, 0, (20.f * DeltaTime::GetDeltaTime() * m_ZoomLevel)));
+			if (Input::IsKeyDown(Keycode::KEY_W))
+				MovePosition(glm::vec3(0, (speed * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
+			if (Input::IsKeyDown(Keycode::KEY_S))
+				MovePosition(glm::vec3(0, -(speed * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));
+			if (Input::IsKeyDown(Keycode::KEY_D))
+				MovePosition(glm::vec3((speed * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
+			if (Input::IsKeyDown(Keycode::KEY_A))
+				MovePosition(glm::vec3(-(speed * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0, 0));
 			if (Input::IsKeyDown(Keycode::KEY_G))
 			{
 				if (Editor::GetInstance().go != nullptr)
@@ -189,9 +182,6 @@ void Camera::CameraMovement()
 		}
 		else 
 		{
-			float speed = 2.f;
-			if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT))
-				speed *= 10;
 			backV *= speed * DeltaTime::s_Deltatime;
 			if (Input::IsKeyDown(Keycode::KEY_W))
 				MovePosition(glm::vec3(-backV.x, backV.y, -backV.z));
@@ -246,7 +236,3 @@ void Camera::CameraMovement()
 	}
 	SetOnStart();
 }
-
-float Camera::GetRationWH() const { return ((float)ViewPort::GetInstance().GetSize()[0] / (float)ViewPort::GetInstance().GetSize()[1]); }
-float Camera::GetRationHW() const { return ((float)ViewPort::GetInstance().GetSize()[1] / (float)ViewPort::GetInstance().GetSize()[0]); }
-

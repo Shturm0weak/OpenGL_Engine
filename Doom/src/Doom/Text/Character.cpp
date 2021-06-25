@@ -41,7 +41,7 @@ void Character::Init(Font* font, wchar_t ch, float posx, float posy, float scale
 		m_Mesh2D[14] = m_X / size;
 		m_Mesh2D[15] = abs(m_Y - size) / size;
 
-		double widthRatio = Window::GetInstance().GetCamera().GetAspectRatio() / Window::GetInstance().GetSize()[0];
+		double widthRatio = Window::GetInstance().GetCamera().m_Ratio / Window::GetInstance().GetSize()[0];
 		double heightRatio = 1 / Window::GetInstance().GetSize()[1];
 
 		m_Mesh2D[0] = 0;

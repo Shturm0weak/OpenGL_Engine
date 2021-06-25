@@ -1,10 +1,10 @@
-Scene: 1
 Camera:
   Transform:
     Position: [-21.5619564, 27.2472019, -36.3915253]
     Rotation: [-0.678242564, -2.69142509, 0]
   Zoom: 1
   FOV: 1
+  Type: 1
 GameObjects:
   - GameObject: 0
     Name: Scene
