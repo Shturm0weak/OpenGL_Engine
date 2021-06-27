@@ -99,14 +99,14 @@ void Doom::Instancing::Render()
 			gliter->second.m_TextureSlots[1] = iter->second[0]->m_NormalMapTexture->m_RendererID;
 			//m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
-		m_Shader->SetUniform1i("u_isNormalMapping", iter->second[0]->m_IsUsingNormalMap);
+		m_Shader->SetUniform1i("u_IsNormalMapping", iter->second[0]->m_IsUsingNormalMap);
 
 		m_Shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
-		m_Shader->SetUniform1f("u_DrawShadows", m_DrawShadows);
+		m_Shader->SetUniform1i("u_DrawShadows", Renderer::s_ShadowMap.m_DrawShadows);
 		glBindTextureUnit(2, Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 		gliter->second.m_TextureSlots[2] = Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0];
 		//m_Shader->SetUniform1i("u_ShadowMap", 2);
-		m_Shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
+		m_Shader->SetUniform1f("u_Brightness", Renderer::s_Bloom.m_Brightness);
 
 		Renderer::s_Stats.m_Vertices += gliter->first->m_IndicesSize * objsSize;
 		Renderer::s_Stats.m_DrawCalls++;
@@ -133,7 +133,7 @@ void Doom::Instancing::Render()
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
-		gliter->second.m_LayoutDynamic.Push<float>(3);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
@@ -150,7 +150,6 @@ void Doom::Instancing::Render()
 		{
 			samplers[i] = i;
 		}
-
 
 		m_Shader->SetUniform1iv("u_Texture", samplers);
 
@@ -176,6 +175,7 @@ void Doom::Instancing::Render()
 
 void Doom::Instancing::BakeShadows()
 {
+	
 	m_Shader = Shader::Get("BakeShadowsInstancing");
 
 	for (auto iter = m_InstancedObjects.begin(); iter != m_InstancedObjects.end(); iter++)
@@ -217,7 +217,7 @@ void Doom::Instancing::BakeShadows()
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(3);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
-		gliter->second.m_LayoutDynamic.Push<float>(3);
+		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
 		gliter->second.m_LayoutDynamic.Push<float>(4);
@@ -330,12 +330,13 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(posPtr, &owner.GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner.GetScale()[0], 12);
 				float* view = glm::value_ptr(owner.m_Transform.m_ViewMat4);
-				memcpy(&posPtr[13], view, 64);
+				memcpy(&posPtr[14], view, 64);
 				//r3d.m_Color = color;
 				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
 				posPtr[10] = r3d.m_Material.m_Ambient;
 				posPtr[11] = r3d.m_Material.m_Specular;
 				posPtr[12] = (float)m_TextureIndex;
+				posPtr[13] = (float)((int)(r3d.m_Emissive));
 				//{
 				//	std::lock_guard lg(World::GetInstance().m_Mtx);
 				//	std::cout << posPtr[12] << std::endl;
@@ -392,12 +393,13 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(posPtr, &owner.GetPosition()[0], 12);
 				memcpy(&posPtr[3], &owner.GetScale()[0], 12);
 				float* view = glm::value_ptr(owner.m_Transform.m_ViewMat4);
-				memcpy(&posPtr[13], view, 64);
+				memcpy(&posPtr[14], view, 64);
 				//r3d.m_Color = COLORS::Blue;
 				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
 				posPtr[10] = r3d.m_Material.m_Ambient;
 				posPtr[11] = r3d.m_Material.m_Specular;
 				posPtr[12] = (float)m_TextureIndex;
+				posPtr[13] = (float)((int)(r3d.m_Emissive));
 				//{
 				//	std::lock_guard lg(World::GetInstance().m_Mtx);
 				//	std::cout << posPtr[12] << std::endl;

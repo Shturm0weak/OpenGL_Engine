@@ -17,9 +17,9 @@ glm::mat4 Doom::DirectionalLight::GetLightSpaceMatrix()
 
 void Doom::DirectionalLight::UpdateLightMatrix()
 {
-	Camera& cam = Window::GetInstance().GetCamera();
-	float near_plane = cam.m_ZnearSM, far_plane = cam.m_ZfarSM;
-	m_LightProjection = glm::ortho(-cam.m_RatioProjectionSM, cam.m_RatioProjectionSM, -cam.m_RatioProjectionSM, cam.m_RatioProjectionSM, near_plane, far_plane);
+	Renderer::ShadowMap& shadowMap = Renderer::s_ShadowMap;
+	float nearPlane = shadowMap.m_Znear, far_plane = shadowMap.m_Zfar;
+	m_LightProjection = glm::ortho(-shadowMap.m_Zoom, shadowMap.m_Zoom, -shadowMap.m_Zoom, shadowMap.m_Zoom, nearPlane, far_plane);
 	glm::vec3 dir = m_OwnerOfCom->m_Transform.m_ViewMat4 * glm::vec4(0, 0, 1, 1);
 	glm::vec3 pos = Window::GetInstance().GetCamera().GetPosition();
 	glm::mat4 view = glm::lookAt(pos, dir + pos, glm::vec3(0, 1, 0));

@@ -11,16 +11,13 @@ namespace Doom {
 	class DOOM_API Camera {
 	public:
 
-		enum CameraTypes {
+		enum class CameraTypes {
 			ORTHOGRAPHIC = 0,
 			PERSPECTIVE = 1,
 		};
 
 		glm::dvec3 backV = { 0,0,-1 };
-		float m_ZnearSM = -50.0f;
-		float m_ZfarSM = 50.0f;
-		float m_RatioProjectionSM = 50.0f;
-		CameraTypes m_Type = ORTHOGRAPHIC;
+		CameraTypes m_Type = CameraTypes::ORTHOGRAPHIC;
 
 		Camera();
 		~Camera();
@@ -47,19 +44,12 @@ namespace Doom {
 		void SetOrthographic(float ratio);
 		void SetRotation(glm::vec3 rot);
 
-		friend class Editor;
-		friend class Batch;
-		friend class Window;
-		friend class ViewPort;
-
 		glm::vec3 m_Position = glm::vec3(0);
-		float m_Ratio = 0;
 		float m_ZoomLevel = 1.0f;
 		float m_Fov = glm::radians(90.0f);
-
+		float m_Ratio = 0;
 	private:
 
-		std::mutex m_Mtx;
 		glm::mat4 m_ProjectionMat4;
 		glm::mat4 m_ViewMat4;
 		glm::mat4 m_ViewProjectionMat4;
@@ -69,6 +59,11 @@ namespace Doom {
 		float m_Pitch = 0.0f;
 		float m_Yaw = 0.0f;
 		float m_CameraProjParams[4]; 
+
+		friend class Editor;
+		friend class Batch;
+		friend class Window;
+		friend class ViewPort;
 	};
 
 }

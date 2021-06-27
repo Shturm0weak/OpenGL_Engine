@@ -89,10 +89,10 @@ void Doom::ViewPort::Resize()
 	camera.m_Ratio = m_Size.x / m_Size.y;
 	switch (camera.m_Type)
 	{
-	case Doom::Camera::ORTHOGRAPHIC:
+	case Doom::Camera::CameraTypes::ORTHOGRAPHIC:
 		camera.SetOrthographic(camera.m_Ratio);
 		break;
-	case Doom::Camera::PERSPECTIVE:
+	case Doom::Camera::CameraTypes::PERSPECTIVE:
 		camera.SetPerspective(camera.m_Fov, m_Size.x, m_Size.y, camera.m_Znear, camera.m_Zfar);
 		break;
 	default:

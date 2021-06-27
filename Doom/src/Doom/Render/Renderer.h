@@ -37,6 +37,14 @@ namespace Doom {
 			}
 		};
 
+		struct ShadowMap
+		{
+			float m_Znear = -50.0f;
+			float m_Zfar = 50.0f;
+			float m_Zoom = 50.0f;
+			bool m_DrawShadows = false;
+		};
+
 		struct Bloom
 		{
 			int m_StepTexturePixels = 3;
@@ -50,6 +58,7 @@ namespace Doom {
 			float m_Intensity = 1.0f;
 		};
 
+		static ShadowMap s_ShadowMap;
 		static Stats s_Stats;
 		static Bloom s_Bloom;
 		static bool s_PolygonMode;

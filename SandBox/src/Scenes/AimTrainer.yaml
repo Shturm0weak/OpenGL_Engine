@@ -1,39 +1,11 @@
 Camera:
   Transform:
-    Position: [-0.271519363, 0.00730550289, 0]
-    Rotation: [0, 0, 0]
-  Zoom: 1.7109999656677246
+    Position: [-0.379067481, -0.00634686928, 4.12321329]
+    Rotation: [-0.1465123, -0.0515051261, 0]
+  Zoom: 30
   FOV: 1
   Type: 1
 GameObjects:
-  - GameObject: 0
-    Name: Unnamed
-    Tag: General
-    Transform:
-      Position: [0, 0, 0]
-      Scale: [1, 1, 1]
-      Rotation: [0, 0, 0]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
   - GameObject: 1
     Name: Unnamed
     Tag: General
@@ -42,6 +14,7 @@ GameObjects:
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Sprite renderer:
+      Emissive: false
       Color: [1, 1, 1, 1]
       Texture: C:/Users/Alexandr\source\repos\DoomEngine\SandBox\src\Animations\IdleLeft\sprite_02.png
       Texture atlas: InvalidTexture

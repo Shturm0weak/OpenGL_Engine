@@ -1,82 +1,20 @@
 Camera:
   Transform:
-    Position: [0, 0, 0]
+    Position: [0, 2.72346497, 70.4416046]
     Rotation: [0, 0, 0]
   Zoom: 30
   FOV: 1
-  Type: 0
+  Type: 1
 GameObjects:
-  - GameObject: 0
-    Name: Wall1
-    Transform:
-      Position: [0, 25, 0]
-      Scale: [100, 1, 1]
-      Rotation: [0, 0, 0]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
   - GameObject: 1
     Name: Wall2
+    Tag: General
     Transform:
       Position: [0, -25, 0]
       Scale: [100, 1, 1]
       Rotation: [0, 0, 0]
     Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - GameObject: 2
-    Name: Wall3
-    Transform:
-      Position: [-50, 0, 0]
-      Scale: [1, 50, 1]
-      Rotation: [0, 0, 0]
-    Sprite renderer:
+      Emissive: false
       Color: [1, 1, 1, 1]
       Texture: WhiteTexture
       Texture atlas: InvalidTexture
@@ -104,203 +42,13 @@ GameObjects:
       Scale: [1, 1, 1]
   - GameObject: 3
     Name: Wall4
+    Tag: General
     Transform:
       Position: [50, 0, 0]
       Scale: [1, 50, 1]
       Rotation: [0, 0, 0]
     Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - GameObject: 5
-    Name: Wall5
-    Transform:
-      Position: [25, -10.4969997, 0]
-      Scale: [24.4790001, 1, 1]
-      Rotation: [0, 0, 0.663225114]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - GameObject: 6
-    Name: Wall6
-    Transform:
-      Position: [-23.6380005, -10.4969997, 0]
-      Scale: [24.4790001, 1, 1]
-      Rotation: [0, 0, 2.19911504]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - GameObject: 7
-    Name: Wall7
-    Transform:
-      Position: [-3.60599995, 14.6630001, 0]
-      Scale: [24.4790001, 1, 1]
-      Rotation: [0, 0, 0.261799395]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - GameObject: 8
-    Name: Wall8
-    Transform:
-      Position: [-40, -18.1889992, 0]
-      Scale: [5.40899992, 1, 1]
-      Rotation: [0, 0, 0]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - GameObject: 9
-    Name: Wall9
-    Transform:
-      Position: [-25, 17.5480003, 0]
-      Scale: [5.40899992, 1, 1]
-      Rotation: [0, 0, -0.575958669]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
-    Rectangle collider 2D:
-      Is Enable: true
-      Is trigger: false
-      OffSet: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - GameObject: 10
-    Name: Wall9
-    Transform:
-      Position: [30, 8.73400021, 0]
-      Scale: [5.40899992, 7.8130002, 1]
-      Rotation: [0, 0, -0.942477822]
-    Sprite renderer:
+      Emissive: false
       Color: [1, 1, 1, 1]
       Texture: WhiteTexture
       Texture atlas: InvalidTexture

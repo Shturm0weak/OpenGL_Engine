@@ -149,7 +149,7 @@ void Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 void Renderer::Render() {
 	int size[2];
 	Renderer::s_Stats.Reset();
-	if (Instancing::GetInstance()->m_DrawShadows > 0.5f) {
+	if (s_ShadowMap.m_DrawShadows) {
 		{
 			Timer t;
 			FrameBuffer* shadowMap = Window::GetInstance().m_FrameBufferShadowMap;
@@ -262,9 +262,9 @@ void Renderer::Render2DObjects()
 		}
 		batch.EndGameObjects();
 	}
-	glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
 	Batch::GetInstance().FlushGameObjects(Batch::GetInstance().m_BasicShader);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::Render3DObjects()

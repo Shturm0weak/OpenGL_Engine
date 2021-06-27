@@ -56,7 +56,6 @@ void Editor::EditorUpdate()
 		isActiveShaderMenu = true;
 	}
 
-	ImGui::SliderFloat("DrawShadows", &Instancing::GetInstance()->m_DrawShadows, 0, 1);
 	CreateTextureAtlas();
 
 	ImGui::SliderFloat("Zoom", &Window::GetInstance().GetCamera().m_ZoomLevel, 0.1f, 100.f);
@@ -344,8 +343,8 @@ void Doom::Editor::MenuRenderer3D()
 						}
 					}
 					ImGui::Checkbox("Emissive", &r->m_Emissive);
-					ImGui::SliderFloat("Ambient", &r->m_Material.m_Ambient, 0, 1000);
-					ImGui::SliderFloat("Specular", &r->m_Material.m_Specular, 0, 50);
+					ImGui::SliderFloat("Ambient", &r->m_Material.m_Ambient, 0, 10);
+					ImGui::SliderFloat("Specular", &r->m_Material.m_Specular, 0, 10);
 					void* my_tex_id = reinterpret_cast<void*>(r->m_DiffuseTexture->m_RendererID);
 					if (ImGui::ImageButton(my_tex_id, { 64, 64 }, ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0.79, 0, 0.75, 1))) {
 						isActiveTexturePicker = true;
@@ -696,26 +695,33 @@ bool Doom::Editor::MenuRemoveScript(ScriptComponent* sc)
 
 void Doom::Editor::MenuBar()
 {
-	if (ImGui::BeginMenu("File")) {
-		if (ImGui::MenuItem("New")) {
+	if (ImGui::BeginMenu("File"))
+	{
+		if (ImGui::MenuItem("New")) 
+		{
 			World::GetInstance().DeleteAll();
 			go = nullptr;
 		}
-		if (ImGui::MenuItem("Open")) {
+		if (ImGui::MenuItem("Open"))
+		{
 			std::optional<std::string> filePath = FileDialogs::OpenFile("Doom Scene (*.yaml)\0*.yaml\0");
-			if (filePath) {
+			if (filePath)
+			{
 				World::GetInstance().DeleteAll();
 				SceneSerializer::DeSerialize(*filePath);
 				go = nullptr;
 			}
 		}
-		if (ImGui::MenuItem("Save as")) {
+		if (ImGui::MenuItem("Save as"))
+		{
 			std::optional<std::string> filePath = FileDialogs::SaveFile("Doom Scene (*.yaml)\0*.yaml\0");
-			if (filePath) {
+			if (filePath)
+			{
 				SceneSerializer::Serialize(*filePath);
 			}
 		}
-		if (ImGui::MenuItem("Save")) {
+		if (ImGui::MenuItem("Save"))
+		{
 			SceneSerializer::Serialize(SceneSerializer::s_CurrentSceneFilePath);
 		}
 		ImGui::EndMenu();
@@ -728,9 +734,11 @@ void Doom::Editor::MeshPicker()
 		return;
 	ImGui::Begin("Meshes",&isActiveMeshPicker);
 	ImGui::ListBox("Meshes",&selectedMesh, Mesh::GetListOfMeshes(), Mesh::GetAmountOfMeshes());
-	if (ImGui::Button("Apply")) {
+	if (ImGui::Button("Apply"))
+	{
 		auto mesh = Mesh::s_Meshes.begin();
-		if (selectedMesh > -1) {
+		if (selectedMesh > -1) 
+		{
 			for (int i = 0; i < selectedMesh; i++)
 			{
 				mesh++;
@@ -738,15 +746,19 @@ void Doom::Editor::MeshPicker()
 		}
 		go->GetComponent<Renderer3D>()->LoadMesh(mesh->second);
 	}
-	if (ImGui::Button("Choose ...")) {
+	if (ImGui::Button("Choose ..."))
+	{
 		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
-		if (filePath) {
+		if (filePath) 
+		{
 			Mesh::AsyncLoadMesh(Utils::GetNameFromFilePath(*filePath), *filePath);
 		}
 	}
-	if (ImGui::Button("Load fbx scene ...")) {
+	if (ImGui::Button("Load fbx scene ...")) 
+	{
 		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
-		if (filePath) {
+		if (filePath)
+		{
 			Mesh::LoadScene(*filePath);
 		}
 	}
@@ -791,71 +803,6 @@ void Doom::Editor::TexturePicker()
 	}
 	ImGui::End();
 }
-
-//void Doom::Editor::SceneHierarchy()
-//{
-//	if (ImGui::CollapsingHeader("Game Objects")) {
-//		unsigned int amount = Renderer::GetAmountOfObjects();
-//		for (unsigned int i = 0; i < amount; i++)
-//		{
-//			GameObject* go = Renderer::objects[i];
-//			if (go->GetOwner() != nullptr) {
-//				continue;
-//			}
-//			ImGui::PushID(go->GetId());
-//			if (this->go == go && ImGui::IsItemVisible()) {
-//				ImVec2 sp = ImGui::GetCursorScreenPos();
-//				ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
-//			}
-//			if (ImGui::TreeNodeEx(go->name.c_str())) {
-//				if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
-//					this->go = go;
-//				unsigned int childsAmount = go->GetChilds().size();
-//				if (childsAmount > 0) {
-//					for (unsigned int j = 0; j < childsAmount; j++)
-//					{
-//						GameObject* child = static_cast<GameObject*>(go->GetChilds()[j]);
-//						ImGui::Indent();
-//						ImGui::PushID(child->GetId());
-//						if (this->go == child && ImGui::IsItemVisible()) {
-//							ImVec2 sp = ImGui::GetCursorScreenPos();
-//							ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
-//						}
-//						if (ImGui::TreeNodeEx(child->name.c_str())) {
-//							if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
-//								this->go = child;
-//							unsigned int childsAmount = child->GetChilds().size();
-//							if (childsAmount > 0) {
-//								for (unsigned int j = 0; j < childsAmount; j++)
-//								{
-//									GameObject* child1 = static_cast<GameObject*>(child->GetChilds()[j]);
-//									ImGui::PushID(child1->GetId());
-//									ImGui::Indent();
-//									if (this->go == child1 && ImGui::IsItemVisible()) {
-//										ImVec2 sp = ImGui::GetCursorScreenPos();
-//										ImGui::GetForegroundDrawList()->AddRectFilled(ImVec2(sp.x, sp.y), ImVec2(ImGui::GetWindowWidth() - 20, sp.y + ImGui::GetItemRectSize().y), IM_COL32(80, 80, 80, 100));
-//									}
-//									if (ImGui::TreeNodeEx(child1->name.c_str())) {
-//										if (ImGui::IsItemDeactivated() || ImGui::IsItemActivated())
-//											this->go = child1;
-//										ImGui::TreePop();
-//									}
-//									ImGui::PopID();
-//									ImGui::Unindent();
-//								}
-//							}
-//							ImGui::TreePop();
-//						}
-//						ImGui::PopID();
-//						ImGui::Unindent();
-//					}
-//				}
-//				ImGui::TreePop();
-//			}
-//			ImGui::PopID();
-//		}
-//	}
-//}
 
 void Doom::Editor::SceneHierarchy()
 {
@@ -920,18 +867,14 @@ void Doom::Editor::ShaderMenu()
 
 void Doom::Editor::MenuShadowMap()
 {
-	Camera& camera = Window::GetInstance().GetCamera();
-	void* my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferColor->m_Textures[1]);
-	ImGui::Begin("FrameBuffer Bloom");
-	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
-	ImGui::End();
-	my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
+	Renderer::ShadowMap& shadowMap = Renderer::s_ShadowMap;
 	ImGui::Begin("FrameBuffer Shadow Map");
+	ImGui::SliderFloat("Znear", &shadowMap.m_Znear, -500, 500);
+	ImGui::SliderFloat("Zfar", &shadowMap.m_Zfar, 0, 500);
+	ImGui::SliderFloat("Zoom", &shadowMap.m_Zoom, 0, 1000);
+	ImGui::Checkbox("Draw Shadows", &Renderer::s_ShadowMap.m_DrawShadows);
+	void* my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
-	ImGui::SliderFloat("Znear", &camera.m_ZnearSM, -500, 500);
-	ImGui::SliderFloat("Zfar", &camera.m_ZfarSM, 0, 500);
-	ImGui::SliderFloat("Projection", &camera.m_RatioProjectionSM, 0, 1000);
-	ImGui::SliderFloat("DrawShadows", &Instancing::GetInstance()->m_DrawShadows, 0, 1);
 	ImGui::End();
 }
 
@@ -1164,7 +1107,7 @@ void Doom::Editor::Debug()
 	ImGui::SliderAngle("X", &camera.m_Pitch);
 	ImGui::SliderAngle("Y", &camera.m_Yaw);
 	ImGui::SliderAngle("Z", &camera.m_Roll);
-	if (camera.m_Type == camera.PERSPECTIVE)
+	if (camera.m_Type == Camera::CameraTypes::PERSPECTIVE)
 	{
 		ImGui::SliderAngle("fov", &camera.m_Fov, 60, 180);
 		camera.SetFov(camera.m_Fov);

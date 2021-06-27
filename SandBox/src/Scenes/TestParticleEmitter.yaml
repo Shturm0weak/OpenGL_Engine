@@ -1,13 +1,14 @@
 Camera:
   Transform:
-    Position: [-17.8947849, 11.6359653, 15.8827019]
+    Position: [-16.1952248, 10.870225, 14.0163193]
     Rotation: [-0.294524014, -0.738642573, 0]
-  Zoom: 0.10000000149011612
+  Zoom: 1
   FOV: 1
   Type: 1
 GameObjects:
   - GameObject: 0
     Name: Emitter
+    Tag: General
     Transform:
       Position: [10, 5, 0]
       Scale: [1, 1, 1]
@@ -33,6 +34,7 @@ GameObjects:
       RadiusToSpawnZ: [0, 0]
   - GameObject: 26
     Name: Emitter
+    Tag: General
     Transform:
       Position: [0, 5, 0]
       Scale: [1, 1, 1]
@@ -58,6 +60,7 @@ GameObjects:
       RadiusToSpawnZ: [-2, 2]
   - GameObject: 52
     Name: Emitter
+    Tag: General
     Transform:
       Position: [-10, 5, 0]
       Scale: [1, 1, 1]

@@ -247,7 +247,7 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		m_Shader->SetUniformMat4f("u_Model", pos);
 		m_Shader->SetUniformMat4f("u_View", view);
 		m_Shader->SetUniformMat4f("u_Scale", scale);
-		m_Shader->SetUniform4f("m_color", color[0], color[1], color[2], color[3]);
+		m_Shader->SetUniform4f("u_Color", color[0], color[1], color[2], color[3]);
 		AdditionalUniformsLoad();
 		int dlightSize = DirectionalLight::s_DirLights.size();
 		m_Shader->SetUniform1i("dLightSize", dlightSize);
@@ -307,19 +307,19 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		m_Shader->SetUniform3fv("u_CameraPos", Window::GetInstance().GetCamera().GetPosition());
 		m_Shader->SetUniform1f("u_Ambient", m_Material.m_Ambient);
 		m_Shader->SetUniform1f("u_Specular", m_Material.m_Specular);
-		m_Shader->SetUniformMat4f("u_lightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
+		m_Shader->SetUniformMat4f("u_LightSpaceMatrix", DirectionalLight::GetLightSpaceMatrix());
 		m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 		glBindTextureUnit(2, Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 		m_Shader->SetUniform1i("u_ShadowTexture", 2);
-		m_Shader->SetUniform1f("u_DrawShadows", Instancing::GetInstance()->m_DrawShadows); 
+		m_Shader->SetUniform1f("u_DrawShadows", Renderer::s_ShadowMap.m_DrawShadows); 
 		if (m_IsUsingNormalMap)
 		{
 			glBindTextureUnit(1, m_NormalMapTexture->m_RendererID);
 			m_Shader->SetUniform1i("u_NormalMapTexture", 1);
 		}
-		m_Shader->SetUniform1i("u_isNormalMapping", m_IsUsingNormalMap);
-		m_Shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
-		m_Shader->SetUniform1i("emissive", m_Emissive);
+		m_Shader->SetUniform1i("u_IsNormalMapping", m_IsUsingNormalMap);
+		m_Shader->SetUniform1f("u_Brightness", Renderer::s_Bloom.m_Brightness);
+		m_Shader->SetUniform1i("u_Emissive", m_Emissive);
 		m_Mesh->m_Va.Bind();
 		m_Mesh->m_Ib.Bind();
 
@@ -382,7 +382,7 @@ void Renderer3D::RenderSkyBox()
 	m_Shader->SetUniformMat4f("u_View", glm::mat4(glm::mat3(Window::GetInstance().GetCamera().GetViewMatrix())));
 	m_Shader->SetUniformMat4f("u_Scale", m_Tr->m_ScaleMat4);
 	m_Shader->SetUniform1i("u_DiffuseTexture", 0);
-	m_Shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
+	m_Shader->SetUniform1f("u_Brightness", Renderer::s_Bloom.m_Brightness);
 	m_Shader->Bind();
 	m_Mesh->m_Va.Bind();
 	m_Mesh->m_Ib.Bind();

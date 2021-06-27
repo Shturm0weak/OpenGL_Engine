@@ -196,7 +196,7 @@ void AimTrainer::OptionsMenu()
 	g.CheckBox(L"Bloom", &Renderer::s_Bloom.m_IsEnabled, 0, 0, 25);
 	if (g.Button(L"Choose crosshair", 0, 0, 30, 400, 50, COLORS::Gray * 0.8f))
 		m_ChooseCrossHair = true;
-	Instancing::GetInstance()->m_DrawShadows = m_DrawShadows ? 1.0f : 0.0f;
+	Renderer::s_ShadowMap.m_DrawShadows = m_DrawShadows ? 1.0f : 0.0f;
 	SoundManager::GetInstance().SetVolume(m_AudioVolume);
 	g.m_RelatedPanelProperties.m_AutoAllignment = false;
 	if (g.Button(L"Back", 0, -475, 30, 200, 50, COLORS::Gray * 0.8f))

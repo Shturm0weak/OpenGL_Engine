@@ -79,14 +79,14 @@ void Doom::Camera::SetPerspective(float fovy, float width, float height, float z
 	this->m_Znear = (znear);
 	this->m_Fov = (fovy);
 	m_ProjectionMat4 = glm::perspective(fovy, width / height, znear, zfar);
-	m_Type = PERSPECTIVE;
+	m_Type = CameraTypes::PERSPECTIVE;
 }
 
 void Doom::Camera::SetFov(float fov)
 {
 	m_ProjectionMat4 = glm::perspective(m_Fov, (m_CameraProjParams[1]) / (m_CameraProjParams[2]), m_Znear, m_Zfar);
 	RecalculateViewMatrix();
-	m_Type = PERSPECTIVE;
+	m_Type = CameraTypes::PERSPECTIVE;
 }
 
 void Doom::Camera::SetOrthographic(float ratio)
@@ -99,7 +99,7 @@ void Doom::Camera::SetOrthographic(float ratio)
 	m_CameraProjParams[2] = 1;
 	m_CameraProjParams[3] = -1;
 	m_ProjectionMat4 = glm::ortho(m_CameraProjParams[0] * m_ZoomLevel, m_CameraProjParams[1] * m_ZoomLevel, m_CameraProjParams[3] * m_ZoomLevel, m_CameraProjParams[2] * m_ZoomLevel, m_Znear, m_Zfar);
-	m_Type = ORTHOGRAPHIC;
+	m_Type = CameraTypes::ORTHOGRAPHIC;
 }
 
 glm::dvec3 Doom::Camera::GetMouseDirVec()
@@ -128,7 +128,7 @@ void Doom::Camera::SetRotation(glm::vec3 rot)
 void Camera::Zoom(float zoomlevel)
 {
 	this->m_ZoomLevel = zoomlevel;
-	if(m_Type == ORTHOGRAPHIC)
+	if(m_Type == CameraTypes::ORTHOGRAPHIC)
 		m_ProjectionMat4 = glm::ortho(m_CameraProjParams[0] * zoomlevel,m_CameraProjParams[1] * zoomlevel,m_CameraProjParams[3] * zoomlevel,m_CameraProjParams[2] * zoomlevel,m_Znear,m_Zfar);
 	//else if(m_Type == PERSPECTIVE)
 	//	m_ProjectionMat4 = glm::perspective(m_Fov, abs(m_CameraProjParams[0]) / abs(m_CameraProjParams[3]),m_Znear,m_Zfar);
@@ -161,7 +161,7 @@ void Camera::CameraMovement()
 	{
 		float speed = 2.f;
 		if (Input::IsKeyDown(Keycode::KEY_LEFT_SHIFT)) speed *= 10;
-		if (m_Type == ORTHOGRAPHIC)
+		if (m_Type == CameraTypes::ORTHOGRAPHIC)
 		{
 			if (Input::IsKeyDown(Keycode::KEY_W))
 				MovePosition(glm::vec3(0, (speed * DeltaTime::GetDeltaTime() * m_ZoomLevel), 0));

@@ -1,8 +1,8 @@
 Camera:
   Transform:
-    Position: [-0.271519363, 0.00730550289, 0]
-    Rotation: [0, 0, 0]
-  Zoom: 1.7109999656677246
+    Position: [-11.6720028, 8.26810265, 9.90419006]
+    Rotation: [-0.42214945, -0.783055007, 0]
+  Zoom: 1
   FOV: 1
   Type: 1
 GameObjects:
@@ -11,56 +11,69 @@ GameObjects:
     Tag: General
     Transform:
       Position: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [25, 1, 25]
       Rotation: [0, 0, 0]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: WhiteTexture
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
   - GameObject: 1
     Name: Unnamed
     Tag: General
     Transform:
-      Position: [0, -0.625, 0]
+      Position: [0, 3.22047377, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
-    Sprite renderer:
-      Color: [1, 1, 1, 1]
-      Texture: C:/Users/Alexandr\source\repos\DoomEngine\SandBox\src\Animations\IdleLeft\sprite_06.png
-      Texture atlas: InvalidTexture
-      Vertices:
-        - -0.5
-        - -0.5
-        - 0
-        - 0
-        - 0.5
-        - -0.5
-        - 1
-        - 0
-        - 0.5
-        - 0.5
-        - 1
-        - 1
-        - -0.5
-        - 0.5
-        - 0
-        - 1
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+  - GameObject: 2
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-3.44144917, 2.43617988, -9.59042609e-07]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [0, 0.929554939, 1]
+      Attenuation:
+        Constant: 1
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
 Texture atlases:
   []

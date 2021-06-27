@@ -25,12 +25,11 @@ namespace Doom {
 		std::mutex m_Mtx;
 		std::atomic<bool>* m_Ready = nullptr;
 		Shader* m_Shader = nullptr;
-		uint32_t m_SizeOfAttribs = 12 + 16 + 1;//pos, color, scale, (ambient,specular) + mat4 rotation + texture index
+		uint32_t m_SizeOfAttribs = 12 + 16 + 1 + 1;//pos, color, scale, (ambient,specular) + mat4 rotation + texture index + emissive
 		uint32_t m_NThreads = ThreadPool::GetInstance().GetAmountOfThreads() - 1;
 	public:
 
 		bool m_FinishPrepareVertAtribb = true;
-		float m_DrawShadows = 0.0f; //TODO: Need to move somewhere
 		std::map<Mesh*, std::vector<Renderer3D*>> m_InstancedObjects;
 
 		Instancing();
@@ -41,6 +40,7 @@ namespace Doom {
 		void BakeShadows();
 		void PrepareVertexAtrrib();
 		void ShutDown();
+
 		friend class Renderer;
 		friend class World;
 		friend class Editor;

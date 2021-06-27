@@ -455,7 +455,7 @@ void Batch::FlushGameObjects(Shader * shader)
 
 	shader->SetUniform1iv("u_Texture", samplers);
 	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().m_ViewProjectionMat4);
-	shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
+	shader->SetUniform1f("u_Brightness", Renderer::s_Bloom.m_Brightness);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawElements(GL_TRIANGLES, m_GIndexCount, GL_UNSIGNED_INT, NULL);

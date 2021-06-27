@@ -119,31 +119,19 @@ YAML::Emitter& operator<<(YAML::Emitter& out, glm::vec4& v)
 
 void Doom::SceneSerializer::Serialize(const std::string& filePath)
 {
-	Camera& camera = Window::GetInstance().GetCamera();
-	s_CurrentSceneFilePath = filePath;
 	YAML::Emitter out;
+
 	out << YAML::BeginMap;
-	out << YAML::Key << "Camera";
-	out << YAML::BeginMap;
-	out << YAML::Key << "Transform";
-	out << YAML::BeginMap;
-	out << YAML::Key << "Position" << YAML::Value << camera.GetPosition();
-	out << YAML::Key << "Rotation" << YAML::Value << camera.GetRotation();
-	out << YAML::EndMap;
-	out << YAML::Key << "Zoom" << YAML::Value << camera.m_ZoomLevel;
-	out << YAML::Key << "FOV" << YAML::Value <<  camera.m_Fov;
-	out << YAML::Key << "Type" << YAML::Value << (int)camera.m_Type;
-	out << YAML::EndMap;
+
+	SerializeCamera(out);
 
 	out << YAML::Key << "GameObjects";
 	out << YAML::Value << YAML::BeginSeq;
-
 	for (uint32_t i = 0; i < World::GetInstance().s_GameObjects.size(); i++)
 	{
 		if (World::GetInstance().s_GameObjects[i]->m_IsSerializable)
 			SerializeGameObject(out, World::GetInstance().s_GameObjects[i]);
 	}
-
 	out << YAML::EndSeq;
 
 	out << YAML::Key << "Texture atlases";
@@ -170,20 +158,7 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 
 	YAML::Node data = YAML::Load(strStream.str());
 
-	auto cam = data["Camera"];
-	auto camTransform = cam["Transform"];
-	Camera::CameraTypes type = (Camera::CameraTypes)cam["Type"].as<int>();
-	glm::vec3 position = camTransform["Position"].as<glm::vec3>();
-	glm::vec3 rotation = camTransform["Rotation"].as<glm::vec3>();
-	float fov = cam["FOV"].as<float>();
-	double zoom = cam["Zoom"].as<float>();
-	Camera& camera = Window::GetInstance().GetCamera();
-	if (type == Camera::CameraTypes::PERSPECTIVE)
-		camera.SetFov(fov);
-	else
-		camera.Zoom(zoom);
-	camera.SetPosition(position);
-	camera.SetRotation(rotation);
+	DeSerializeCamera(data);
 
 	auto textureAtlases = data["Texture atlases"];
 	if (textureAtlases) 
@@ -195,7 +170,6 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 	}
 
 	std::map<GameObject*, std::vector<int>> childs;
-
 	auto gameobjects = data["GameObjects"];
 	if (gameobjects)
 	{
@@ -216,197 +190,27 @@ void Doom::SceneSerializer::DeSerialize(const std::string& filePath)
 	Logger::Success("has been loaded!", "Scene", s_CurrentSceneFilePath.c_str());
 }
 
-void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& go, std::map<GameObject*, std::vector<int>>& childs)
+void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& in, std::map<GameObject*, std::vector<int>>& childs)
 {
-	//uint64_t id = go["GameObject"].as<uint64_t>();
-	std::string name = go["Name"].as<std::string>();
-	std::string tag = "General";
-	if (go["Tag"])
-		tag = go["Tag"].as<std::string>();
-	int id = go["GameObject"].as<int>();
-	auto renderer3DComponent = go["Renderer3D"];
-	if (renderer3DComponent)
-	{
-		bool isSkyBox = renderer3DComponent["SkyBox"].as<bool>();
-		if (isSkyBox) 
-		{
-			std::vector<std::string>faces = renderer3DComponent["Faces"].as<std::vector<std::string>>();
-			GameObject* skybox = SkyBox::CreateSkyBox(faces);
-			return;
-		}
-	}
+	std::string name = in["Name"].as<std::string>();
+	std::string tag = in["Tag"].as<std::string>();
+	int id = in["GameObject"].as<int>();
+
+	if (DeSerializeSkyBox(in)) return;
 
 	GameObject* obj = GameObject::Create(name);
 	obj->m_Id = id;
 	obj->m_Tag = tag;
 
-	auto transformComponent = go["Transform"];
-	if (transformComponent)
-	{
-		Transform* tr = &(obj->m_Transform);
-		glm::vec3 position = transformComponent["Position"].as<glm::vec3>();
-		glm::vec3 scale = transformComponent["Scale"].as<glm::vec3>();
-		glm::vec3 rotation = transformComponent["Rotation"].as<glm::vec3>();
-		tr->Translate(position.x, position.y, position.z);
-		tr->Scale(scale.x, scale.y, scale.z);
-		tr->RotateOnce(rotation.x, rotation.y, rotation.z, true);
-	}
-
-	if (renderer3DComponent)
-	{
-		Renderer3D* r = obj->m_ComponentManager.AddComponent<Renderer3D>();
-		auto mat = renderer3DComponent["Material"];
-		r->m_Material.m_Ambient = mat["Ambient"].as<float>();
-		r->m_Material.m_Specular = mat["Specular"].as<float>();
-		r->m_Color = mat["Color"].as<glm::vec4>();
-		r->m_Shader = Shader::Get(Utils::GetNameFromFilePath(renderer3DComponent["Shader"].as<std::string>(), 6));
-		bool isTransparent = renderer3DComponent["Transparent"].as<bool>();
-		if (isTransparent) r->MakeTransparent();
-		else r->MakeSolid();
-		if(renderer3DComponent["Emissive"]) r->m_Emissive = renderer3DComponent["Emissive"].as<bool>();
-		r->m_IsCastingShadows = renderer3DComponent["Casting shadows"].as<bool>();
-		r->m_IsWireMesh = renderer3DComponent["Wire mesh"].as<bool>();
-		r->m_IsUsingNormalMap = renderer3DComponent["Use normal map"].as<bool>();
-		if (renderer3DComponent["Is culling face"])
-			r->m_IsCullingFace = renderer3DComponent["Is culling face"].as<bool>();
-		if (renderer3DComponent["Is renderable"])
-			r->m_IsRenderable = renderer3DComponent["Is renderable"].as<bool>();
-		auto textures = renderer3DComponent["Textures"];
-		std::string diffuse = textures["Diffuse"].as<std::string>();
-		std::string normal = textures["Normal"].as<std::string>();
-		if (diffuse == "WhiteTexture")
-			r->m_DiffuseTexture = Texture::s_WhiteTexture;
-		else 
-		{
-			r->m_DiffuseTexture = Texture::Create(diffuse);
-			//Texture::AsyncLoadTexture(diffuse);
-			//Texture::GetAsync(obj, [=] {
-			//	Texture* t = Texture::Get(diffuse, false);
-			//	if (t != nullptr)
-			//		r->m_DiffuseTexture = t;
-			//	return t;
-			//	});
-		}
-		if (normal == "InvalidTexture")
-			r->m_NormalMapTexture = Texture::Get("InvalidTexture");
-		else 
-		{
-			r->m_NormalMapTexture = Texture::Create(normal);
-			/*Texture::AsyncLoadTexture(normal);
-			Texture::GetAsync(r, [=] {
-				Texture* t = Texture::Get(normal, false);
-				if (t != nullptr)
-					r->m_NormalMapTexture = t;
-				return t;
-				});*/
-		}
-		auto mesh = renderer3DComponent["Mesh"];
-		std::string meshPath = mesh["Mesh"].as<std::string>();
-		auto _meshId = mesh["Mesh Id"];
-		uint32_t meshId = 0;
-		if (_meshId)
-			meshId = _meshId.as<uint32_t>();
-		std::string meshName = Utils::GetNameFromFilePath(meshPath);
-		Mesh::AsyncLoadMesh(meshName, meshPath, meshId);
-		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
-		r->m_RenderTechnic = ((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
-		Mesh::GetMeshWhenLoaded(meshName, (void*)r);
-		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
-		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
-		{
-			r->m_FloatUniforms.insert(std::make_pair(it->first.as<std::string>(), it->second.as<float>()));
-		}
-
-	}
-
-	auto dirLightComponent = go["Directional light"];
-	if (dirLightComponent) 
-	{
-		DirectionalLight* dl = obj->m_ComponentManager.AddComponent<DirectionalLight>();
-		dl->m_Intensity = dirLightComponent["Intensity"].as<float>();
-		dl->m_Color = dirLightComponent["Color"].as<glm::vec3>();
-	}
-
-	auto pointLightComponent = go["Point light"];
-	if (pointLightComponent) 
-	{
-		PointLight* pl = obj->m_ComponentManager.AddComponent<PointLight>();
-		auto atenuation = pointLightComponent["Attenuation"];
-		pl->m_Constant = atenuation["Constant"].as<float>();
-		pl->m_Linear = atenuation["Linear"].as<float>();
-		pl->m_Quadratic = atenuation["Quadratic"].as<float>();
-		pl->m_Color = pointLightComponent["Color"].as<glm::vec3>();
-	}
-
-	auto spotLightComponent = go["Spot light"];
-	if (spotLightComponent)
-	{
-		SpotLight* sl = obj->m_ComponentManager.AddComponent<SpotLight>();
-		auto atenuation = spotLightComponent["Attenuation"];
-		sl->m_InnerCutOff = spotLightComponent["InnerCutOff"].as<float>();
-		sl->m_OuterCutOff = spotLightComponent["OuterCutOff"].as<float>();
-		sl->m_Constant = atenuation["Constant"].as<float>();
-		sl->m_Linear = atenuation["Linear"].as<float>();
-		sl->m_Quadratic = atenuation["Quadratic"].as<float>();
-		sl->m_Color = spotLightComponent["Color"].as<glm::vec3>();
-	}
-
-	auto sphereColliderComponent = go["Sphere collider"];
-	if (sphereColliderComponent)
-	{
-		SphereCollider* sc = obj->m_ComponentManager.AddComponent<SphereCollider>();
-		sc->m_IsInBoundingBox = sphereColliderComponent["Inside of bounding box"].as<bool>();
-	}
-
-	auto spriteRendererComponent = go["Sprite renderer"];
-	if (spriteRendererComponent) 
-	{
-		SpriteRenderer* sr = obj->m_ComponentManager.AddComponent<SpriteRenderer>();
-		sr->m_Color = spriteRendererComponent["Color"].as<glm::vec4>();
-		sr->m_Texture = (Texture::Create(spriteRendererComponent["Texture"].as<std::string>()));
-		if (spriteRendererComponent["Emissive"]) sr->m_Emissive = spriteRendererComponent["Emissive"].as<bool>();
-		std::vector<float> vert = spriteRendererComponent["Vertices"].as<std::vector<float>>();
-		for (uint32_t i = 0; i < 16; i++)
-		{
-			sr->m_Mesh2D[i] = vert[i];
-		}
-	}
-
-	auto rectangularCollider2DComponent = go["Rectangle collider 2D"];
-	if (rectangularCollider2DComponent)
-	{
-		RectangleCollider2D* rc = obj->m_ComponentManager.AddComponent<RectangleCollider2D>();
-		rc->m_Enable = rectangularCollider2DComponent["Is Enable"].as<bool>();
-		rc->m_IsTrigger = rectangularCollider2DComponent["Is trigger"].as<bool>();
-		glm::vec3 offset = rectangularCollider2DComponent["OffSet"].as<glm::vec3>();
-		rc->SetOffset(offset.x, offset.y);
-		glm::vec3 scale = rectangularCollider2DComponent["Scale"].as<glm::vec3>();
-	}
-
-	auto particleEmitterComponent = go["Particle emitter"];
-	if (particleEmitterComponent)
-	{
-		ParticleEmitter* pe = obj->m_ComponentManager.AddComponent<ParticleEmitter>();
-		pe->Init(particleEmitterComponent["Particles amount"].as<size_t>());
-		pe->m_Dir[0] = particleEmitterComponent["DirX"].as<glm::vec2>();
-		pe->m_Dir[1] = particleEmitterComponent["DirY"].as<glm::vec2>();
-		pe->m_Dir[2] = particleEmitterComponent["DirZ"].as<glm::vec2>(); 
-		pe->m_RadiusToSpawn[0] = particleEmitterComponent["RadiusToSpawnX"].as<glm::vec2>();
-		pe->m_RadiusToSpawn[1] = particleEmitterComponent["RadiusToSpawnY"].as<glm::vec2>();
-		pe->m_RadiusToSpawn[2] = particleEmitterComponent["RadiusToSpawnZ"].as<glm::vec2>();
-		pe->m_MaxTimeToLive = particleEmitterComponent["Max time to live"].as<float>();
-		pe->m_Speed = particleEmitterComponent["Speed"].as<float>();
-		pe->m_TimeToSpawn = particleEmitterComponent["Time to spawn"].as<glm::vec2>();
-		pe->m_Scale = particleEmitterComponent["Scale"].as<glm::vec2>();
-		pe->m_Color = particleEmitterComponent["Color"].as<glm::vec4>();
-	}
-
-	auto childsId = go["Childs id"];
-	if (childsId) 
-	{
-		std::vector<int> ids = childsId.as<std::vector<int>>();
-		childs.insert(std::make_pair(obj, ids));
-	}
+	DeSerializeTransformComponent(in, &obj->m_ComponentManager);
+	DeSerializeRenderer3DComponent(in, &obj->m_ComponentManager);
+	DeSerializeDirectionalLightComponent(in, &obj->m_ComponentManager);
+	DeSerializeSpriteRendererComponent(in, &obj->m_ComponentManager);
+	DeSerializePointLightComponent(in, &obj->m_ComponentManager);
+	DeSerializeSphereColliderComponent(in, &obj->m_ComponentManager);
+	DeSerializeRectangularCollider(in, &obj->m_ComponentManager);
+	DeSerializeParticleEmitterComponent(in, &obj->m_ComponentManager);
+	DeSerializeGameObjectChilds(in, obj, childs);
 
 	//@deprecated
 	/*auto rEvents = go["Registered events"];
@@ -419,13 +223,261 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 	}*/
 }
 
-void Doom::SceneSerializer::DeSerializeTextureAtlas(YAML::detail::iterator_value& ta)
+void Doom::SceneSerializer::DeSerializeTextureAtlas(YAML::detail::iterator_value& in)
 {
-	std::string name = ta["Texture atlas"].as<std::string>();
-	std::string texture = ta["Texture"].as<std::string>();
-	float width = ta["Sprite width"].as<float>();
-	float height = ta["Sprite height"].as<float>();
+	std::string name = in["Texture atlas"].as<std::string>();
+	std::string texture = in["Texture"].as<std::string>();
+	float width = in["Sprite width"].as<float>();
+	float height = in["Sprite height"].as<float>();
 	TextureAtlas::CreateTextureAtlas(name, width, height, Texture::Create(texture));
+}
+
+void Doom::SceneSerializer::DeSerializeCamera(YAML::Node& in)
+{
+	auto cam = in["Camera"];
+	Camera& camera = Window::GetInstance().GetCamera();
+	Camera::CameraTypes type = (Camera::CameraTypes)cam["Type"].as<int>();
+	if (type == Camera::CameraTypes::PERSPECTIVE)
+		camera.SetFov(cam["FOV"].as<float>());
+	else
+		camera.Zoom(cam["Zoom"].as<float>());
+	auto camTransform = cam["Transform"];
+	camera.SetPosition(camTransform["Position"].as<glm::vec3>());
+	camera.SetRotation(camTransform["Rotation"].as<glm::vec3>());
+}
+
+bool Doom::SceneSerializer::DeSerializeSkyBox(YAML::detail::iterator_value& in)
+{
+	auto renderer3DComponent = in["Renderer3D"];
+	if (renderer3DComponent)
+	{
+		bool isSkyBox = renderer3DComponent["SkyBox"].as<bool>();
+		if (isSkyBox)
+		{
+			std::vector<std::string>faces = renderer3DComponent["Faces"].as<std::vector<std::string>>();
+			GameObject* skybox = SkyBox::CreateSkyBox(faces);
+			return true;
+		}
+	}
+	return false;
+}
+
+void Doom::SceneSerializer::DeSerializeTransformComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto transformComponent = in["Transform"];
+	if (transformComponent)
+	{
+		Transform* tr = cm->GetComponent<Transform>();
+		tr->Translate(transformComponent["Position"].as<glm::vec3>());
+		tr->Scale(transformComponent["Scale"].as<glm::vec3>());
+		tr->RotateOnce(transformComponent["Rotation"].as<glm::vec3>(), true);
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeRenderer3DComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto renderer3DComponent = in["Renderer3D"];
+	if (renderer3DComponent)
+	{
+		Renderer3D* r = cm->AddComponent<Renderer3D>();
+
+		auto mat = renderer3DComponent["Material"];
+		r->m_Material.m_Ambient = mat["Ambient"].as<float>();
+		r->m_Material.m_Specular = mat["Specular"].as<float>();
+		r->m_Color = mat["Color"].as<glm::vec4>();
+
+		r->m_Shader = Shader::Get(Utils::GetNameFromFilePath(renderer3DComponent["Shader"].as<std::string>(), 6));
+
+		bool isTransparent = renderer3DComponent["Transparent"].as<bool>();
+		if (isTransparent)
+			r->MakeTransparent();
+		else 
+			r->MakeSolid();
+
+		r->m_Emissive = renderer3DComponent["Emissive"].as<bool>();
+		r->m_IsCastingShadows = renderer3DComponent["Casting shadows"].as<bool>();
+		r->m_IsWireMesh = renderer3DComponent["Wire mesh"].as<bool>();
+		r->m_IsUsingNormalMap = renderer3DComponent["Use normal map"].as<bool>();
+		r->m_IsCullingFace = renderer3DComponent["Is culling face"].as<bool>();
+		r->m_IsRenderable = renderer3DComponent["Is renderable"].as<bool>();
+
+		auto textures = renderer3DComponent["Textures"];
+		std::string diffuse = textures["Diffuse"].as<std::string>();
+		std::string normal = textures["Normal"].as<std::string>();
+		if (diffuse == "WhiteTexture")
+			r->m_DiffuseTexture = Texture::s_WhiteTexture;
+		else
+		{
+			r->m_DiffuseTexture = Texture::Create(diffuse);
+			//Texture::AsyncLoadTexture(diffuse);
+			//Texture::GetAsync(obj, [=] {
+			//	Texture* t = Texture::Get(diffuse, false);
+			//	if (t != nullptr)
+			//		r->m_DiffuseTexture = t;
+			//	return t;
+			//	});
+		}
+		if (normal == "InvalidTexture")
+			r->m_NormalMapTexture = Texture::Get("InvalidTexture");
+		else
+		{
+			r->m_NormalMapTexture = Texture::Create(normal);
+			/*Texture::AsyncLoadTexture(normal);
+			Texture::GetAsync(r, [=] {
+				Texture* t = Texture::Get(normal, false);
+				if (t != nullptr)
+					r->m_NormalMapTexture = t;
+				return t;
+				});*/
+		}
+
+		auto mesh = renderer3DComponent["Mesh"];
+		std::string meshPath = mesh["Mesh"].as<std::string>();
+		auto meshIdTemp = mesh["Mesh Id"];
+		uint32_t meshId = 0;
+		if (meshIdTemp)
+			meshId = meshIdTemp.as<uint32_t>();
+		std::string meshName = Utils::GetNameFromFilePath(meshPath);
+		Mesh::AsyncLoadMesh(meshName, meshPath, meshId);
+		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
+		r->m_RenderTechnic = ((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
+		Mesh::GetMeshWhenLoaded(meshName, (void*)r);
+		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
+		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
+		{
+			r->m_FloatUniforms.insert(std::make_pair(it->first.as<std::string>(), it->second.as<float>()));
+		}
+
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeSpriteRendererComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto spriteRendererComponent = in["Sprite renderer"];
+	if (spriteRendererComponent)
+	{
+		SpriteRenderer* sr = cm->AddComponent<SpriteRenderer>();
+		sr->m_Color = spriteRendererComponent["Color"].as<glm::vec4>();
+		sr->m_Texture = Texture::Create(spriteRendererComponent["Texture"].as<std::string>());
+		sr->m_Emissive = spriteRendererComponent["Emissive"].as<bool>();
+		std::vector<float> vert = spriteRendererComponent["Vertices"].as<std::vector<float>>();
+		for (uint32_t i = 0; i < 16; i++)
+		{
+			sr->m_Mesh2D[i] = vert[i];
+		}
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeDirectionalLightComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto dirLightComponent = in["Directional light"];
+	if (dirLightComponent)
+	{
+		DirectionalLight* dl = cm->AddComponent<DirectionalLight>();
+		dl->m_Intensity = dirLightComponent["Intensity"].as<float>();
+		dl->m_Color = dirLightComponent["Color"].as<glm::vec3>();
+	}
+}
+
+void Doom::SceneSerializer::DeSerializePointLightComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto pointLightComponent = in["Point light"];
+	if (pointLightComponent)
+	{
+		PointLight* pl = cm->AddComponent<PointLight>();
+		auto atenuation = pointLightComponent["Attenuation"];
+		pl->m_Constant = atenuation["Constant"].as<float>();
+		pl->m_Linear = atenuation["Linear"].as<float>();
+		pl->m_Quadratic = atenuation["Quadratic"].as<float>();
+		pl->m_Color = pointLightComponent["Color"].as<glm::vec3>();
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeSpotLightComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto spotLightComponent = in["Spot light"];
+	if (spotLightComponent)
+	{
+		SpotLight* sl = cm->AddComponent<SpotLight>();
+		sl->m_InnerCutOff = spotLightComponent["InnerCutOff"].as<float>();
+		sl->m_OuterCutOff = spotLightComponent["OuterCutOff"].as<float>();
+		sl->m_Color = spotLightComponent["Color"].as<glm::vec3>();
+		auto atenuation = spotLightComponent["Attenuation"];
+		sl->m_Constant = atenuation["Constant"].as<float>();
+		sl->m_Linear = atenuation["Linear"].as<float>();
+		sl->m_Quadratic = atenuation["Quadratic"].as<float>();
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeSphereColliderComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto sphereColliderComponent = in["Sphere collider"];
+	if (sphereColliderComponent)
+	{
+		SphereCollider* sc = cm->AddComponent<SphereCollider>();
+		sc->m_IsInBoundingBox = sphereColliderComponent["Inside of bounding box"].as<bool>();
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeRectangularCollider(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto rectangularCollider2DComponent = in["Rectangle collider 2D"];
+	if (rectangularCollider2DComponent)
+	{
+		RectangleCollider2D* rc = cm->AddComponent<RectangleCollider2D>();
+		rc->m_Enable = rectangularCollider2DComponent["Is Enable"].as<bool>();
+		rc->m_IsTrigger = rectangularCollider2DComponent["Is trigger"].as<bool>();
+		glm::vec3 offset = rectangularCollider2DComponent["OffSet"].as<glm::vec3>();
+		rc->SetOffset(offset.x, offset.y);
+		glm::vec3 scale = rectangularCollider2DComponent["Scale"].as<glm::vec3>();
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeParticleEmitterComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto particleEmitterComponent = in["Particle emitter"];
+	if (particleEmitterComponent)
+	{
+		ParticleEmitter* pe = cm->AddComponent<ParticleEmitter>();
+		pe->Init(particleEmitterComponent["Particles amount"].as<size_t>());
+		pe->m_Dir[0] = particleEmitterComponent["DirX"].as<glm::vec2>();
+		pe->m_Dir[1] = particleEmitterComponent["DirY"].as<glm::vec2>();
+		pe->m_Dir[2] = particleEmitterComponent["DirZ"].as<glm::vec2>();
+		pe->m_RadiusToSpawn[0] = particleEmitterComponent["RadiusToSpawnX"].as<glm::vec2>();
+		pe->m_RadiusToSpawn[1] = particleEmitterComponent["RadiusToSpawnY"].as<glm::vec2>();
+		pe->m_RadiusToSpawn[2] = particleEmitterComponent["RadiusToSpawnZ"].as<glm::vec2>();
+		pe->m_MaxTimeToLive = particleEmitterComponent["Max time to live"].as<float>();
+		pe->m_Speed = particleEmitterComponent["Speed"].as<float>();
+		pe->m_TimeToSpawn = particleEmitterComponent["Time to spawn"].as<glm::vec2>();
+		pe->m_Scale = particleEmitterComponent["Scale"].as<glm::vec2>();
+		pe->m_Color = particleEmitterComponent["Color"].as<glm::vec4>();
+	}
+}
+
+void Doom::SceneSerializer::DeSerializeGameObjectChilds(YAML::detail::iterator_value& in, GameObject* go, std::map<GameObject*, std::vector<int>>& childs)
+{
+	auto childsId = in["Childs id"];
+	if (childsId)
+	{
+		std::vector<int> ids = childsId.as<std::vector<int>>();
+		childs.insert(std::make_pair(go, ids));
+	}
+}
+
+void Doom::SceneSerializer::SerializeCamera(YAML::Emitter& out)
+{
+	Camera& camera = Window::GetInstance().GetCamera();
+	out << YAML::Key << "Camera";
+	out << YAML::BeginMap;
+	out << YAML::Key << "Transform";
+	out << YAML::BeginMap;
+	out << YAML::Key << "Position" << YAML::Value << camera.GetPosition();
+	out << YAML::Key << "Rotation" << YAML::Value << camera.GetRotation();
+	out << YAML::EndMap;
+	out << YAML::Key << "Zoom" << YAML::Value << camera.m_ZoomLevel;
+	out << YAML::Key << "FOV" << YAML::Value << camera.m_Fov;
+	out << YAML::Key << "Type" << YAML::Value << (int)camera.m_Type;
+	out << YAML::EndMap;
 }
 
 void Doom::SceneSerializer::SerializeTextureAtlas(YAML::Emitter& out, TextureAtlas* ta)
@@ -452,12 +504,12 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 	SerializePointLightComponent(out, cm);
 	SerializeSpotLightComponent(out, cm);
 	SerializeSpriteRendererComponent(out, cm);
-	SerializeCubeColliderComponent(out, cm);
 	SerializeSphereColliderComponent(out, cm);
 	SerializeGameObjectChilds(out, go);
 	SerializeRegisteredEvents(out, go);
 	SerializeRectangularCollider(out, cm);
 	SerializeParticleEmitterComponent(out, cm);
+	//SerializeCubeColliderComponent(out, cm);
 
 	out << YAML::EndMap;
 }
@@ -478,9 +530,9 @@ void Doom::SceneSerializer::SerializeGameObjectChilds(YAML::Emitter& out, GameOb
 
 void Doom::SceneSerializer::SerializeTransformComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<Transform>() != nullptr)
+	Transform* tr = cm->GetComponent<Transform>();
+	if (tr != nullptr)
 	{
-		Transform* tr = cm->GetComponent<Transform>();
 		out << YAML::Key << "Transform";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Position" << YAML::Value << tr->GetPosition();
@@ -492,9 +544,10 @@ void Doom::SceneSerializer::SerializeTransformComponent(YAML::Emitter& out, Comp
 
 void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<Renderer3D>() != nullptr) 
+	Renderer3D* r = cm->GetComponent<Renderer3D>();
+	if (r != nullptr) 
 	{
-		Renderer3D* r = cm->GetComponent<Renderer3D>();
+		
 		if (typeid(*r) == typeid(Renderer3D)) 
 		{
 			out << YAML::Key << "Renderer3D";
@@ -554,9 +607,9 @@ void Doom::SceneSerializer::SerializeRenderer3DComponent(YAML::Emitter& out, Com
 
 void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<SpriteRenderer>() != nullptr) 
+	SpriteRenderer* sr = cm->GetComponent<SpriteRenderer>();
+	if (sr != nullptr) 
 	{
-		SpriteRenderer* sr = cm->GetComponent<SpriteRenderer>();
 		if (typeid(*sr) == typeid(SpriteRenderer)) 
 		{
 			out << YAML::Key << "Sprite renderer";
@@ -578,9 +631,9 @@ void Doom::SceneSerializer::SerializeSpriteRendererComponent(YAML::Emitter& out,
 
 void Doom::SceneSerializer::SerializeDirectionalLightComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<DirectionalLight>() != nullptr)
+	DirectionalLight* dl = cm->GetComponent<DirectionalLight>();
+	if (dl != nullptr)
 	{
-		DirectionalLight* dl = cm->GetComponent<DirectionalLight>();
 		out << YAML::Key << "Directional light";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Intensity" << YAML::Value << dl->m_Intensity;
@@ -591,9 +644,9 @@ void Doom::SceneSerializer::SerializeDirectionalLightComponent(YAML::Emitter& ou
 
 void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<PointLight>() != nullptr)
+	PointLight* pl = cm->GetComponent<PointLight>();
+	if (pl != nullptr)
 	{
-		PointLight* pl = cm->GetComponent<PointLight>();
 		out << YAML::Key << "Point light";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Color" << YAML::Value << pl->m_Color;
@@ -609,9 +662,9 @@ void Doom::SceneSerializer::SerializePointLightComponent(YAML::Emitter& out, Com
 
 void Doom::SceneSerializer::SerializeSpotLightComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<SpotLight>() != nullptr)
+	SpotLight* sl = cm->GetComponent<SpotLight>();
+	if (sl != nullptr)
 	{
-		SpotLight* sl = cm->GetComponent<SpotLight>();
 		out << YAML::Key << "Spot light";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Color" << YAML::Value << sl->m_Color;
@@ -629,9 +682,9 @@ void Doom::SceneSerializer::SerializeSpotLightComponent(YAML::Emitter& out, Comp
 
 void Doom::SceneSerializer::SerializeCubeColliderComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<CubeCollider3D>() != nullptr) 
+	CubeCollider3D* cc = cm->GetComponent<CubeCollider3D>();
+	if (cc != nullptr) 
 	{
-		CubeCollider3D* cc = cm->GetComponent<CubeCollider3D>();
 		out << YAML::Key << "Cube collider";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Bounding box" << YAML::Value << cc->m_IsBoundingBox;
@@ -641,12 +694,12 @@ void Doom::SceneSerializer::SerializeCubeColliderComponent(YAML::Emitter& out, C
 
 void Doom::SceneSerializer::SerializeSphereColliderComponent(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<SphereCollider>() != nullptr) 
+	SphereCollider* sc = cm->GetComponent<SphereCollider>();
+	if (sc != nullptr) 
 	{
-		SphereCollider* cc = cm->GetComponent<SphereCollider>();
 		out << YAML::Key << "Sphere collider";
 		out << YAML::BeginMap;
-		out << YAML::Key << "Inside of bounding box" << YAML::Value << cc->m_IsInBoundingBox;
+		out << YAML::Key << "Inside of bounding box" << YAML::Value << sc->m_IsInBoundingBox;
 		out << YAML::EndMap;
 	}
 }
@@ -658,9 +711,9 @@ void Doom::SceneSerializer::SerializeRegisteredEvents(YAML::Emitter& out, GameOb
 
 void Doom::SceneSerializer::SerializeRectangularCollider(YAML::Emitter& out, ComponentManager* cm)
 {
-	if (cm->GetComponent<RectangleCollider2D>() != nullptr) 
+	RectangleCollider2D* rc = cm->GetComponent<RectangleCollider2D>();
+	if (rc != nullptr) 
 	{
-		RectangleCollider2D* rc = cm->GetComponent<RectangleCollider2D>();
 		out << YAML::Key << "Rectangle collider 2D";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Is Enable" << YAML::Value << rc->m_Enable;

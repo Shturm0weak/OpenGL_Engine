@@ -64,6 +64,7 @@ DOOM_API Shader* RectangleCollider2D::s_Shader;
 DOOM_API bool Renderer::s_PolygonMode = false;
 DOOM_API Renderer::Stats Renderer::s_Stats;
 DOOM_API Renderer::Bloom Renderer::s_Bloom;
+DOOM_API Renderer::ShadowMap Renderer::s_ShadowMap;
 
 DOOM_API std::vector<std::string> Editor::s_TexturesPath;
 DOOM_API std::vector<Texture*> Editor::s_Texture;
@@ -124,4 +125,4 @@ DOOM_API std::vector<std::string> Ray3D::m_IgnoreMask;
 
 DOOM_API std::vector<Line*> GridLayOut::s_GridLines;
 
-DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/aimtrainer.yaml";
+DOOM_API std::string SceneSerializer::s_CurrentSceneFilePath = "src/Scenes/scene.yaml";
