@@ -29,6 +29,12 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	MainThread::GetInstance();
 	Input::SetupCallBack();
 
+#ifndef LOADFROMFILE
+	Utils::LoadShadersFromFolder("src/Shaders");
+	Utils::LoadTexturesFromFolder("src/Images");
+	Utils::LoadTexturesFromFolder("src/UIimages");
+	Utils::LoadMeshesFromFolder("src/Mesh/Primitives");
+#endif
 	Utils::SetStandardTexParams();
 	Texture::s_WhiteTexture = Texture::ColoredTexture("WhiteTexture",0xFFFFFFFF);
 	Texture::ColoredTexture("InvalidTexture", 0xFF00AC);
@@ -38,7 +44,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	int* size = Window::GetInstance().GetSize();
 	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER };
 	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER };
-	FrameBufferParams shadowMapParams = { 2056, 2056, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_FLOAT, false, false, false };
+	FrameBufferParams shadowMapParams = { 4096, 4096, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_FLOAT, false, false, false };
 	window.m_FrameBufferShadowMap = new FrameBuffer(shadowMapParams);
 
 	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE };
@@ -61,12 +67,6 @@ EntryPoint::EntryPoint(Doom::Application* app)
 
 	//GridLayOut::DrawGrid(51, 50);
 	//Editor::GetInstance()->gizmo = new Gizmos; @Deprecated
-
-#ifndef LOADFROMFILE
-	Utils::LoadShadersFromFolder("src/Shaders");
-	Utils::LoadTexturesFromFolder("src/Images");
-	Utils::LoadMeshesFromFolder("src/Mesh/Primitives");
-#endif
 
 	CubeCollider3D::InitMesh();
 
@@ -103,7 +103,6 @@ void EntryPoint::Run()
 	{
 		Logger::UpdateTime();
 		Renderer::s_OutLined3dObjects.clear();
-		RectangleCollider2D::CollidersToInit();
 		window.s_CursorStateChanged = false;
 		eventSystem.SendEvent(EventType::ONUPDATE, nullptr);
 		DeltaTime::calculateDeltaTime();

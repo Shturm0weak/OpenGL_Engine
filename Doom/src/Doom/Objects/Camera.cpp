@@ -100,6 +100,7 @@ void Doom::Camera::SetOrthographic(float ratio)
 	m_CameraProjParams[3] = -1;
 	m_ProjectionMat4 = glm::ortho(m_CameraProjParams[0] * m_ZoomLevel, m_CameraProjParams[1] * m_ZoomLevel, m_CameraProjParams[3] * m_ZoomLevel, m_CameraProjParams[2] * m_ZoomLevel, m_Znear, m_Zfar);
 	m_Type = CameraTypes::ORTHOGRAPHIC;
+	SetPosition(glm::vec3(m_Position.x, m_Position.y, 0.0f));
 }
 
 glm::dvec3 Doom::Camera::GetMouseDirVec()

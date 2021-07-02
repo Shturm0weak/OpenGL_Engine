@@ -28,8 +28,15 @@ Doom::PointLight::PointLight(const PointLight& rhs)
 
 Doom::PointLight::PointLight()
 {
-	//SetType(ComponentType::POINTLIGHT);
-	s_PointLights.push_back(this);
+	std::function<void()>* f = new std::function<void()>([=] {
+		SpriteRenderer* sr = m_OwnerOfCom->GetComponent<SpriteRenderer>();
+		if (sr == nullptr)
+			sr = m_OwnerOfCom->AddComponent<SpriteRenderer>();
+		sr->m_DisableRotation = true;
+		sr->m_Texture = Texture::Get("src/UIimages/Lamp.png");
+		s_PointLights.push_back(this);
+		});
+	EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);
 }
 
 Doom::PointLight::~PointLight()

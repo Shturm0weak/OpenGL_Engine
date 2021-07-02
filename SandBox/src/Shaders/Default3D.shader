@@ -94,6 +94,9 @@ uniform sampler2D u_NormalMapTexture;
 uniform bool u_IsNormalMapping;
 uniform bool u_Emissive;
 uniform bool u_DrawShadows;
+uniform int u_PcfRange;
+uniform float u_ScalarTexelSize;
+uniform float u_ShadowBias;
 
 vec3 normal = inNormal;
 vec3 viewDir = normalize(u_CameraPos - fragPos);
@@ -110,19 +113,18 @@ float ShadowCalculation()
 	float currentDepth = projCoords.z;
 	// check whether current frag pos is in shadow
 	//float bias = 0.005;
-	float bias = clamp(0.002 * tan(acos(dot(normal, dirLights[0].dir))), 0.0, 0.01);
-	vec2 texelSize = 0.7 / textureSize(u_ShadowTexture, 0);
-	int pcfRange = 4;
-	for (int x = -pcfRange; x <= pcfRange; ++x)
+	float bias = clamp(u_ShadowBias * tan(acos(dot(normal, dirLights[0].dir))), 0.0, 0.01);
+	vec2 texelSize = u_ScalarTexelSize / textureSize(u_ShadowTexture, 0);
+	for (int x = -u_PcfRange; x <= u_PcfRange; ++x)
 	{
-		for (int y = -pcfRange; y <= pcfRange; ++y)
+		for (int y = -u_PcfRange; y <= u_PcfRange; ++y)
 		{
 			float pcfDepth = texture(u_ShadowTexture, projCoords.xy + vec2(x, y) * texelSize).r;
 			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
 		}
 	}
 
-	shadow /= ((pcfRange * 2 + 1) * (pcfRange * 2 + 1));
+	shadow /= ((u_PcfRange * 2 + 1) * (u_PcfRange * 2 + 1));
 
 	if (projCoords.z > 1.0)
 		shadow = 0.0;

@@ -39,9 +39,12 @@ namespace Doom {
 
 		struct ShadowMap
 		{
-			float m_Znear = -50.0f;
-			float m_Zfar = 50.0f;
-			float m_Zoom = 50.0f;
+			float m_Znear = -100.0f;
+			float m_Zfar = 100.0f;
+			float m_Zoom = 100.0f;
+			float m_Bias = 0.001;
+			float m_ScalarTexelSize = 0.7f;
+			int m_PcfRange = 4;
 			bool m_DrawShadows = false;
 		};
 

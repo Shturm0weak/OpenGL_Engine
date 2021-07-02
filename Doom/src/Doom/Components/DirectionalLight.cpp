@@ -22,7 +22,7 @@ void Doom::DirectionalLight::UpdateLightMatrix()
 	m_LightProjection = glm::ortho(-shadowMap.m_Zoom, shadowMap.m_Zoom, -shadowMap.m_Zoom, shadowMap.m_Zoom, nearPlane, far_plane);
 	glm::vec3 dir = m_OwnerOfCom->m_Transform.m_ViewMat4 * glm::vec4(0, 0, 1, 1);
 	glm::vec3 pos = Window::GetInstance().GetCamera().GetPosition();
-	glm::mat4 view = glm::lookAt(pos, dir + pos, glm::vec3(0, 1, 0));
+	glm::mat4 view = (glm::lookAt(pos, dir + pos, glm::vec3(0, 1, 0)));
 	lightSpaceMatrix = m_LightProjection * view;
 }
 
@@ -43,8 +43,15 @@ Doom::DirectionalLight::DirectionalLight(const DirectionalLight& rhs)
 
 Doom::DirectionalLight::DirectionalLight()
 {
-	//SetType(ComponentType::DIRECTIONALLIGHT);
-	s_DirLights.push_back(this);
+	std::function<void()>* f = new std::function<void()>([=] {
+		SpriteRenderer* sr = m_OwnerOfCom->GetComponent<SpriteRenderer>();
+		if (sr == nullptr)
+			sr = m_OwnerOfCom->AddComponent<SpriteRenderer>();
+		sr->m_DisableRotation = true;
+		sr->m_Texture = Texture::Get("src/UIimages/Sun.png");
+		s_DirLights.push_back(this);
+		});
+	EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);
 }
 
 Doom::DirectionalLight::~DirectionalLight()

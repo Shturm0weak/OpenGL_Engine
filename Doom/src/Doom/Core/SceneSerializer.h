@@ -26,6 +26,7 @@ namespace Doom {
 		static void DeSerializeSphereColliderComponent(YAML::detail::iterator_value& in, ComponentManager* cm);
 		static void DeSerializeRectangularCollider(YAML::detail::iterator_value& in, ComponentManager* cm);
 		static void DeSerializeParticleEmitterComponent(YAML::detail::iterator_value& in, ComponentManager* cm);
+		static void DeSerializeScriptComponent(YAML::detail::iterator_value& in, ComponentManager* cm);
 		static void DeSerializeGameObjectChilds(YAML::detail::iterator_value& in, GameObject* go, std::map<GameObject*, std::vector<int>>& childs);
 
 		static void SerializeCamera(YAML::Emitter& out);
@@ -43,6 +44,7 @@ namespace Doom {
 		static void SerializeRegisteredEvents(YAML::Emitter& out, GameObject* go);
 		static void SerializeRectangularCollider(YAML::Emitter& out, ComponentManager* cm);
 		static void SerializeParticleEmitterComponent(YAML::Emitter& out, ComponentManager* cm);
+		static void SerializeScriptComponent(YAML::Emitter& out, ComponentManager* cm);
 	};
 
 }

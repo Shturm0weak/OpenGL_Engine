@@ -1,7 +1,7 @@
 Camera:
   Transform:
-    Position: [-11.6720028, 8.26810265, 9.90419006]
-    Rotation: [-0.42214945, -0.783055007, 0]
+    Position: [-3.13221359, 6.89641094, 10.3811312]
+    Rotation: [-0.562564433, 5.42785072, 0]
   Zoom: 1
   FOV: 1
   Type: 1
@@ -11,7 +11,7 @@ GameObjects:
     Tag: General
     Transform:
       Position: [0, 0, 0]
-      Scale: [25, 1, 25]
+      Scale: [259.567871, 1, 300.813202]
       Rotation: [0, 0, 0]
     Renderer3D:
       Material:
@@ -34,11 +34,13 @@ GameObjects:
       Mesh:
         Mesh: src/Mesh/Primitives/cube.fbx
         Mesh Id: 0
+    Scripts:
+      Size: 0
   - GameObject: 1
     Name: Unnamed
     Tag: General
     Transform:
-      Position: [0, 3.22047377, 0]
+      Position: [2.38418579e-07, 4.56360292, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Renderer3D:
@@ -62,18 +64,424 @@ GameObjects:
       Mesh:
         Mesh: src/Mesh/Primitives/cube.fbx
         Mesh Id: 0
+    Scripts:
+      Size: 0
   - GameObject: 2
     Name: Unnamed
     Tag: General
     Transform:
-      Position: [-3.44144917, 2.43617988, -9.59042609e-07]
+      Position: [0, 10.0693254, 0]
+      Scale: [0.999999881, 0.999999046, 0.999999881]
+      Rotation: [2.4128592, -0.291822821, 0.25137952]
+    Directional light:
+      Intensity: 0.323000014
+      Color: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 3
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, 6.40049934, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     Point light:
-      Color: [0, 0.929554939, 1]
+      Color: [1, 0, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
+  - GameObject: 4
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0.241777897, 4.67758512, 2.49256563]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [0, 0.210526466, 1]
+      Attenuation:
+        Constant: 0
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
+  - GameObject: 5
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-47.0844002, 3.14727855, 1.14826632]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/sphere.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+  - GameObject: 6
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-47.7899017, 4.32458019, 7.53642559]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.520308912, 1, 0.420229435, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595235825, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
+  - GameObject: 7
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-47.6604996, 4.32458019, -4.210639]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.520308912, 1, 0.420229435, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595235825, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
+  - GameObject: 8
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-42.5559692, 4.32458019, 0.651109815]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.520308912, 1, 0.420229435, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595235825, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
+  - GameObject: 9
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-52.0437279, 4.32458019, 1.50437546]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 1.53799999
+        Specular: 0.200000003
+        Color: [0.613485098, 1, 0.532846689, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: true
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Point light:
+      Color: [0.0595237017, 1, 0]
+      Attenuation:
+        Constant: 0
+        Linear: 0
+        Quadratic: 0.100000001
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
+  - GameObject: 10
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-37.9568939, 5.7581377, 11.8977747]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/Box.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+  - GameObject: 11
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, 4.37586212, 7.13981485]
+      Scale: [1.00000179, 1, 1]
+      Rotation: [2.81590056, -1.40070844, 3.141572]
+    Spot light:
+      Color: [1, 1, 1]
+      InnerCutOff: 0.976296008
+      OuterCutOff: 0.953716934
       Attenuation:
         Constant: 1
         Linear: 0.0900000036
         Quadratic: 0.0320000015
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Flashlight.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
 Texture atlases:
   []

@@ -134,10 +134,10 @@ namespace Doom {
 
 		Character* m_Character = nullptr;
 
-		Texture* m_CheckBoxTextureTrue = Texture::Create("src/UIimages/CheckMarkTrue.png");
-		Texture* m_CheckBoxTextureFalse = Texture::Create("src/UIimages/CheckMarkFalse.png");
-		Texture* m_TriangleRightTexture = Texture::Create("src/UIimages/triangleRight.png");
-		Texture* m_TriangleDownTexture = Texture::Create("src/UIimages/triangleDown.png");
+		Texture* m_CheckBoxTextureTrue = nullptr;
+		Texture* m_CheckBoxTextureFalse = nullptr;
+		Texture* m_TriangleRightTexture = nullptr;
+		Texture* m_TriangleDownTexture = nullptr;
 		
 		float m_CharacterXOffset = 0;
 		float m_CurrentPanelCoods[8];
@@ -148,7 +148,7 @@ namespace Doom {
 
 		Gui& operator=(const Gui& rhs) { return *this; }
 		Gui(const Gui&) = delete;
-		Gui() { RecalculateProjectionMatrix(); }
+		Gui();
 		~Gui() {}
 
 		friend class EntryPoint;

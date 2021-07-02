@@ -1,7 +1,7 @@
 Camera:
   Transform:
-    Position: [-58.9718018, 16.8504868, 21.6979504]
-    Rotation: [-0.446208686, -1.00074983, 0]
+    Position: [-3.13221359, 6.89641094, 10.3811312]
+    Rotation: [-0.562564433, 5.42785072, 0]
   Zoom: 1
   FOV: 1
   Type: 1
@@ -34,8 +34,8 @@ GameObjects:
       Mesh:
         Mesh: src/Mesh/Primitives/cube.fbx
         Mesh Id: 0
-    Cube collider:
-      Bounding box: true
+    Scripts:
+      Size: 0
   - GameObject: 1
     Name: Unnamed
     Tag: General
@@ -64,8 +64,8 @@ GameObjects:
       Mesh:
         Mesh: src/Mesh/Primitives/cube.fbx
         Mesh Id: 0
-    Cube collider:
-      Bounding box: true
+    Scripts:
+      Size: 0
   - GameObject: 2
     Name: Unnamed
     Tag: General
@@ -76,6 +76,8 @@ GameObjects:
     Directional light:
       Intensity: 0.323000014
       Color: [1, 1, 1]
+    Scripts:
+      Size: 0
   - GameObject: 3
     Name: Unnamed
     Tag: General
@@ -89,6 +91,30 @@ GameObjects:
         Constant: 0
         Linear: 0.0900000036
         Quadratic: 0.0320000015
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
   - GameObject: 4
     Name: Unnamed
     Tag: General
@@ -102,6 +128,30 @@ GameObjects:
         Constant: 0
         Linear: 0.0900000036
         Quadratic: 0.0320000015
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
   - GameObject: 5
     Name: Unnamed
     Tag: General
@@ -130,8 +180,8 @@ GameObjects:
       Mesh:
         Mesh: src/Mesh/Primitives/sphere.fbx
         Mesh Id: 0
-    Cube collider:
-      Bounding box: true
+    Scripts:
+      Size: 0
   - GameObject: 6
     Name: Unnamed
     Tag: General
@@ -166,8 +216,30 @@ GameObjects:
         Constant: 0
         Linear: 0
         Quadratic: 0.100000001
-    Cube collider:
-      Bounding box: true
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
   - GameObject: 7
     Name: Unnamed
     Tag: General
@@ -202,8 +274,30 @@ GameObjects:
         Constant: 0
         Linear: 0
         Quadratic: 0.100000001
-    Cube collider:
-      Bounding box: true
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
   - GameObject: 8
     Name: Unnamed
     Tag: General
@@ -238,8 +332,30 @@ GameObjects:
         Constant: 0
         Linear: 0
         Quadratic: 0.100000001
-    Cube collider:
-      Bounding box: true
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
   - GameObject: 9
     Name: Unnamed
     Tag: General
@@ -274,8 +390,30 @@ GameObjects:
         Constant: 0
         Linear: 0
         Quadratic: 0.100000001
-    Cube collider:
-      Bounding box: true
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
   - GameObject: 10
     Name: Unnamed
     Tag: General
@@ -304,7 +442,46 @@ GameObjects:
       Mesh:
         Mesh: src/Mesh/Primitives/cube.fbx
         Mesh Id: 0
-    Cube collider:
-      Bounding box: true
+    Scripts:
+      Size: 0
+  - GameObject: 11
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, 4.37586212, 7.13981485]
+      Scale: [1.00000179, 1, 1]
+      Rotation: [2.81590056, -1.40070844, 3.141572]
+    Spot light:
+      Color: [1, 1, 1]
+      InnerCutOff: 0.976296008
+      OuterCutOff: 0.953716934
+      Attenuation:
+        Constant: 1
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Flashlight.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
 Texture atlases:
   []

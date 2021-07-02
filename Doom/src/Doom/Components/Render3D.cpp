@@ -311,6 +311,9 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		m_Shader->SetUniform1i("u_DiffuseTexture", 0);
 		glBindTextureUnit(2, Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 		m_Shader->SetUniform1i("u_ShadowTexture", 2);
+		m_Shader->SetUniform1i("u_PcfRange", Renderer::s_ShadowMap.m_PcfRange);
+		m_Shader->SetUniform1f("u_ShadowBias", Renderer::s_ShadowMap.m_Bias);
+		m_Shader->SetUniform1f("u_ScalarTexelSize", Renderer::s_ShadowMap.m_ScalarTexelSize);
 		m_Shader->SetUniform1f("u_DrawShadows", Renderer::s_ShadowMap.m_DrawShadows); 
 		if (m_IsUsingNormalMap)
 		{

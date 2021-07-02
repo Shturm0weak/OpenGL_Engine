@@ -63,7 +63,7 @@ namespace Utils {
 				size_t index = 0;
 				index = textures.back().find("\\", index);
 				textures.back().replace(index, 1, "/");
-				Doom::Texture::AsyncLoadTexture(textures.back());
+				Doom::Texture::AsyncCreate(textures.back());
 			}
 		}
 	}

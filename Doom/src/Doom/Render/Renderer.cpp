@@ -241,7 +241,6 @@ void Renderer::Render2DObjects()
 	{
 		Batch& batch = Batch::GetInstance();
 		batch.BeginGameObjects();
-
 		{
 			for (size_t i = 0; i < Renderer::s_Objects2d.size(); i++)
 			{
@@ -252,7 +251,6 @@ void Renderer::Render2DObjects()
 				}
 			}
 		}
-
 		
 		for (size_t i = 0; i < Particle::s_Particles.size(); i++)
 		{
@@ -263,7 +261,9 @@ void Renderer::Render2DObjects()
 		batch.EndGameObjects();
 	}
 	//glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
 	Batch::GetInstance().FlushGameObjects(Batch::GetInstance().m_BasicShader);
+	glEnable(GL_CULL_FACE);
 	//glEnable(GL_DEPTH_TEST);
 }
 

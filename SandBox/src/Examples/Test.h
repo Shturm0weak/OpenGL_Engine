@@ -43,7 +43,7 @@ public:
 		g.InputInt(L"Целое число", &integer, 0.0f, 0.0f, 0.05 * size.x, 0.025 * size.y);
 		g.m_RelatedPanelProperties.m_AutoAllignment = false;
 		g.UnRelateToPanel();
-		std::cout << ViewPort::GetInstance().GetStaticMousePosition().x << " : " << ViewPort::GetInstance().GetStaticMousePosition().y << std::endl;
+		//std::cout << ViewPort::GetInstance().GetStaticMousePosition().x << " : " << ViewPort::GetInstance().GetStaticMousePosition().y << std::endl;
 	}
 
 	void OnClose()

@@ -20,11 +20,7 @@ namespace Doom {
 
 		static float m_Vertices[8];
 
-		static std::vector<RectangleCollider2D*> s_CollidersToInit;
-		static Shader* s_Shader;
-
 		RectangleCollider2D* m_Col = nullptr;
-		Transform* m_Transform = nullptr;
 
 		char* m_MemoryPoolPtr = nullptr;
 
@@ -50,7 +46,7 @@ namespace Doom {
 		friend class ComponentManager;
 	public:
 
-		float* m_TransformedVerPos = new float[16];
+		float* m_WorldSpaceVertices = new float[16];
 
 		static std::vector <RectangleCollider2D*> s_Collision2d;
 
@@ -61,17 +57,21 @@ namespace Doom {
 		bool m_IsCollided = false;
 		bool m_IsTrigger = false;
 
-		RectangleCollider2D(GameObject* owner = nullptr,double x = 0, double y = 0);
+		RectangleCollider2D();
 		~RectangleCollider2D();
+
+		virtual void OnMove() override { CalculateRealVerPos(); }
+		virtual void OnRotate() override { CalculateRealVerPos(); }
+		virtual void OnScale() override { CalculateRealVerPos(); }
+		virtual void OnTranslate() override { CalculateRealVerPos(); }
 
 		static Component* Create();
 		virtual void Delete() override;
 
 		void SetOffset(float x, float y);
+		void SetOffset(glm::vec2 offset);
 		void IsCollidedSAT();
 		void IsCollidedDIAGS();
-
-		static void CollidersToInit();
 	};
 
 }

@@ -1,8 +1,8 @@
 Camera:
   Transform:
-    Position: [0, 2.72346497, 70.4416046]
-    Rotation: [0, 0, 0]
-  Zoom: 30
+    Position: [-3.74563479, 3.19144726, 64.5419159]
+    Rotation: [-0.0608392917, -0.0152264489, 0]
+  Zoom: 1
   FOV: 1
   Type: 1
 GameObjects:
@@ -40,6 +40,8 @@ GameObjects:
       Is trigger: false
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
   - GameObject: 3
     Name: Wall4
     Tag: General
@@ -74,5 +76,367 @@ GameObjects:
       Is trigger: false
       OffSet: [0, 0, 0]
       Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 2
+    Name: Wall2
+    Tag: General
+    Transform:
+      Position: [0, 24.5292549, 0]
+      Scale: [100, 1, 1]
+      Rotation: [0, 0, 0]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 3
+    Name: Wall4
+    Tag: General
+    Transform:
+      Position: [-49.461586, 0, 0]
+      Scale: [1, 50, 1]
+      Rotation: [0, 0, 0]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 4
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, 13.4033041, 0]
+      Scale: [21.0696049, 1, 1]
+      Rotation: [0, 0, 0.414837718]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 5
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [8.28009701, -5.39822578, 0]
+      Scale: [5.36969423, 2.0111227, 1]
+      Rotation: [0, 0, -0.512199521]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 6
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [21.8712196, 5.48851204, 0]
+      Scale: [19.8233204, 0.894053459, 1]
+      Rotation: [0, 0, 1.86569309]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 7
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-35.1737022, 7.28984928, 0]
+      Scale: [19.8233032, 1.56487489, 1]
+      Rotation: [0, 0, 1.17213941]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 8
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-19.8669319, 7.30285072, 0]
+      Scale: [11.2743359, 1.56487548, 1]
+      Rotation: [0, 0, -0.162141725]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 9
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-34.2137146, -15.7347603, 0]
+      Scale: [16.1472664, 1.5648756, 1]
+      Rotation: [0, 0, 0.0687539056]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 10
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [2.45543027, -18.3283558, 0]
+      Scale: [16.1473026, 1.56487632, 1]
+      Rotation: [0, 0, -0.28566438]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
+  - GameObject: 11
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [37.7041245, -4.09949303, 0]
+      Scale: [16.1473026, 1.56487632, 1]
+      Rotation: [0, 0, 1.08112133]
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: WhiteTexture
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Rectangle collider 2D:
+      Is Enable: true
+      Is trigger: false
+      OffSet: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Scripts:
+      Size: 0
 Texture atlases:
   []

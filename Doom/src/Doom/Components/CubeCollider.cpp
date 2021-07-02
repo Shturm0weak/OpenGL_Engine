@@ -91,7 +91,7 @@ Doom::CubeCollider3D::~CubeCollider3D()
 
 CubeCollider3D::CubeCollider3D() 
 {
-	//SetType(ComponentType::CUBECOLLIDER3D);
+
 }
 
 void Doom::CubeCollider3D::Render()

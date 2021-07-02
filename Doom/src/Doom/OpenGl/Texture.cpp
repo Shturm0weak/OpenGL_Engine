@@ -74,10 +74,13 @@ void Doom::Texture::DispatchLoadedTextures()
 		s_IsTextureAdded = false;
 		for (auto i = s_WaitingForTextures.begin(); i != s_WaitingForTextures.end();)
 		{
-			std::function<Texture* ()> f = i->second;
-			Texture* t = f();
+			std::function<void (Texture* t)> f = i->second.first;
+			Texture* t = Texture::Get(i->second.second, false);
 			if (t != nullptr)
+			{
+				f(t);
 				s_WaitingForTextures.erase(i++);
+			}
 			else
 				++i;
 		}
@@ -130,7 +133,7 @@ void Doom::Texture::Delete(Texture* texture)
 	}
 }
 
-void Doom::Texture::AsyncLoadTexture(const std::string& filePath)
+void Doom::Texture::AsyncCreate(const std::string& filePath)
 {
 	ThreadPool::GetInstance().Enqueue([=] {
 		LoadTextureInRAM(filePath, true);
@@ -153,9 +156,9 @@ Texture* Doom::Texture::Get(std::string filePath, bool showErrors)
 	}
 }
 
-void Texture::GetAsync(void* ptr, std::function<Texture* ()> f)
+void Texture::AsyncGet(void* ptr, std::pair<std::function<void(Texture* t)>, std::string> pair)
 {
-	s_WaitingForTextures.insert(std::make_pair(ptr, f));
+	s_WaitingForTextures.insert(std::make_pair(ptr, pair));
 }
 
 void Doom::Texture::RemoveFromGetAsync(void* ptr)

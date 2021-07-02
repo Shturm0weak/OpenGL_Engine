@@ -44,10 +44,10 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 		if (col->m_Enable != false) 
 		{
 			corners.clear();
-			corners.push_back(glm::vec2(col->m_TransformedVerPos[0], col->m_TransformedVerPos[1]));
-			corners.push_back(glm::vec2(col->m_TransformedVerPos[4], col->m_TransformedVerPos[5]));
-			corners.push_back(glm::vec2(col->m_TransformedVerPos[8], col->m_TransformedVerPos[9]));
-			corners.push_back(glm::vec2(col->m_TransformedVerPos[12], col->m_TransformedVerPos[13]));
+			corners.push_back(glm::vec2(col->m_WorldSpaceVertices[0], col->m_WorldSpaceVertices[1]));
+			corners.push_back(glm::vec2(col->m_WorldSpaceVertices[4], col->m_WorldSpaceVertices[5]));
+			corners.push_back(glm::vec2(col->m_WorldSpaceVertices[8], col->m_WorldSpaceVertices[9]));
+			corners.push_back(glm::vec2(col->m_WorldSpaceVertices[12], col->m_WorldSpaceVertices[13]));
 
 			glm::vec2* result = nullptr;
 			glm::vec3 colPos = col->m_OwnerOfCom->GetPosition();

@@ -19,6 +19,7 @@ namespace Doom {
 		~ScriptComponent();
 
 		friend class Editor;
+		friend class SceneSerializer;
 	};
 
 }

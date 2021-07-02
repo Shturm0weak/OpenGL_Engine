@@ -107,7 +107,9 @@ void Doom::Instancing::Render()
 		gliter->second.m_TextureSlots[2] = Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0];
 		//m_Shader->SetUniform1i("u_ShadowMap", 2);
 		m_Shader->SetUniform1f("u_Brightness", Renderer::s_Bloom.m_Brightness);
-
+		m_Shader->SetUniform1i("u_PcfRange", Renderer::s_ShadowMap.m_PcfRange);
+		m_Shader->SetUniform1f("u_ShadowBias", Renderer::s_ShadowMap.m_Bias);
+		m_Shader->SetUniform1f("u_ScalarTexelSize", Renderer::s_ShadowMap.m_ScalarTexelSize);
 		Renderer::s_Stats.m_Vertices += gliter->first->m_IndicesSize * objsSize;
 		Renderer::s_Stats.m_DrawCalls++;
 

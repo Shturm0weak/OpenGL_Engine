@@ -194,6 +194,9 @@ void Editor::EditorUpdate()
 			if (ImGui::MenuItem("ScriptComponent")) {
 				go->m_ComponentManager.AddComponent<ScriptComponent>();
 			}
+			if (ImGui::MenuItem("ParticleEmitterComponent")) {
+				go->m_ComponentManager.AddComponent<ParticleEmitter>();
+			}
 			if (ImGui::MenuItem("Add child")) {
 
 				GameObject* obj = GameObject::Create();
@@ -404,6 +407,7 @@ void Doom::Editor::MenuRenderer2D()
 		if (MenuRemoveComponent<SpriteRenderer>()) {
 			if (ImGui::CollapsingHeader("Render2D")) {
 				ImGui::Checkbox("Emissive", &sr->m_Emissive);
+				ImGui::Checkbox("Disable rotation", &sr->m_DisableRotation);
 				ImGui::ColorEdit4("Sprite color", &sr->m_Color[0]);
 				delete[] color;
 				int counterImagesButtons = 0;
@@ -447,7 +451,7 @@ void Doom::Editor::MenuRenderer2D()
 				if (ImGui::Button("Load texture ...")) {
 					std::optional<std::string> filePath = FileDialogs::OpenFile("textures (*.png)\0");
 					if (filePath) {
-						Texture::AsyncLoadTexture(*filePath);
+						Texture::AsyncCreate(*filePath);
 					}
 				}
 				int prevselectedAtlas = selectedAtlas;
@@ -872,6 +876,9 @@ void Doom::Editor::MenuShadowMap()
 	ImGui::SliderFloat("Znear", &shadowMap.m_Znear, -500, 500);
 	ImGui::SliderFloat("Zfar", &shadowMap.m_Zfar, 0, 500);
 	ImGui::SliderFloat("Zoom", &shadowMap.m_Zoom, 0, 1000);
+	ImGui::SliderFloat("Texel size", &shadowMap.m_ScalarTexelSize, 0.1, 5);
+	ImGui::SliderFloat("Bias", &shadowMap.m_Bias, 0, 0.005);
+	ImGui::SliderInt("PCF", &shadowMap.m_PcfRange, 0, 10);
 	ImGui::Checkbox("Draw Shadows", &Renderer::s_ShadowMap.m_DrawShadows);
 	void* my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
@@ -882,7 +889,7 @@ void Doom::Editor::MenuBloom()
 {
 	ImGui::Begin("Bloom");
 	ImGui::SliderInt("Pixels to blur", &Renderer::s_Bloom.m_PixelsAmount, 1, 6);
-	ImGui::SliderInt("Texel step", &Renderer::s_Bloom.m_StepTexturePixels, 1, 10);
+	ImGui::SliderInt("Step", &Renderer::s_Bloom.m_StepTexturePixels, 1, 10);
 	ImGui::SliderInt("Blur passes", &Renderer::s_Bloom.m_BlurPasses, 2, 200);
 	ImGui::SliderFloat("Bloom exposure", &Renderer::s_Bloom.m_Exposure, 0, 10);
 	ImGui::SliderFloat("Brightness", &Renderer::s_Bloom.m_Brightness, 0, 10);
@@ -1012,6 +1019,7 @@ void Doom::Editor::MenuParticleEmitterComponent()
 			if (ImGui::CollapsingHeader("Particle emitter"))
 			{
 				ImGui::ColorEdit4("Color", &(pe->m_Color[0]));
+				ImGui::SliderInt("Amount", &m_Particles, 5, 100);
 				ImGui::SliderFloat("Speed", &(pe->m_Speed), 0.0f, 10.0f);
 				ImGui::SliderFloat("Max time to live", &(pe->m_MaxTimeToLive), 0.0f, 10.0f);
 				ImGui::SliderFloat2("Scale", &(pe->m_Scale[0]), 0.0f, 5.0f);
@@ -1025,7 +1033,7 @@ void Doom::Editor::MenuParticleEmitterComponent()
 			}
 			if (ImGui::Button("Init"))
 			{
-				pe->Init(25);
+				pe->Init(m_Particles);
 			}
 		}
 	}
@@ -1061,13 +1069,10 @@ void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 				size_t index = 0;
 				index = s_TexturesPath.back().find("\\", index);
 				s_TexturesPath.back().replace(index, 1, "/");
-				Texture::AsyncLoadTexture(s_TexturesPath.back());
-				Texture::GetAsync(&s_TexturesPath.back(), [=] {
-					Texture* t = Texture::Get(s_TexturesPath.back());
-					if (t != nullptr)
+				Texture::AsyncCreate(s_TexturesPath.back());
+				Texture::AsyncGet(&s_TexturesPath.back(), std::make_pair([=] (Texture* t) {
 						s_Texture.push_back(t);
-					return t;
-					});
+					}, s_TexturesPath.back()));
 			}
 		}
 	}, path);
@@ -1087,13 +1092,10 @@ void Doom::Editor::CheckTexturesFolder(const std::string path)
 				size_t index = 0;
 				index = s_TexturesPath.back().find("\\", index);
 				s_TexturesPath.back().replace(index, 1, "/");
-				Texture::AsyncLoadTexture(s_TexturesPath.back());
-				Texture::GetAsync(&s_TexturesPath.back(), [=] {
-					Texture* t = Texture::Get(s_TexturesPath.back(), false);
-					if (t != nullptr)
-						s_Texture.push_back(t);
-					return t;
-					});
+				Texture::AsyncCreate(s_TexturesPath.back());
+				Texture::AsyncGet(&s_TexturesPath.back(), std::make_pair([=](Texture* t) {
+					s_Texture.push_back(t);
+					}, s_TexturesPath.back()));
 			}
 		}
 		}, path);
@@ -1124,6 +1126,17 @@ void Doom::Editor::Debug()
 	ImGui::Text("Draw calls %d", Renderer::s_Stats.m_DrawCalls);
 	ImGui::Text("Vertices %d", Renderer::s_Stats.m_Vertices);
 	ImGui::Text("Textures amount %d", Texture::s_Textures.size());
+	if (ImGui::Checkbox("Show lights", &showLightsIcons))
+	{
+		for (size_t i = 0; i < PointLight::s_PointLights.size(); i++)
+		{
+			PointLight::s_PointLights[i]->m_OwnerOfCom->GetComponent<SpriteRenderer>()->m_Texture = !showLightsIcons ? Texture::Get("InvalidTexture") : Texture::Get("src/UIimages/Lamp.png");
+		}
+		for (size_t i = 0; i < SpotLight::s_SpotLights.size(); i++)
+		{
+			SpotLight::s_SpotLights[i]->m_OwnerOfCom->GetComponent<SpriteRenderer>()->m_Texture = !showLightsIcons ? Texture::Get("InvalidTexture") : Texture::Get("src/UIimages/Flashlight.png");
+		}
+	}
 	ImGui::Checkbox("Polygon mode",&Renderer::s_PolygonMode);
 	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::s_IsVisible);
 	ImGui::Checkbox("Visible bounding boxes", &isBoundingBoxesVisible);

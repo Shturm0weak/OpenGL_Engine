@@ -14,6 +14,18 @@ void Listener::HandleEvent(Event* e)
 	{
 		OnStart();
 	}
+	else if (type == EventType::ONWINDOWRESIZE)
+	{
+		OnWindowResize(e->m_Parameter);
+	}
+	else if (type == EventType::ONMAINTHREADPROCESS)
+	{
+		OnMainThreadProcess(e->m_Parameter);
+	}
+	else if (e->m_Sender == nullptr)
+	{
+		return;
+	}
 	else if (type == EventType::ONCOLLISION)
 	{
 		if (e->m_Parameter != nullptr)
@@ -36,13 +48,5 @@ void Listener::HandleEvent(Event* e)
 	else if (type == EventType::ONTRANSLATE)
 	{
 		e->m_Sender->OnTranslate();
-	}
-	else if (type == EventType::ONWINDOWRESIZE)
-	{
-		OnWindowResize(e->m_Parameter);
-	}
-	else if (type == EventType::ONMAINTHREADPROCESS)
-	{
-		OnMainThreadProcess(e->m_Parameter);
 	}
 }

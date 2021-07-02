@@ -60,7 +60,6 @@ DOOM_API std::vector <char*> SpriteRenderer::s_FreeMemory;
 DOOM_API std::map <char*, uint64_t> SpriteRenderer::s_MemoryPool;
 
 DOOM_API std::vector <RectangleCollider2D*> RectangleCollider2D::s_Collision2d;
-DOOM_API Shader* RectangleCollider2D::s_Shader;
 DOOM_API bool Renderer::s_PolygonMode = false;
 DOOM_API Renderer::Stats Renderer::s_Stats;
 DOOM_API Renderer::Bloom Renderer::s_Bloom;
@@ -72,7 +71,7 @@ DOOM_API std::vector<Texture*> Editor::s_TextureVecTemp;
 DOOM_API std::vector<TexParameteri> Texture::s_TexParameters;
 DOOM_API std::vector<Texture*> Texture::s_LoadedTextures;
 DOOM_API bool Texture::s_IsTextureAdded = false;
-DOOM_API std::unordered_map<void*, std::function<Texture*()>> Texture::s_WaitingForTextures;
+DOOM_API std::unordered_map<void*, std::pair<std::function<void (Texture* t)>, std::string>> Texture::s_WaitingForTextures;
 DOOM_API std::mutex Texture::s_LockTextureLoadingMtx;
 DOOM_API Texture* Texture::s_WhiteTexture;
 DOOM_API std::unordered_map<std::string, Texture*> Texture::s_Textures;
@@ -90,7 +89,6 @@ DOOM_API float DeltaTime::s_Deltatime = 1.0 / 1e8;
 DOOM_API std::mutex DeltaTime::s_Mtx;
 
 DOOM_API bool RectangleCollider2D::s_IsVisible = false;
-DOOM_API std::vector <RectangleCollider2D*> RectangleCollider2D::s_CollidersToInit;
 
 DOOM_API vec4 COLORS::Red(1, 0, 0, 1);
 DOOM_API vec4 COLORS::Yellow(1, 1, 0, 1);

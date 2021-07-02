@@ -19,12 +19,14 @@ namespace Doom {
 		bool isActiveMeshPicker = false;
 		bool isActiveTexturePicker = false;
 		bool isActiveShaderMenu = false;
+		bool showLightsIcons = true;
 		int selectedShader = -1;
 		int selectedAtlas = -1;
 		int selectedanimation = 0;
 		int selectedchild = -1;
 		int selectedMesh = -1;
 		int texturePickerId = -1;
+		int m_Particles = 25;
 		//int selected = 0;
 		int selectedcomponent = 0;
 		int closedButtonsId = 103212;

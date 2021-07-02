@@ -163,8 +163,8 @@ public:
 		for (unsigned int i = 0; i < 9; i++)
 		{
 			RectangleCollider2D* col = plates[i].plate->m_ComponentManager.GetComponent<RectangleCollider2D>();
-			if (col->m_TransformedVerPos[0] + col->m_OwnerOfCom->GetPosition().x < mousePos.x && col->m_TransformedVerPos[4] + col->m_OwnerOfCom->GetPosition().x > mousePos.x &&
-				col->m_TransformedVerPos[1] + col->m_OwnerOfCom->GetPosition().y < mousePos.y && col->m_TransformedVerPos[9] + col->m_OwnerOfCom->GetPosition().y > mousePos.y){
+			if (col->m_WorldSpaceVertices[0] + col->m_OwnerOfCom->GetPosition().x < mousePos.x && col->m_WorldSpaceVertices[4] + col->m_OwnerOfCom->GetPosition().x > mousePos.x &&
+				col->m_WorldSpaceVertices[1] + col->m_OwnerOfCom->GetPosition().y < mousePos.y && col->m_WorldSpaceVertices[9] + col->m_OwnerOfCom->GetPosition().y > mousePos.y){
 				*selected = i;
 				return &plates[i];
 			}

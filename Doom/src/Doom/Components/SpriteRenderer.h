@@ -40,6 +40,7 @@ namespace Doom {
 
 		Texture* m_Texture = Texture::s_WhiteTexture;
 		TextureAtlas* m_TextureAtlas = nullptr;
+		bool m_DisableRotation = false;
 
 		SpriteRenderer(const SpriteRenderer& rhs);
 		SpriteRenderer();

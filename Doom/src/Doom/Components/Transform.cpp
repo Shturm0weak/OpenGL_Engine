@@ -107,8 +107,10 @@ void Doom::Transform::RotateOnce(glm::vec3 dir, glm::vec3 axis)
 	axis *= angleRad;
 	m_ViewMat4 = glm::toMat4(glm::quat(axis));
 
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
+	//m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
+
+	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom->m_Listener);
+	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom->GetComponent<RectangleCollider2D>());
 }
 
 void Transform::Move(glm::vec3 vdir) 
@@ -119,8 +121,7 @@ void Transform::Move(glm::vec3 vdir)
 	position.z += vdir.z * DeltaTime::GetDeltaTime();
 	m_PosMat4 = glm::translate(glm::mat4(1.0f), position);
 	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
+	//m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 
 	if (m_OwnerOfCom->m_Enable) 
 	{
@@ -132,7 +133,8 @@ void Transform::Move(glm::vec3 vdir)
 				go->m_ComponentManager.GetComponent<Transform>()->Move(vdir);
 		}
 	}
-	//EventSystem::GetInstance().SendEvent(EventType::ONMOVE, (Listener*)m_OwnerOfCom);
+	EventSystem::GetInstance().SendEvent(EventType::ONMOVE, (Listener*)m_OwnerOfCom->m_Listener);
+	EventSystem::GetInstance().SendEvent(EventType::ONMOVE, (Listener*)m_OwnerOfCom->GetComponent<RectangleCollider2D>());
 }
 
 void Transform::RotateOnce(glm::vec3 vangles, bool isRad) 
@@ -141,8 +143,10 @@ void Transform::RotateOnce(glm::vec3 vangles, bool isRad)
 	else m_Rotation = glm::radians(vangles);
 	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
 	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
+	//m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
+
+	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom->m_Listener);
+	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom->GetComponent<RectangleCollider2D>());
 }
 
 void Transform::Rotate(glm::vec3 vangles, bool isRad)
@@ -151,20 +155,20 @@ void Transform::Rotate(glm::vec3 vangles, bool isRad)
 	else m_Rotation = glm::radians(vangles);
 	m_ViewMat4 = glm::toMat4(glm::quat(m_Rotation));
 	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
+	//m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 
-	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom);
+	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom->m_Listener);
+	EventSystem::GetInstance().SendEvent(EventType::ONROTATE, (Listener*)m_OwnerOfCom->GetComponent<RectangleCollider2D>());
 }
 
 void Transform::Scale(glm::vec3 vscale)
 {
 	m_ScaleMat4 = glm::scale(glm::mat4(1.f), vscale);
 	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
+	//m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 
-	//EventSystem::GetInstance().SendEvent(EventType::ONSCALE, (Listener*)m_OwnerOfCom);
+	EventSystem::GetInstance().SendEvent(EventType::ONSCALE, (Listener*)m_OwnerOfCom->m_Listener);
+	EventSystem::GetInstance().SendEvent(EventType::ONSCALE, (Listener*)m_OwnerOfCom->GetComponent<RectangleCollider2D>());
 }
 
 void Transform::Translate(glm::vec3 vpos)
@@ -184,8 +188,8 @@ void Transform::Translate(glm::vec3 vpos)
 	}
 	m_PosMat4 = translate(glm::mat4(1.f), vpos);
 	
-	m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
-	//RealVertexPositions();
+	//m_OwnerOfCom->GetComponent<RectangleCollider2D>()->CalculateRealVerPos();
 
-	//EventSystem::GetInstance().SendEvent(EventType::ONTRANSLATE, (Listener*)m_OwnerOfCom);
+	EventSystem::GetInstance().SendEvent(EventType::ONTRANSLATE, (Listener*)m_OwnerOfCom->m_Listener);
+	EventSystem::GetInstance().SendEvent(EventType::ONTRANSLATE, (Listener*)m_OwnerOfCom->GetComponent<RectangleCollider2D>());
 }

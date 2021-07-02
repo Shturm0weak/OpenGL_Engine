@@ -113,7 +113,7 @@ void Doom::ViewPort::GetMousePositionToWorldSpaceImpl()
 	Camera& camera = Window::GetInstance().GetCamera();
 	int* size = Window::GetInstance().GetSize();
 	glfwGetCursorPos(Window::GetInstance().GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
-	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * camera.m_Ratio * 2 * camera.m_ZoomLevel + camera.GetPosition().x;
+	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * 2 * camera.m_Ratio * camera.m_ZoomLevel + camera.GetPosition().x;
 	m_MousePosW.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (size[1] / m_Size.y)) / size[1]) + 0.5) * 2 * camera.m_ZoomLevel + camera.GetPosition().y;
 }
 void Doom::ViewPort::GetStaticMousePositionImpl()

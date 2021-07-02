@@ -36,5 +36,5 @@ function OnUpdate(dt)
 end
 
 function OnStart()
-	print(GameObject.This().id);
+	print("LUA::Move::GameObjectId:" .. GameObject.This().id);
 end

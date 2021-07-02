@@ -9,16 +9,18 @@ public:
 	std::vector<Line*> lines;
 	glm::vec2 pos = glm::vec2(0, 0);
 	GameObject* coin = nullptr;
-
+	double m_Time = 0.0;
 
 	RayCastTest(std::string name = "RayCast", float x = 800, float y = 600, bool Vsync = false) : Application(name, x, y, Vsync){
 	}
 
 	virtual void OnStart() override {
 		SceneSerializer::DeSerialize("src/Scenes/RayCastTest.yaml");
-		Renderer::s_Bloom.m_Exposure = 2.0;
 		Renderer::s_Bloom.m_Brightness = 0.0;
 		Renderer::s_Bloom.m_IsEnabled = true;
+		Window::GetInstance().GetCamera().SetOrthographic(Window::GetInstance().GetCamera().m_Ratio);
+		Window::GetInstance().GetCamera().SetPosition(glm::vec3(0.0f));
+		Window::GetInstance().GetCamera().Zoom(35.0f);
 		coin = GameObject::Create("Bird",5,5);
 		coin->m_IsSerializable = false;
 		RectangleCollider2D* col = coin->m_ComponentManager.AddComponent<RectangleCollider2D>();
@@ -40,14 +42,17 @@ public:
 	}
 
 	virtual void OnUpdate() override {
+		m_Time += DeltaTime::s_Deltatime;
 		pos = ViewPort::GetInstance().GetMousePositionToWorldSpace();
 		coin->m_Enable = false;
 		for (unsigned int i = 0; i < 2000; i++)
 		{
 			lines[i]->SetStartPoint(pos.x,pos.y);
+			lines[i]->m_Color = COLORS::Yellow;
 			Ray2D::Hit hit;
 			rays[i]->SetStart(pos);
-			if (rays[i]->Raycast(hit, 100, pos, rays[i]->m_Dir, rays[i]->m_IgnoreMask)) {
+			if (rays[i]->Raycast(hit, 100, pos, rays[i]->m_Dir, rays[i]->m_IgnoreMask)) 
+			{
 				if (hit.m_Object->m_OwnerOfCom->m_Tag == "Bird")
 					coin->m_Enable = true;
 				lines[i]->SetEndPoint(hit.m_Point.x, hit.m_Point.y);

@@ -19,16 +19,21 @@ Component* Doom::RectangleCollider2D::Create()
 	RectangleCollider2D* component = (RectangleCollider2D*)((void*)ptr); //= new(iter->first + iter->second * sizeof(RectangleCollider2D)) RectangleCollider2D();
 	component->m_MemoryPoolPtr = ptr;
 	RectangleCollider2D::s_Collision2d.push_back(component);
-	RectangleCollider2D::s_CollidersToInit.push_back(component);
+	component->p.reserve(4);
+	World::GetInstance().s_ColId++;
+	std::function<void()>* f = new std::function<void()>([=] {
+		component->CalculateRealVerPos();
+		EventSystem::GetInstance().RegisterClient(EventType::ONMOVE, (Listener*)component);
+		EventSystem::GetInstance().RegisterClient(EventType::ONROTATE, (Listener*)component);
+		EventSystem::GetInstance().RegisterClient(EventType::ONSCALE, (Listener*)component);
+		EventSystem::GetInstance().RegisterClient(EventType::ONTRANSLATE, (Listener*)component);
+		});
+	EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);
 	return component;
 }
 
-RectangleCollider2D::RectangleCollider2D(GameObject* owner,double x, double y)
+RectangleCollider2D::RectangleCollider2D()
 {
-	this->m_OwnerOfCom = owner;
-	World::GetInstance().s_ColId++;
-	SetOffset(m_Offset.x, m_Offset.y);
-	s_Shader = Shader::Get("Collision2D.shader", false);
 }
 
 Doom::RectangleCollider2D::~RectangleCollider2D()
@@ -38,121 +43,45 @@ Doom::RectangleCollider2D::~RectangleCollider2D()
 
 void RectangleCollider2D::CalculateRealVerPos() 
 {
-	if (this == nullptr) return;
-	float* pSource;
-	Transform& tr = m_OwnerOfCom->m_Transform;
-	pSource = (float*)glm::value_ptr(tr.m_ViewMat4 * tr.m_ScaleMat4);
-	for (unsigned int i = 0; i < 4; i++)
+	float* pSource = (float*)glm::value_ptr(m_OwnerOfCom->m_Transform.m_ViewMat4 * m_OwnerOfCom->m_Transform.m_ScaleMat4);
+	for (size_t i = 0; i < 4; i++)
 	{
-		for (unsigned int j = 0; j < 4; j++)
+		for (size_t j = 0; j < 4; j++)
 		{
-			m_TransformedVerPos[i * 4 + j] = 0;
-			for (unsigned int k = 0; k < 4; k++)
+			m_WorldSpaceVertices[i * 4 + j] = 0;
+			for (size_t k = 0; k < 4; k++)
 			{
-				m_TransformedVerPos[i * 4 + j] += m_Vertices[i * 2 + k] * pSource[k * 4 + j];
+				m_WorldSpaceVertices[i * 4 + j] += m_Vertices[i * 2 + k] * pSource[k * 4 + j];
 			}
 		}
 	}
-	pSource = nullptr;
 	CalculateEdges();
 }
 
 void Doom::RectangleCollider2D::CalculateEdges()
 {
-	glm::vec3 ownerPos = m_OwnerOfCom->GetPosition();
+	glm::vec3 position = m_OwnerOfCom->GetPosition();
 	p.clear();
-	p.push_back(glm::vec2(m_TransformedVerPos[0]  + ownerPos.x, m_TransformedVerPos[1]  + ownerPos.y));
-	p.push_back(glm::vec2(m_TransformedVerPos[4]  + ownerPos.x, m_TransformedVerPos[5]  + ownerPos.y));
-	p.push_back(glm::vec2(m_TransformedVerPos[8]  + ownerPos.x, m_TransformedVerPos[9]  + ownerPos.y));
-	p.push_back(glm::vec2(m_TransformedVerPos[12] + ownerPos.x, m_TransformedVerPos[13] + ownerPos.y));
+	p.push_back(glm::vec2(m_WorldSpaceVertices[0]  + position.x, m_WorldSpaceVertices[1]  + position.y));
+	p.push_back(glm::vec2(m_WorldSpaceVertices[4]  + position.x, m_WorldSpaceVertices[5]  + position.y));
+	p.push_back(glm::vec2(m_WorldSpaceVertices[8]  + position.x, m_WorldSpaceVertices[9]  + position.y));
+	p.push_back(glm::vec2(m_WorldSpaceVertices[12] + position.x, m_WorldSpaceVertices[13] + position.y));
 }
 
 float* RectangleCollider2D::GetVertexPositions()
 {
-	return m_TransformedVerPos;
+	return m_WorldSpaceVertices;
 }
 
 void RectangleCollider2D::SetOffset(float x, float y) 
 {
-	m_Offset.x = x;
-	m_Offset.y = y;
+	SetOffset(glm::vec2(x, y));
 }
 
-/*bool Collision::IsCollided() {
-	std::unique_lock<std::mutex> lock(mtx);
-	_isCollided = false;
-	if (this == nullptr) {
-		return false;
-		
-	}
-	if (Enable == true) {
-		Collided_side_right = false;
-		Collided_side_left = false;
-		Collided_side_top = false;
-		Collided_side_bottom = false;
-		for (unsigned int i = 0; i < collision2d.size(); i++)
-		{
-			if (collision2d[i]->IsCollisionEnabled() == true) {
-				if (this != &collision2d[i].get()) {
-					col = dynamic_cast<Collision*>(collision2d[i]->GetCollisionReference());
-					if (col == nullptr) {
-						return false;
-						
-					}
-
-					arrver1 = col->GetVertexPositions();
-					arrpos1 = col->GetPositions();
-				
-					if (GetDistance(position.x, position.y, arrpos1[0], arrpos1[1] < 1.1 * (arrver1[4] + ScaledVerPos[4]))) {
-						right = ScaledVerPos[8] + position.x;
-						left = ScaledVerPos[0] + position.x;
-						top = ScaledVerPos[13] + position.y;
-						bottom = ScaledVerPos[1] + position.y;
-						col->right = arrver1[8] + arrpos1[0];
-						col->left = arrver1[0] + arrpos1[0];
-						col->top = arrver1[13] + arrpos1[1];
-						col->bottom = arrver1[1] + arrpos1[1];
-						difftb = abs(top) - abs(col->bottom);
-						diffbt = abs(bottom) - abs(col->top);
-						diffrl = abs(right) - abs(col->left);
-						difflr = abs(left) - abs(col->right);
-						if (right > col->left &&
-							left < col->right &&
-							bottom < col->top &&
-							top > col->bottom) {
-
-							if (diffbt < 0.3 && diffbt > -0.3) {
-								Collided_side_bottom = true;
-							}
-							else if (difftb < 0.3 && difftb > -0.3) {
-								Collided_side_top = true;
-							}
-							else if (diffrl < 0.3 && diffrl > -0.3) {
-								Collided_side_right = true;
-							}
-							else if (difflr < 0.3 && difflr > -0.3) {
-								Collided_side_left = true;
-							}
-							_collidedObj = col;
-						}
-						delete[] arrpos1;
-						arrpos1 = nullptr;
-						col = nullptr;
-					}
-				}
-			}
-		}
-		if (Collided_side_bottom || Collided_side_left || Collided_side_right || Collided_side_top) {
-			_isCollided = true;
-			return true;
-		}
-		else
-			return false;
-	}
-	else {
-		return false;
-	}
-}*/
+void Doom::RectangleCollider2D::SetOffset(glm::vec2 offset)
+{
+	m_Offset = offset;
+}
 
 void RectangleCollider2D::IsCollidedSAT() 
 {
@@ -241,30 +170,17 @@ void RectangleCollider2D::IsCollidedDIAGS()
 								m_IsCollided = true;
 							}
 						}
-						if (m_IsTrigger == false) 
+						if (m_IsTrigger == false)
 						{
-							m_Transform = m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
-							m_Transform->Translate(m_OwnerOfCom->GetPosition().x - m_Displacement.x, m_OwnerOfCom->GetPosition().y - m_Displacement.y);
-							m_Transform = nullptr;
+							Transform* tr = m_OwnerOfCom->m_ComponentManager.GetComponent<Transform>();
+							tr->Translate(m_OwnerOfCom->GetPosition().x - m_Displacement.x, m_OwnerOfCom->GetPosition().y - m_Displacement.y);
 						}
-						
 					}
 				}
 			}
 		}
 		return;
 	}
-}
-
-void Doom::RectangleCollider2D::CollidersToInit()
-{
-	for (uint32_t i = 0; i < RectangleCollider2D::s_CollidersToInit.size(); i++)
-	{
-		Transform& tr = RectangleCollider2D::s_CollidersToInit[i]->m_OwnerOfCom->m_Transform;
-		RectangleCollider2D* rc = RectangleCollider2D::s_CollidersToInit[i];
-		rc->CalculateRealVerPos();
-	}
-	RectangleCollider2D::s_CollidersToInit.clear();
 }
 
 #include "Rays/Ray2D.h"

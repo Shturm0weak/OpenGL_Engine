@@ -26,6 +26,8 @@ namespace Doom {
 		glm::vec3 GetPosition() { return m_Position; }
 		glm::dvec3 GetMouseDirVec();
 		glm::dvec3 GetForwardV();
+		glm::dvec3 GetUpV() { return glm::vec3(m_ViewMat4[0][0], m_ViewMat4[1][0], m_ViewMat4[2][0]); }
+		glm::dvec3 GetRightV() { return glm::vec3(m_ViewMat4[0][1], m_ViewMat4[1][1], m_ViewMat4[2][1]); }
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMat4; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMat4; }

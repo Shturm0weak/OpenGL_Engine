@@ -10,15 +10,16 @@ namespace Doom {
 	class DOOM_API Listener {
 	private:
 
+		virtual void OnStart() {}
 		virtual void OnUpdate() {}
 		virtual void OnCollision(void* col) {}
 		virtual void OnMove() {}
 		virtual void OnRotate() {}
-		virtual void OnStart() {}
 		virtual void OnScale() {}
+		virtual void OnTranslate() {}
 		virtual void OnWindowResize(void* props) {}
 		virtual void OnMainThreadProcess(void* task) {}
-		virtual void OnTranslate() {}
+
 	public:
 
 		std::vector<int> m_RegisteredEvents;

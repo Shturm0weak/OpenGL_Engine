@@ -204,12 +204,14 @@ void Doom::SceneSerializer::DeSerializeGameObject(YAML::detail::iterator_value& 
 
 	DeSerializeTransformComponent(in, &obj->m_ComponentManager);
 	DeSerializeRenderer3DComponent(in, &obj->m_ComponentManager);
-	DeSerializeDirectionalLightComponent(in, &obj->m_ComponentManager);
 	DeSerializeSpriteRendererComponent(in, &obj->m_ComponentManager);
+	DeSerializeDirectionalLightComponent(in, &obj->m_ComponentManager);
 	DeSerializePointLightComponent(in, &obj->m_ComponentManager);
+	DeSerializeSpotLightComponent(in, &obj->m_ComponentManager);
 	DeSerializeSphereColliderComponent(in, &obj->m_ComponentManager);
 	DeSerializeRectangularCollider(in, &obj->m_ComponentManager);
 	DeSerializeParticleEmitterComponent(in, &obj->m_ComponentManager);
+	DeSerializeScriptComponent(in, &obj->m_ComponentManager);
 	DeSerializeGameObjectChilds(in, obj, childs);
 
 	//@deprecated
@@ -454,6 +456,20 @@ void Doom::SceneSerializer::DeSerializeParticleEmitterComponent(YAML::detail::it
 	}
 }
 
+void Doom::SceneSerializer::DeSerializeScriptComponent(YAML::detail::iterator_value& in, ComponentManager* cm)
+{
+	auto scriptComponent = in["Scripts"];
+	if (scriptComponent)
+	{
+		size_t size = scriptComponent["Size"].as<size_t>();
+		for (size_t i = 0; i < size; i++)
+		{
+			std::string filePath = scriptComponent[("Script" + std::to_string(i))].as<std::string>();
+			cm->AddComponent<ScriptComponent>()->AssignScript(filePath.c_str());
+		}
+	}
+}
+
 void Doom::SceneSerializer::DeSerializeGameObjectChilds(YAML::detail::iterator_value& in, GameObject* go, std::map<GameObject*, std::vector<int>>& childs)
 {
 	auto childsId = in["Childs id"];
@@ -509,6 +525,7 @@ void Doom::SceneSerializer::SerializeGameObject(YAML::Emitter& out, GameObject* 
 	SerializeRegisteredEvents(out, go);
 	SerializeRectangularCollider(out, cm);
 	SerializeParticleEmitterComponent(out, cm);
+	SerializeScriptComponent(out, cm);
 	//SerializeCubeColliderComponent(out, cm);
 
 	out << YAML::EndMap;
@@ -745,4 +762,20 @@ void Doom::SceneSerializer::SerializeParticleEmitterComponent(YAML::Emitter& out
 		out << YAML::Key << "RadiusToSpawnZ" << YAML::Value << pe->m_RadiusToSpawn[2];
 		out << YAML::EndMap;
 	}
+}
+
+#include "Lua/LuaState.h"
+
+void Doom::SceneSerializer::SerializeScriptComponent(YAML::Emitter& out, ComponentManager* cm)
+{
+	std::vector<ScriptComponent*> scripts = cm->GetScripts();
+	out << YAML::Key << "Scripts";
+	out << YAML::BeginMap;
+	out << YAML::Key << "Size" << YAML::Value << scripts.size();
+	for (size_t i = 0; i < scripts.size(); i++)
+	{
+		
+		out << YAML::Key << "Script" + std::to_string(i) << YAML::Value << "src/Scripts/" + Utils::GetNameFromFilePath(scripts[i]->m_LState->m_FilePath, -1);
+	}
+	out << YAML::EndMap;
 }

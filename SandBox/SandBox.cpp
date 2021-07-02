@@ -16,7 +16,7 @@
 
 int main()
 {
-	Tetris app;
+	RayCastTest app;
 	Doom::EntryPoint entrypoint(nullptr);
 	entrypoint.Run();
 	return 0;

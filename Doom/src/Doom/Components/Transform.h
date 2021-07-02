@@ -51,7 +51,7 @@ namespace Doom {
 
 		void Move(glm::vec3 dir = glm::vec3(0.0f));
 		void Rotate(glm::vec3 angles = glm::vec3(0.0f), bool isRad = false);
-		void Scale(glm::vec3 scale = glm::vec3(0.0f));
+		void Scale(glm::vec3 scale = glm::vec3(1.0f));
 		void Translate(glm::vec3 pos = glm::vec3(0.0f));
 		void RotateOnce(glm::vec3 angles = glm::vec3(0.0f), bool isRad = false);
 		void RotateOnce(glm::vec3 direction, glm::vec3 axis);

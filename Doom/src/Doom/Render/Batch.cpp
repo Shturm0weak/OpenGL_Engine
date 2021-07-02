@@ -292,7 +292,7 @@ void Doom::Batch::Submit(glm::vec4 color, float* mesh2D)
 	m_LIndexCount += 3;
 }
 
-void Batch::Submit(SpriteRenderer* c)
+void Batch::Submit(SpriteRenderer* sr)
 {
 
 	if (m_GoB.m_TextureSlotsIndex > maxTextureSlots - 1 || m_GIndexCount >= RENDERER_INDICES_SIZE)
@@ -304,9 +304,9 @@ void Batch::Submit(SpriteRenderer* c)
 	m_GoB.m_TextureIndex = 0.0f;
 
 	bool isFound = false;
-	if (c->m_Texture != nullptr)
+	if (sr->m_Texture != nullptr)
 	{
-		auto iter = std::find(m_GoB.m_TextureSlots.begin(), m_GoB.m_TextureSlots.end(), c->m_Texture->m_RendererID);
+		auto iter = std::find(m_GoB.m_TextureSlots.begin(), m_GoB.m_TextureSlots.end(), sr->m_Texture->m_RendererID);
 		if (iter != m_GoB.m_TextureSlots.end())
 		{
 			m_GoB.m_TextureIndex = (float)(iter - m_GoB.m_TextureSlots.begin());
@@ -315,61 +315,63 @@ void Batch::Submit(SpriteRenderer* c)
 		if (!isFound)
 		{
 			m_GoB.m_TextureIndex = (float)m_GoB.m_TextureSlotsIndex;
-			m_GoB.m_TextureSlots[m_GoB.m_TextureSlotsIndex] = c->m_Texture->m_RendererID;
+			m_GoB.m_TextureSlots[m_GoB.m_TextureSlotsIndex] = sr->m_Texture->m_RendererID;
 			m_GoB.m_TextureSlotsIndex++;
 		}
 	}
 
-	Transform& trOfR = c->m_OwnerOfCom->m_Transform;
+	glm::vec2 scale = sr->m_OwnerOfCom->GetScale();
+	glm::vec3 pos = sr->m_OwnerOfCom->GetPosition();
+	glm::mat4 view = sr->m_OwnerOfCom->m_Transform.m_ViewMat4;
+	if (sr->m_DisableRotation)
+		view = glm::inverse(glm::lookAt(glm::vec3(0.0f), Window::GetInstance().GetCamera().m_Position - pos, glm::vec3(0, 1, 0)));
 
-	glm::vec2 scale = c->m_OwnerOfCom->GetScale();
-	glm::vec3 pos = c->m_OwnerOfCom->GetPosition();
-	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[0] * scale[0], c->m_Mesh2D[1] * scale[1]);
-	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[2], c->m_Mesh2D[3]);
-	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(sr->m_Mesh2D[0] * scale[0], sr->m_Mesh2D[1] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(sr->m_Mesh2D[2], sr->m_Mesh2D[3]);
+	m_GoB.m_BufferG->m_Color = sr->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = pos;
-	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
+	m_GoB.m_BufferG->m_Emissive = sr->m_Emissive;
 	m_GoB.m_BufferG++;
 
-	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[4] * scale[0], c->m_Mesh2D[5] * scale[1]);
-	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[6], c->m_Mesh2D[7]);
-	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(sr->m_Mesh2D[4] * scale[0], sr->m_Mesh2D[5] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(sr->m_Mesh2D[6], sr->m_Mesh2D[7]);
+	m_GoB.m_BufferG->m_Color = sr->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
-	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG->m_Emissive = sr->m_Emissive;
 	m_GoB.m_BufferG++;
 
-	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[8] * scale[0], c->m_Mesh2D[9] * scale[1]);
-	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[10], c->m_Mesh2D[11]);
-	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(sr->m_Mesh2D[8] * scale[0], sr->m_Mesh2D[9] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(sr->m_Mesh2D[10], sr->m_Mesh2D[11]);
+	m_GoB.m_BufferG->m_Color = sr->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
-	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG->m_Emissive = sr->m_Emissive;
 	m_GoB.m_BufferG++;
 
-	m_GoB.m_BufferG->m_Vertex = glm::vec2(c->m_Mesh2D[12] * scale[0], c->m_Mesh2D[13] * scale[1]);
-	m_GoB.m_BufferG->m_UV = glm::vec2(c->m_Mesh2D[14], c->m_Mesh2D[15]);
-	m_GoB.m_BufferG->m_Color = c->m_Color;
+	m_GoB.m_BufferG->m_Vertex = glm::vec2(sr->m_Mesh2D[12] * scale[0], sr->m_Mesh2D[13] * scale[1]);
+	m_GoB.m_BufferG->m_UV = glm::vec2(sr->m_Mesh2D[14], sr->m_Mesh2D[15]);
+	m_GoB.m_BufferG->m_Color = sr->m_Color;
 	m_GoB.m_BufferG->m_TexIndex = m_GoB.m_TextureIndex;
-	m_GoB.m_BufferG->m_RotationMat0 = trOfR.m_ViewMat4[0];
-	m_GoB.m_BufferG->m_RotationMat1 = trOfR.m_ViewMat4[1];
-	m_GoB.m_BufferG->m_RotationMat2 = trOfR.m_ViewMat4[2];
-	m_GoB.m_BufferG->m_RotationMat3 = trOfR.m_ViewMat4[3];
-	m_GoB.m_BufferG->m_Emissive = c->m_Emissive;
+	m_GoB.m_BufferG->m_RotationMat0 = view[0];
+	m_GoB.m_BufferG->m_RotationMat1 = view[1];
+	m_GoB.m_BufferG->m_RotationMat2 = view[2];
+	m_GoB.m_BufferG->m_RotationMat3 = view[3];
 	m_GoB.m_BufferG->m_Pos = pos;
+	m_GoB.m_BufferG->m_Emissive = sr->m_Emissive;
 	m_GoB.m_BufferG++;
 
 	m_GIndexCount += 6;
@@ -435,7 +437,7 @@ void Batch::Submit(RectangleCollider2D& c)
 	m_GoB.m_BufferG++;
 
 	m_GIndexCount += 6;
-	m_Shader = c.s_Shader;
+	m_Shader = Shader::Get("Collision2D");
 }
 
 void Batch::FlushGameObjects(Shader * shader)
@@ -454,8 +456,9 @@ void Batch::FlushGameObjects(Shader * shader)
 	}
 
 	shader->SetUniform1iv("u_Texture", samplers);
-	shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().m_ViewProjectionMat4);
-	shader->SetUniform1f("u_Brightness", Renderer::s_Bloom.m_Brightness);
+	shader->SetUniformMat4f("u_View", Window::GetInstance().GetCamera().m_ViewMat4);
+	shader->SetUniformMat4f("u_Projection", Window::GetInstance().GetCamera().m_ProjectionMat4);
+	shader->SetUniform1f("u_Brightness", Renderer::s_Bloom.m_Brightness); 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawElements(GL_TRIANGLES, m_GIndexCount, GL_UNSIGNED_INT, NULL);

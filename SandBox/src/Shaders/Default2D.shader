@@ -10,13 +10,14 @@ layout(location = 6) in vec4 rotationMat1;
 layout(location = 7) in vec4 rotationMat2;
 layout(location = 8) in vec4 rotationMat3;
 layout(location = 9) in vec3 v; //position
-layout(location = 10) in float emissiveA;
-
+layout(location = 10) in float emissiveA; 
 flat out int emissive;
 flat out int textureIndex;
 out vec4 color;
 out vec2 textureCoords;
-uniform mat4 u_ViewProjection;
+uniform mat4 u_Projection;
+uniform mat4 u_View;
+
 mat4 rot = mat4(
 	rotationMat0,
 	rotationMat1,
@@ -30,7 +31,7 @@ mat4 pos = mat4(1.0, 0.0, 0.0, 0.0,
 
 void main() 
 {
-	gl_Position = u_ViewProjection * pos * rot * positionA;
+	gl_Position = u_Projection * u_View * pos * rot * positionA;
 	textureCoords = textureCoordsA;
 	color = colorA;
 	textureIndex = int(textureIndexA);
@@ -53,6 +54,8 @@ uniform float u_Brightness;
 void main()
 {
 	vec4 textureColor = texture(u_Texture[textureIndex], textureCoords);
+	if (textureColor.a < 0.05)
+		discard;
 	FragColor = textureColor * color;
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > u_Brightness || emissive == 1)

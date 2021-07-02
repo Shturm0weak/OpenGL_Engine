@@ -30,7 +30,15 @@ Doom::SpotLight::SpotLight(const SpotLight& rhs)
 
 Doom::SpotLight::SpotLight()
 {
-	s_SpotLights.push_back(this);
+	std::function<void()>* f = new std::function<void()>([=] {
+		SpriteRenderer* sr = m_OwnerOfCom->GetComponent<SpriteRenderer>();
+		if (sr == nullptr)
+			sr = m_OwnerOfCom->AddComponent<SpriteRenderer>();
+		sr->m_DisableRotation = true;
+		sr->m_Texture = Texture::Get("src/UIimages/Flashlight.png");
+		s_SpotLights.push_back(this);
+		});
+	EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);
 }
 
 Doom::SpotLight::~SpotLight()

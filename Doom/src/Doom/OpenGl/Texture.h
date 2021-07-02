@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Enums/ColoredOutput.h"
 #include "../Core/ThreadPool.h"
+#include <utility>
 
 namespace Doom {
 
@@ -15,7 +16,7 @@ namespace Doom {
 	class DOOM_API Texture {
 	private:
 
-		static std::unordered_map<void*, std::function<Texture* ()>> s_WaitingForTextures;
+		static std::unordered_map<void*, std::pair<std::function<void (Texture* t)>, std::string>> s_WaitingForTextures;
 		static std::mutex s_LockTextureLoadingMtx;
 		static std::vector<Texture*> s_LoadedTextures;
 		static std::unordered_map<std::string, Texture*> s_Textures;
@@ -46,10 +47,10 @@ namespace Doom {
 
 		static void ShutDown();
 		static void Delete(Texture* texture);
-		static void AsyncLoadTexture(const std::string& filePath);
+		static void AsyncCreate(const std::string& filePath);
 		static std::vector<Texture*> GetLoadedTexturesFromFolder(const std::string& filePath);
 		static Texture* Get(const std::string filePath, bool showErrors = true);
-		static void GetAsync(void* ptr, std::function<Texture* ()> f);
+		static void AsyncGet(void* ptr, std::pair<std::function<void(Texture* t)>, std::string> pair);
 		static void RemoveFromGetAsync(void* ptr);
 		static Texture* ColoredTexture(const std::string& name, uint32_t color);
 		static Texture* Create(const std::string& filePath, bool flip = true);
