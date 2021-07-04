@@ -16,7 +16,7 @@ public:
 
 	void OnUpdate()
 	{
-		
+
 	}
 
 	void OnGuiRender()

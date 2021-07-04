@@ -16,7 +16,7 @@ Component* Doom::CubeCollider3D::Create()
 	char* ptr = Utils::PreAllocateMemory<CubeCollider3D>(s_MemoryPool, s_FreeMemory);
 	CubeCollider3D* component = (CubeCollider3D*)((void*)ptr);// = new(iter->first + iter->second * sizeof(CubeCollider3D)) CubeCollider3D();
 	component->m_MemoryPoolPtr = ptr;
-	component->m_Mesh = Mesh::GetMesh("CubeCollider");
+	component->m_Mesh = Mesh::Get("CubeCollider");
 	s_Colliders.push_back(component);
 	return component;
 }
@@ -66,7 +66,7 @@ void Doom::CubeCollider3D::InitMesh()
 	{
 		indices[i] = i;
 	}
-	if (Mesh::GetMesh("CubeCollider") == nullptr || Mesh::GetMesh("CubeCollider")->m_IsInitialized == false)
+	if (Mesh::Get("CubeCollider") == nullptr || Mesh::Get("CubeCollider")->m_IsInitialized == false)
 	{
 		Mesh* mesh = new Mesh("CubeCollider", "src/Mesh/Primitives/cube.fbx");
 		mesh->m_VertAttrib = vertices;
@@ -80,7 +80,7 @@ void Doom::CubeCollider3D::InitMesh()
 		mesh->m_Vb.UnBind();
 		mesh->m_Va.UnBind();
 		mesh->m_IsInitialized = true;
-		Mesh::AddMesh(mesh);
+		Mesh::Add(mesh);
 	}
 }
 

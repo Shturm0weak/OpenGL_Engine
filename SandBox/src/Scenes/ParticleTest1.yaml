@@ -1,0 +1,90 @@
+Camera:
+  Transform:
+    Position: [-9.97752571, 5.55010748, 15.4633932]
+    Rotation: [-0.578241348, -0.58371067, 0]
+  Zoom: 1
+  FOV: 1
+  Type: 1
+GameObjects:
+  - GameObject: 0
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, -5.91847754, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [1, 0.177199483, 0.177199483]
+      Attenuation:
+        Constant: 1
+        Linear: 0.0900000036
+        Quadratic: 0.0320000015
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Particle emitter:
+      Particles amount: 100
+      Max time to live: 1
+      Speed: 3.3269999
+      Color: [1, 0.825860262, 0, 1]
+      Scale: [0.074000001, 0.395999998]
+      Time to spawn: [0, 1.324]
+      DirX: [-0.386999995, 1]
+      DirY: [1, 1]
+      DirZ: [-0.319000006, 1]
+      RadiusToSpawnX: [-2.43700004, 2.625]
+      RadiusToSpawnY: [-0.0839999989, -0.125]
+      RadiusToSpawnZ: [-2.43700004, 2.70799994]
+    Scripts:
+      Size: 0
+  - GameObject: 101
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [0, -7.79229164, 0]
+      Scale: [25, 1, 25]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 0
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: WhiteTexture
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+Texture atlases:
+  []

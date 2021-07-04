@@ -10,21 +10,21 @@ Gui::Gui()
 {
 	RecalculateProjectionMatrix();
 
-	Texture::AsyncGet(this + 0, std::make_pair([=](Texture* t) {
+	Texture::AsyncGet([=](Texture* t) {
 		m_CheckBoxTextureTrue = t;
-		}, "src/UIimages/CheckMarkTrue.png"));
+		}, "src/UIimages/CheckMarkTrue.png");
 
-	Texture::AsyncGet(this + 1, std::make_pair([=](Texture* t) {
+	Texture::AsyncGet([=](Texture* t) {
 		m_CheckBoxTextureFalse = t;
-		}, "src/UIimages/CheckMarkFalse.png"));
+		}, "src/UIimages/CheckMarkFalse.png");
 
-	Texture::AsyncGet(this + 2, std::make_pair([=](Texture* t) {
+	Texture::AsyncGet([=](Texture* t) {
 		m_TriangleRightTexture = t;
-		}, "src/UIimages/TriangleRight.png"));
+		}, "src/UIimages/TriangleRight.png");
 
-	Texture::AsyncGet(this + 3, std::make_pair([=](Texture* t) {
+	Texture::AsyncGet([=](Texture* t) {
 		m_TriangleDownTexture = t;
-		}, "src/UIimages/TriangleDown.png"));
+		}, "src/UIimages/TriangleDown.png");
 }
 
 void Gui::Text(const std::wstring& str, int relatedToCamera, float x, float y, float startscale, glm::vec4 color, int charsAfterComma, ...)

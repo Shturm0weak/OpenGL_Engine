@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include "../Core/Core.h"
 #include "Mesh.h"
 #include <unordered_map>
@@ -12,6 +11,7 @@
 #include "OpenGl/VertexBufferLayout.h"
 #include "OpenGl/IndexBuffer.h"
 #include "glm/glm.hpp"
+#include <functional>
 
 namespace Doom {
 
@@ -20,8 +20,7 @@ namespace Doom {
 
 		static std::mutex s_Mtx;
 		static std::unordered_map<std::string, Mesh*> s_Meshes;
-		static std::vector <Mesh*> s_NeedToInitMeshes;
-		static std::multimap<std::string, void*> s_MeshQueue;
+		static std::multimap<std::string, std::function<void(Mesh* m)>> s_MeshQueue;
 		static const char** s_NamesOfMeshes;
 
 		friend class Renderer;
@@ -50,13 +49,13 @@ namespace Doom {
 		static int GetAmountOfMeshes();
 		static void LoadMesh(std::string name, std::string filePath, size_t meshId = 0);
 		static void LoadScene(std::string filepath);
-		static void AsyncLoadMesh(std::string name, std::string filePath, size_t meshId = 0);
-		static Mesh* GetMesh(std::string name);
+		static void AsyncLoad(std::string name, std::string filePath, size_t meshId = 0);
+		static Mesh* Get(std::string name);
 		static const char** GetListOfMeshes();
-		static void AddMesh(Mesh* mesh);
-		static void GetMeshWhenLoaded(std::string name, void* r);
-		static void DeleteMesh(std::string name);
-		static void DeleteMesh(Mesh* mesh);
+		static void Add(Mesh* mesh);
+		static void AsyncGet(std::function<void(Mesh* m)> function,std::string name);
+		static void Delete(std::string name);
+		static void Delete(Mesh* mesh);
 		static void ShutDown();
 		static void DispatchLoadedMeshes();
 

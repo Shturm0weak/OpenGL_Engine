@@ -15,6 +15,9 @@ GameObject* Doom::SkyBox::CreateSkyBox(std::vector<std::string> faces)
 	texture->m_RendererID = m_RendererID;
 	r3d->m_DiffuseTexture = texture;
 	r3d->m_Shader = Shader::Get("SkyBox");
-	Mesh::GetMeshWhenLoaded("cube", go->GetComponent<Renderer3D>());
+	Mesh::AsyncGet([=](Mesh* m) {
+		r3d->LoadMesh(m);
+		r3d->ChangeRenderTechnic(r3d->m_RenderTechnic);
+		}, "cube");
 	return go;
 }

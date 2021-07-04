@@ -39,8 +39,8 @@ uniform mat4 u_LightSpaceMatrix;
 
 void main()
 {
-	emissive = int(matA.w);
-	textureIndex = int(matA.z);
+	emissive = int(matA.z);
+	textureIndex = int(matA.w);
 	ambientf = matA.x;
 	specularf = matA.y;
 	vertexColor = vertexColorA;
@@ -65,6 +65,7 @@ layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec4 BrightColor;
 
 flat in int emissive;
+flat in int textureIndex;
 in vec2 textureCoords;
 in vec3 fragPos;
 in vec3 inNormal;
@@ -74,7 +75,6 @@ in float specularf;
 in mat3 TBN;
 in vec4 fragPosLightSpace;
 in vec3 vertexColor;
-flat in int textureIndex;
 
 struct PointLight {
 	vec3 position;
@@ -119,7 +119,7 @@ uniform float u_ScalarTexelSize;
 uniform float u_ShadowBias;
 
 vec3 normal = inNormal;
-vec3 diffuseTextureColor = texture(u_Texture[textureIndex], textureCoords).rgb;
+vec3 diffuseTextureColor;
 vec3 viewDir = normalize(u_CameraPos - fragPos);
 float shadow = 0.0;
 
@@ -230,6 +230,7 @@ vec3 SpotLightsCompute(SpotLight light)
 void main() 
 {
 	vec4 textureColor = texture(u_Texture[textureIndex], textureCoords);
+	diffuseTextureColor = textureColor.rgb;
 	if (textureColor.a < 0.1)
 		discard;
 

@@ -11,7 +11,7 @@ namespace Doom {
 		static std::vector<char*> s_FreeMemory;
 		
 		glm::vec4 m_Color = COLORS::Green;
-		Mesh* m_Mesh = Mesh::GetMesh("CubeCollider");
+		Mesh* m_Mesh = Mesh::Get("CubeCollider");
 		Shader* m_Shader = Shader::Get("CubeCollider");
 
 		char* m_MemoryPoolPtr = nullptr;

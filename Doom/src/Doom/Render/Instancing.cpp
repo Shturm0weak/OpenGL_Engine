@@ -256,6 +256,7 @@ void Doom::Instancing::PrepareVertexAtrrib()
 		gliter->second.m_PrevObjectSize = objsSize;
 
 		float dif = (float)objsSize / (float)m_NThreads;
+		World* world = &World::GetInstance();
 		for (size_t k = 0; k < m_NThreads - 1; k++)
 		{
 			//glm::vec4 color;
@@ -288,19 +289,18 @@ void Doom::Instancing::PrepareVertexAtrrib()
 			//	color = COLORS::Orange;
 		ThreadPool::GetInstance().Enqueue([=] {
 			{
-				std::lock_guard lg(World::GetInstance().m_Mtx);
+				std::lock_guard lg(world->m_Mtx);
 				this->m_Ready[k] = false;
 			}
 			uint32_t thisSegmentOfObjectsV = k * dif + dif;
 			for (uint32_t i = k * dif; i < thisSegmentOfObjectsV; i++)
 			{
-				uint32_t m_TextureIndex = 0;
+				int m_TextureIndex = 0;
 				Renderer3D& r3d = *(iter->second[i]);
 
 				bool isFound = false;
 				if (r3d.m_DiffuseTexture != Texture::s_WhiteTexture)
 				{
-					
 					auto iter = std::find(gliter->second.m_TextureSlots.begin(), gliter->second.m_TextureSlots.end(), r3d.m_DiffuseTexture->m_RendererID);
 					if (iter != gliter->second.m_TextureSlots.end())
 					{
@@ -315,8 +315,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 						}
 						else
 						{
+							std::lock_guard lg(world->m_Mtx);
 							m_TextureIndex = gliter->second.m_TextureSlotsIndex;
-							std::lock_guard lg(World::GetInstance().m_Mtx);
 							gliter->second.m_TextureSlots[gliter->second.m_TextureSlotsIndex] = r3d.m_DiffuseTexture->m_RendererID;
 							gliter->second.m_TextureSlotsIndex++;
 						}
@@ -337,16 +337,16 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
 				posPtr[10] = r3d.m_Material.m_Ambient;
 				posPtr[11] = r3d.m_Material.m_Specular;
-				posPtr[12] = (float)m_TextureIndex;
-				posPtr[13] = (float)((int)(r3d.m_Emissive));
+				posPtr[13] = (float)m_TextureIndex;
+				posPtr[12] = (float)((int)(r3d.m_Emissive));
 				//{
 				//	std::lock_guard lg(World::GetInstance().m_Mtx);
-				//	std::cout << posPtr[12] << std::endl;
+				//	std::cout << r3d.m_OwnerOfCom->m_Name << " " << posPtr[13] << std::endl;
 				//}
 				r3d.m_IsInitializedInInstancing = true;
 			}
 			{
-				std::lock_guard lg(World::GetInstance().m_Mtx);
+				std::lock_guard lg(world->m_Mtx);
 				this->m_Ready[k] = true;
 				m_CondVar.notify_all();
 			}
@@ -354,14 +354,14 @@ void Doom::Instancing::PrepareVertexAtrrib()
 		}
 		ThreadPool::GetInstance().Enqueue([=] {
 			{
-				std::lock_guard lg(World::GetInstance().m_Mtx);
+				std::lock_guard lg(world->m_Mtx);
 				this->m_Ready[m_NThreads - 1] = false;
 			}
 			for (uint32_t i = (m_NThreads - 1) * dif; i < objsSize; i++)
 			{
 				//if (iter->second.size() <= i) continue;
 				Renderer3D& r3d = *(iter->second[i]);
-				uint32_t m_TextureIndex = 0;
+				int m_TextureIndex = 0;
 
 				bool isFound = false;
 				if (r3d.m_DiffuseTexture != Texture::s_WhiteTexture)
@@ -380,8 +380,8 @@ void Doom::Instancing::PrepareVertexAtrrib()
 						}
 						else
 						{
+							std::lock_guard lg(world->m_Mtx);
 							m_TextureIndex = gliter->second.m_TextureSlotsIndex;
-							std::lock_guard lg(World::GetInstance().m_Mtx);
 							gliter->second.m_TextureSlots[gliter->second.m_TextureSlotsIndex] = r3d.m_DiffuseTexture->m_RendererID;
 							gliter->second.m_TextureSlotsIndex++;
 						}
@@ -400,16 +400,16 @@ void Doom::Instancing::PrepareVertexAtrrib()
 				memcpy(&posPtr[6], &r3d.m_Color[0], 16);
 				posPtr[10] = r3d.m_Material.m_Ambient;
 				posPtr[11] = r3d.m_Material.m_Specular;
-				posPtr[12] = (float)m_TextureIndex;
-				posPtr[13] = (float)((int)(r3d.m_Emissive));
-				//{
-				//	std::lock_guard lg(World::GetInstance().m_Mtx);
-				//	std::cout << posPtr[12] << std::endl;
+				posPtr[13] = (float)m_TextureIndex;
+				posPtr[12] = (float)((int)(r3d.m_Emissive));
+				//
+					//std::lock_guard lg(World::GetInstance().m_Mtx);
+					//std::cout << r3d.m_OwnerOfCom->m_Name << " " << posPtr[13] << std::endl;
 				//}
 				r3d.m_IsInitializedInInstancing = true;
 			}
 			{
-				std::lock_guard lg(World::GetInstance().m_Mtx);
+				std::lock_guard lg(world->m_Mtx);
 				this->m_Ready[m_NThreads - 1] = true;
 				m_CondVar.notify_all();
 			}

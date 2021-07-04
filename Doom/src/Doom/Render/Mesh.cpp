@@ -79,7 +79,7 @@ void Mesh::LoadMesh(std::string name, std::string filePath, size_t meshId)
 	else return;
 	std::vector<Renderer3D*> New;
 #define	_LOAD_MESH_
-	Mesh* mesh = GetMesh(name);
+	Mesh* mesh = Get(name);
 #undef _LOAD_MESH_
 	if (mesh == nullptr) return;
 	mesh->m_IdOfMeshInFile = meshId;
@@ -87,6 +87,7 @@ void Mesh::LoadMesh(std::string name, std::string filePath, size_t meshId)
 	Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(mesh, New));
 	Instancing::GetInstance()->Create(mesh);
 	Logger::Success("has been loaded!", "Mesh", name.c_str());
+	DispatchLoadedMeshes();
 }
 
 void Doom::Mesh::LoadScene(std::string filepath)
@@ -95,7 +96,7 @@ void Doom::Mesh::LoadScene(std::string filepath)
 	doc.LoadScene(filepath);
 }
 
-void Doom::Mesh::AsyncLoadMesh(std::string nametemp, std::string filePath, size_t meshId)
+void Doom::Mesh::AsyncLoad(std::string nametemp, std::string filePath, size_t meshId)
 {
 	Doom::ThreadPool::GetInstance().Enqueue([=] {
 		std::lock_guard<std::mutex> lock(s_Mtx);
@@ -121,16 +122,20 @@ void Doom::Mesh::AsyncLoadMesh(std::string nametemp, std::string filePath, size_
 		}
 		else return;
 		if (mesh == nullptr) return;
-		{
-
-			s_Meshes.insert(std::make_pair(name, mesh));
-			s_NeedToInitMeshes.push_back(mesh);
-		}
+		s_Meshes.insert(std::make_pair(name, mesh));
+		std::function<void()>* f = new std::function<void()>([=] {
+			mesh->Init();
+			std::vector<Renderer3D*> New;
+			Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(mesh, New));
+			Instancing::GetInstance()->Create(mesh);
+			DispatchLoadedMeshes();
+			});
+		EventSystem::GetInstance().SendEvent(EventType::ONMAINTHREADPROCESS, nullptr, f);
 		Logger::Success("has been loaded!", "Mesh", name.c_str());
 		});
 }
 
-Mesh* Mesh::GetMesh(std::string name)
+Mesh* Mesh::Get(std::string name)
 {
 	auto iter = s_Meshes.find(name);
 	if (iter != s_Meshes.end())
@@ -158,7 +163,7 @@ const char** Doom::Mesh::GetListOfMeshes()
 	return s_NamesOfMeshes;
 }
 
-void Doom::Mesh::AddMesh(Mesh* mesh)
+void Doom::Mesh::Add(Mesh* mesh)
 {
 	if (mesh != nullptr)
 	{
@@ -166,12 +171,16 @@ void Doom::Mesh::AddMesh(Mesh* mesh)
 	}
 }
 
-void Mesh::GetMeshWhenLoaded(std::string name, void* r)
+void Mesh::AsyncGet(std::function<void(Mesh* m)> function, std::string name)
 {
-	s_MeshQueue.insert(std::make_pair(name, r));
+	Mesh* mesh = Get(name);
+	if (mesh == nullptr)
+		s_MeshQueue.insert(std::make_pair(name, function));
+	else
+		function(mesh);
 }
 
-void Mesh::DeleteMesh(std::string name)
+void Mesh::Delete(std::string name)
 {
 	auto iter = s_Meshes.find(name);
 	if (iter != s_Meshes.end())
@@ -182,9 +191,9 @@ void Mesh::DeleteMesh(std::string name)
 	}
 }
 
-void Mesh::DeleteMesh(Mesh* mesh)
+void Mesh::Delete(Mesh* mesh)
 {
-	DeleteMesh(mesh->m_Name);
+	Delete(mesh->m_Name);
 }
 
 void Mesh::ShutDown()
@@ -199,14 +208,6 @@ void Mesh::ShutDown()
 
 void Mesh::DispatchLoadedMeshes()
 {
-	for (size_t i = 0; i < s_NeedToInitMeshes.size();)
-	{
-		s_NeedToInitMeshes.back()->Init();
-		std::vector<Renderer3D*> New;
-		Instancing::GetInstance()->m_InstancedObjects.insert(std::make_pair(s_NeedToInitMeshes[i], New));
-		Instancing::GetInstance()->Create(s_NeedToInitMeshes[i]);
-		s_NeedToInitMeshes.pop_back();
-	}
 	if (s_MeshQueue.size() > 0)
 	{
 		for (auto i = s_MeshQueue.begin(); i != s_MeshQueue.end();)
@@ -214,9 +215,12 @@ void Mesh::DispatchLoadedMeshes()
 			auto iter = s_Meshes.find(i->first);
 			if (iter != s_Meshes.end())
 			{
-				Renderer3D* r = static_cast<Renderer3D*>(i->second);
-				r->LoadMesh(iter->second);
-				r->ChangeRenderTechnic(r->m_RenderTechnic);
+				//Renderer3D* r = static_cast<Renderer3D*>(i->second);
+				//r->LoadMesh(iter->second);
+				//r->ChangeRenderTechnic(r->m_RenderTechnic);
+				Mesh* mesh = Get(i->first);
+				if(mesh != nullptr)
+					i->second(mesh);
 				s_MeshQueue.erase(i++);
 			}
 			else

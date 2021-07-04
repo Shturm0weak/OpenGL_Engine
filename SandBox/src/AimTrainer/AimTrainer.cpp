@@ -54,7 +54,7 @@ void AimTrainer::SpawnObject()
 {
 	GameObject* go = GameObject::Create("obj");
 	Renderer3D* r = go->m_ComponentManager.AddComponent<Renderer3D>();
-	r->LoadMesh(Mesh::GetMesh("cube"));
+	r->LoadMesh(Mesh::Get("cube"));
 	go->m_Tag = "Target";
 	go->m_IsSerializable = false;
 	glm::vec3 pos = RandomPos(m_LimX, m_LimY, m_LimZ);
@@ -108,7 +108,7 @@ void AimTrainer::OnStart()
 	GameObject* startGo = GameObject::Create("Start", 0, 10, -10);
 	Renderer3D* r = startGo->m_ComponentManager.AddComponent<Renderer3D>();
 	startGo->m_IsSerializable = false;
-	r->LoadMesh(Mesh::GetMesh("cube"));
+	r->LoadMesh(Mesh::Get("cube"));
 	r->m_Color = COLORS::Green;
 	r->m_Material.m_Ambient = 5;
 	startGo->m_Tag = "Start";

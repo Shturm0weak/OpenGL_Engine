@@ -1,0 +1,197 @@
+Camera:
+  Transform:
+    Position: [4.57084751, 9.98266506, 7.12544346]
+    Rotation: [-0.778427482, 0.803996682, 0]
+  Zoom: 1
+  FOV: 1
+  Type: 1
+GameObjects:
+  - GameObject: 0
+    Name: 1
+    Tag: General
+    Transform:
+      Position: [-4.20627117, 0, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/Box.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+  - GameObject: 1
+    Name: 2
+    Tag: General
+    Transform:
+      Position: [0, 0, -0.224271178]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/Stone.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+  - GameObject: 2
+    Name: Unnamed
+    Tag: General
+    Transform:
+      Position: [-2.09943938, 2.65164208, -0.0415122509]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Point light:
+      Color: [1, 1, 1]
+      Attenuation:
+        Constant: 1
+        Linear: 0.100000001
+        Quadratic: 0.0359999985
+    Sprite renderer:
+      Emissive: false
+      Color: [1, 1, 1, 1]
+      Texture: src/UIimages/Lamp.png
+      Texture atlas: InvalidTexture
+      Vertices:
+        - -0.5
+        - -0.5
+        - 0
+        - 0
+        - 0.5
+        - -0.5
+        - 1
+        - 0
+        - 0.5
+        - 0.5
+        - 1
+        - 1
+        - -0.5
+        - 0.5
+        - 0
+        - 1
+    Scripts:
+      Size: 0
+  - GameObject: 3
+    Name: 1
+    Tag: General
+    Transform:
+      Position: [-4.20627117, 0, 3.67267513]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/Box.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+  - GameObject: 4
+    Name: 2
+    Tag: General
+    Transform:
+      Position: [0, 0, 3.37055016]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/Stone.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+  - GameObject: 5
+    Name: 2
+    Tag: General
+    Transform:
+      Position: [-1.98430681, 0, -3.94151807]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+    Renderer3D:
+      Material:
+        Ambient: 0.200000003
+        Specular: 0.200000003
+        Color: [1, 1, 1, 1]
+      Shader: src/Shaders/Default3D.shader
+      Render technic: 1
+      Emissive: false
+      Transparent: false
+      SkyBox: false
+      Casting shadows: true
+      Wire mesh: false
+      Is renderable: true
+      Use normal map: false
+      Is culling face: true
+      Textures:
+        Diffuse: src/Images/default.png
+        Normal: InvalidTexture
+      Mesh:
+        Mesh: src/Mesh/Primitives/cube.fbx
+        Mesh Id: 0
+    Scripts:
+      Size: 0
+Texture atlases:
+  []

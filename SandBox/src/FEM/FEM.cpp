@@ -89,7 +89,7 @@ void Doom::FEM::Clear()
     {
         m_R3d->m_Mesh->m_VertAttrib = m_DefaultMesh;
         m_DefaultMesh = nullptr;
-       Mesh::DeleteMesh(m_R3d->m_Mesh);
+       Mesh::Delete(m_R3d->m_Mesh);
         m_R3d->LoadMesh(nullptr);
     }
     m_MinAndMaxSidePos = { -1e7, 1e7, -1e7, 1e7 };
@@ -198,8 +198,11 @@ void Doom::FEM::OnGuiRender()
             std::optional<std::string> filePath = FileDialogs::OpenFile("Meshes (*.fbx)\0");
             if (filePath) {
                 std::string name = Utils::GetNameFromFilePath(*filePath);
-               Mesh::AsyncLoadMesh(name, *filePath);
-               Mesh::GetMeshWhenLoaded(name, m_R3d);
+               Mesh::AsyncLoad(name, *filePath);
+               Mesh::AsyncGet([=](Mesh* m) {
+                   m_R3d->LoadMesh(m);
+                   m_R3d->ChangeRenderTechnic(m_R3d->m_RenderTechnic);
+                   }, name);
             }
         }
     }
@@ -724,7 +727,7 @@ void Doom::FEM::OnStart()
     m_NodeSphere = GameObject::Create("NodeSphere");
     m_NodeSphere->m_Enable = false;
     Renderer3D* r3d = m_NodeSphere->AddComponent<Renderer3D>();
-    r3d->LoadMesh(Mesh::GetMesh("sphere"));
+    r3d->LoadMesh(Mesh::Get("sphere"));
     m_NodeSphere->RemoveComponent<CubeCollider3D>();
     r3d->m_Color = COLORS::Yellow;
 
@@ -762,7 +765,7 @@ GameObject* Doom::FEM::CreateForceArrow(glm::vec3 position, glm::vec3 scale, glm
     force->m_Transform.RotateOnce(rotation);
     force->m_Transform.Translate(position);
     Renderer3D* r3d = force->AddComponent<Renderer3D>();
-    r3d->LoadMesh(Mesh::GetMesh("Arrow"));
+    r3d->LoadMesh(Mesh::Get("Arrow"));
     r3d->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
     r3d->m_Color = COLORS::Blue;
     force->RemoveComponent<CubeCollider3D>();
@@ -774,7 +777,7 @@ GameObject* Doom::FEM::CreateConstraintsSphere(glm::vec3 position, glm::vec3 sca
 {
     GameObject* sphere = GameObject::Create("Constraints");
     Renderer3D* r3d = sphere->AddComponent<Renderer3D>();
-    r3d->LoadMesh(Mesh::GetMesh("LowPolySphere"));
+    r3d->LoadMesh(Mesh::Get("LowPolySphere"));
     r3d->ChangeRenderTechnic(Renderer3D::RenderTechnic::Instancing);
     r3d->m_Color = COLORS::Green;
     sphere->RemoveComponent<CubeCollider3D>();

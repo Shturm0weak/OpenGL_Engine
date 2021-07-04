@@ -16,7 +16,7 @@
 
 int main()
 {
-	RayCastTest app;
+	Test app;
 	Doom::EntryPoint entrypoint(nullptr);
 	entrypoint.Run();
 	return 0;

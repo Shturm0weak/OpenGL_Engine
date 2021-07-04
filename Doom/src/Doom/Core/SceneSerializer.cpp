@@ -340,10 +340,13 @@ void Doom::SceneSerializer::DeSerializeRenderer3DComponent(YAML::detail::iterato
 		if (meshIdTemp)
 			meshId = meshIdTemp.as<uint32_t>();
 		std::string meshName = Utils::GetNameFromFilePath(meshPath);
-		Mesh::AsyncLoadMesh(meshName, meshPath, meshId);
+		Mesh::AsyncLoad(meshName, meshPath, meshId);
 		meshName = meshId > 0 ? meshName.append(std::to_string(meshId)) : meshName;
 		r->m_RenderTechnic = ((Renderer3D::RenderTechnic)renderer3DComponent["Render technic"].as<int>());
-		Mesh::GetMeshWhenLoaded(meshName, (void*)r);
+		Mesh::AsyncGet([=](Mesh* m) {
+			r->LoadMesh(m);
+			r->ChangeRenderTechnic(r->m_RenderTechnic);
+			}, meshName);
 		YAML::Node uniformf = renderer3DComponent["Uniforms float"];
 		for (YAML::const_iterator it = uniformf.begin(); it != uniformf.end(); ++it)
 		{

@@ -78,7 +78,11 @@ void Editor::EditorUpdate()
 		if (ImGui::MenuItem("Create 3D GameObject"))
 		{
 			go = GameObject::Create();
-			Mesh::GetMeshWhenLoaded("cube", (void*)(go->m_ComponentManager.AddComponent<Renderer3D>()));
+			Mesh::AsyncGet([=] (Mesh* m){
+				Renderer3D* r3d = go->AddComponent<Renderer3D>();
+				r3d->LoadMesh(m);
+				r3d->ChangeRenderTechnic(r3d->m_RenderTechnic);
+				}, "cube");
 		}
 		if (ImGui::MenuItem("Clone"))
 		{
@@ -203,7 +207,7 @@ void Editor::EditorUpdate()
 				obj->SetOwner((void*)go);
 				go->AddChild((void*)obj);
 				go = World::GetInstance().s_GameObjects.back();
-				go->m_ComponentManager.AddComponent<Renderer3D>()->LoadMesh(Mesh::GetMesh("cube"));
+				go->m_ComponentManager.AddComponent<Renderer3D>()->LoadMesh(Mesh::Get("cube"));
 			}
 			ImGui::EndPopup();
 		}
@@ -755,7 +759,7 @@ void Doom::Editor::MeshPicker()
 		std::optional<std::string> filePath = FileDialogs::OpenFile("files (*.fbx)\0");
 		if (filePath) 
 		{
-			Mesh::AsyncLoadMesh(Utils::GetNameFromFilePath(*filePath), *filePath);
+			Mesh::AsyncLoad(Utils::GetNameFromFilePath(*filePath), *filePath);
 		}
 	}
 	if (ImGui::Button("Load fbx scene ...")) 
@@ -879,7 +883,7 @@ void Doom::Editor::MenuShadowMap()
 	ImGui::SliderFloat("Texel size", &shadowMap.m_ScalarTexelSize, 0.1, 5);
 	ImGui::SliderFloat("Bias", &shadowMap.m_Bias, 0, 0.005);
 	ImGui::SliderInt("PCF", &shadowMap.m_PcfRange, 0, 10);
-	ImGui::Checkbox("Draw Shadows", &Renderer::s_ShadowMap.m_DrawShadows);
+	ImGui::Checkbox("Shadows", &Renderer::s_ShadowMap.m_DrawShadows);
 	void* my_tex_id = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
 	ImGui::Image(my_tex_id, ImVec2(512, 512), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::End();
@@ -1027,9 +1031,9 @@ void Doom::Editor::MenuParticleEmitterComponent()
 				ImGui::SliderFloat2("Dir x", &(pe->m_Dir[0].x), -1.0f, 1.0f);
 				ImGui::SliderFloat2("Dir y", &(pe->m_Dir[1].x), -1.0f, 1.0f);
 				ImGui::SliderFloat2("Dir z", &(pe->m_Dir[2].x), -1.0f, 1.0f);
-				ImGui::SliderFloat2("Radius x", &(pe->m_RadiusToSpawn[0].x), -5.0f, 5.0f);
-				ImGui::SliderFloat2("Radius y", &(pe->m_RadiusToSpawn[1].x), -5.0f, 5.0f);
-				ImGui::SliderFloat2("Radius z", &(pe->m_RadiusToSpawn[2].x), -5.0f, 5.0f);
+				ImGui::SliderFloat2("Pos X", &(pe->m_RadiusToSpawn[0].x), -5.0f, 5.0f);
+				ImGui::SliderFloat2("Pos Y", &(pe->m_RadiusToSpawn[1].x), -5.0f, 5.0f);
+				ImGui::SliderFloat2("Pos Z", &(pe->m_RadiusToSpawn[2].x), -5.0f, 5.0f);
 			}
 			if (ImGui::Button("Init"))
 			{
@@ -1070,9 +1074,9 @@ void Doom::Editor::CheckTexturesFolderUnique(const std::string path)
 				index = s_TexturesPath.back().find("\\", index);
 				s_TexturesPath.back().replace(index, 1, "/");
 				Texture::AsyncCreate(s_TexturesPath.back());
-				Texture::AsyncGet(&s_TexturesPath.back(), std::make_pair([=] (Texture* t) {
+				Texture::AsyncGet([=] (Texture* t) {
 						s_Texture.push_back(t);
-					}, s_TexturesPath.back()));
+					}, s_TexturesPath.back());
 			}
 		}
 	}, path);
@@ -1093,9 +1097,9 @@ void Doom::Editor::CheckTexturesFolder(const std::string path)
 				index = s_TexturesPath.back().find("\\", index);
 				s_TexturesPath.back().replace(index, 1, "/");
 				Texture::AsyncCreate(s_TexturesPath.back());
-				Texture::AsyncGet(&s_TexturesPath.back(), std::make_pair([=](Texture* t) {
+				Texture::AsyncGet([=](Texture* t) {
 					s_Texture.push_back(t);
-					}, s_TexturesPath.back()));
+					}, s_TexturesPath.back());
 			}
 		}
 		}, path);
@@ -1137,12 +1141,21 @@ void Doom::Editor::Debug()
 			SpotLight::s_SpotLights[i]->m_OwnerOfCom->GetComponent<SpriteRenderer>()->m_Texture = !showLightsIcons ? Texture::Get("InvalidTexture") : Texture::Get("src/UIimages/Flashlight.png");
 		}
 	}
+	ImGui::Checkbox("Show Buffers", &isActiveBuffers);
 	ImGui::Checkbox("Polygon mode",&Renderer::s_PolygonMode);
 	ImGui::Checkbox("Visible collisions", &RectangleCollider2D::s_IsVisible);
 	ImGui::Checkbox("Visible bounding boxes", &isBoundingBoxesVisible);
 	ImGui::End();
 	TextProps();
 	MenuBloom();
+	if (isActiveBuffers)
+	{
+		/*ImGui::Begin("DepthBuffer");
+		void* textureId = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
+		ImVec2 size = ImGui::GetWindowSize();
+		ImGui::Image(textureId, ImVec2(size.x, size.y), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::End();*/
+	}
 }
 
 void Doom::Editor::Threads() {

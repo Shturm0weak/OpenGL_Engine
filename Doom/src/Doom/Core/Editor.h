@@ -20,6 +20,7 @@ namespace Doom {
 		bool isActiveTexturePicker = false;
 		bool isActiveShaderMenu = false;
 		bool showLightsIcons = true;
+		bool isActiveBuffers = false;
 		int selectedShader = -1;
 		int selectedAtlas = -1;
 		int selectedanimation = 0;

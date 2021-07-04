@@ -25,8 +25,7 @@ using namespace Doom;
 
 DOOM_API std::mutex Mesh::s_Mtx;
 DOOM_API std::unordered_map<std::string, Mesh*> Mesh::s_Meshes;
-DOOM_API std::vector <Mesh*> Mesh::s_NeedToInitMeshes;
-DOOM_API std::multimap<std::string, void*> Mesh::s_MeshQueue;
+DOOM_API std::multimap<std::string, std::function<void(Mesh* m)>> Mesh::s_MeshQueue;
 DOOM_API const char** Mesh::s_NamesOfMeshes;
 
 DOOM_API std::tm* Logger::s_CurrentTime;
@@ -70,8 +69,7 @@ DOOM_API std::vector<Texture*> Editor::s_Texture;
 DOOM_API std::vector<Texture*> Editor::s_TextureVecTemp;
 DOOM_API std::vector<TexParameteri> Texture::s_TexParameters;
 DOOM_API std::vector<Texture*> Texture::s_LoadedTextures;
-DOOM_API bool Texture::s_IsTextureAdded = false;
-DOOM_API std::unordered_map<void*, std::pair<std::function<void (Texture* t)>, std::string>> Texture::s_WaitingForTextures;
+DOOM_API std::multimap<std::string, std::function<void(Texture* t)>> Texture::s_WaitingForTextures;
 DOOM_API std::mutex Texture::s_LockTextureLoadingMtx;
 DOOM_API Texture* Texture::s_WhiteTexture;
 DOOM_API std::unordered_map<std::string, Texture*> Texture::s_Textures;

@@ -130,8 +130,6 @@ void EntryPoint::Run()
 		window.GetCamera().CameraMovement();
 		Editor::GetInstance().ShortCuts();
 //#endif
-		Mesh::DispatchLoadedMeshes();
-		Texture::DispatchLoadedTextures();
 		SoundManager::GetInstance().UpdateSourceState();
 
 		world.UpdateLuaStates();

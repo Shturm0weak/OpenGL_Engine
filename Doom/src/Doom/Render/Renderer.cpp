@@ -71,7 +71,7 @@ void Renderer::RenderBloomEffect()
 		int id = firstIteration ? window.m_FrameBufferColor->m_Textures[1] : fb[!horizontal]->m_Textures[0];
 		glBindTexture(GL_TEXTURE_2D, id);
 
-		Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
+		Renderer::RenderForPostEffect(Mesh::Get("plane"), shader);
 		
 		horizontal = !horizontal;
 		if (firstIteration) firstIteration = false;
@@ -90,7 +90,7 @@ void Renderer::RenderBloomEffect()
 	shader->SetUniform1f("u_Intensity", Renderer::s_Bloom.m_Intensity);
 	shader->SetUniform1f("exposure", s_Bloom.m_Exposure);
 	shader->SetUniform1f("gamma", s_Bloom.m_Gamma);
-	Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
+	Renderer::RenderForPostEffect(Mesh::Get("plane"), shader);
 	window.m_FrameBufferColor->UnBind();
 
 	//ImGui::Begin("Blur");
@@ -205,7 +205,7 @@ void Renderer::Render() {
 			glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
 			shader->Bind();
 			glBindTexture(GL_TEXTURE_2D, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
-			Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
+			Renderer::RenderForPostEffect(Mesh::Get("plane"), shader);
 			glDisable(GL_DEPTH_TEST);
 			Renderer::RenderCollision3D();
 			Renderer::RenderCollision();
