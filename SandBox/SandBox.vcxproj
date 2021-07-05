@@ -149,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BrightnessTexture.shader" />
+    <None Include="src\Shaders\OutlineObject.shader" />
+    <None Include="src\Shaders\OutlineObjectDepth.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

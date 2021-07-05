@@ -20,7 +20,7 @@ out vec4 FragColor;
 
 in vec2 TexCoords;
 
-uniform sampler2D image;
+uniform sampler2D u_Image;
 uniform bool u_Horizontal;
 uniform int u_PixelsAmount;
 uniform int u_StepTexturePixles;
@@ -34,22 +34,22 @@ float weight[6] = float[](
 
 void main()
 {
-    vec2 tex_offset = 1.0 / textureSize(image, 0);
-    vec3 result = texture(image, TexCoords).rgb * weight[0];
+    vec2 tex_offset = 1.0 / textureSize(u_Image, 0);
+    vec3 result = texture(u_Image, TexCoords).rgb * weight[0];
     if (u_Horizontal)
     {
         for (int i = 1; i < u_PixelsAmount; ++i)
         {
-            result += texture(image, TexCoords + vec2(tex_offset.x * i * u_StepTexturePixles, 0.0)).rgb * weight[i];
-            result += texture(image, TexCoords - vec2(tex_offset.x * i * u_StepTexturePixles, 0.0)).rgb * weight[i];
+            result += texture(u_Image, TexCoords + vec2(tex_offset.x * i * u_StepTexturePixles, 0.0)).rgb * weight[i];
+            result += texture(u_Image, TexCoords - vec2(tex_offset.x * i * u_StepTexturePixles, 0.0)).rgb * weight[i];
         }
     }
     else
     {
         for (int i = 1; i < u_PixelsAmount; ++i)
         {
-            result += texture(image, TexCoords + vec2(0.0, tex_offset.y * i * u_StepTexturePixles)).rgb * weight[i];
-            result += texture(image, TexCoords - vec2(0.0, tex_offset.y * i * u_StepTexturePixles)).rgb * weight[i];
+            result += texture(u_Image, TexCoords + vec2(0.0, tex_offset.y * i * u_StepTexturePixles)).rgb * weight[i];
+            result += texture(u_Image, TexCoords - vec2(0.0, tex_offset.y * i * u_StepTexturePixles)).rgb * weight[i];
         }
     }
     FragColor = vec4(result, 1.0);

@@ -151,9 +151,9 @@ Texture* Doom::Texture::Get(std::string filePath, bool showErrors)
 
 void Texture::AsyncGet(std::function<void(Texture* t)> function, std::string filePath)
 {
-	Texture* texture = Get(filePath);
-	if (texture != nullptr)
-		function(texture);
+	Texture* t = Get(filePath);
+	if (t != nullptr)
+		function(t);
 	else
 		s_WaitingForTextures.insert(std::make_pair(filePath, function));
 }

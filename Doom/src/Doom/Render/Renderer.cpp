@@ -83,50 +83,15 @@ void Renderer::RenderBloomEffect()
 	shader = Shader::Get("Bloom");
 	shader->Bind();
 	glBindTextureUnit(0, window.m_FrameBufferColor->m_Textures[0]);
-	shader->SetUniform1i("scene", 0);
+	shader->SetUniform1i("u_Scene", 0);
 	glBindTextureUnit(1, fb[0]->m_Textures[0]);
-	shader->SetUniform1i("hdr", Renderer::s_Bloom.m_IsHdrEnabled);
-	shader->SetUniform1i("bloomBlurH", 1);
+	shader->SetUniform1i("u_HasHDR", Renderer::s_Bloom.m_IsHdrEnabled);
+	shader->SetUniform1i("u_Blur", 1);
 	shader->SetUniform1f("u_Intensity", Renderer::s_Bloom.m_Intensity);
-	shader->SetUniform1f("exposure", s_Bloom.m_Exposure);
-	shader->SetUniform1f("gamma", s_Bloom.m_Gamma);
+	shader->SetUniform1f("u_Exposure", s_Bloom.m_Exposure);
+	shader->SetUniform1f("u_Gamma", s_Bloom.m_Gamma);
 	Renderer::RenderForPostEffect(Mesh::Get("plane"), shader);
 	window.m_FrameBufferColor->UnBind();
-
-	//ImGui::Begin("Blur");
-	//void* te = reinterpret_cast<void*>(fb[!horizontal]->m_Textures[0]);
-	//ImGui::Image(te, ImVec2(Window::GetSize()[0], Window::GetSize()[1]), ImVec2(0, 1), ImVec2(1, 0));
-	//ImGui::End();
-}
-
-void Renderer::RenderOutLined3dObjects()
-{
-	//@deprecated
-	//Right now working version is located at Renderer3D
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glDisable(GL_DEPTH_TEST);
-	for (size_t i = 0; i < s_OutLined3dObjects.size(); i++)
-	{
-		Renderer3D* r3d = s_OutLined3dObjects[i];
-		GameObject* owner = r3d->m_OwnerOfCom;
-		
-		Shader* shader = Shader::Get("HighLightBorder");
-		shader->Bind();
-		shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
-		shader->SetUniformMat4f("u_Model", owner->m_Transform.m_PosMat4);
-		shader->SetUniformMat4f("u_View", owner->m_Transform.m_ViewMat4);
-		glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
-		glm::vec3 d = camPos - owner->GetPosition();
-		glm::vec3 scaleV3 = owner->GetScale();
-		float distance = glm::sqrt(d.x * d.x + d.y * d.y + d.z * d.z);
-		glm::vec3 koef = glm::vec3(1.0f) + glm::vec3(distance / scaleV3.x, distance / scaleV3.y, distance / scaleV3.z) * 0.003f;
-		koef = glm::clamp(koef, 1.00f, 100000.0f);
-		shader->SetUniformMat4f("u_Scale", glm::scale(owner->m_Transform.m_ScaleMat4, koef));
-		glDrawElements(GL_TRIANGLES, r3d->m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
-
-	}
-	glDisable(GL_STENCIL_TEST);
-	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
@@ -149,12 +114,13 @@ void Renderer::RenderForPostEffect(Mesh* mesh, Shader* shader)
 void Renderer::Render() {
 	int size[2];
 	Renderer::s_Stats.Reset();
+	//Draw shadows
 	if (s_ShadowMap.m_DrawShadows) {
 		{
 			Timer t;
 			FrameBuffer* shadowMap = Window::GetInstance().m_FrameBufferShadowMap;
 			glfwGetWindowSize(Window::GetInstance().GetWindow(), &size[0], &size[1]);
-			glViewport(0, 0, shadowMap->size.x, shadowMap->size.y);
+			glViewport(0, 0, shadowMap->m_Params.m_Width, shadowMap->m_Params.m_Height);
 			shadowMap->Bind();
 			glClear(GL_DEPTH_BUFFER_BIT);
 			Renderer::BakeShadows();
@@ -165,30 +131,16 @@ void Renderer::Render() {
 		glViewport(0, 0, size[0], size[1]);
 	}
 
+	//Draw scene
 	glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
 	Renderer::Clear();
 	Renderer::RenderScene();
 	Window::GetInstance().GetScrollYOffset() = 0;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	//@Deprecated
-	//Due to that textures can't store all information about emissive objects
-	/*{
-		glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferBrightness->m_Fbo);
-		Renderer::Clear();
-		Shader* shader = Shader::Get("BrightnessTexture");
-		shader->Bind();
-		shader->SetUniform1i("scene", 0);
-		shader->SetUniform1f("Brightness", Renderer::s_Bloom.m_Brightness);
-		glBindTextureUnit(0, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
-		Renderer::RenderForPostEffect(Mesh::GetMesh("plane"), shader);
-		shader->UnBind();
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}*/
-
-	Renderer::Clear();
 	Instancing::GetInstance()->PrepareVertexAtrrib();
 
+	//Draw bloom
 	{
 		{
 			Timer t;
@@ -196,22 +148,61 @@ void Renderer::Render() {
 		}
 		Renderer::s_Stats.m_BloomRenderTime = Timer::s_OutTime;
 	}
-	
-	Shader* shader = Shader::Get("QuadFullScreen");
+
+	//Draw outline object into a frame buffer
+	GameObject* selectedGo = Editor::GetInstance().go;
+	bool hasOutline = false;
+	if (selectedGo != nullptr)
+	{
+		Renderer3D* r3d = selectedGo->GetComponent<Renderer3D>();
+		if (r3d != nullptr && r3d->m_Mesh != nullptr)
+		{
+			hasOutline = true;
+			Window::GetInstance().m_FrameBufferOutline->Bind();
+			Renderer::Clear();
+			Transform& tr = selectedGo->m_Transform;
+			Shader* shader = Shader::Get("OutlineObjectDepth");
+			shader->Bind();
+			shader->SetUniformMat4f("u_Model", tr.m_PosMat4);
+			shader->SetUniformMat4f("u_View", tr.m_ViewMat4);
+			shader->SetUniformMat4f("u_Scale", tr.m_ScaleMat4);
+			shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
+			r3d->m_Mesh->m_Va.Bind();
+			r3d->m_Mesh->m_Ib.Bind();
+			Renderer::s_Stats.m_Vertices += r3d->m_Mesh->m_Ib.m_count;
+			Renderer::s_Stats.m_DrawCalls++;
+			glDrawElements(GL_TRIANGLES, r3d->m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
+
+			r3d->m_Mesh->m_Va.UnBind();
+			r3d->m_Mesh->m_Ib.UnBind();
+			shader->UnBind();
+
+			Window::GetInstance().m_FrameBufferOutline->UnBind();
+		}
+	}
+
+	//Draw Outline object / Main image
 	{
 		{
 			Timer t;
-			Renderer::Clear();
-			glBindFramebuffer(GL_FRAMEBUFFER, Window::GetInstance().m_FrameBufferColor->m_Fbo);
+			Shader* shader = Shader::Get("OutlineObject");
 			shader->Bind();
-			glBindTexture(GL_TEXTURE_2D, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
+			glBindTextureUnit(0, Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
+			glBindTextureUnit(1, Window::GetInstance().m_FrameBufferOutline->m_Textures[0]);
+			shader->SetUniform1i("u_Scene", 0);
+			shader->SetUniform1i("u_OutlineDepth", 1);
+			shader->SetUniform1i("u_HasOutline", hasOutline);
+			Window::GetInstance().m_FrameBufferMainImage->Bind();
+			Renderer::Clear();
 			Renderer::RenderForPostEffect(Mesh::Get("plane"), shader);
 			glDisable(GL_DEPTH_TEST);
 			Renderer::RenderCollision3D();
 			Renderer::RenderCollision();
+			Window::GetInstance().m_FrameBufferMainImage->UnBind();
 		}
 		Renderer::s_Stats.m_CollisionRenderTime = Timer::s_OutTime;
 	}
+	
 	{
 		{
 			Timer t;
@@ -219,7 +210,6 @@ void Renderer::Render() {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			shader->UnBind();
 		}
 		Renderer::s_Stats.m_GuiRenderTime = Timer::s_OutTime;
 	}

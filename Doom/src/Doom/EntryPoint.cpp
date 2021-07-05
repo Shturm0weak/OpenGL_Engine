@@ -47,6 +47,9 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	FrameBufferParams shadowMapParams = { 4096, 4096, GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_FLOAT, false, false, false };
 	window.m_FrameBufferShadowMap = new FrameBuffer(shadowMapParams);
 
+	FrameBufferParams outlineParams = { (uint32_t)size[0], (uint32_t)size[1], GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_FLOAT, false, false, false };
+	window.m_FrameBufferOutline = new FrameBuffer(outlineParams);
+
 	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE };
 	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE };
 	FrameBufferParams colorParams = { (uint32)size[0], (uint32)size[1], GL_COLOR_ATTACHMENT0, GL_RGBA , GL_UNSIGNED_BYTE, true, true, true, 2 };
@@ -57,7 +60,7 @@ EntryPoint::EntryPoint(Doom::Application* app)
 	window.m_FrameBufferColor->UnBind();
 
 	colorParams = { (uint32)size[0], (uint32)size[1], GL_COLOR_ATTACHMENT0, GL_RGBA , GL_UNSIGNED_BYTE, true, true, true, 1 };
-	window.m_FrameBufferBrightness = new FrameBuffer(colorParams);
+	window.m_FrameBufferMainImage = new FrameBuffer(colorParams);
 
 	FrameBufferParams Blur1Params = { (uint32)size[0], (uint32)size[1], GL_COLOR_ATTACHMENT0, GL_RGBA, GL_UNSIGNED_BYTE, false, true, true };
 	window.m_FrameBufferBlur.push_back(new FrameBuffer(Blur1Params));

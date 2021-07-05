@@ -29,7 +29,8 @@ namespace Doom {
 
 		FrameBuffer* m_FrameBufferColor = nullptr;
 		FrameBuffer* m_FrameBufferShadowMap = nullptr;
-		FrameBuffer* m_FrameBufferBrightness = nullptr;
+		FrameBuffer* m_FrameBufferOutline = nullptr;
+		FrameBuffer* m_FrameBufferMainImage = nullptr;
 		std::vector<FrameBuffer*> m_FrameBufferBlur;
 
 		static Window& GetInstance();

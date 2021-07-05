@@ -120,5 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BrightnessTexture.shader" />
+    <None Include="src\Shaders\OutlineObjectDepth.shader" />
+    <None Include="src\Shaders\OutlineObject.shader" />
   </ItemGroup>
 </Project>

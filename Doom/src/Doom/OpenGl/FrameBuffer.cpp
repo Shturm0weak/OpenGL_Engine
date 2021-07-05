@@ -6,7 +6,7 @@ using namespace Doom;
 
 FrameBuffer::FrameBuffer(const FrameBufferParams& params)
 {
-	size = glm::vec2(params.m_Width, params.m_Height);
+	m_Params = params;
 
 	glGenFramebuffers(1, &m_Fbo);
 
@@ -41,8 +41,7 @@ FrameBuffer::FrameBuffer(const FrameBufferParams& params)
 		glFramebufferTexture2D(GL_FRAMEBUFFER, params.m_FrameBufferAttachment + i, GL_TEXTURE_2D, m_Textures[i], 0);
 	}
 
-	m_HasRbo = params.m_HasRBO;
-	if (m_HasRbo)
+	if (params.m_HasRBO)
 	{
 		glGenRenderbuffers(1, &m_Rbo);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
@@ -68,15 +67,25 @@ FrameBuffer::~FrameBuffer()
 
 void Doom::FrameBuffer::Resize(uint32_t width, uint32_t height)
 {
+	m_Params.m_Width = width;
+	m_Params.m_Height = height;
 	for (uint32_t i = 0; i < m_Textures.size(); i++)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_Textures[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D,
+			0,
+			m_Params.m_TextureInternalFormat,
+			m_Params.m_Width,
+			m_Params.m_Height,
+			0,
+			m_Params.m_TextureInternalFormat,
+			m_Params.TextureType,
+			NULL);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		if (m_HasRbo) 
+		if (m_Params.m_HasRBO)
 		{
 			glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Params.m_Width, m_Params.m_Height);
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Rbo);
 		}
 	}

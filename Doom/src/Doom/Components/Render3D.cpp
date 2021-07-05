@@ -331,39 +331,7 @@ void Renderer3D::ForwardRender(glm::mat4& pos, glm::mat4& view, glm::mat4& scale
 		if (!m_IsCullingFace)
 			glDisable(GL_CULL_FACE);
 
-		if (m_HighLight)
-		{
-			//Need to refactor
-			glEnable(GL_STENCIL_TEST);
-
-			glStencilFunc(GL_ALWAYS, 1, 0xFF);
-			glStencilMask(0xFF);
-			m_Shader->Bind();
-			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
-
-			Renderer::s_OutLined3dObjects.push_back(this);
-
-			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-			glStencilMask(0x00);
-			Shader* shader = Shader::Get("HighLightBorder");
-			shader->Bind();
-			shader->SetUniformMat4f("u_ViewProjection", Window::GetInstance().GetCamera().GetViewProjectionMatrix());
-			shader->SetUniformMat4f("u_Model", pos);
-			shader->SetUniformMat4f("u_View", view);
-			glm::vec3 camPos = Window::GetInstance().GetCamera().GetPosition();
-			glm::vec3 d = camPos - m_OwnerOfCom->GetPosition();
-			glm::vec3 scaleV3 = m_OwnerOfCom->GetScale();
-			float distance = glm::sqrt(d.x * d.x + d.y * d.y + d.z * d.z);
-			glm::vec3 koef = glm::vec3(1.0f) + glm::vec3(distance / scaleV3.x, distance / scaleV3.y, distance / scaleV3.z) * 0.003f;
-			koef = glm::clamp(koef, 1.00f, 100000.0f);
-			shader->SetUniformMat4f("u_Scale", glm::scale(scale, koef));
-			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
-
-			glStencilMask(0xFF);
-			glDisable(GL_STENCIL_TEST);
-		}
-		else
-			glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_Mesh->m_Ib.m_count, GL_UNSIGNED_INT, nullptr);
 		glEnable(GL_CULL_FACE);
 		m_Shader->UnBind();
 		m_Mesh->m_Ib.UnBind();

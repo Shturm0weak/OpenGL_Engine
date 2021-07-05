@@ -17,8 +17,7 @@ namespace Doom {
 	class DOOM_API FrameBuffer {
 	public:
 
-		bool m_HasRbo = false;
-		glm::vec2 size;
+		FrameBufferParams m_Params;
 		unsigned int m_Rbo = 0;
 		unsigned int m_Fbo = 0;
 		std::vector<unsigned int> m_Textures;

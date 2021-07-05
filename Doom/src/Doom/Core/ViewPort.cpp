@@ -16,7 +16,7 @@ ViewPort& Doom::ViewPort::GetInstance()
 void Doom::ViewPort::Update()
 {
 	ViewPort& viewport = ViewPort::GetInstance();
-	void* tex = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferColor->m_Textures[0]);
+	void* tex = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferMainImage->m_Textures[0]);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("ViewPort", &viewport.m_IsToolOpen, ImGuiWindowFlags_NoScrollbar);
@@ -102,10 +102,17 @@ void Doom::ViewPort::Resize()
 	Gui::GetInstance().RecalculateProjectionMatrix();
 	Window& window = Window::GetInstance();
 	int* size = window.GetSize();
+
+	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER };
+	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER };
+	window.m_FrameBufferOutline->Resize(size[0], size[1]);
+
+	Doom::Texture::s_TexParameters[2] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE };
+	Doom::Texture::s_TexParameters[3] = { GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE };
 	window.m_FrameBufferColor  ->Resize(size[0], size[1]);
 	window.m_FrameBufferBlur[0]->Resize(size[0], size[1]);
 	window.m_FrameBufferBlur[1]->Resize(size[0], size[1]);
-	window.m_FrameBufferBrightness->Resize(size[0], size[1]);
+	window.m_FrameBufferMainImage->Resize(size[0], size[1]);
 }
 
 void Doom::ViewPort::GetMousePositionToWorldSpaceImpl()

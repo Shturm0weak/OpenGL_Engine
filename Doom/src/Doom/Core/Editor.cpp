@@ -1150,11 +1150,11 @@ void Doom::Editor::Debug()
 	MenuBloom();
 	if (isActiveBuffers)
 	{
-		/*ImGui::Begin("DepthBuffer");
-		void* textureId = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferShadowMap->m_Textures[0]);
+		ImGui::Begin("DepthBuffer");
+		void* textureId = reinterpret_cast<void*>(Window::GetInstance().m_FrameBufferOutline->m_Textures[0]);
 		ImVec2 size = ImGui::GetWindowSize();
 		ImGui::Image(textureId, ImVec2(size.x, size.y), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::End();*/
+		ImGui::End();
 	}
 }
 
