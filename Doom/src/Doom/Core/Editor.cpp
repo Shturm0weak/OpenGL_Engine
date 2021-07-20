@@ -35,7 +35,9 @@ bool Editor::MenuRemoveComponent()
 
 void Editor::EditorUpdate()
 {
-	
+	ImGui::SetCurrentContext(Window::GetInstance().s_ImGuiContext);
+	ImGui::GetFont()->Scale = 1.5f;
+
 	closedButtonsId = 103212;
 	Debug();
 	MenuInstancingStats();
@@ -58,8 +60,8 @@ void Editor::EditorUpdate()
 
 	CreateTextureAtlas();
 
-	ImGui::SliderFloat("Zoom", &Window::GetInstance().GetCamera().m_ZoomLevel, 0.1f, 100.f);
-	Window::GetInstance().GetCamera().Zoom(abs(Window::GetInstance().GetCamera().m_ZoomLevel));
+	ImGui::SliderFloat("Zoom", &Window::GetInstance().GetCamera().m_ZoomScale, 0.1f, 100.f);
+	Window::GetInstance().GetCamera().Zoom(abs(Window::GetInstance().GetCamera().m_ZoomScale));
 	ImGui::End();
 
 	ImGui::Begin("Scene");
@@ -100,7 +102,6 @@ void Editor::EditorUpdate()
 				size_t index = (*filePath).find_last_of("\\");
 				if (index != std::string::npos) {
 					std::string path = (*filePath).substr(0, index);
-					//path.replace(path.begin(), path.end(), '\\', '/');
 					std::vector<std::string> files = Utils::GetFilesName(path, ".png");
 					for (uint32_t i = 0; i < files.size(); i++)
 					{
@@ -132,8 +133,6 @@ void Editor::EditorUpdate()
 		}
 		ImGui::EndPopup();
 	}
-
-	ImGui::SetWindowFontScale(1.25);
 
 	if (World::GetInstance().s_GameObjects.size() > 0 && go == nullptr) {
 		go = World::GetInstance().s_GameObjects[0];
@@ -211,7 +210,6 @@ void Editor::EditorUpdate()
 			}
 			ImGui::EndPopup();
 		}
-		ImGui::SetWindowFontScale(1.25);
 		if (go == nullptr) {
 			ImGui::End();
 			return;
@@ -1121,7 +1119,7 @@ void Doom::Editor::Debug()
 	ImGui::Text("Position");
 	ImGui::Text("x: %f y: %f z: %f", camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 	ImGui::Text("Forward vector");
-	ImGui::Text("x: %f y: %f z: %f", camera.backV.x, camera.backV.y, camera.backV.z);
+	ImGui::Text("x: %f y: %f z: %f", camera.m_Back.x, camera.m_Back.y, camera.m_Back.z);
 	camera.SetRotation(glm::vec3(camera.m_Pitch, camera.m_Yaw, camera.m_Roll));
 	ImGui::End();
 	ImGui::Begin("Debug");

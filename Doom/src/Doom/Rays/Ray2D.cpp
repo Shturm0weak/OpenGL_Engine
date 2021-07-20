@@ -7,16 +7,16 @@ using namespace Doom;
 Ray2D::Ray2D(glm::vec2 start, glm::vec2 direction, float length)
 	: m_Start(start),m_Length(length)
 {
-	this->m_Dir = direction;
-	Normilize(this->m_Dir);
-	this->m_End = start + (direction * length);
+	m_Dir = direction;
+	m_Dir = Utils::Normalize(m_Dir);
+	m_End = start + (direction * length);
 }
 
 bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, std::vector<std::string> ignoreMask)
 {
-	this->m_Start = start;
-	this->m_Dir = direction;
-	m_End = (this->m_Dir * length) + start;
+	m_Start = start;
+	m_Dir = direction;
+	m_End = (m_Dir * length) + start;
 	
 	std::vector<glm::vec2> corners;
 	std::multimap<RectangleCollider2D*,glm::vec2*> points;
@@ -71,7 +71,7 @@ bool Ray2D::Raycast(Hit & hit,float length,glm::vec2 start,glm::vec2 direction, 
 		float min = 10000000;
 		for (auto itr = points.begin(); itr != points.end(); itr++)
 		{
-			distance = Distance(*itr->second,start);	
+			distance = Utils::Distance(*itr->second,start);	
 			
 			if (distance <= min) 
 			{
@@ -102,29 +102,19 @@ glm::vec2* Doom::Ray2D::LineIntersect(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm
 	return nullptr;
 }
 
-float Doom::Ray2D::Distance(glm::vec2 start, glm::vec2 end)
-{
-	return sqrt(pow((end.x - start.x),2) + pow((end.y - start.y),2));
-}
-
-void Doom::Ray2D::Normilize(glm::vec2 & vector)
-{
-	vector = glm::vec2(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y)));
-}
-
 void Doom::Ray2D::Rotate(float angle)
 {
 	float theta = (-angle * (2 * 3.14159f) / 360.0f);
 	m_Dir = glm::vec2(cos(theta) * m_Dir.x - sin(theta) * m_Dir.y,
 		sin(theta) * m_Dir.x + cos(theta) * m_Dir.y);
-	this->m_End = m_Start + (m_Dir * m_Length);
+	m_End = m_Start + (m_Dir * m_Length);
 }
 
 void Ray2D::SetStart(glm::vec2 start) {
-	this->m_Start = start;
+	m_Start = start;
 }
 
 void Ray2D::SetDirection(glm::vec2 direction) {
-	this->m_Dir = direction;
-	Normilize(this->m_Dir);
+	m_Dir = direction;
+	m_Dir = Utils::Normalize(m_Dir);
 }

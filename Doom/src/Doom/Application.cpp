@@ -58,6 +58,7 @@ void Doom::Application::Init() const
 	colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.000f, 0.000f, 0.000f, 0.586f);
 	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.000f, 0.000f, 0.000f, 0.586f);
 
+	style->ScaleAllSizes(1.5f);
 	style->ChildRounding = 0.0f;
 	style->FrameBorderSize = 0.0f;
 	style->FrameRounding = 0.0f;

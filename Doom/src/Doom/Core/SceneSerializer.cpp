@@ -493,7 +493,7 @@ void Doom::SceneSerializer::SerializeCamera(YAML::Emitter& out)
 	out << YAML::Key << "Position" << YAML::Value << camera.GetPosition();
 	out << YAML::Key << "Rotation" << YAML::Value << camera.GetRotation();
 	out << YAML::EndMap;
-	out << YAML::Key << "Zoom" << YAML::Value << camera.m_ZoomLevel;
+	out << YAML::Key << "Zoom" << YAML::Value << camera.m_ZoomScale;
 	out << YAML::Key << "FOV" << YAML::Value << camera.m_Fov;
 	out << YAML::Key << "Type" << YAML::Value << (int)camera.m_Type;
 	out << YAML::EndMap;

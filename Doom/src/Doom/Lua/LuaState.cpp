@@ -358,8 +358,7 @@ int Doom::LuaState::LuaSetCameraRotation(lua_State* l)
 int Doom::LuaState::LuaGetCameraForwardV(lua_State* l)
 {
 	Camera& camera = Window::GetInstance().GetCamera();
-	glm::vec3 forwardV = camera.GetForwardV();
-	LuaVec3::PushVec3ToLua(l, forwardV.x, forwardV.y, forwardV.z);
+	LuaVec3::PushVec3ToLua(l, camera.m_Forward.x, camera.m_Forward.y, camera.m_Forward.z);
 	return 1;
 }
 

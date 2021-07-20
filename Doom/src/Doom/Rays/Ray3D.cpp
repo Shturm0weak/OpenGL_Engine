@@ -1,6 +1,7 @@
 #include "../pch.h"
 #include "Ray3D.h"
 #include "../Objects/Line.h"
+
 std::map<double, Doom::CubeCollider3D*> Doom::Ray3D::RayCast(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, bool AABB, std::vector<std::string> ignoreMask)
 {
 	std::map<double, CubeCollider3D*> d;
@@ -74,11 +75,6 @@ bool Doom::Ray3D::IntersectTriangle(glm::dvec3 start, glm::dvec3 dir, Hit * hit,
 	else return false;
 }
 
-void Doom::Ray3D::Normilize(glm::dvec3 & vector)
-{
-		vector = glm::dvec3(vector * (1.f / sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)));
-}
-
 bool Doom::Ray3D::IntersectBoxAABB(glm::dvec3 start, glm::dvec3 dir, Hit * hit, double length, CubeCollider3D * c)
 {
 	glm::dvec3 pos = c->m_Offset * c->m_OwnerOfCom->GetScale() + c->m_OwnerOfCom->GetPosition();
@@ -125,8 +121,6 @@ bool Doom::Ray3D::IntersectBoxAABB(glm::dvec3 start, glm::dvec3 dir, Hit * hit, 
 	hit->m_Point = tMin * dir + start;
 	return true;
 }
-
-
 
 bool Doom::Ray3D::IntersectBoxOBB(glm::dvec3 start, glm::dvec3 dir, Hit* hit, double length, CubeCollider3D* c)
 {

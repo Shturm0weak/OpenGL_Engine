@@ -724,5 +724,6 @@
     <ClCompile Include="src\Doom\Input\Input.cpp" />
     <ClCompile Include="src\Doom\Text\Gui.cpp" />
     <ClCompile Include="src\Doom\Core\Logger.cpp" />
+    <ClCompile Include="src\Doom\Core\Utils.cpp" />
   </ItemGroup>
 </Project>

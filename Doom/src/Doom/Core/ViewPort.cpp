@@ -120,8 +120,8 @@ void Doom::ViewPort::GetMousePositionToWorldSpaceImpl()
 	Camera& camera = Window::GetInstance().GetCamera();
 	int* size = Window::GetInstance().GetSize();
 	glfwGetCursorPos(Window::GetInstance().GetWindow(), &m_CursorPos.x, &m_CursorPos.y);
-	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * 2 * camera.m_Ratio * camera.m_ZoomLevel + camera.GetPosition().x;
-	m_MousePosW.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (size[1] / m_Size.y)) / size[1]) + 0.5) * 2 * camera.m_ZoomLevel + camera.GetPosition().y;
+	m_MousePosW.x = ((((m_CursorPos.x - m_ViewportPos.x) / (m_Size[0] - 1))) - 0.5) * 2 * camera.m_Ratio * camera.m_ZoomScale + camera.GetPosition().x;
+	m_MousePosW.y = ((-((m_CursorPos.y - m_ViewportPos.y) * (size[1] / m_Size.y)) / size[1]) + 0.5) * 2 * camera.m_ZoomScale + camera.GetPosition().y;
 }
 void Doom::ViewPort::GetStaticMousePositionImpl()
 {
@@ -155,11 +155,11 @@ void Doom::ViewPort::RecalculateMouseCoords()
 glm::dvec2 Doom::ViewPort::GetFromWorldToScreenSpaceImpl(glm::vec2 pos)
 {
 	Camera& camera = Window::GetInstance().GetCamera();
-	return glm::dvec2(pos.x / (camera.m_Ratio * camera.m_ZoomLevel) * g_ScaleUI, pos.y / camera.m_ZoomLevel * g_ScaleUI);
+	return glm::dvec2(pos.x / (camera.m_Ratio * camera.m_ZoomScale) * g_ScaleUI, pos.y / camera.m_ZoomScale * g_ScaleUI);
 }
 
 glm::dvec2 Doom::ViewPort::GetFromWorldToScreenSpace(float x, float y)
 {
 	Camera& camera = Window::GetInstance().GetCamera();
-	return glm::dvec2(x / (camera.m_Ratio * camera.m_ZoomLevel) * g_ScaleUI, y / (camera.m_ZoomLevel * camera.m_Ratio) * g_ScaleUI);
+	return glm::dvec2(x / (camera.m_Ratio * camera.m_ZoomScale) * g_ScaleUI, y / (camera.m_ZoomScale * camera.m_Ratio) * g_ScaleUI);
 }

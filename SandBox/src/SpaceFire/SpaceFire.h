@@ -104,7 +104,7 @@ public:
 			glm::dvec2 pos = ViewPort::GetInstance().GetFromWorldToScreenSpace((enemies[i]->m_OwnerOfCom->GetPosition().x - enemies[i]->m_OwnerOfCom->GetComponent<SpriteRenderer>()->GetWidth() / 2.0), (enemies[i]->m_OwnerOfCom->GetPosition().y + enemies[i]->m_OwnerOfCom->GetComponent<SpriteRenderer>()->GetHeight() / 2.0));
 			glm::vec2 size = ViewPort::GetInstance().GetFromWorldToScreenSpace((enemies[i]->m_OwnerOfCom->GetComponent<SpriteRenderer>())->GetWidth(), 0);
 		
-			g.Bar(pos.x, pos.y + 30, enemies[i]->hp, 100, COLORS::Red, COLORS::DarkGray, size.x,25 / (camera.m_ZoomLevel / 10));
+			g.Bar(pos.x, pos.y + 30, enemies[i]->hp, 100, COLORS::Red, COLORS::DarkGray, size.x,25 / (camera.m_ZoomScale / 10));
 		}
 
 		if (pl->isDead || pause) {
